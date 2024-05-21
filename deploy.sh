@@ -24,7 +24,7 @@ git config --local user.email "1942459198@qq.com"
 git add -A
 git commit -m "deploy"
 
-git remote add github-origin git@github.com:wwlight/wwlight.github.io.git
+# git remote add github-origin git@github.com:wwlight/wwlight.github.io.git
 # git remote add gitee-origin git@gitee.com:wwlight/wwlight.git
 
 git branch -M gh-pages
