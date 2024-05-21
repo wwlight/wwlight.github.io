@@ -111,13 +111,15 @@ eval "$(zoxide init zsh)"
 ```bash
 # 终端直接下载
 $ brew install git
+$ brew install gh
+$ brew install pnpm
 $ brew install yarn
 $ brew install bun
 $ brew install nginx
 $ brew install code-server
-$ brew install fzf
 $ brew install gping
 $ brew install onefetch
+$ brew install fzf
 $ brew install zoxide
 $ brew install lazygit
 
@@ -139,6 +141,17 @@ $ brew install --cask picgo
 - ✅ [Android Studio](https://developer.android.com/studio?hl=zh-cn)
 
 ## 💻️ 开发环境
+
+```sh
+# 设置本地默认分支 main
+$ git config --global init.defaultBranch main
+
+# 设置文件大小写敏感
+$ git config --global core.ignorecase false
+
+# 忽略目录安全限制
+$ git config --global --add safe.directory "*"
+```
 
 - ✅ [fnm](https://github.com/Schniz/fnm) - 快速简单的 Node.js 版本管理器，用 Rust 构建
 ```bash

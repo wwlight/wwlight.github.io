@@ -146,14 +146,16 @@ eval "$(zoxide init zsh)"
 
 ```bash
 $ scoop install git
+$ scoop install gh
 $ scoop install pnpm
 $ scoop install yarn
 $ scoop install bun
 $ scoop install gsudo
 $ scoop install gping
 $ scoop install onefetch
-$ scoop install fzf
 $ scoop install adb
+$ scoop install fzf
+$ scoop install zoxide
 ```
 
 - ✅ [VS Code](https://code.visualstudio.com/)
@@ -162,6 +164,17 @@ $ scoop install adb
 - ✅ [electerm](https://electerm.html5beta.com/)
 
 ## 💻️ 开发环境
+
+```sh
+# 设置本地默认分支 main
+$ git config --global init.defaultBranch main
+
+# 设置文件大小写敏感
+$ git config --global core.ignorecase false
+
+# 忽略目录安全限制
+$ git config --global --add safe.directory "*"
+```
 
 - ✅ [fnm](https://github.com/Schniz/fnm) - 快速简单的 Node.js 版本管理器，用 Rust 构建
 ```bash
