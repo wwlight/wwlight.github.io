@@ -1,0 +1,14 @@
+{
+    "devDependencies": {
+        "vitepress": "^1.0.0-alpha.32",
+        "vue": "^3.2.45"
+    },
+    "license": "ISC",
+    "scripts": {
+        "dev": "vitepress",
+        "build": "vitepress build",
+        "initialize": "sh initialize.sh",
+        "update": "sh update.sh",
+        "deploy": "sh deploy.sh"
+    }
+}
