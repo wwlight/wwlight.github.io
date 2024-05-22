@@ -174,6 +174,10 @@ $ git config --global core.ignorecase false
 
 # 忽略目录安全限制
 $ git config --global --add safe.directory "*"
+
+# 管理员身份运行 PowerShell
+$ get-ExecutionPolicy
+$ set-ExecutionPolicy RemoteSigned
 ```
 
 - ✅ [fnm](https://github.com/Schniz/fnm) - 快速简单的 Node.js 版本管理器，用 Rust 构建

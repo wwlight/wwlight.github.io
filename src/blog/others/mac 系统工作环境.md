@@ -112,8 +112,6 @@ eval "$(zoxide init zsh)"
 # 终端直接下载
 $ brew install git
 $ brew install gh
-$ brew install pnpm
-$ brew install yarn
 $ brew install bun
 $ brew install nginx
 $ brew install code-server
@@ -160,7 +158,6 @@ $ brew install fnm
 $ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 $ source ~/.zshrc
 
-$ npm view node versions
 $ fnm ls
 $ fnm ls-remote
 $ fnm ls-remote | grep v20
@@ -174,6 +171,18 @@ $ fnm env
 
 # 项目写入 node 版本
 $ node --version > .node-version
+```
+
+✅ [Corepack](https://github.com/nodejs/corepack) - 允许您使用 Yarn、npm 和 pnpm，默认随 node 一起安装
+```bash
+$ corepack -h
+$ corepack enable pnpm
+# 切换 pnpm 最新版本
+$ corepack use pnpm@latest
+# 切换 pnpm 指定版本
+$ corepack use pnpm@9.0.6
+
+$ corepack enable yarn
 ```
 
 - 共享 npm 全局模块
@@ -206,6 +215,7 @@ $ npm i -g @antfu/ni
 - ✅ [PicGo](https://molunerfinn.com/PicGo/) - 图片上传+管理新体验
 - ✅ [多邻国](https://apps.apple.com/cn/app/%E5%A4%9A%E9%82%BB%E5%9B%BDduolingo%E8%8B%B1%E8%AF%AD%E6%97%A5%E8%AF%AD%E6%B3%95%E8%AF%AD/id570060128) - 全球数亿语言学习者的口碑选择
 - ✅ [万词王](https://apps.apple.com/cn/app/%E4%B8%87%E8%AF%8D%E7%8E%8B-%E8%A7%86%E9%A2%91%E8%83%8C%E5%8D%95%E8%AF%8D%E5%AD%A6%E8%8B%B1%E8%AF%AD%E5%BF%85%E5%A4%87app/id1464643633) - 视频背单词学英语必备APP
+- ✅ [微信读书](https://apps.apple.com/us/app/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6/id952059546)
 - ✅ [新华字典](https://apps.apple.com/cn/app/%E6%96%B0%E5%8D%8E%E5%AD%97%E5%85%B8-%E6%96%B0%E4%B8%AD%E5%9B%BD%E9%A2%87%E5%85%B7%E5%BD%B1%E5%93%8D%E5%8A%9B%E7%9A%84%E7%8E%B0%E4%BB%A3%E6%B1%89%E8%AF%AD%E5%AD%97%E5%85%B8/id1197209563)
 - ❎ ️[Alfred](https://www.alfredapp.com/) - 效率神器
 - ❎ [Scroll Reverser](https://pilotmoon.com/scrollreverser/) - 触摸板与鼠标滚动方向独立设置

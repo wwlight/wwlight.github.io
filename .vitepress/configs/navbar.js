@@ -27,6 +27,10 @@ export default [
                 link: "/blog/plugin/",
             },
             {
+                text: "开发问题",
+                link: "/blog/questions/dev-QA",
+            },
+            {
                 text: "其他整理",
                 link: "/blog/others/windows 系统工作环境",
             },

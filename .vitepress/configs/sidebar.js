@@ -17,7 +17,6 @@ export default {
       text: "命令相关",
       items: [
         { text: 'Git 命令', link: "/blog/order/" },
-        { text: 'Git 常见问题', link: "/blog/order/git-QA" },
         { text: 'npm 命令', link: "/blog/order/npm" },
         { text: 'bash 命令', link: "/blog/order/bash" },
       ],
@@ -28,6 +27,12 @@ export default {
         { text: 'VSCode 插件', link: "/blog/plugin/" },
         { text: 'VSCode 常见问题', link: "/blog/plugin/vscode-QA" },
         { text: '谷歌浏览器插件', link: "/blog/plugin/google" },
+      ],
+    },
+    {
+      text: "开发问题",
+      items: [
+        { text: '问题记录', link: "/blog/questions/dev-QA" },
       ],
     },
     {
