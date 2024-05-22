@@ -29,8 +29,8 @@ $ [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
 ## 🌟 终端配置
 
 - ✅️ [Hyper](https://hyper.is/) - 是一款跨平台的终端软件
-- [awesome-hyper](https://github.com/bnb/awesome-hyper)
-- 配置文件位置：`~\AppData\Roaming\Hyper\.hyper.js`
+  - [awesome-hyper](https://github.com/bnb/awesome-hyper)
+  - 配置文件位置：`~\AppData\Roaming\Hyper\.hyper.js`
 ```bash
 $ hyper install hyper-dracula
 $ hyper install hyperborder
@@ -212,6 +212,20 @@ $ fnm use X
 
 # 项目写入 node 版本
 $ node --version > .node-version
+```
+
+- ✅ [Corepack](https://github.com/nodejs/corepack) - 允许您使用 Yarn、npm 和 pnpm，默认随 node 一起安装 （ v16.9.0+）
+```bash
+$ corepack -h
+$ corepack enable
+
+$ corepack install -g pnpm
+$ corepack install -g yarn
+
+# 切换 pnpm 最新版本
+$ corepack use pnpm@latest
+# 切换 pnpm 指定版本
+$ corepack use pnpm@9.0.6
 ```
 
 - 共享 npm 全局模块

@@ -173,16 +173,18 @@ $ fnm env
 $ node --version > .node-version
 ```
 
-✅ [Corepack](https://github.com/nodejs/corepack) - 允许您使用 Yarn、npm 和 pnpm，默认随 node 一起安装
+- ✅ [Corepack](https://github.com/nodejs/corepack) - 允许您使用 Yarn、npm 和 pnpm，默认随 node 一起安装 （ v16.9.0+）
 ```bash
 $ corepack -h
-$ corepack enable pnpm
+$ corepack enable
+
+$ corepack install -g pnpm
+$ corepack install -g yarn
+
 # 切换 pnpm 最新版本
 $ corepack use pnpm@latest
 # 切换 pnpm 指定版本
 $ corepack use pnpm@9.0.6
-
-$ corepack enable yarn
 ```
 
 - 共享 npm 全局模块

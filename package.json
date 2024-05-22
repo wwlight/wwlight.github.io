@@ -10,5 +10,6 @@
         "initialize": "sh initialize.sh",
         "update": "sh update.sh",
         "deploy": "sh deploy.sh"
-    }
+    },
+    "packageManager": "pnpm@9.1.2"
 }
