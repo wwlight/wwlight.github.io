@@ -9,7 +9,7 @@
 - ✅：免费｜推荐
 - ❎：收费｜了解｜科学
 
-## 💡 准备工作
+## 🍀 准备工作
 
 - ✅ ️[Google Chrome](https://pc.qq.com/detail/1/detail_2661.html)【[官网](https://www.google.com/intl/zh-CN/chrome/)】- 一切事情的开始
    - 登录账号同步数据
@@ -23,7 +23,7 @@
 - ✅ [SwitchHosts](https://switchhosts.vercel.app/zh) - 是一个管理、切换多个 hosts 方案的工具
    - [GitHub Hosts](https://ineo6.github.io/hosts/) - GitHub 最新 hosts
 
-## 🌟 终端配置
+## ✍🏻 终端配置
 
 - ✅️ [Hyper](https://hyper.is/) - 是一款跨平台的终端软件
    - [awesome-hyper](https://github.com/bnb/awesome-hyper)
@@ -200,7 +200,7 @@ $ npm i -g @antfu/ni
 ```
 ## 💻️ 效率工具
 
-- ✅ [微信键盘](scoop install java/corretto-jdk)
+- ✅ [微信键盘](https://z.weixin.qq.com/)
 - ✅ [Arc](https://arc.net/) - 浏览器
 - ✅ [iShot Pro](https://apps.apple.com/cn/app/ishot-pro-%E4%B8%93%E4%B8%9A%E7%9A%84%E6%88%AA%E5%9B%BE%E8%B4%B4%E5%9B%BE%E5%BD%95%E5%B1%8F%E5%BD%95%E9%9F%B3ocr%E7%BF%BB%E8%AF%91%E5%8F%96%E8%89%B2%E5%B7%A5%E5%85%B7/id1611347086?mt=12) - 专业的截图贴图录屏录音 OCR 翻译取色工具
 - ✅ [右键助手专业版](https://apps.apple.com/cn/app/%E5%8F%B3%E9%94%AE%E5%8A%A9%E6%89%8B%E4%B8%93%E4%B8%9A%E7%89%88/id1555844307?mt=12) - 超丰富的右键菜单
@@ -222,7 +222,7 @@ $ npm i -g @antfu/ni
 - ❎ ️[Alfred](https://www.alfredapp.com/) - 效率神器
 - ❎ [Scroll Reverser](https://pilotmoon.com/scrollreverser/) - 触摸板与鼠标滚动方向独立设置
 
-## ⬇️ 资源平台
+## ♻️ 资源平台
 
 - ✅ [macOSicons](https://macosicons.com/) - 更换 mac 应用图标
 - ❎ [马可菠萝](https://www.macbl.com/) - 分享你喜欢的 mac 应用

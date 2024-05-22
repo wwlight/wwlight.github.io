@@ -3,12 +3,12 @@
 :::info 工欲善其事，必先利其器。
 :::
 
-##  ℹ️ 说明
+## ℹ️ 说明
 
 - ✅：免费｜推荐
 - ❎：收费｜了解｜科学
 
-## 💡 准备工作
+## 🍀 准备工作
 
 - 🗂️ 创建文件夹：`DevelopmentApplication`、`SystemApplication`
 - ✅ ️[Google Chrome](https://pc.qq.com/detail/1/detail_2661.html)【[官网](https://www.google.com/intl/zh-CN/chrome/)】- 一切事情的开始
@@ -26,7 +26,7 @@ $ $env:SCOOP='D:\DevelopmentApplication\Scoop'
 $ [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
 ```
 
-## 🌟 终端配置
+## ✍🏻 终端配置
 
 - ✅️ [Hyper](https://hyper.is/) - 是一款跨平台的终端软件
   - [awesome-hyper](https://github.com/bnb/awesome-hyper)
@@ -252,7 +252,7 @@ Remove-Item Alias:ni -Force -ErrorAction Ignore
 
 ## 💻️ 系统工具
 
-- ✅[ 微信键盘](https://z.weixin.qq.com/)
+- ✅ [微信键盘](https://z.weixin.qq.com/)
 - ✅ [Clash for Windows](https://clashforwindows.org/)
 - ✅ [Quicker](https://getquicker.net/)
 - ✅ [IDM](https://vip.jokerps.com/?s=idm&type=post) - 是一款优秀下载工具
@@ -263,6 +263,6 @@ Remove-Item Alias:ni -Force -ErrorAction Ignore
 - ✅ [PicGo](https://molunerfinn.com/PicGo/) - 图片上传+管理新体验
 - ✅ [护眼宝](https://pc.qq.com/detail/7/detail_22407.html)
 
-## ⬇️ 资源平台
+## ♻️ 资源平台
 
 - ✅ [鹏少资源网](https://vip.jokerps.com/)
