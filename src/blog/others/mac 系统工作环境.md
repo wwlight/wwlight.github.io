@@ -49,7 +49,6 @@ export PATH=~/.npm_global/bin:/usr/local/mysql/bin:$PATH
 export ZSH=$HOME/.zsh
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 HISTSIZE=5000
-# HISTFILE=$HOME/.zsh_history
 SAVEHIST=5000
 HISTDUP=erase
 setopt appendhistory
@@ -204,7 +203,8 @@ $ npm i -g @antfu/ni
 - ✅ [Arc](https://arc.net/) - 浏览器
 - ✅ [iShot Pro](https://apps.apple.com/cn/app/ishot-pro-%E4%B8%93%E4%B8%9A%E7%9A%84%E6%88%AA%E5%9B%BE%E8%B4%B4%E5%9B%BE%E5%BD%95%E5%B1%8F%E5%BD%95%E9%9F%B3ocr%E7%BF%BB%E8%AF%91%E5%8F%96%E8%89%B2%E5%B7%A5%E5%85%B7/id1611347086?mt=12) - 专业的截图贴图录屏录音 OCR 翻译取色工具
 - ✅ [右键助手专业版](https://apps.apple.com/cn/app/%E5%8F%B3%E9%94%AE%E5%8A%A9%E6%89%8B%E4%B8%93%E4%B8%9A%E7%89%88/id1555844307?mt=12) - 超丰富的右键菜单
-- ❎ [CleanMyMac X](https://cleanmymac.com/) - Mac 清洁应用程序
+- ❎ [Raycast](https://www.raycast.com/) - 一个为 mac 设计的高效生产力工具
+- ❎ [CleanMyMac X](https://cleanmymac.com/) - mac 清洁应用程序
 - ✅ [Kap](https://getkap.co/) - GIF 录制
 - ✅ [The Unarchiver](https://theunarchiver.com/) - 解压工具
 - ✅ [IINA](https://iina.io/) - 现代媒体播放器
@@ -213,7 +213,7 @@ $ npm i -g @antfu/ni
 - ✅ [Command X](https://sindresorhus.com/command-x) - 在 Finder 中剪切和粘贴文件
 - ✅ [keycastr](https://github.com/keycastr/keycastr) - 一个开源的按键可视化工具
 - ✅ [键指如飞](https://www.better365.cn/FlyKey.html)
-- ✅ [Picture View](https://wl879.github.io/apps/picview/) - MacOS 图片浏览应用
+- ✅ [Picture View](https://wl879.github.io/apps/picview/) - mac 图片浏览应用
 - ✅ [PicGo](https://molunerfinn.com/PicGo/) - 图片上传+管理新体验
 - ✅ [多邻国](https://apps.apple.com/cn/app/%E5%A4%9A%E9%82%BB%E5%9B%BDduolingo%E8%8B%B1%E8%AF%AD%E6%97%A5%E8%AF%AD%E6%B3%95%E8%AF%AD/id570060128) - 全球数亿语言学习者的口碑选择
 - ✅ [万词王](https://apps.apple.com/cn/app/%E4%B8%87%E8%AF%8D%E7%8E%8B-%E8%A7%86%E9%A2%91%E8%83%8C%E5%8D%95%E8%AF%8D%E5%AD%A6%E8%8B%B1%E8%AF%AD%E5%BF%85%E5%A4%87app/id1464643633) - 视频背单词学英语必备APP
