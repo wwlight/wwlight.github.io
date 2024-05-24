@@ -6,7 +6,7 @@
 - [http://mdn.io/array](http://mdn.io/array)
 - [http://mdn.io/zh/array](http://mdn.io/zh/array)
 ## 字符串转数组
-```javascript
+```js
 let str = "asdfghjkl";
 
 str.split(''); //  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
@@ -16,7 +16,7 @@ Array.of(...str); //  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
 Object.values(str); // ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
 ```
 ## 数组转字符串
-```javascript
+```js
 let arr = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
 
 arr.join(''); // 'asdfghjkl'
@@ -25,14 +25,15 @@ arr.toString(); // 'a,s,d,f,g,h,j,k,l'
 arr.toLocaleString(); // 'a,s,d,f,g,h,j,k,l'
 arr + []; // 'a,s,d,f,g,h,j,k,l'
 arr + ''; // 'a,s,d,f,g,h,j,k,l'
-
+```
+```js
 // 拓展：join() 和 toString() 都可以将多维数组转成普通字符串。
 let arr = [1, [2, 3], [4, 5]];
 arr.join(); // '1,2,3,4,5'
 arr.toString();  // '1,2,3,4,5'
 ```
 ## Array.prototype.map()
-```javascript {3,7,11}
+```js {3,7,11}
 // 字符串数组转换为数值型数组
 let arr = [1, 2, 3];
 arr.map(String); // ['1', '2', '3']
@@ -55,20 +56,20 @@ arr.map(Boolean);
 // [true, false, true, true, true, true, false, true, true, false, false, false, false]
 ```
 ## Array.prototype.filter()
-```javascript
+```js
 // 移除所有的 “false” 类型元素（false, null, undefined, 0, NaN, an empty string）
 let arr = [1, 0, false, 'true', {}, null, undefined, NaN, '', , 'false'];
 arr.filter(Boolean); // [1, 'true', {}, 'false']
 ```
 ## JSON.parse()
-```javascript {1,2}
+```js {1,2}
 JSON.parse('true'); // true
 JSON.parse('false'); // false
 JSON.parse(true); // true
 JSON.parse(false); // false
 ```
 ## JSON.stringify()
-```javascript {10,11}
+```js {10,11}
 const obj = {
   a: 1,
   b: [
@@ -89,13 +90,13 @@ console.dir(obj, {
 });
 ```
 ## 模板字符串嵌套
-```javascript
+```js
 const a = 20, b = 30, c = '三', d = '日';
 const res = `今天星期${Math.random() > 0.5 ? `${c}` : `${d}`}，签到人数${Math.random() > 0.5 ? `${a}` : `${b}`}人`;
 console.log(res);
 ```
 ## 多属性字符串拼接
-```javascript
+```js
 // 借助 Object.values()
 const obj = {
   a: 'vue',
@@ -109,11 +110,11 @@ Object.values(obj).filter(Boolean).join('-');
 // 'vue-router-react-redux'
 ```
 ## 给方法传一个空参数
-```javascript
+```js
 method(...['parameter1', , 'parameter3']);
 ```
 ## 对象数组过滤出指定属性
-```javascript
+```js
 const foo = [
   {id: 1, name: '小米'},
   {id: 2, name: '小米2'},
@@ -129,7 +130,7 @@ const foo = [
 foo.map(i => i.id); // [1, 2, 5, 2, 1, 8, 10, 12, 8]
 ```
 ## 对象过滤掉指定参数
-```javascript
+```js
 const obj = {
   id: '1',
   name: 'tom',
@@ -140,11 +141,11 @@ console.log(rest); // { name: 'tom', age: 12 }
 ```
 ## 数据类型判断
 
-- [**typeof**](https://mdn.io/zh/typeof)
+- [typeof](https://mdn.io/zh/typeof)
 - [**instanceof**](https://mdn.io/zh/instanceof)
-- **Object.prototype.toString()**
+- [Object.prototype.toString()](https://mdn.io/zh/Object.prototype.toString())
   - 返回的数据格式为 [object Object] 类型，可通过这一特点进行任意类型判断。
-```javascript
+```js
 // 任意数据类型判断
 function typeJudgment(variable) {
   return Object.prototype.toString.call(variable).slice(8, -1);
@@ -164,7 +165,7 @@ typeJudgment(BigInt(1))		// 'BigInt'
 typeJudgment(Symbol(1))		// 'Symbol'
 ```
 ## async/await 异常捕获
-```javascript
+```js
 (async () => {
   // promise 返回值
   const fetchData = () => {
