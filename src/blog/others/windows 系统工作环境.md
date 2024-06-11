@@ -87,8 +87,8 @@ os.setenv('STARSHIP_CONFIG', 'C:\\Users\\<username>\\.config\\starship\\starship
 ```bash
 export ZSH=$HOME/.zsh
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-HISTSIZE=5000
 HISTFILE=$HOME/.zsh_history
+HISTSIZE=5000
 SAVEHIST=5000
 HISTDUP=erase
 setopt appendhistory
