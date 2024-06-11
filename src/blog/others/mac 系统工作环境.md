@@ -39,6 +39,7 @@ $ hyper install hyperpower
    - [zdharma-continuum/fast-syntax-highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting)
    - [zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
    - [zsh-users/zsh-completions](https://github.com/zsh-users/zsh-completions)
+   - [incr](https://mimosa-pudica.net/zsh-incremental.html)
 - zsh settings：
 
 ::: details .zshrc 配置文件
@@ -48,6 +49,7 @@ export PATH=~/.npm_global/bin:/usr/local/mysql/bin:$PATH
 
 export ZSH=$HOME/.zsh
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=5000
 SAVEHIST=5000
 HISTDUP=erase
@@ -62,6 +64,7 @@ setopt hist_find_no_dups
 # zsh plugins
 source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZSH/plugins/incr/incr.plugin.zsh
 fpath=($ZSH/plugins/zsh-completions/src $fpath)
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
