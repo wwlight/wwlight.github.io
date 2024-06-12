@@ -116,18 +116,34 @@ method(...['parameter1', , 'parameter3']);
 ## 对象数组过滤出指定属性
 ```js
 const foo = [
-  {id: 1, name: '小米'},
-  {id: 2, name: '小米2'},
-  {id: 5, name: '小东'},
-  {id: 2, name: '小米2'},
-  {id: 1, name: '小米'},
-  {id: 8, name: '小红'},
-  {id: 10, name: '小西'},
-  {id: 12, name: '小明'},
-  {id: 8, name: '小红'}
+  { id: 1 } ,
+  { id: 2 },
+  { id: 3 },
+  { id: 4 },
+  { id: 5 }
 ];
 
-foo.map(i => i.id); // [1, 2, 5, 2, 1, 8, 10, 12, 8]
+foo.map(i => i.id); // [1, 2, 3, 4, 5]
+```
+```js
+const foo = [
+  {
+    id: 1,
+    children: [
+      { id: 1 },
+      { id: 2 },
+    ]
+  },
+  {
+    id: 2,
+    children: [
+      { id: 3 },
+      { id: 4 },
+    ]
+  }
+]
+
+foo.flatMap(i => i.children.map(i => i.id)); // [1, 2, 3, 4]
 ```
 ## 对象过滤掉指定参数
 ```js

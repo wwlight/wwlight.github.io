@@ -45,8 +45,10 @@ $ hyper install hyperpower
 ::: details .zshrc 配置文件
 
 ```bash
-export PATH=~/.npm_global/bin:/usr/local/mysql/bin:$PATH
+# ~/.zshrc
+export PATH=$HOME/.npm_global/bin:/usr/local/mysql/bin:$PATH
 
+# zsh
 export ZSH=$HOME/.zsh
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 HISTFILE=$HOME/.zsh_history
@@ -104,6 +106,10 @@ precmd_functions+=(set_win_title)
 # zoxide
 eval "$(zoxide init zsh)"
 # zoxide end
+
+# fzf
+source <(fzf --zsh)
+# fzf end
 ```
 :::
 - 参考资料：[Using ZSH without OMZ](https://dev.to/hbenvenutti/using-zsh-without-omz-4gch)
