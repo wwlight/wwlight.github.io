@@ -1,0 +1,255 @@
+{
+  "buckets": [
+    {
+      "Name": "main",
+      "Source": "https://github.com/ScoopInstaller/Main",
+      "Updated": "2025-05-17T20:56:48+08:00",
+      "Manifests": 1385
+    },
+    {
+      "Name": "extras",
+      "Source": "https://github.com/ScoopInstaller/Extras",
+      "Updated": "2025-05-17T20:30:47+08:00",
+      "Manifests": 2165
+    },
+    {
+      "Name": "nerd-fonts",
+      "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
+      "Updated": "2025-05-15T16:32:36+08:00",
+      "Manifests": 367
+    }
+  ],
+  "apps": [
+    {
+      "Version": "24.09",
+      "Updated": "2025-04-29T21:36:02.5012826+08:00",
+      "Source": "main",
+      "Name": "7zip",
+      "Info": ""
+    },
+    {
+      "Version": "36.0.0",
+      "Updated": "2025-05-14T21:14:23.8308161+08:00",
+      "Source": "main",
+      "Name": "adb",
+      "Info": ""
+    },
+    {
+      "Version": "1.7.16",
+      "Updated": "2025-05-08T22:36:26.6907716+08:00",
+      "Source": "main",
+      "Name": "clink",
+      "Info": "Held package"
+    },
+    {
+      "Version": "3.14.1",
+      "Updated": "2025-04-29T21:36:07.9938812+08:00",
+      "Source": "main",
+      "Name": "dark",
+      "Info": ""
+    },
+    {
+      "Version": "3.4.0",
+      "Updated": "2025-05-06T21:10:07.7615689+08:00",
+      "Source": "nerd-fonts",
+      "Name": "FiraCode-NF",
+      "Info": ""
+    },
+    {
+      "Version": "3.4.0",
+      "Updated": "2025-05-06T21:14:33.1318257+08:00",
+      "Source": "nerd-fonts",
+      "Name": "FiraCode-NF-Mono",
+      "Info": ""
+    },
+    {
+      "Version": "1.38.1",
+      "Updated": "2025-04-29T21:36:09.8097051+08:00",
+      "Source": "main",
+      "Name": "fnm",
+      "Info": ""
+    },
+    {
+      "Version": "0.62.0",
+      "Updated": "2025-05-14T21:14:32.8356849+08:00",
+      "Source": "main",
+      "Name": "fzf",
+      "Info": ""
+    },
+    {
+      "Version": "2.72.0",
+      "Updated": "2025-05-14T21:14:40.0368427+08:00",
+      "Source": "main",
+      "Name": "gh",
+      "Info": ""
+    },
+    {
+      "Version": "2.49.0",
+      "Updated": "2025-05-06T21:48:24.7346544+08:00",
+      "Source": "main",
+      "Name": "git",
+      "Info": ""
+    },
+    {
+      "Version": "136.0.7103.114",
+      "Updated": "2025-05-17T22:28:42.7038594+08:00",
+      "Source": "extras",
+      "Name": "googlechrome",
+      "Info": ""
+    },
+    {
+      "Version": "1.18.0",
+      "Updated": "2025-04-29T21:36:19.9556476+08:00",
+      "Source": "main",
+      "Name": "gping",
+      "Info": ""
+    },
+    {
+      "Version": "2.6.0",
+      "Updated": "2025-04-29T21:36:24.7728813+08:00",
+      "Source": "main",
+      "Name": "gsudo",
+      "Info": ""
+    },
+    {
+      "Version": "3.4.1",
+      "Updated": "2024-12-24T22:19:06.4328822+08:00",
+      "Source": "extras",
+      "Name": "hyper",
+      "Info": ""
+    },
+    {
+      "Version": "2.64.4",
+      "Updated": "2025-05-14T21:15:26.707455+08:00",
+      "Source": "main",
+      "Name": "innounp",
+      "Info": ""
+    },
+    {
+      "Version": "1.0.6",
+      "Updated": "2024-05-28T21:31:18.4792984+08:00",
+      "Source": "extras",
+      "Name": "keyviz",
+      "Info": ""
+    },
+    {
+      "Version": "1.511",
+      "Updated": "2025-05-06T20:58:44.7306861+08:00",
+      "Source": "nerd-fonts",
+      "Name": "LXGWWenKaiMono",
+      "Info": ""
+    },
+    {
+      "Version": "1.7.3",
+      "Updated": "2025-04-29T21:35:25.6158778+08:00",
+      "Source": "extras",
+      "Name": "mihomo-party",
+      "Info": ""
+    },
+    {
+      "Version": "1.27.5",
+      "Updated": "2025-04-29T21:36:29.7146474+08:00",
+      "Source": "main",
+      "Name": "nginx",
+      "Info": ""
+    },
+    {
+      "Version": "3.22.1",
+      "Updated": "2025-04-19T18:41:46.4478529+08:00",
+      "Source": "main",
+      "Name": "ngrok",
+      "Info": ""
+    },
+    {
+      "Version": "1.8.10",
+      "Updated": "2025-04-29T22:06:54.5346596+08:00",
+      "Source": "extras",
+      "Name": "obsidian",
+      "Info": ""
+    },
+    {
+      "Version": "2.24.0",
+      "Updated": "2025-04-29T21:36:32.2790938+08:00",
+      "Source": "extras",
+      "Name": "onefetch",
+      "Info": ""
+    },
+    {
+      "Version": "250514",
+      "Updated": "2025-05-14T21:16:17.3761727+08:00",
+      "Source": "extras",
+      "Name": "potplayer",
+      "Info": ""
+    },
+    {
+      "Version": "0.91.0",
+      "Updated": "2025-05-17T22:34:18.6044552+08:00",
+      "Source": "extras",
+      "Name": "powertoys",
+      "Info": ""
+    },
+    {
+      "Version": "3.1.1",
+      "Updated": "2025-05-08T21:32:51.1118093+08:00",
+      "Source": "main",
+      "Name": "pyenv",
+      "Info": ""
+    },
+    {
+      "Version": "1.23.0",
+      "Updated": "2025-04-29T21:38:51.8768135+08:00",
+      "Source": "main",
+      "Name": "starship",
+      "Info": ""
+    },
+    {
+      "Version": "4.2.0.6119",
+      "Updated": "2024-12-24T22:23:16.0817062+08:00",
+      "Source": "extras",
+      "Name": "switchhosts",
+      "Info": ""
+    },
+    {
+      "Version": "1.11.1",
+      "Updated": "2025-05-09T21:27:50.7685627+08:00",
+      "Source": "main",
+      "Name": "tlrc",
+      "Info": ""
+    },
+    {
+      "Version": "0.7.5",
+      "Updated": "2025-05-17T22:34:35.4970895+08:00",
+      "Source": "main",
+      "Name": "uv",
+      "Info": ""
+    },
+    {
+      "Version": "1.100.2",
+      "Updated": "2025-05-17T22:36:08.7225016+08:00",
+      "Source": "extras",
+      "Name": "vscode",
+      "Info": ""
+    },
+    {
+      "Version": "2025.1.1-251.25410.117",
+      "Updated": "2025-05-14T21:25:01.9557513+08:00",
+      "Source": "extras",
+      "Name": "webstorm",
+      "Info": ""
+    },
+    {
+      "Version": "4.0.5.13",
+      "Updated": "2025-05-17T22:37:53.234378+08:00",
+      "Source": "extras",
+      "Name": "wechat",
+      "Info": ""
+    },
+    {
+      "Version": "0.9.7",
+      "Updated": "2025-04-29T21:43:54.932705+08:00",
+      "Source": "main",
+      "Name": "zoxide",
+      "Info": ""
+    }
+  ]
+}
