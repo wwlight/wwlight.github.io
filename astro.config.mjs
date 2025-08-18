@@ -3,9 +3,8 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://astro.build/config
 export default defineConfig({
-	site: 'https://wwlight.github.io',
+	devToolbar: { enabled: false },
 	integrations: [
 		starlight({
 			title: 'wwlight',
@@ -22,8 +21,13 @@ export default defineConfig({
 				'./src/styles/custom.css',
 				'./src/styles/global.css',
 			],
+			sidebar: [
+				{ slug: 'bookmarks', badge: 'TODO' },
+				{ label: '备忘录', autogenerate: { directory: 'memorandum' } },
+			]
 		}),
 	],
+	site: 'https://wwlight.github.io',
 	vite: {
 		plugins: [tailwindcss()],
 	},
