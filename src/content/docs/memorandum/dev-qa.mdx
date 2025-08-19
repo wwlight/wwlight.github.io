@@ -1,168 +1,138 @@
 ---
 title: 开发问题记录
 ---
-import { Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components'
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## 电脑 SSH 配置管理多个 Git 仓库
 
-### 为账户生成独立的 SSH 密钥
-
-```sh
-ssh-keygen -t rsa -b 4096 -C "personal@email.com" -f ~/.ssh/id_rsa_github
-```
-
-- `-t rsa`：指定密钥类型为 RSA
-- `-b 4096`：指定密钥长度为 4096 位（更安全）
-- `-C`：添加注释（通常用邮箱标识）
-- `-f`：指定密钥文件保存路径
-
-```sh
-ssh-keygen -t ed25519 -C "personal@email.com" -f ~/.ssh/id_ed25519_github
-```
-
-- `-t ed25519`：指定密钥类型为 Ed25519（椭圆曲线算法）
-- 更安全（抗量子计算攻击）
-- 密钥更短但安全性相当（256 位 vs RSA 4096 位）
-- 生成更快，签名验证更快
-
-### 配置 config 文件
-
-> 本地调用私钥时默认使用 id_rsa，针对于自定义名称的，需要编写 config 文件，告诉本地调用哪个私钥。
-
-```sh
-nano ~/.ssh/config
-```
-
-```md
-# config 文件内容
-
-Host github.com
-	HostName github.com
-	User git
-	IdentityFile ~/.ssh/id_rsa_github
-	IdentitiesOnly yes
-
-Host github.com
-	HostName github.com
-	User git
-	IdentityFile ~/.ssh/id_ed25519_github
-	IdentitiesOnly yes
-```
-
-### 添加公钥到各平台
-
-```sh
-cat ~/.ssh/id_ed25519_github.pub
-```
-
-- 将对应的.pub 文件内容添加到：
-	- GitHub: Settings → SSH and GPG keys
-	- GitLab: Preferences → SSH Keys
-	- Gitee: 设置 → SSH 公钥
-
-### 测试 SSH 连接
-
-```sh
-ssh -T git@github.com
-```
-
-## 本地调试 npm 模块
-
-:::tip[说明]
-- 在组件依赖开发中，项目作为依赖库没法独自间接运行，须要依赖进别的方式执行，这时候最常用的形式就是 npm link。但用 npm link 引入的依赖因为资源文件不在我的项目下，webpack 不会对其做预编译，导致构建或者运行时会报错。对于这样的状况，可以考虑一个很适宜的解决方案 —— [yalc](https://github.com/wclr/yalc)。
-- [关于前端:更适用的前端 link 工具-yalc](https://lequ7.com/guan-yu-qian-duan-geng-shi-yong-de-qian-duan-link-gong-ju-yalc.html)
-:::
-
 <Steps>
-1. 本地 link 模块
-    - 模块 package.json 添加个人信息，开启编辑权限
-    - 模块打包和运行
+1. 为账户生成独立的 `SSH` 密钥
+
+    <Tabs>
+        <TabItem label="ed25519">
+            ```sh
+            ssh-keygen -t ed25519 -C "personal@email.com" -f ~/.ssh/id_ed25519_github
+            ```
+
+            - `-t ed25519`：指定密钥类型为 `Ed25519（椭圆曲线算法）`
+            - 更安全（抗量子计算攻击）
+            - 密钥更短但安全性相当（256 位 vs RSA 4096 位）
+            - 生成更快，签名验证更快
+        </TabItem>
+        <TabItem label="rsa">
+            ```sh
+            ssh-keygen -t rsa -b 4096 -C "personal@email.com" -f ~/.ssh/id_rsa_github
+            ```
+
+            - `-t rsa`：指定密钥类型为 `RSA`
+            - `-b 4096`：指定密钥长度为 4096 位（更安全）
+            - `-C`：添加注释（通常用邮箱标识）
+            - `-f`：指定密钥文件保存路径
+        </TabItem>
+    </Tabs>
+
+2. 配置 `config` 文件
+
+    > 本地调用私钥时默认使用 id_rsa，针对于自定义名称的，需要编写 config 文件，告诉本地调用哪个私钥。
 
     ```sh
-    $ npm run build                    # 打包
-    # 模块（线上组件）运行
-    $ npm run lib
-    $ npm run lib:hot                  # 热更新
-
-    # 相关命令配置
-    "lib": "rm -rf lib && babel src -d lib --copy-files",
-    "lib:hot": "babel src -d lib --copy-files --watch",
+    nano ~/.ssh/config
     ```
 
-    - link 模块
+    <Tabs>
+        <TabItem label="ed25519">
+            ```md
+            # config 文件内容
+
+            Host github.com
+                HostName github.com
+                User git
+                IdentityFile ~/.ssh/id_ed25519_github
+                IdentitiesOnly yes
+            ```
+        </TabItem>
+        <TabItem label="rsa">
+            ```md
+            # config 文件内容
+
+            Host github.com
+                HostName github.com
+                User git
+                IdentityFile ~/.ssh/id_rsa_github
+                IdentitiesOnly yes
+            ```
+        </TabItem>
+    </Tabs>
+
+3. 添加公钥到各平台
 
     ```sh
-    # 项目和模块相同目录 或者 模块文件名和模块名一致的情况
-    $ npm link <本地模块绝对路径>         # 链接模块目录
-
-    # 项目和模块不在同一个目录下，需要先把模块链接到全局，然后再在项目中链接模块
-    $ cd <模块目录>                      # 先去到模块目录，把它链接到全局
-    $ npm link
-
-    $ cd <项目目录>                      # 再去项目目录
-    $ npm link <module-name>            # 通过包名建立链接
+    cat ~/.ssh/id_ed25519_github.pub
     ```
 
-    - 解除链接
+    - 将对应的 `.pub` 文件内容添加到：
+    <Tabs>
+        <TabItem label="GitHub">
+            ```txt
+            Settings → SSH and GPG keys
+            ```
+        </TabItem>
+        <TabItem label="GitLab">
+            ```txt
+            Preferences → SSH Keys
+            ```
+        </TabItem>
+    </Tabs>
+
+4. 测试 SSH 连接
 
     ```sh
-    # 解除项目和模块的链接
-    $ cd <项目目录>
-    $ npm unlink <module-name>
-
-    # 解除模块的全局链接
-    $ cd <模块目录>
-    $ npm unlink <module-name>
-    # unlink 后会删除 package.json 里面包依赖信息，需重新下载最新指定版本的包
-    ```
-2. 进行本地开发调试
-3. 打包发布 npm 包
-    - 打包前修改 package.json 里面的版本号
-
-    ```sh
-    $ npm run build                       # 打包
-    $ npm publish --tag=beta              # 测试版
-    $ npm publish                         # 正式版
-
-    # 如有需要
-    $ npm add user
-    $ npm login
+    ssh -T git@github.com
     ```
 </Steps>
 
-> 可参考：[NPM-的 adduser - 腾讯云](https://cloud.tencent.com/developer/section/1490273)、[本地调试 npm 模块 —— npm link](https://www.jianshu.com/p/82076fc481a6)
-
-
-## ping 和 telnet 分别是什么作用
+## ping 和 telnet 对比
 
 :::danger[注意]
 出于安全考虑，现在很多服务器都会禁用 telnet，转而使用更安全的 SSH 协议。而 ping 则因为是基础的网络诊断工具，使用仍然很普遍。
 :::
 
-- $ ping 的主要作用：
-	1. 测试网络连接是否正常 - 通过发送 ICMP 数据包到目标主机并等待响应
-	2. 测量网络延迟 - 可以看到数据包往返时间 (RTT)
-	3. 检测主机是否在线 - 如果能收到响应，说明目标主机处于运行状态
-	4. 排查网络故障 - 可以帮助定位网络中断或延迟的位置
-- $ telnet 的主要作用：
-	1. 远程登录 - 可以远程连接到其他计算机并进行操作
-	2. 测试端口连通性 - 可以用来测试特定端口是否开放
-	3. 调试网络服务 - 可以直接与运行在特定端口上的服务进行交互
-	4. 排查应用层协议问题 - 因为可以直接发送原始命令，所以适合调试像 HTTP、SMTP 等协议
+<Tabs>
+    <TabItem label="ping">
+        ```txt
+        1. 测试网络连接是否正常 - 通过发送 ICMP 数据包到目标主机并等待响应
+        2. 测量网络延迟 - 可以看到数据包往返时间 (RTT)
+        3. 检测主机是否在线 - 如果能收到响应，说明目标主机处于运行状态
+        4. 排查网络故障 - 可以帮助定位网络中断或延迟的位置
+        ```
 
-```sh
-$ ping google.com
+        ```sh
+        ping baidu.com
+        ```
+    </TabItem>
+    <TabItem label="telnet">
+        ```txt
+        1. 远程登录 - 可以远程连接到其他计算机并进行操作
+        2. 测试端口连通性 - 可以用来测试特定端口是否开放
+        3. 调试网络服务 - 可以直接与运行在特定端口上的服务进行交互
+        4. 排查应用层协议问题 - 因为可以直接发送原始命令，所以适合调试像 HTTP、SMTP 等协议
+        ```
 
-$ brew install telnet
-$ telnet example.com 80
-```
+        ```sh
+        brew install telnet
+        telnet baidu.com 80
+        ```
+    </TabItem>
+</Tabs>
+
 
 ## cmd 下提示 "系统提示找不到路径"
 
 - 首先 win + R 打开运行，输入 regedit 命令，打开注册表
 - 找到计算机\HKEY_CURRENT_USER\Software\Microsoft\Command Processor 路径下 Autorun 注册表项，删除即可。
 
-## 隐藏 powershell/cmd 启动时的提示信息
+## 隐藏 powershell/cmd 启动提示信息
 
 - 在 powershell 目标路径后追加 -nologo
 - 在 cmd 目标路径后追加 -nologo /k
