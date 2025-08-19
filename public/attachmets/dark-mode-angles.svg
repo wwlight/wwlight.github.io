@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#1a1a1a"/>
+  <!-- CSS 渐变角度圆 -->
+  <g transform="translate(200,200)">
+    <!-- 背景圆 -->
+    <circle cx="0" cy="0" r="150" fill="none" stroke="#444444" stroke-width="2"/>
+    <!-- 中心点 -->
+    <circle cx="0" cy="0" r="4" fill="#999999"/>
+    <!-- 角度线 -->
+    <line x1="0" y1="0" x2="0" y2="-150" stroke="#FF6B6B" stroke-width="3"/>
+    <line x1="0" y1="0" x2="150" y2="0" stroke="#4ECDC4" stroke-width="3"/>
+    <line x1="0" y1="0" x2="0" y2="150" stroke="#45B7D1" stroke-width="3"/>
+    <line x1="0" y1="0" x2="-150" y2="0" stroke="#96CEB4" stroke-width="3"/>
+    <!-- 角度标注 -->
+    <text x="10" y="-130" fill="#ffffff" font-size="16">0°</text>
+    <text x="120" y="-10" fill="#ffffff" font-size="16">90°</text>
+    <text x="10" y="140" fill="#ffffff" font-size="16">180°</text>
+    <text x="-140" y="-10" fill="#ffffff" font-size="16">270°</text>
+    <!-- 标题 -->
+    <text x="-60" y="-170" fill="#ffffff" font-size="20">CSS 渐变角度</text>
+  </g>
+  
+  <!-- 数学角度圆 -->
+  <g transform="translate(600,200)">
+    <!-- 背景圆 -->
+    <circle cx="0" cy="0" r="150" fill="none" stroke="#444444" stroke-width="2"/>
+    <!-- 中心点 -->
+    <circle cx="0" cy="0" r="4" fill="#999999"/>
+    <!-- 角度线 -->
+    <line x1="0" y1="0" x2="150" y2="0" stroke="#FF6B6B" stroke-width="3"/>
+    <line x1="0" y1="0" x2="0" y2="-150" stroke="#4ECDC4" stroke-width="3"/>
+    <line x1="0" y1="0" x2="-150" y2="0" stroke="#45B7D1" stroke-width="3"/>
+    <line x1="0" y1="0" x2="0" y2="150" stroke="#96CEB4" stroke-width="3"/>
+    <!-- 角度标注 -->
+    <text x="120" y="-10" fill="#ffffff" font-size="16">0°</text>
+    <text x="10" y="-130" fill="#ffffff" font-size="16">90°</text>
+    <text x="-140" y="-10" fill="#ffffff" font-size="16">180°</text>
+    <text x="10" y="140" fill="#ffffff" font-size="16">270°</text>
+    <!-- 标题 -->
+    <text x="-60" y="-170" fill="#ffffff" font-size="20">数学角度</text>
+  </g>
+  
+  <!-- 旋转方向箭头 -->
+  <path d="M150,120 A80,80 0 0,1 250,120" fill="none" stroke="#999999" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M550,120 A80,80 0 0,0 650,120" fill="none" stroke="#999999" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- 箭头标记定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+    refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#999999"/>
+    </marker>
+  </defs>
+</svg>

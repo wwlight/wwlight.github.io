@@ -4,7 +4,17 @@ import starlight from '@astrojs/starlight'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+	site: 'https://wwlight.github.io',
 	devToolbar: { enabled: false },
+	markdown: {
+		shikiConfig: {
+			themes: {
+				light: 'github-light',
+				dark: 'github-dark',
+			},
+			wrap: true,
+		},
+	},
 	integrations: [
 		starlight({
 			title: 'wwlight',
@@ -24,10 +34,10 @@ export default defineConfig({
 			sidebar: [
 				{ slug: 'bookmarks', badge: 'TODO' },
 				{ label: '备忘录', autogenerate: { directory: 'memorandum' } },
+				{ label: '工具集', autogenerate: { directory: 'tools' } },
 			]
 		}),
 	],
-	site: 'https://wwlight.github.io',
 	vite: {
 		plugins: [tailwindcss()],
 	},
