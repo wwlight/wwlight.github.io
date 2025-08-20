@@ -1,0 +1,137 @@
+---
+title: '常用工具命令'
+---
+
+## npm 常用命令
+
+### 系统信息
+
+```bash
+$ npm help                            # 显示帮助信息
+$ npm help <cmd>                      # 显示指定命令的帮助信息
+$ npm -v                              # 显示 npm 版本
+$ npm version                         # 显示所有相关版本信息
+$ npm config list/ls                  # 查看配置信息
+$ npm config ls -l                    # 查看所有配置信息
+$ npm config set registry <URL>       # 设置镜像源
+
+$ npm doctor                          # 环境检查
+$ npm prefix                          # 显示 npm 前缀
+$ npm root                            # 显示 npm 包的根目录
+```
+
+### 包管理
+
+```bash
+$ npm install <pkg>                   # 本地安装
+$ npm i <pkg>                         # install 的简写
+$ npm install <pkg>@<version>         # 安装指定版本
+$ npm install <pkg>@latest            # 安装最新版本
+$ npm install --save/-S <pkg>         # 安装并添加到 dependencies
+$ npm install --save-dev/-D <pkg>     # 安装并添加到 devDependencies
+$ npm install --global/-g <pkg>       # 全局安装
+
+$ npm uninstall <pkg>                 # 卸载包
+$ npm uninstall --save/-S <pkg>       # 卸载并从 dependencies 移除
+$ npm uninstall --save-dev/-D <pkg>   # 卸载并从 devDependencies 移除
+$ npm uninstall --global/-g <pkg>     # 卸载全局包
+
+$ npm update <pkg>                    # 更新指定包
+$ npm update                          # 更新所有包
+```
+
+### 项目相关
+
+```bash
+$ npm init                            # 初始化新项目，创建 package.json
+$ npm init --yes/-y                   # 快速初始化，使用默认配置
+$ npm run <script-name>               # 运行 package.json 中定义的脚本
+```
+
+### 查看信息
+
+```bash
+$ npm list                            # 列出已安装的包
+$ npm list <pkg>                      # 检查依赖包来源
+$ npm list --depth=0                  # 列出顶层包
+$ npm list --global/-g                # 列出全局安装的包
+$ npm view/info <pkg>                 # 查看包信息
+$ npm view/info <pkg> version         # 查看包的最新版本
+$ npm view/info <pkg> versions        # 查看包的所有版本
+$ npm search <pkg>                    # 搜索包
+
+$ npm home <pkg>                      # 打开主页 npm home vue
+$ npm repo <pkg>                      # 打开代码仓库 npm repo vue
+```
+
+### 配置操作
+
+```bash
+$ npm config set <key> <value>        # 设置配置
+$ npm config get <key>                # 获取配置
+$ npm config delete <key>             # 删除配置
+
+$ npm cache verify                    # 清除损坏的缓存
+$ npm cache clean -f                  # 清除所有的缓存
+```
+
+### 发布管理
+
+```bash
+$ npm adduser                         # 添加用户
+$ npm login                           # 登录
+$ npm logout                          # 登出
+$ npm whoami                          # 显示当前用户
+
+$ npm publish                         # 发布包
+$ npm unpublish <pkg>                 # 取消发布
+$ npm deprecate <pkg>                 # 废弃包
+```
+
+### 依赖检查
+
+```bash
+$ npm outdated                        # 检查过时的包
+$ npm audit                           # 检查安全漏洞
+$ npm audit fix                       # 修复安全漏洞
+
+$ npm shrinkwrap                      # 锁定依赖版本
+$ npm prune                           # 移除不需要的包
+```
+
+## tldr
+
+> 控制台命令速查表 tldr-pages
+
+```bash
+# 获取配置文件路径
+$ tldr --config-path
+
+# 写入默认配置文件
+$ tldr --gen-config > "$(tldr --config-path)"
+
+# 查看本地语言列表
+$ tldr --list-languages
+
+# 清除所有缓存
+$ tldr --clean-cache
+```
+
+## [fnm](https://github.com/Schniz/fnm)
+
+> 快速简单的 Node 版本管理器
+
+```bash
+$ fnm ls
+$ fnm ls-remote
+$ fnm ls-remote | grep v20
+$ fnm install --lts
+$ fnm install --latest
+$ fnm install 16.14.2
+$ fnm install 14.16.0
+$ fnm default X
+$ fnm use X
+
+# 项目写入 node 版本
+$ node --version > .node-version
+```

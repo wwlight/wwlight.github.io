@@ -1,17 +1,19 @@
 ---
 title: 开发问题记录
+sidebar:
+    order: 1
 ---
-import { Steps } from '@astrojs/starlight/components'
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
 
 ## 电脑 SSH 配置管理多个 Git 仓库
 
 <Steps>
 1. 为账户生成独立的 `SSH` 密钥
 
-    <Tabs>
+    <Tabs syncKey="pkg">
         <TabItem label="ed25519">
-            ```sh
+            ```sh del="personal@email.com"
             ssh-keygen -t ed25519 -C "personal@email.com" -f ~/.ssh/id_ed25519_github
             ```
 
@@ -21,7 +23,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
             - 生成更快，签名验证更快
         </TabItem>
         <TabItem label="rsa">
-            ```sh
+            ```sh del="personal@email.com"
             ssh-keygen -t rsa -b 4096 -C "personal@email.com" -f ~/.ssh/id_rsa_github
             ```
 
@@ -40,11 +42,9 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     nano ~/.ssh/config
     ```
 
-    <Tabs>
+    <Tabs syncKey="pkg">
         <TabItem label="ed25519">
-            ```md
-            # config 文件内容
-
+            ```md title="~/.ssh/config"
             Host github.com
                 HostName github.com
                 User git
@@ -53,9 +53,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
             ```
         </TabItem>
         <TabItem label="rsa">
-            ```md
-            # config 文件内容
-
+            ```md title="~/.ssh/config"
             Host github.com
                 HostName github.com
                 User git
@@ -71,7 +69,6 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     cat ~/.ssh/id_ed25519_github.pub
     ```
 
-    - 将对应的 `.pub` 文件内容添加到：
     <Tabs>
         <TabItem label="GitHub">
             ```txt
@@ -129,10 +126,10 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## cmd 下提示 "系统提示找不到路径"
 
-- 首先 win + R 打开运行，输入 regedit 命令，打开注册表
-- 找到计算机\HKEY_CURRENT_USER\Software\Microsoft\Command Processor 路径下 Autorun 注册表项，删除即可。
+- 首先 `win + R` 打开运行，输入 `regedit` 命令，打开注册表
+- 找到 `计算机\HKEY_CURRENT_USER\Software\Microsoft\Command Processor` 路径下 `Autorun` 注册表项，删除即可。
 
 ## 隐藏 powershell/cmd 启动提示信息
 
-- 在 powershell 目标路径后追加 -nologo
-- 在 cmd 目标路径后追加 -nologo /k
+- 在 powershell 目标路径后追加 `-nologo`
+- 在 cmd 目标路径后追加 `-nologo /k`

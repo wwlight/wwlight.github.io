@@ -461,10 +461,9 @@ for (const i in obj) {
 
 ## 数值数组去重
 
-```ad-warning
-title: 注意
+:::danger[注意]
 `Set()` 的成员值都是唯一的，可以过滤重复的 `Number`、`String`、`Boolean`、`undefined`、`null`、`NaN`， 无法过滤重复的 `Object`。
-```
+:::
 
 ```js
 const arr = [1, 2, 5, 3, 3, 1, 4, 9, 7, 1, 5]
@@ -579,9 +578,9 @@ objArr.uniqueArr('id')
 
 ## 数组扁平化
 
-```tip 提示
+:::tip[提示]
 `Array.prototype.join()` 和 `Array.prototype.toString()` 都可以将多维数组转成普通字符串。
-```
+:::
 
 ```js
 const arr = [1, [2, 3], [4, 5]]
