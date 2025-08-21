@@ -6,14 +6,14 @@ sidebar:
 
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
 
-## 电脑 SSH 配置管理多个 Git 仓库
+## 电脑 SSH 配置管理多个远程仓库
 
 <Steps>
 1. 为账户生成独立的 `SSH` 密钥
 
     <Tabs syncKey="pkg">
         <TabItem label="ed25519">
-            ```sh del="personal@email.com"
+            ```sh del="personal@email.com" ins="id_ed25519_github"
             ssh-keygen -t ed25519 -C "personal@email.com" -f ~/.ssh/id_ed25519_github
             ```
 
@@ -23,7 +23,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
             - 生成更快，签名验证更快
         </TabItem>
         <TabItem label="rsa">
-            ```sh del="personal@email.com"
+            ```sh del="personal@email.com" ins="id_rsa_github"
             ssh-keygen -t rsa -b 4096 -C "personal@email.com" -f ~/.ssh/id_rsa_github
             ```
 
@@ -131,5 +131,5 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
 
 ## 隐藏 powershell/cmd 启动提示信息
 
-- 在 powershell 目标路径后追加 `-nologo`
-- 在 cmd 目标路径后追加 `-nologo /k`
+- 在 `powershell` 目标路径后追加 `-nologo`
+- 在 `cmd` 目标路径后追加 `-nologo /k`

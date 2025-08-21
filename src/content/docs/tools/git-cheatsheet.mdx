@@ -9,13 +9,12 @@ sidebar:
 - [常用 Git 命令清单 - 阮一峰](http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
 - [Git 的奇技淫巧 - GitHub](https://github.com/521xueweihan/git-tips)
 - [Git 常用命令参考手册 - GitHub](https://github.com/xjh22222228/git-manual)
-- [Git 常用操作总结](https://lhammer.cn/2018/05/12/git-hot-key)
-- [Git 中文速查表 - ZDZN 文档教程](https://doc.zdzn.net/cheatsheet/git.html)
 - [Learn Git Branching - 在线练习](https://learngitbranching.js.org/?locale=zh_CN)
 - [Git飞行规则(Flight Rules)](https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md)
 :::
 
 :::note[其他资料]
+- [git-extras](https://github.com/tj/git-extras) | [安装脚本：git-extras-install.sh](https://github.com/wwlight/use/blob/main/scripts/windows/git-extras-install.sh)
 - [约定式提交官网](https://www.conventionalcommits.org/zh-hans/)
 - [git commit 提交类型列表 - GitHub](https://github.com/pvdlg/conventional-changelog-metahub#commit-types)
 - [标准版本](https://github.com/conventional-changelog/standard-version)
@@ -77,33 +76,32 @@ $ git init
 $ git init --bare
 
 # 新建一个目录并初始化
-$ git init <project-name>
+$ git init [project-name]
 ```
 
 ## 克隆项目
 
 ```shell {2,5}
 # 下载远程项目
-$ git clone <url>
+$ git clone [url]
 
 # 下载远程项目并改名
-$ git clone <url> <rename>
+$ git clone [url] [rename]
 
 # 克隆指定分支并切换到 gh-pages 分支上
-$ git clone -b gh-pages <url>
+$ git clone -b gh-pages [url]
 ```
 
 ## 管理仓库
 
 :::tip[说明]
 - `git remote` 命令用来管理远程仓库。
-- 通常一个项目对应多个仓库就需要用到比如要推送到 `GitHub`/`Gitee`/`GitLab`，就可以用`git remote` 来管理多个仓库地址。
-- `origin` 是仓库默认名字。
+- 一个项目对应多个仓库，可以用 `git remote` 来管理多个仓库地址，`origin` 是仓库默认名字。
 :::
 
-```shell {6,10}
+```shell {3,6,10}
 # 查看当前项目远程仓库名称
-# （一般打印 origin，这是仓库默认名字，除非有多个远程仓库地址。）
+# （一般打印 origin，这是仓库默认名字，除非有多个远程仓库地址）
 $ git remote
 
 # 查看当前项目远程仓库地址
@@ -111,25 +109,25 @@ $ git remote -v
 $ git remote -vv
 
 # 自定义远程仓库名称（example 是自定义名字）
-$ git remote add <example> <url>
+$ git remote add [example] [url]
 
 # 刷新本地仓库和远程仓库分支
 $ git remote prune origin
 
 # 查看指定远程仓库信息
-$ git remote show <example>
+$ git remote show [example]
 
 # 重命名远程仓库
-$ git remote rename <oldName> <newName>
+$ git remote rename [oldName] [newName]
 
 # 移除远程仓库
-$ git remote remove <example>
+$ git remote remove [example]
 
 # 修改远程仓库地址，从HTTPS更改为SSH
-$ git remote set-url origin <url>
+$ git remote set-url origin [url]
 
 # 推送指定仓库
-$ git push <example>
+$ git push [example]
 ```
 
 ## 暂存文件
@@ -182,7 +180,7 @@ $ git push -u origin main
 $ git push --set-upstream origin main
 
 # 本地分支推送到远端分支， 本地分支:远端分支
-$ git push origin <branch-name>:<branch-name>
+$ git push origin [branch-name]:[branch-name]
 
 # 强制推送, --force 缩写
 $ git push -f origin main
@@ -214,7 +212,7 @@ $ git branch --help
 
 ```shell {2,5,11}
 # 切换到指定分支
-$ git checkout <branch-name>
+$ git checkout [branch-name]
 
 # 切换上一个分支
 $ git checkout -
@@ -223,10 +221,10 @@ $ git checkout -
 $ git checkout -f main
 
 # 创建分支并切换
-$ git checkout -b <branch-name>
+$ git checkout -b [branch-name]
 
 # 强制创建分支（不切换分支）
-$ git checkout -B <branch-name>
+$ git checkout -B [branch-name]
 
 # 切换远程分支（如果用了 git remote 添加一个新仓库就需要用 -t 进行切换）
 $ git checkout -t upstream/main
@@ -235,13 +233,13 @@ $ git checkout -t upstream/main
 ## 切换分支二
 
 :::tip[说明]
-- git switch 命令在 git 版本 2.23 引入, 用于切换分支。
-- git checkout 同样可以切换分支, git switch 意义在哪里？因为 git checkout 不但可以切换分支还可以撤销工作，导致命令含糊不清，所以引入了 git switch。
+- `git switch` 命令在 git 版本 2.23 引入，用于切换分支。
+- `git switch` 相较于 `git checkout` 意义：`git checkout` 可以切换分支还可以撤销工作，导致命令含糊不清，所以引入了 `git switch`。
 :::
 
 ```shell {2,5,11}
 # 切换到指定分支
-$ git switch <branch-name>
+$ git switch [branch-name]
 
 # 切换到上一个分支
 $ git switch -
@@ -250,10 +248,10 @@ $ git switch -
 $ git switch -f main
 
 # 创建分支并切换
-$ git switch -c <branch-name>
+$ git switch -c [branch-name]
 
 # 强制创建分支（不切换分支）
-$ git switch -C <branch-name>
+$ git switch -C [branch-name]
 
 # 切换远程分支（如果用了 git remote 添加一个新仓库就需要用 -t 进行切换）
 $ git switch -t upstream/main
@@ -263,22 +261,22 @@ $ git switch -t upstream/main
 
 ```shell {2,8,14}
 # 创建分支
-$ git branch <branch-name>
+$ git branch [branch-name]
 
 # 强制创建分支（不输出任何警告或信息）
-$ git branch -f <branch-name>
+$ git branch -f [branch-name]
 
 # 创建分支并切换
-$ git checkout -b <branch-name>
+$ git checkout -b [branch-name]
 
 # 强制创建分支（不切换分支）
-$ git checkout -B <branch-name>
+$ git checkout -B [branch-name]
 
 # 创建分支并切换
-$ git switch -c <branch-name>
+$ git switch -c [branch-name]
 
 # 强制创建分支（不切换分支）
-$ git switch -C <branch-name>
+$ git switch -C [branch-name]
 ```
 
 ## 检出远程分支
@@ -288,18 +286,18 @@ $ git switch -C <branch-name>
 $ git fetch
 
 # 检出远程指定分支
-$ git fetch origin :<branch-name>
+$ git fetch origin :[branch-name]
 # 等价于
-$ git fetch origin master:<branch-name>
+$ git fetch origin main:[branch-name]
 
 # 拉取远程分支并创建本地分支
 # 方式一：（建立的本地分支会和远程分支建立映射关系，自动切换分支）
-$ git checkout -b <branch-name> origin/<branch-name>
+$ git checkout -b [branch-name] origin/[branch-name]
 
 # 方式二：（建立的本地建立分支不会和远程分支建立映射关系）
-$ git fetch origin <branch-name>:<branch-name>
+$ git fetch origin [branch-name]:[branch-name]
 # 推送需注意
-$ git branch --set-upstream-to=<branch-name> origin/<branch-name>
+$ git branch --set-upstream-to=[branch-name] origin/[branch-name]
 
 # 抛弃本地所有的修改，回到远程仓库的状态
 $ git reset --hard origin/main
@@ -312,35 +310,35 @@ $ git pull --rebase
 
 ```shell {2,5,10,11}
 # 删除指定分支
-$ git branch -d <branch-name>
+$ git branch -d [branch-name]
 
 # 强制删除未完全合并的分支
-$ git branch -D <branch-name>
+$ git branch -D [branch-name]
 # 等价于
-$ git branch --delete --force <branch-name>
+$ git branch --delete --force [branch-name]
 
 # 删除远程分支
-$ git push origin :<branch-name>
-$ git push origin --delete <branch-name>
+$ git push origin :[branch-name]
+$ git push origin --delete [branch-name]
 ```
 
 ## 重命名分支
 
 ```shell {2}
 # 修改分支名称
-$ git branch -m <branch-name>
+$ git branch -m [branch-name]
 
 # 强制修改分支名称
-$ git branch -M <branch-name>
+$ git branch -M [branch-name]
 
 # 删除远程旧分支
-$ git push origin :<old-branch>
+$ git push origin :[old-branch]
 
 # 将重命名分支推送到远程
-$ git push -u origin <new-branch>
+$ git push -u origin [new-branch]
 
 # 重命名指定分支
-$ git branch -m <old-branch> <new-branch>
+$ git branch -m [old-branch] [new-branch]
 ```
 
 ## 打标签
@@ -355,22 +353,22 @@ $ git tag --list
 $ git ls-remot --tags origin
 
 # 创建一个新的标签在当前的 HEAD 上
-$ git tag <tagname>
+$ git tag [tagname]
 
 # 创建一个带注释的标签
-$ git tag -a <tagname> -m "tag message"
+$ git tag -a [tagname] -m "tag message"
 
 # 推送标签
-$ git push origin <tagname>
+$ git push origin [tagname]
 $ git push [origin] --tags
 
 # 删除一个标签
-$ git tag -d <tagname>
-$ git push origin :refs/tags/<tagname>
+$ git tag -d [tagname]
+$ git push origin :refs/tags/[tagname]
 
 # 查看标签
-$ git show <tagname>
-$ git show <remote>/<tagname>
+$ git show [tagname]
+$ git show [remote]/[tagname]
 ```
 
 ## 临时保存
@@ -427,20 +425,20 @@ $ git status --ignored
 ## 查看日志
 
 :::tip[说明]
-- 查看历史日志可以通过 `git log`/`git shortlog`/`git reflog`。
+- 查看历史日志可以通过 `git log` / `git shortlog` / `git reflog`
 :::
 
 ```shell {2}
 # 查看完整历史提交记录
 $ git log
 
-# 查看前N次提交记录 commit message
+# 查看前 N 次提交记录 commit message
 $ git log -2
 
-# 查看前N次提交记录，包括diff
+# 查看前 N 次提交记录，包括 diff
 $ git log -p -2
 
-# 从 commit 进行搜索, 可以指定 -i 忽略大小写
+# 从 commit 进行搜索，可以指定 -i 忽略大小写
 $ git log -i --grep="fix: #28"
 
 # 从工作目录搜索包含 alert(1) 这段代码何时引入
@@ -455,7 +453,7 @@ $ git log README.md
 # 只显示合并日志
 $ git log --merges
 
-# 以图形查看日志记录, --oneline --all 可选
+# 以图形查看日志记录，--oneline --all 可选
 $ git log --graph --oneline --all
 
 # 以倒序查看历史记录
@@ -481,7 +479,7 @@ $ git shortlog -e
 > git reflog 通常被引用为安全网，当 git log 没有想要的信息时可以尝试用 git reflog。
 
 ```shell
-# 当回滚某个版本时记录是不保存在 git log 中，想要找到这条回滚版本信息时 git reflog 就用上了。
+# 当回滚某个版本时记录是不保存在 git log 中，想要找到这条回滚版本信息时 git reflog 就用上了
 $ git reflog
 # 等价于
 $ git log -g --abbrev-commit --pretty=oneline
@@ -491,7 +489,7 @@ $ git log -g --abbrev-commit --pretty=oneline
 
 :::tip[说明]
 回滚版本有 2 种方法：
-- git reset - 回滚版本后之前的历史记录将不保存, 不保留痕迹, 基本上不存在冲突情况。
+- git reset - 回滚版本后之前的历史记录将不保存，不保留痕迹，基本上不存在冲突情况。
 - git revert - 回滚版本后之前的历史记录还存在并多增加了一条 Revert 记录，很容易出现冲突。
 :::
 
@@ -507,9 +505,9 @@ $ git reset --hard HEAD^^
 
 # 回滚到指定 commit_id，对应 hash 值
 # 通过 git log / git reflog 查看
-$ git reset --hard <hash 值>
+$ git reset --hard [hash 值]
 
-# 回滚后但未推送到远程想断开当前操作执行拉取即可：
+# 回滚后但未推送到远程，想断开当前操作执行拉取即可
 $ git pull
 
 # 推送
@@ -534,7 +532,7 @@ $ git push -u origin main
 ```
 
 ```shell
-# 回滚到指定分支或 commit_id 指定文件, 命令：
+# 回滚到指定分支或 commit_id 指定文件
 $ git checkout main 1.txt 2.txt
 
 $ git checkout 8efef3d37 1.txt 2.txt
@@ -566,16 +564,16 @@ $ ll
 $ touch README.md
 $ echo "
 	hello
-	world" > README.md
+	world" ] README.md
 
 # 新建一个文件夹
-$ mkdir <file-name>
+$ mkdir [file-name]
 
 # 删除一个文件
 $ rm README.md
 
 # 删除一个文件夹
-$ rm -r <file-name>
+$ rm -r [file-name]
 
 # 清屏
 $ reset

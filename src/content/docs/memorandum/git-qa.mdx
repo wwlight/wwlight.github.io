@@ -4,13 +4,13 @@ sidebar:
   order: 2
 ---
 
-import { Steps } from '@astrojs/starlight/components'
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
 
-## Git 仓库中文件或目录的大小写敏感
+## git 仓库中文件或目录的大小写敏感
 
 <Steps>
-1. 首先确保本地 Git 配置启用大小写敏感
-    - Git 默认情况下对文件名大小写不敏感
+1. 首先确保本地 `git` 配置启用大小写敏感
+    - `git` 默认情况下对文件名大小写不敏感
 
     ```sh
     $ git config --global core.ignorecase false
@@ -21,7 +21,7 @@ import { Steps } from '@astrojs/starlight/components'
     $ git config --local --get core.ignorecase
     ```
 
-2. 使用 `git mv` 命令进行重命名 (假设要将 demo 改为 Demo)
+2. 使用 `git mv` 命令进行重命名 (假设要将 `demo` 改为 `Demo`)
 
     ```sh
     # 先改成临时名称
@@ -38,9 +38,9 @@ import { Steps } from '@astrojs/starlight/components'
     ```
 </Steps>
 
-## Git 强制同步远程最新代码
+## git 强制同步远程最新代码
 
-- 代码回滚导致本地与远程版本不一致，无法直接拉取远程仓库
+> 场景：代码回滚导致本地与远程版本不一致，无法直接拉取远程仓库
 
 ```bash
 # 检出远程所有分支最新数据
@@ -48,9 +48,9 @@ $ git fetch --all
 $ git reset --hard origin/main # 丢弃本地
 ```
 
-## 重新关联本地项目到远程 Git 仓库
+## 重新关联本地项目到远程 git 仓库
 
-> 场景：误删除了本地 Git 项目的 `.git` 目录
+> 场景：误删除了本地 git 项目的 `.git` 目录
 
 ```sh
 $ git init
@@ -65,20 +65,19 @@ $ git checkout -B main origin/main
 ## Git LFS 大文件存储
 
 :::tip[说明]
-- 用于对大文件进行版本控制的开源 Git 扩展
+- 用于对大文件进行版本控制的开源 `Git` 扩展
 - [Git Large File storage](https://git-lfs.com/)
 - [GitHub 管理大型文件](https://docs.github.com/zh/repositories/working-with-files/managing-large-files/about-large-files-on-github)
 :::
 
 ### Git LFS 原理
 
-- Git LFS 通过懒惰地 (lazily) 下载大文件的相关版本来减少大文件在仓库中的影响。具体来说, 大文件是在 `checkout` 的过程中下载的, 而不是 `clone` 或 `fetch` 过程中下载的。
-- Git LFS 通过将仓库中的大文件替换为小于 1 KB 的指针文件来做到这一点。在正常使用期间, 我们不会看到这些指针文件, 因为它们是由 Git LFS 自动处理的:
-	- 当我们执行 `git add` 命令时, Git LFS 用一个指针替换实际内容,
-		并将实际内容存储在本地 LFS 缓存中 (本地缓存位于仓库的 _.git/lfs/objects_ 路径下）。
-	- `git push` 时新增的 commit 所引用的所有 `大文件` 都会从本地传输到远程仓库的远程存储。
-	- 当我们 `checkout` 一个包含 Git LFS 指针的 commit 时 (`pull` 包含了 `checkout` 命令),
-		指针文件将替换为本地 Git LFS 缓存中的文件, 或者从远端 Git LFS 存储区下载。
+- `Git LFS` 通过懒惰地 (`lazily`) 下载大文件的相关版本来减少大文件在仓库中的影响。具体来说，大文件是在 `checkout` 的过程中下载的，而不是 `clone` 或 `fetch` 过程中下载的。
+- `Git LFS` 通过将仓库中的大文件替换为小于 1 KB 的指针文件来做到这一点。在正常使用期间，我们不会看到这些指针文件，因为它们是由 `Git LFS` 自动处理的:
+	- 当我们执行 `git add` 命令时, `Git LFS` 用一个指针替换实际内容,并将实际内容存储在本地 LFS 缓存中 (本地缓存位于仓库的 _`.git/lfs/objects`_ 路径下）。
+	- `git push` 时新增的 `commit` 所引用的所有 `大文件` 都会从本地传输到远程仓库的远程存储。
+	- 当我们 `checkout` 一个包含 `Git LFS` 指针的 commit 时 (`pull` 包含了 `checkout` 命令)，指针文件将替换为本地 `Git LFS` 缓存中的文件，或者从远端 `Git LFS` 存储区下载。
+
 ![git-lfs-graphic.gif](/attachmets/git-lfs-graphic.gif)
 
 ### Git LFS 好处
@@ -90,12 +89,19 @@ $ git checkout -B main origin/main
 
 ### Git LFS 使用方式
 
+<Tabs>
+    <TabItem label="windows 安装">
+        ```sh
+        scoop install git-lfs
+        ```
+    </TabItem>
+    <TabItem label="mac 安装">
+        ```sh
+        brew install git-lfs
+        ```
+    </TabItem>
+</Tabs>
 ```sh
-# windows 安装
-$ scoop install git-lfs
-# mac 安装
-$ brew install git-lfs
-
 # 检查
 $ git lfs --version
 
@@ -124,11 +130,11 @@ $ git lfs uninstall --local
 
 > 参考资料：[Git LFS 大文件存储](https://blog.yusong.me/git/lfs)
 
-## 关闭 Git 在 https 连接时对服务器证书的验证
+## 关闭 git 在 https 连接时对服务器证书的验证
 
 :::danger[场景]
 - 问题：OpenSSL SSL_read: Connection was reset, errno 10054
-- 原因：这是服务器的 SSL 证书没有经过第三方机构的签署，所以报错。可全局执行：
+- 原因：这是服务器的 SSL 证书没有经过第三方机构的签署
 :::
 
 ```sh
@@ -165,7 +171,7 @@ $ git reflog
 $ git reset --hard [hash]
 ```
 
-- 代码没有 `commit`，但进行了 `git add.`，解决方法参考 [链接](https://juejin.cn/post/6844903602981601294)
+- 代码没有 `commit`，但进行了 `git add`，解决方法参考 [链接](https://juejin.cn/post/6844903602981601294)
 
 ## 出现 git 提交冲突场景
 
