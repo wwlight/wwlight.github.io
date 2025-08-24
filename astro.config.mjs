@@ -31,7 +31,7 @@ export default defineConfig({
         './src/styles/global.css',
       ],
       sidebar: [
-        { slug: 'bookmarks', badge: 'TODO' },
+        { slug: 'bookmarks' },
         { label: '备忘录', autogenerate: { directory: 'memorandum' } },
         { label: '工具集', autogenerate: { directory: 'tools' } },
       ],
