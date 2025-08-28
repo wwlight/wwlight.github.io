@@ -17,6 +17,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'wwlight',
+      credits: true,
       components: {
         ThemeSelect: './src/components/ThemeSelect.astro',
       },
