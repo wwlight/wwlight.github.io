@@ -17,6 +17,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'wwlight',
+      components: {
+        ThemeSelect: './src/components/ThemeSelect.astro',
+      },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/wwlight/wwlight.github.io' },
       ],

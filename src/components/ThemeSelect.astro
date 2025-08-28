@@ -1,0 +1,121 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<script>
+  /**
+   * 重写选择主题组件参考：https://github.com/tauri-apps/tauri-docs/blob/v2/src/components/overrides/ThemeSelect.astro
+   * 主题切换动画参考：https://github.com/unocss/unocss/blob/main/packages-integrations/inspector/client/components/NarBar.vue
+   */
+  class ThemeSwitcher extends HTMLElement {
+    _theme: string;
+    constructor() {
+      super();
+      const storedTheme =
+        typeof localStorage !== "undefined" &&
+        localStorage.getItem("starlight-theme");
+
+      this._theme =
+        storedTheme ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+      this.handleToggleTheme = this.handleToggleTheme.bind(this);
+    }
+
+    connectedCallback() {
+      this.addEventListener("click", this.handleToggleTheme);
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener("click", this.handleToggleTheme);
+    }
+
+    private themeToggle() {
+      const nextTheme = this._theme === "dark" ? "light" : "dark";
+      this._theme = nextTheme;
+      this.applyTheme(nextTheme);
+    }
+
+    private applyTheme(theme: "dark" | "light") {
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem("starlight-theme", theme);
+    }
+
+    private handleToggleTheme(event: MouseEvent) {
+      const isAppearanceTransition =
+        document.startViewTransition! &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!isAppearanceTransition || !event) {
+        this.themeToggle();
+        return;
+      }
+
+      const x = event.clientX;
+      const y = event.clientY;
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      );
+      const transition = document.startViewTransition(() => this.themeToggle());
+      transition.ready.then(() => {
+        const clipGrow = [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ];
+        const clipShrink = [...clipGrow].reverse();
+        const isDark = this._theme === "dark";
+        document.documentElement.animate(
+          { clipPath: isDark ? clipShrink : clipGrow },
+          {
+            duration: 400,
+            easing: "ease-out",
+            pseudoElement: isDark
+              ? "::view-transition-old(root)"
+              : "::view-transition-new(root)",
+          },
+        );
+      });
+    }
+  }
+  customElements.define("theme-switcher", ThemeSwitcher);
+</script>
+
+<theme-switcher
+  class="flex items-center cursor-pointer p-2 rounded-full hover:bg-[var(--sl-color-gray-5)] transition duration-300"
+>
+  <Icon
+    name="sun"
+    size="1.2rem"
+    color="var(--sl-color-text-accent)"
+    class="block dark:hidden"
+  />
+  <Icon
+    name="moon"
+    size="1.1rem"
+    color="var(--sl-color-text-accent)"
+    class="hidden dark:block"
+  />
+</theme-switcher>
+
+<style is:global>
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* 分方向控制层级：
+    - 切到 dark（data-theme=dark）：old 在上层（内收）
+    - 切到 light（data-theme=light）：new 在上层（外扩）
+  */
+  ::view-transition-old(root),
+  [data-theme="light"]::view-transition-new(root) {
+    z-index: 2147483647;
+  }
+
+  ::view-transition-new(root),
+  [data-theme="light"]::view-transition-old(root) {
+    z-index: 1;
+  }
+</style>
