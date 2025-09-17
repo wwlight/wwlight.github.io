@@ -1,7 +1,7 @@
 ---
 title: git 问题记录
 sidebar:
-  order: 2
+    order: 2
 ---
 
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
@@ -130,9 +130,10 @@ $ git lfs uninstall --local
 
 > 参考资料：[Git LFS 大文件存储](https://blog.yusong.me/git/lfs)
 
-## 关闭 git 在 https 连接时对服务器证书的验证
+## 关闭 git 证书验证
 
 :::danger[场景]
+- 目的：禁用 git 通过 HTTP/HTTPS 协议与远程仓库通信时的 SSL/TLS 证书验证
 - 问题：OpenSSL SSL_read: Connection was reset, errno 10054
 - 原因：这是服务器的 SSL 证书没有经过第三方机构的签署
 :::
@@ -141,29 +142,12 @@ $ git lfs uninstall --local
 $ git config --global http.sslVerify "false"
 ```
 
-## Fatal: refusing to merge unrelated histories 解决
-
-```sh
-# 允许不相关历史提交，强制合并，然后本地处理冲突之后再进行提交
-$ git pull origin master --allow-unrelated-histories
-
-$ git pull --allow-unrelated-histories
-
-$ git merge master --allow-unrelated-histories
-```
-
-## Husky > npm run -s precommit (node v 10. Xx. Xx)
-
-```sh
-$ git commit -m "提交页面备注" --no-verify
-```
-
 ## 代码回滚误操作如何恢复
 
 - 代码有进行 `commit` 操作
 
 ```sh
-# 回滚上一个版本（删除工作空间的改动代码，撤销commit且撤销add）
+# 回滚上一个版本（删除工作空间的改动代码，撤销 commit 且撤销 add）
 $ git reset --hard HEAD^
 
 # 如何恢复删除的代码
@@ -171,7 +155,7 @@ $ git reflog
 $ git reset --hard [hash]
 ```
 
-- 代码没有 `commit`，但进行了 `git add`，解决方法参考 [链接](https://juejin.cn/post/6844903602981601294)
+- 代码没有 `commit` 操作，可借助 `vscode timeline` 功能
 
 ## 出现 git 提交冲突场景
 
@@ -186,37 +170,22 @@ $ git rebase --abort
 
 ## git merge 时避免或移除合并记录
 
-### 方式一
-
 ```sh
-# 将 feature 分支的改动合并到当前分支，不产生合并记录
-$ git merge --squash feature
+# 场景：将 feature 分支的改动合并到 main 分支
 
-# 需要手动 commit
-$ git commit -m "feat: add feature"
-```
-
-### 方式二
-
-```sh
-# 将 feature 分支的改动合并到 main 分支
-# 切换到 feature 分支
-$ git checkout feature
-
-# rebase 到 main 分支
-$ git rebase main
-
-# 切回 main 分支，执行快进合并
+# 1. 切换到 main 分支
 $ git checkout main
-$ git merge feature
+
+# 2. 将 feature 的提交变基到 main 分支上
+$ git rebase feature
 ```
 
 ## 下载源代码和仓库关联
 
 ```bash
-# 方式一：
-$ git push --force origin main
-
-# 方式二（推荐）：
+# 方式一（推荐）
 $ git pull origin main --allow-unrelated-histories
+
+# 方式二
+$ git push --force origin main
 ```
