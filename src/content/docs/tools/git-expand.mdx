@@ -1,7 +1,7 @@
 ---
 title: git 扩展命令
 sidebar:
-  order: 3
+    order: 3
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components'
@@ -79,19 +79,41 @@ $ git lfs uninstall --local
 
 > [git-extras](https://github.com/tj/git-extras/blob/main/Commands.md) 是一组有用的 Git 扩展命令，旨在简化常见的 Git 工作流程和任务。
 
-```sh
-$ git extras --version
-$ git extras --help
+<Tabs>
+    <TabItem label="方式 1">
+        ```sh
+        $ git-extras --version / git-extras -v
+        $ git-extras --help / git-extras -h
 
-$ git info            # 显示当前仓库的详细信息
-$ git root            # 显示当前仓库的根目录
-$ git browse          # 在浏览器中打开当前仓库
-$ git browse-ci       # 在浏览器中打开当前仓库的 CI 页面
-$ git setup           # 初始化一个新的 Git 仓库并设置远程仓库
-$ git summary         # 显示当前仓库的摘要信息
-$ git count           # 统计代码行数
-$ git changelog       # 显示项目的变更日志
-$ git undo            # 撤销上一次提交
-$ git wip             # 保存当前工作进度
-$ git unwip           # 恢复上一次保存的工作进度
-```
+        $ git-info            # 显示当前仓库的详细信息
+        $ git-root            # 显示当前仓库的根目录
+        $ git-browse          # 在浏览器中打开当前仓库
+        $ git-browse-ci       # 在浏览器中打开当前仓库的 CI 页面
+        $ git-setup           # 初始化一个新的 Git 仓库并设置远程仓库
+        $ git-summary         # 显示当前仓库的摘要信息
+        $ git-count           # 统计代码行数
+        $ git-changelog       # 显示项目的变更日志
+        $ git-undo            # 撤销上一次提交
+        $ git-wip             # 保存当前工作进度
+        $ git-unwip           # 恢复上一次保存的工作进度
+        ```
+    </TabItem>
+    <TabItem label="方式 2">
+        ```sh
+        $ git extras --version / git extras -v
+        $ git extras --help / git extras -h
+
+        $ git info            # 显示当前仓库的详细信息
+        $ git root            # 显示当前仓库的根目录
+        $ git browse          # 在浏览器中打开当前仓库
+        $ git browse-ci       # 在浏览器中打开当前仓库的 CI 页面
+        $ git setup           # 初始化一个新的 Git 仓库并设置远程仓库
+        $ git summary         # 显示当前仓库的摘要信息
+        $ git count           # 统计代码行数
+        $ git changelog       # 显示项目的变更日志
+        $ git undo            # 撤销上一次提交
+        $ git wip             # 保存当前工作进度
+        $ git unwip           # 恢复上一次保存的工作进度
+        ```
+    </TabItem>
+</Tabs>
