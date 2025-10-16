@@ -53,6 +53,8 @@ export default defineConfig({
         { slug: 'bookmarks' },
         { label: '备忘录', autogenerate: { directory: 'memorandum' } },
         { label: '工具集', autogenerate: { directory: 'tools' } },
+        { label: '系统相关', autogenerate: { directory: 'system' } },
+        { label: '其他', autogenerate: { directory: 'other' } },
       ],
     }),
   ],
