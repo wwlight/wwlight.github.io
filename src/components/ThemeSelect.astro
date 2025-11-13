@@ -57,7 +57,7 @@ import { Icon } from '@astrojs/starlight/components';
         Math.max(x, innerWidth - x),
         Math.max(y, innerHeight - y),
       );
-      const transition = document.startViewTransition(() => this.themeToggle());
+      const transition = document.startViewTransition(this.themeToggle.bind(this));
       transition.ready.then(() => {
         const clipGrow = [
           `circle(0px at ${x}px ${y}px)`,
@@ -83,7 +83,7 @@ import { Icon } from '@astrojs/starlight/components';
 </script>
 
 <theme-switcher
-  class="flex items-center cursor-pointer p-2 rounded-full hover:bg-[var(--sl-color-gray-5)] transition duration-300"
+  class="flex items-center cursor-pointer p-2 rounded-full hover:bg-(--sl-color-gray-5) transition duration-300"
 >
   <Icon
     name="sun"
