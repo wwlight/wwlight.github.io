@@ -161,18 +161,12 @@ $ rm -f ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 $ ps aux | grep mysqld
 $ sudo pkill -9 mysqld
 
-# 彻底清理数据目录并初始化
-$ sudo rm -rf /opt/homebrew/var/mysql
-$ sudo mkdir -p /opt/homebrew/var/mysql
-$ sudo chown -R _mysql:mysql /opt/homebrew/var/mysql
-$ sudo chmod -R 750 /opt/homebrew/var/mysql
-$ mysqld --initialize --user=_mysql \
---basedir=/opt/homebrew/opt/mysql \
---datadir=/opt/homebrew/var/mysql
-
-# 修复数据目录权限
-$ sudo chown -R _mysql:mysql /opt/homebrew/var/mysql
-$ sudo chmod -R 755 /opt/homebrew/var/mysql
+# 设置权限
+brew services stop mysql
+pkill -9 -f mysqld
+sudo mkdir -p /opt/homebrew/var/mysql
+sudo chown $(whoami):admin /opt/homebrew/var/mysql
+mysqld --initialize-insecure --user=$(whoami) --basedir="$(brew --prefix mysql)" --datadir=/opt/homebrew/var/mysql --tmpdir=/tmp
 
 # 重新启动
 $ brew services reload mysql
@@ -228,13 +222,12 @@ $ rm -f ~/Library/LaunchAgents/homebrew.mxcl.nginx.plist
 $ ps aux | grep nginx
 $ sudo kill -9 nginx
 
-# 创建 run 目录并设置权限
-$ sudo mkdir -p /opt/homebrew/var/run
-$ sudo chown -R $(whoami):admin /opt/homebrew/var/run
-$ sudo chmod 755 /opt/homebrew/var/run
-# 修复日志目录权限
-$ sudo chown -R $(whoami):admin /opt/homebrew/var/log/nginx
-$ sudo chmod -R 755 /opt/homebrew/var/log/nginx
+# 设置权限
+sudo mkdir -p /opt/homebrew/var/run
+sudo chown -R $(whoami):admin /opt/homebrew/var/run
+sudo chmod 755 /opt/homebrew/var/run
+sudo chown -R $(whoami):admin /opt/homebrew/var/log/nginx
+sudo chmod -R 755 /opt/homebrew/var/log/nginx
 
 # 重新启动
 $ brew services reload nginx
