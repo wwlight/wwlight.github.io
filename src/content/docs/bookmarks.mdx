@@ -10,10 +10,11 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
 
 <CardGrid stagger>
   <Card title="常用">
+    - [npmx](https://npmx.dev/) - NPM 包搜索引擎
     - [tldr](https://tldr.inbrowser.app/) - 在线命令速查表
-    - [JSONT](https://www.jsont.run/) - JSON 格式化工具
+    - [jsonT](https://www.jsont.run/) - JSON 格式化工具
+    - [Lorem Picsum](https://picsum.photos/) - 随机图片库
     - [TinyPNG](https://tinypng.com/) - 图像压缩
-    - [Screego](https://screego.net/) - 屏幕共享 | [在线地址](https://app.screego.net/)
     - [Cobalt](https://cobalt.tools/) - 下载工具
     - [Dub](https://dub.co/) - 开源短链接服务管理工具
     - [Ray.so](https://ray.so/) - 生成代码片段图
@@ -33,46 +34,49 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
   </Card>
   <Card title="字体库">
     - [Googles Fonts](https://fonts.google.com/)
-    - [Nerd Fonts](https://www.nerdfonts.com/) - 超丰富字体符号补丁工具
+    - [Nerd Fonts](https://www.nerdfonts.com/) - 字体符号补丁工具
     - [Bunny](https://fonts.bunny.net/)
     - [Fontshare](https://www.fontshare.com/)
-    - [100font.com](https://www.100font.com/) - 免费商用字体网站
     - [Fontspace](https://www.fontspace.com/)
     - [Dafont.com](https://www.dafont.com/)
+    - [100font.com](https://www.100font.com/)
   </Card>
   <Card title="构建文档">
     - [Jamstack](https://jamstack.org/generators/) - 现代化的网站开发架构
     - [Starlight](https://starlight.astro.build/)
-    - [NuxtContent](https://content.nuxtjs.org/)
-    - [Docus](https://docus.dev/)
+    - [Fumadocs](https://www.fumadocs.dev/)
+    - [NuxtContent](https://content.nuxtjs.org/) | [Docus](https://docus.dev/)
     - [Docusaurus](https://docusaurus.io/)
-    - [Fumadocs](https://fumadocs.vercel.app/)
-    - [VitePress](https://vitepress.vuejs.org/)
-    - [Dumi](https://d.umijs.org/)
-    - [Docz](https://www.docz.site/)
-    - [GitBook](https://www.gitbook.com/)
-    - [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
-    - [Histoire](https://histoire.dev/)
     - [Mintlify](https://mintlify.com/)
+    - [GitBook](https://www.gitbook.com/)
+    - [Dumi](https://d.umijs.org/)
+    - [VitePress](https://vitepress.vuejs.org/)
+    - [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
     - [WordPress.co](https://wordpress.com/)
   </Card>
   <Card title="网站部署">
     - [Github Page](https://pages.github.com/)
     - [Netlify](https://www.netlify.com/)
     - [Vercel](https://vercel.com/)
-    - [Firebase](https://firebase.google.com/)
     - [Cloudflare](https://pages.cloudflare.com/)
-    - [Coolify](https://coolify.io/)
     - [Railway](https://railway.com/)
+    - [Firebase](https://firebase.google.com/)
+    - [Coolify](https://coolify.io/)
     - [Dokploy](https://dokploy.com/)
     - [Heroku](https://www.heroku.com/)
     - [Dokku](https://dokku.com/)
     - [OneClick](https://oneclick.sh/)
   </Card>
-  <Card title="工具集成">
+  <Card title="工具/平台">
     - [Slidev](https://cn.sli.dev/) - 演示文稿工具
     - [WebContainer](https://webcontainers.io/) - 交互式 IDE
+    - [Remotion](https://www.remotion.dev/) - 用 React 制作视频
+    - [Vimeo](https://vimeo.com/) - 视频托管平台
+    - [Loom](https://www.loom.com/) - 视频消息工具
+    - [Scrimba](https://scrimba.com/) - 互动式编程学习平台
     - [Mermaid](https://mermaid.js.org/) - 图表绘制工具
+    - [Storybook](https://storybook.js.org/) - UI 组件开发环境
+    - [Histoire](https://histoire.dev/) - 组件开发工具
   </Card>
   <Card title="在线 API">
     - [JSONPlaceholder](https://jsonplaceholder.typicode.com/) <Badge text="免费" variant='success' />
@@ -85,11 +89,11 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [BootCDN](https://www.bootcdn.cn/)
   </Card>
   <Card title="镜像站">
-    - [MirrorZ Help](https://help.mirrors.cernet.edu.cn/) - 开源软件镜像的帮助文档整合站点
-    - [npmmirror](https://npmmirror.com/)
-    - [aliyun](https://developer.aliyun.com/mirror/)
+    - [MirrorZ Help](https://help.mirrors.cernet.edu.cn/) - 开源软件镜像的帮助文档
+    - [NpmMirror](https://npmmirror.com/)
+    - [Aliyun](https://developer.aliyun.com/mirror/)
     - [USTC](https://mirrors.ustc.edu.cn/)  - 中国科技大学
-    - [TUNA](https://tuna.moe/) - 清华大学
+    - [TUNA](https://tuna.moe/) - 清华大学 TUNA 协会
   </Card>
   <Card title="订阅 RSS">
     - [Follow](https://app.follow.is/)
@@ -98,21 +102,15 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
   </Card>
   <Card title="画布">
     - [Excalidraw](https://excalidraw.com/)
-    - [tldraw](https://www.tldraw.com/)
-    - [PlantUML](https://plantuml.com/zh/) - 快速编写UML图的组件
-    - [图表绘制](https://app.diagrams.net/)
+    - [tldraw](https://tldraw.dev/)
+    - [PlantUML](https://plantuml.com/)
   </Card>
   <Card title="在线 IDE">
     - [CodePen](https://codepen.io/)
-    - [StackBlitz](https://stackblitz.com/)
     - [CodeSandbox](https://codesandbox.io/)
+    - [StackBlitz](https://stackblitz.com/)
     - [码上掘金](https://code.juejin.cn/)
-    - [Gitpod](https://www.gitpod.io/)
-    - [Replit](https://replit.com/)
-    - [Sourcegraph](https://sourcegraph.com/)
     - [GitHub Dev](https://github.dev/github/dev)
-    - [GitHub1s](https://github1s.com/)
-    - [Glitch](https://glitch.com/)
     - [AST Explorer](https://astexplorer.net/)
     - [JSFiddle](https://jsfiddle.net/)
   </Card>
@@ -124,25 +122,26 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [Grid Garden](https://cssgridgarden.com/#zh-cn) - 在线 grid 学习教程
     - [Flexbox Defense](http://www.flexboxdefense.com/) - 在线 flex 学习教程
     - [Svg Tutorial](https://svg-tutorial.com/)
-    - [Codingfantasy](https://codingfantasy.com/)
+    - [CodingFantasy](https://codingfantasy.com/)
     - [学习 CSS 布局](https://zh.learnlayout.com/)
     - [深入浅出 CSS 布局](http://layout.imweb.io/)
     - [小霸王](https://www.yikm.net/)
-    - [PlayGama](https://playgama.com/) - 在线小游戏
+    - [PlayGama](https://playgama.com/)
     - [PacoGames.com](https://www.pacogames.com/)
   </Card>
-  <Card title="PDF">
-    - [PDF Candy](https://pdfcandy.com/cn/)
-    - [Stirling PDF](https://stirlingpdf.io/)
+  <Card title="文件转换">
     - [TinyWow](https://tinywow.com/)
-    - [Office Converter](https://cn.office-converter.com/) - 文件转换器
-    - [ALL TO ALL](https://www.alltoall.net/) - 在线格式转换
+    - [Office Converter](https://cn.office-converter.com/)
+    - [PDF Candy](https://pdfcandy.com/cn/)
+    - [ALL TO ALL](https://www.alltoall.net/)
+    - [Stirling PDF](https://stirlingpdf.io/)
   </Card>
   <Card title="资源">
     - [VimAwesome](https://vimawesome.com/)
     - [VSCodeThemes](https://vscodethemes.com/)
     - [PowerShell](https://www.pstips.net/)
     - [NavNav+](https://navnav.co/)
+    - [UIVerse](https://uiverse.io/)
   </Card>
   <Card title="在线工具">
     - [Omatsuri](https://omatsuri.app/) <Badge text="hot" />
@@ -153,7 +152,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [CSS Scan](https://getcssscan.com/css-box-shadow-examples) - CSS 阴影示例 <Badge text="hot" />
     - [Smooth Shadow](https://smoothshadows.com/)
     - [Make some waves](https://getwaves.io/)
-    - [Custom Shape Dividers](https://www.shapedivider.app/)
+    - [Shape Dividers](https://www.shapedivider.app/)
     - [Easing functions](https://easings.net/) <Badge text="hot" />
     - [Easing Wizard](https://easingwizard.com/)
     - [cubic-bezier()](https://cubic-bezier.com/)
@@ -168,29 +167,25 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [Pattern Monster](https://cn.pattern.monster/) - SVG 图案生成器 <Badge text="hot" />
     - [EnjoyCSS](https://enjoycss.com/)
     - [CSS Grid Generator](https://cssgrid-generator.netlify.app/) <Badge text="hot" />
-    - [Layoutit Grid](https://grid.layoutit.com/) <Badge text="hot" />
     - [Glass Morphism](https://glassgenerator.netlify.app/) - 毛玻璃效果 <Badge text="hot" />
-    - [UIVerse](https://uiverse.io/)
-    - [CSS Animation Kit](https://angrytools.com/css/animation/)
     - [Readme Typing SVG](https://readme-typing-svg.demolab.com/)
   </Card>
   <Card title="其它">
-    - [Small Dev tools](https://smalldev.tools/)
+    - [VERT](https://vert.sh/) - 图片压缩和转换工具
+    - [OpenCut](https://opencut.app/) - 视频剪辑工具
+    - [OpenScreen](https://openscreen.vercel.app/) - 屏幕录制工具
+    - [Screego](https://screego.net/) - 屏幕共享 | [在线地址](https://app.screego.net/)
     - [Moonlight](https://github.com/moonlight-stream/moonlight-qt) | [Sunshine](https://github.com/LizardByte/Sunshine) - 游戏串流工具组合
+    - [SnapAny](https://snapany.com/) - 视频图片解析下载
     - [pin.gl](https://pin.gl/) - 共享屏幕
     - [Jitsi Meet](https://meet.jit.si/) - 在线视频会议
     - [Codeshare](https://codeshare.io/) - 实时共享代码
     - [RGBA Color Picker](https://rgbacolorpicker.com/)
     - [IT-TOOLS](https://it-tools.tech/)
     - [Table Convert Online](https://tableconvert.com/)
-    - [SVGOMG](https://jakearchibald.github.io/svgomg/)
-    - [jsonhero](https://jsonhero.io/)
-    - [Json.cn](https://www.json.cn/) - JSON 在线解析及格式化验证
-    - [草料二维码生成器](https://cli.im/)
+    - [JSON Hero](https://jsonhero.io/)
     - [QR Generator](https://www.online-qrcode-generator.com/)
-    - [QR.io](https://qr.io/) - 二维码生成器
-    - [哔哩哔哩(bilibili)视频解析下载](https://bilibili.iiilab.com/)
-    - [Microsoft Azure](https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/#features) - 文本转语音
+    - [QR.io](https://qr.io/)
     - [WakaTime](https://wakatime.com/) - 开发者的仪表盘，时间统计
     - [IP Address](https://www.ipaddress.com/)
     - [SMS-Active](https://sms-activate.guru/cn) - 在线接收验证码
@@ -217,6 +212,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
   <Card title='面试'>
     - [JavaScript 进阶问题列表](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md) <Badge text="Github" />
     - [反向面试](https://github.com/yifeikong/reverse-interview-zh) <Badge text="Github" />
+    - [JavaScript Standard Style](https://github.com/standard/standard/blob/master/docs/README-zhcn.md) <Badge text="Github" />
     - [前端面试指南](https://interview2.poetries.top/)
     - [前端面试题汇总](https://www.yuque.com/cuggz/interview) <Badge text="语雀" />
     - [字节面试题](https://bytedance.feishu.cn/base/app8Ok6k9qafpMkgyRbfgxeEnet?table=tblzZHf2Ix3YtxPM&view=vew9iquA45) <Badge text="飞书" />
@@ -232,31 +228,15 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [bestofjs](https://bestofjs.org/) - 开源项目平台
     - [OSS Insight](https://ossinsight.io/) - 开源软件分析平台
     - [ProductHunt](https://www.producthunt.com/) - 发掘有意思产品的平台
-    - [Indie Hackers Site](https://www.indiehackers.site/) - 分享网络工具和平台
-    - [runpkg](https://www.runpkg.com/) - 在线查看 npm 包的代码
-    - [Bundlephobia](https://bundlephobia.com/) - 查找包中添加 npm 包的成本
-    - [Renovate](https://github.com/renovatebot/renovate) - 跨平台依赖自动化
-    - [Semantic Scholar](https://www.semanticscholar.org/) - 人工智能驱动的研究工具
-  </Card>
-  <Card title='开发规范'>
-    - [TGideas文档库](https://tgideas.qq.com/doc/index.html)
-    - [JavaScript编码规范](https://github.com/ecomfe/spec/blob/master/javascript-style-guide.md) <Badge text="Github" />
-    - [Airbnb JavaScript 风格指南](https://lin-123.github.io/javascript/) <Badge text="Github" />
-    - [JavaScript Standard Style](https://github.com/standard/standard/blob/master/docs/README-zhcn.md) <Badge text="Github" />
-    - [Aotu.io](https://guide.aotu.io/index.html)
-    - [Code Guide](https://codeguide.bootcss.com/)
   </Card>
   <Card title='导航'>
     - [ExplainThis](https://www.explainthis.io/zh-hans) <Badge text="hot" />
-    - [Dev Tools](https://freetool.vercel.app/) <Badge text="hot" />
+    - [FreeTools](https://freetool.vercel.app/)
     - [Open Source Software](https://osssoftware.org/) <Badge text="hot" />
-    - [Awehunt](https://awehunt.com/)
     - [OverAPI.com](https://overapi.com/) - 收集所有备忘单
-    - [Bootstrap中文网](https://www.bootcss.com/)
-    - [GitHub中文社区](https://www.github-zh.com/)
+    - [Awehunt](https://awehunt.com/)
+    - [codrops](https://tympanus.net/)
     - [印记中文](https://docschina.org/)
-    - [Web前端导航](http://www.alloyteam.com/nav/)
-    - [fly63前端网](https://www.fly63.com/)
   </Card>
   <Card title='英语相关'>
     - [多邻国](https://www.duolingo.cn/)
@@ -270,10 +250,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [TypingClub](https://www.typingclub.com/sportal/) <Badge text="打字" variant='tip' />
     - [Type Words](https://2study.top/) - 开源单词与文章练习工具
     - [Qwerty Learner](https://qwerty.kaiyi.cool/) <Badge text="打字" variant='tip' />
-    - [A Programmer's Guide to English](https://a-programmers-guide-to-english.harryyu.me/) <Badge text="书籍" variant='tip' />
-    - [English-level-up-tips-for-Chinese](https://byoungd.gitbook.io/english-level-up-tips/) <Badge text="书籍" variant='tip' />
     - [英语真题在线](https://zhenti.burningvocabulary.com/)
-    - [新概念英语](https://www.newconceptenglish.com/)
   </Card>
   <Card title='工具'>
     - [Dify](https://dify.ai/) - Agentic AI 解决方案
@@ -281,26 +258,24 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [Webflow](https://webflow.com/)
     - [Automa](https://www.automa.site/)
     - [ToDesktop](https://www.todesktop.com/)
-    - [Storybook](https://storybook.js.org/) - UI 组件开发环境
   </Card>
   <Card title='Logo'>
-    - [svgl](https://svgl.app/) - 品牌徽标 <Badge text="hot" />
+    - [SVGL](https://svgl.app/) - 品牌徽标 <Badge text="hot" />
     - [LobeHub Icons](https://icons.lobehub.com/)
     - [APPLORE](https://app.uiboy.com/) - 发现和探索应用程序图标 <Badge text="hot" />
     - [macOSicons](https://macosicons.com/) - 更换 mac 应用图标 <Badge text="hot" />
     - [Developer Icons](https://xandemon.github.io/developer-icons/icons/All/)
-    - [BrandFetch](https://brandfetch.com/) - 互联网的标志和品牌资产的来源
+    - [BrandFetch](https://brandfetch.com/) - 互联网的标志和品牌资产
   </Card>
   <Card title='其它'>
-    - [PageSpeed Insights](https://pagespeed.web.dev/) - 报告页面性能
-    - [Webshare](https://www.webshare.io/) - 代理服务评测
-    - [doyoudo](https://www.doyoudo.com/) - 资源学习网站
-    - [wikiHow](https://zh.wikihow.com/) - 最值得信赖的指南网站 <Badge text="hot" />
     - [FreeCodeCamp](https://www.freecodecamp.org/chinese/)
-    - [W3Schools.com](https://www.quanzhanketang.com/)
+    - [W3Schools](https://www.w3schools.com/)
     - [Newsela](https://newsela.com/)
-    - [CodeGym](https://codegym.cc/zh/) - 在线 Java 语言编程课程 <Badge text="hot" />
+    - [doyoudo](https://www.doyoudo.com/) - 资源学习网站
+    - [wikiHow](https://zh.wikihow.com/) - 指南网站 <Badge text="hot" />
+    - [Webshare](https://www.webshare.io/) - 代理服务评测
     - [Exercism](https://exercism.org/) - 免费在线编程 <Badge text="hot" />
+    - [CodeGym](https://codegym.cc/zh/) - 在线学习 Java
     - [设计达人](https://www.shejidaren.com/) - 爱设计，爱分享
   </Card>
 </CardGrid>
@@ -322,6 +297,8 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [鸟哥的Linux私房菜第四版](https://wizardforcel.gitbooks.io/vbird-linux-basic-4e/content/index.html)
     - [书栈网](https://www.bookstack.cn/)
     - [互联网开发文档](https://wangdoc.com/)
+    - [Z-Library](https://zh.zlib.li/)
+    - [Anna's Archive](https://annas-archive.pk/)
   </Card>
   <Card title='GitHub'>
     - [开源软件指南](https://opensource.guide/zh-hans/)
@@ -357,16 +334,6 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
 ## 图片相关
 
 <CardGrid stagger>
-  <Card title='开发使用'>
-    - [Lorem Picsum](https://picsum.photos/) - 随机图片库 <Badge text="推荐" variant='success' />
-    - [Image Converter](https://imageconverter.dev/) - 免费在线图片转换器
-    - [Pluspng](https://pluspng.com/) - Free PNG Image Library <Badge text="hot" />
-    - [unDraw](https://undraw.co/illustrations) - 生成动态彩色图像 <Badge text="hot" />
-  </Card>
-  <Card title='代码片段'>
-    - [Carbon](https://carbon.now.sh/)
-    - [Code to Image Converter](https://codetoimg.com/)
-  </Card>
   <Card title='徽章图标'>
     - [Shields.io](https://shields.io/) - 徽章制作工具 <Badge text="hot" />
     - [Badgen](https://badgen.net/) - 角标制作工具 <Badge text="hot" />
@@ -376,23 +343,27 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [LogolyPro](https://www.logoly.pro/) - 在线标识生成器
     - [Blue Emoji](https://bluemoji.io/) - 非常感性的表情符号和笑脸
     - [emoji-cheat-sheet](https://github.com/ikatyang/emoji-cheat-sheet#smileys--emotion) - Emoji 表情代码
-    - [Emojipedia](https://emojipedia.org/) - 😃表情符号意义之家💁👌🎍😍
+    - [Emojipedia](https://emojipedia.org/) - 表情符号意义之家
   </Card>
   <Card title='在线图库'>
     - [Unsplash](https://unsplash.com/) <Badge text="自由使用" variant='success' />
     - [WallpaperHub](https://wallpaperhub.app/)
-    - [搜图神器](https://www.logosc.cn/so/)
     - [Pexels](https://www.pexels.com/zh-cn/)
     - [WallpapersCraft](https://wallpaperscraft.com/)
     - [WallpaperMaiden](https://wallpapersden.com/)
     - [Newcger](https://www.newcger.com/)
   </Card>
+  <Card title='代码片段'>
+    - [Carbon](https://carbon.now.sh/)
+    - [Code to Image Converter](https://codetoimg.com/)
+  </Card>
   <Card title='压缩转换'>
-    - [Compressor.io](https://compressor.io/)
+    - [Image Compressor](https://imagecompressor.com/)
+    - [Compressor](https://compressor.io/)
     - [Squoosh](https://squoosh.app/)
-    - [OptimiZilla](http://optimizilla.com/) <Badge text="自由使用" variant='success' />
-    - [Picdiet](https://picdiet.eula.club/)
-    - [BASE64](https://www.base64-image.de/)
+    - [Picdiet](https://www.picdiet.com/)
+    - [BASE64 Image](https://www.base64-image.de/)
+    - [Image Converter](https://imageconverter.dev/) - 图片转换
   </Card>
   <Card title='在线编辑'>
     - [佐糖](https://picwish.cn/) - AI 在线抠图
@@ -403,12 +374,9 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
   </Card>
   <Card title='其它'>
     - [Pixabay](https://pixabay.com/) - 免费的多媒体资源库
-    - [pngimg.com](https://pngimg.com/) - PNG 图像资源
+    - [PNG Images](https://pngimg.com/) - PNG 图像资源
     - [Mosh](https://moshpro.app/) - 为图像+视频提供无限的创意实时效果
-    - [钙网](https://www.uugai.com/) - LOGO 在线设计制作工具
-  </Card>
-  <Card title='在线图床'>
-    - [SM.MS](https://smms.app/)
+    - [SM.MS](https://smms.app/) - 免费图床服务
   </Card>
 </CardGrid>
 
@@ -416,7 +384,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
 
 <CardGrid stagger>
   <Card title='常用'>
-    - [Iconify](https://preview.iconify.design/) - 自由选择图标
+    - [Iconify](https://icon-sets.iconify.design/) - 自由选择图标
     - [Icônes](https://icones.js.org/) - 即时搜索图标资源管理器 <Badge text="开发" />
     - [Lucide Icons](https://lucide.dev/) - 美观且一致的图标 <Badge text="开发" />
     - [Remix Icon](https://remixicon.com/)
@@ -425,6 +393,8 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [iconfont](https://www.iconfont.cn/) - 阿里巴巴矢量图标库
     - [Bootstrap 图标库](https://icons.bootcss.com/)
     - [Font Awesome](https://fontawesome.com/)
+    - [Pluspng](https://pluspng.com/) - Free PNG Image Library <Badge text="hot" />
+    - [unDraw](https://undraw.co/illustrations) - 生成动态彩色图像 <Badge text="hot" />
   </Card>
   <Card title='其它'>
     - [Lordicon](https://lordicon.com/) - 动画图标
@@ -442,7 +412,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
 ## AI 相关
 
 <CardGrid stagger>
-  <Card title='AI'>
+  <Card title='模型'>
     - [DeepSeek](https://chat.deepseek.com/)
     - [ChatGPT](https://chatgpt.com/)
     - [Claude](https://claude.ai/)
@@ -455,17 +425,14 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [AI SDK](http://ai-sdk.dev/) <Badge text="vercel" />
     - [AutoGPT](https://agpt.co/)
     - [Poe](https://poe.com/) - 聚合 AI 聊天
-    - [OpenRouter](https://openrouter.ai/)
     - [LobeChat](https://lobechat.com/)
-    - [NextChat](https://nextchat.club/)
-    - [Napkin](https://www.napkin.ai/)
-    - [Hume](https://www.hume.ai/) - 语音模型
-    - [Suno](https://suno.com/) - 生成歌曲
   </Card>
   <Card title='产品'>
-    - [MCP](https://modelcontextprotocol.io/) - 模型上下文协议
-    - [Artificial Analysis](https://artificialanalysis.ai/) - 人工智能产品分析平台
     - [Hugging Face](https://huggingface.co/) - 构建未来的 AI 社区 <Badge text="hot" />
+    - [OpenRouter](https://openrouter.ai/) - 开源大语言模型 API 平台
+    - [OpenCode](https://opencode.ai/) - 开源AI编程代理
+    - [Artificial Analysis](https://artificialanalysis.ai/) - 人工智能产品分析平台
+    - [Context7](https://context7.com/) - 提供上下文感知
     - [GPTs Hunter](https://www.gptshunter.com/) - 发现 GPT 商店
     - [AITools](https://aitools.inc/) - 寻找 AI 工具来帮助您
     - [ToolAI](https://www.toolai.io/) - 发现最佳人工智能网站
@@ -475,12 +442,22 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [SiteSnapper](https://sitesnapper.app/) - 一键捕获任意网页 <Badge text="hot" />
     - [prompts.chat](https://prompts.chat/) - 提示目录
   </Card>
+  <Card title='基础与协议'>
+    - [MCP](https://modelcontextprotocol.io/) - 模型上下文协议
+    - [Agents](https://agents.md/) - 指导编码代理
+    - [Skills](https://skills.sh/) <Badge text="vercel" />
+    - [AgentSkills](https://agentskills.io/)
+    - [ACP](https://agentclientprotocol.com/) - 代理客户端协议
+    - [LLMsTXT](https://llmstxt.org/) - 大语言模型可读文本
+  </Card>
   <Card title='在线'>
     - [bolt](https://bolt.new/)
     - [v0](https://v0.app/)
     - [AI Studio](https://aistudio.google.com/)
+    - [Builder.io](https://www.builder.io/)
     - [Tinte](https://www.tinte.dev/)
     - [Reweb](https://www.reweb.so/)
+    - [Replit](https://replit.com/)
   </Card>
 </CardGrid>
 
@@ -503,6 +480,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [Supahero](https://www.supahero.io/) - 精心挑选的落地页
     - [Mobbin](https://mobbin.com/) - UI/UX参考库
     - [saaslandingpage.com](https://saaslandingpage.com/) - sass 登录页
+    - [Design Fragments](https://df.fenx.work/)
   </Card>
   <Card title='平台/工具'>
     - [Canva](https://www.canva.com/)
@@ -510,25 +488,25 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [MasterGo](https://mastergo.com/)
     - [Figma](https://www.figma.com/)
     - [Framer](https://www.framer.com/)
+    - [Paper](https://paper.design/)
   </Card>
 </CardGrid>
 
 ## 其它资源
 
-<CardGrid stagger>
+<CardGrid>
   <Card title='资源集合'>
+    - [FMHY](https://fmhy.net/)  <Badge text="hot" /> - 免费资源集合
+    - [AlternativeTo](https://alternativeto.net/)
+    - [Toolfolio](https://toolfolio.io/)
     - [中州韵输入法引擎](https://rime.im/)
     - [识典古籍](https://www.shidianguji.com/)
     - [汉语国学](https://www.hanyuguoxue.com/)
     - [字统网](https://zi.tools/)
-    - [freemediaheckyeah](https://fmhy.net/)  <Badge text="hot" />
     - [PICK FREE](https://www.pickfree.cn/)
-    - [鹏少资源网](https://www.jokerps.com/)
-    - [hereitis](https://www.hereitis.cn/)
-    - [Toolfolio](https://toolfolio.io/)
+    - [Tailscale](https://tailscale.com/)、[Racknerd](https://www.racknerd.com/)
   </Card>
   <Card title='逐新趣异'>
-    - [TrustMRR](https://trustmrr.com/) - 已验证初创企业收入数据库
     - [Wayback Machine](https://web.archive.org/) - 互联网档案馆
     - [ClipDrop](https://clipdrop.co/) - 创建令人惊叹的视觉效果
     - [Layoutit](https://layoutit.com/)
@@ -537,12 +515,7 @@ import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
     - [tree.fm](https://www.tree.fm/) - 倾听来自世界各地的森林之声
     - [WebCheck](https://web-check.xyz/) - 一款功能强大的网站分析工具
     - [workout-cool](https://workout.cool/) - 🏋️‍♂️ 现代开源健身教练平台
-  </Card>
-  <Card title='手机软件'>
-    - [多邻国](https://www.duolingo.cn/)
-    - [新华字典](https://www.cp.com.cn/digital/app.html)
-    - [微信读书](https://weread.qq.com/)
-    - [万词王](https://www.perfectlingo.com/)
-    - [OurPlay](https://www.ourplay.net/) - 商店或通过公众号下载
+    - [Gesture Lab](https://www.gesturelab.icu/) - 手势实验室
+    - [ColorPalette Pro](https://colorpalette.pro/) - 漂亮的调色板
   </Card>
 </CardGrid>
