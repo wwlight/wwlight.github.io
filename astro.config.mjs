@@ -1,3 +1,4 @@
+import { unified } from '@astrojs/markdown-remark'
 import starlight from '@astrojs/starlight'
 import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
@@ -14,20 +15,22 @@ export default defineConfig({
       },
       wrap: true,
     },
-    rehypePlugins: [
-      [
-        inspectUrls,
-        {
-          selectors: ['a[href]'],
-          inspectEach(url) {
-            if (url.node.properties.href?.startsWith('http')) {
-              url.node.properties.target = '_blank'
-              url.node.properties.rel = 'noopener noreferrer'
-            }
+    processor: unified({
+      rehypePlugins: [
+        [
+          inspectUrls,
+          {
+            selectors: ['a[href]'],
+            inspectEach(url) {
+              if (url.node.properties.href?.startsWith('http')) {
+                url.node.properties.target = '_blank'
+                url.node.properties.rel = 'noopener noreferrer'
+              }
+            },
           },
-        },
+        ],
       ],
-    ],
+    }),
   },
   integrations: [
     starlight({
@@ -51,10 +54,10 @@ export default defineConfig({
       ],
       sidebar: [
         { slug: 'bookmarks' },
-        { label: '备忘录', autogenerate: { directory: 'memorandum' } },
-        { label: '工具集', autogenerate: { directory: 'tools' } },
-        { label: '系统相关', autogenerate: { directory: 'system' } },
-        { label: '其他', autogenerate: { directory: 'other' } },
+        { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
+        { label: '工具集', items: [{ autogenerate: { directory: 'tools' } }] },
+        { label: '系统相关', items: [{ autogenerate: { directory: 'system' } }] },
+        { label: '其他', items: [{ autogenerate: { directory: 'other' } }] },
       ],
     }),
   ],
