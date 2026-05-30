@@ -37,7 +37,13 @@ function HeaderIconLink({
   );
 }
 
-export function PublicPageActions({ className }: { className?: string }) {
+export function PublicPageActions({
+  className,
+  blogHref,
+}: {
+  className?: string;
+  blogHref: string;
+}) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className={cn("flex items-center gap-2", className)}>
@@ -52,7 +58,7 @@ export function PublicPageActions({ className }: { className?: string }) {
           </TooltipContent>
         </Tooltip>
 
-        <HeaderIconLink href="/memorandum/dev-qa/" label="返回博客">
+        <HeaderIconLink href={blogHref} label="返回博客">
           <BookOpen className="size-[1.2rem]" />
         </HeaderIconLink>
 

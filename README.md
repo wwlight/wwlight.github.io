@@ -12,25 +12,28 @@
 
 ## 技术栈
 
-| 类别   | 选型                                                       |
-| ------ | ---------------------------------------------------------- |
-| 框架   | Astro 6、Starlight                                         |
-| UI     | React 19、Tailwind CSS 4、Radix UI / shadcn 风格组件       |
-| 数据   | Astro DB（书签数据）                                       |
-| 工具链 | [Vite+](https://viteplus.dev)（`vp` / `vpr`）、pnpm 11.4.0 |
+| 类别 | 选型 |
+| ---- | ---- |
+| 框架 | Astro 6、Starlight |
+| UI | React 19、Tailwind CSS 4、Radix UI / shadcn 风格组件 |
+| 数据 | Astro DB（书签数据） |
+| 图表 | Mermaid 11（自研 Starlight 集成，按需加载） |
+| 工具链 | [Vite+](https://viteplus.dev)（`vp` / `vpr`）、Node.js 24、pnpm 11.4.0 |
 
 ## 快速开始
 
-需安装 [Vite+](https://viteplus.dev)（提供 `vp` / `vpr` 命令）。
+需安装 [Vite+](https://viteplus.dev)（提供 `vp` / `vpr` 命令）与 **Node.js 24**（见 `.node-version`）。
 
 ```bash
 vp i              # 安装依赖
-vpr dev           # 主站，http://localhost:4321
-vpr dev:admin     # 管理端，http://localhost:4325（首次运行创建 .env 并设置密码）
-vpr dev:all       # 同时启动主站与管理端
+vpr dev           # 本地开发，http://localhost:4321（/bookmarks/ 与 /admin/bookmarks/ 同端口）
+vpr dev:admin     # 同上，就绪后自动打开管理端（首次运行创建 .env 并设置密码）
+vpr dev:all       # 同上，就绪后自动打开主站与管理端两个标签页
 vpr build         # 构建到 dist/
 vpr lint          # ESLint 检查
 ```
+
+前台书签页与管理端共用同一 dev 进程，通过路径区分（`/bookmarks/`、`/admin/bookmarks/`）。
 
 ## 书签管理端
 
@@ -40,11 +43,9 @@ vpr lint          # ESLint 检查
 
 :::
 
-| 变量                          | 说明                                            |
-| ----------------------------- | ----------------------------------------------- |
+| 变量 | 说明 |
+| ---- | ---- |
 | `PUBLIC_BOOKMARKS_ADMIN_HASH` | 登录密码 SHA-256 哈希（必填，首次启动自动写入） |
-| `PUBLIC_BOOKMARKS_ADMIN_NAME` | 登录显示名，默认 `admin`                        |
-| `BOOKMARKS_ADMIN_PORT`        | 端口，默认 `4325`                               |
 
 | 能力                 | 本地 | 线上 |
 | -------------------- | :--: | :--: |
@@ -80,11 +81,11 @@ vpr lint          # ESLint 检查
 │   ├── config.ts              # Astro DB 配置
 │   └── data/bookmarks.ts      # 书签数据源
 ├── integrations/              # Astro 集成（管理端 dev middleware）
-├── scripts/                   # `dev-admin.mjs`、`dev-all.mjs` 等
+├── scripts/                   # `dev-bootstrap.mjs`、`dev-admin.mjs`、`dev-all.mjs` 等
 ├── public/                    # 静态资源
 ├── astro.config.mjs           # Astro / Starlight 配置
 ├── netlify.toml               # Netlify 构建设置
-├── pnpm-workspace.yaml        # pnpm overrides（如 `vite` 版本）
+├── pnpm-workspace.yaml        # pnpm catalog 版本源 + overrides / trustPolicy
 └── .github/workflows/         # GitHub Pages 部署
 ```
 

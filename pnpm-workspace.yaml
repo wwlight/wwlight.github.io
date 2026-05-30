@@ -12,10 +12,54 @@ trustPolicyExclude:
   - semver@6.3.1
 
 overrides:
-  '@astrojs/mdx': 6.0.1
-  vite: 7.3.3
+  '@astrojs/mdx': 'catalog:astro'
+  vite: 'catalog:build'
 
 allowBuilds:
   esbuild: true
   sharp: true
   simple-git-hooks: true
+
+catalogs:
+  astro:
+    '@astrojs/db': ^0.20.0
+    '@astrojs/markdown-remark': ^7.2.0
+    '@astrojs/mdx': ^6.0.1
+    '@astrojs/react': ^5.0.6
+    '@astrojs/starlight': ^0.39.2
+    '@astrojs/starlight-tailwind': ^5.0.0
+    astro: ^6.4.1
+  build:
+    vite: ^7.3.3
+  content:
+    '@jsdevtools/rehype-url-inspector': ^2.0.2
+    mermaid: ^11.15.0
+    sharp: ^0.34.5
+  devtools:
+    '@antfu/eslint-config': ^9.0.0
+    eslint: ^10.4.0
+    eslint-plugin-astro: ^1.7.0
+    eslint-plugin-format: ^2.0.1
+    lint-staged: ^17.0.5
+    simple-git-hooks: ^2.13.1
+  frontend:
+    '@radix-ui/react-dialog': ^1.1.15
+    '@radix-ui/react-dropdown-menu': ^2.1.16
+    '@radix-ui/react-label': ^2.1.8
+    '@radix-ui/react-popover': ^1.1.15
+    '@radix-ui/react-select': ^2.2.6
+    '@radix-ui/react-slot': ^1.2.4
+    '@radix-ui/react-tabs': ^1.1.13
+    '@radix-ui/react-tooltip': ^1.2.8
+    '@tailwindcss/vite': ^4.3.0
+    class-variance-authority: ^0.7.1
+    clsx: ^2.1.1
+    lucide-react: ^1.17.0
+    react: ^19.2.6
+    react-dom: ^19.2.6
+    sonner: ^2.0.7
+    tailwind-merge: ^3.6.0
+    tailwindcss: ^4.3.0
+  types:
+    '@types/react': ^19.2.15
+    '@types/react-dom': ^19.2.3

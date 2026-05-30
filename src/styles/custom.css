@@ -1,5 +1,12 @@
 @import './view-transition-theme.css';
 
+button,
+a,
+[role='button'],
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
 :root {
   --sl-content-width: 60rem;
 }
@@ -33,14 +40,16 @@
     background-color 0.15s;
 }
 
-.module-nav-link:hover {
-  color: var(--sl-color-text);
-  background: var(--sl-color-gray-6);
-}
-
 .module-nav-link.active {
   color: var(--sl-color-text-accent);
   background: var(--sl-color-accent-low);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .module-nav-link:hover {
+    color: var(--sl-color-text);
+    background: var(--sl-color-gray-6);
+  }
 }
 
 .header-bookmarks-link {
@@ -56,10 +65,12 @@
     background-color 0.3s;
 }
 
-.header-bookmarks-link:hover {
-  background: var(--sl-color-gray-5);
-}
-
 .header-bookmarks-link.active {
   background: var(--sl-color-accent-low);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-bookmarks-link:hover {
+    background: var(--sl-color-gray-5);
+  }
 }

@@ -49,6 +49,7 @@ interface AdminAppProps {
   isDev: boolean;
   userName: string;
   onLogout: () => void;
+  firstBlogPostHref: string;
 }
 
 function getInsertIndex(
@@ -97,7 +98,13 @@ function resolveDropCard(
   return bookmarkIndex;
 }
 
-export function AdminApp({ initialSections, isDev, userName, onLogout }: AdminAppProps) {
+export function AdminApp({
+  initialSections,
+  isDev,
+  userName,
+  onLogout,
+  firstBlogPostHref,
+}: AdminAppProps) {
   const [sections, setSections] = useState<BookmarkSectionData[]>(() => {
     const draft = localStorage.getItem(STORAGE_KEY);
     if (draft) {
@@ -357,7 +364,7 @@ export function AdminApp({ initialSections, isDev, userName, onLogout }: AdminAp
 
   function handleReturnToBlog() {
     requestLeave(() => {
-      window.location.href = "/memorandum/dev-qa/";
+      window.location.href = firstBlogPostHref;
     });
   }
 

@@ -6,12 +6,17 @@ import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
+import { mermaid } from './integrations/mermaid.ts'
 import themeInitScript from './src/scripts/theme-init.inline.js?raw'
 
 export default defineConfig({
   site: 'https://wwlight.github.io',
   devToolbar: { enabled: false },
   markdown: {
+    syntaxHighlight: {
+      type: 'shiki',
+      excludeLangs: ['mermaid', 'math'],
+    },
     shikiConfig: {
       themes: {
         light: 'github-light',
@@ -37,15 +42,17 @@ export default defineConfig({
     }),
   },
   integrations: [
+    mermaid(),
     db(),
     react(),
     bookmarksAdmin(),
     starlight({
       title: 'wwlight',
-      credits: true,
+      credits: false,
       head: [{ tag: 'script', content: themeInitScript }],
       components: {
         Header: './src/components/Header.astro',
+        Footer: './src/components/Footer.astro',
         MobileMenuFooter: './src/components/MobileMenuFooter.astro',
         ThemeSelect: './src/components/ThemeSelect.astro',
       },
@@ -60,6 +67,7 @@ export default defineConfig({
       },
       customCss: ['./src/styles/custom.css', './src/styles/global.css'],
       sidebar: [
+        { label: '博客', items: [{ autogenerate: { directory: 'blog' } }] },
         { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
         { label: '工具集', items: [{ autogenerate: { directory: 'tools' } }] },
         { label: '系统相关', items: [{ autogenerate: { directory: 'system' } }] },
@@ -73,8 +81,8 @@ export default defineConfig({
       dedupe: ['react', 'react-dom'],
       tsconfigPaths: true,
     },
-    server: {
-      strictPort: Boolean(process.env.BOOKMARKS_ADMIN_STRICT),
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'mermaid'],
     },
   },
 })

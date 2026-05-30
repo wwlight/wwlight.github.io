@@ -1,6 +1,8 @@
 const SESSION_KEY = "bookmarks-admin-session";
 const PROFILE_KEY = "bookmarks-admin-profile";
 
+export const ADMIN_DISPLAY_NAME = "admin";
+
 export interface AdminProfile {
   name: string;
 }
@@ -90,7 +92,7 @@ export function getDisplayInitials(name: string) {
   return trimmed.slice(0, 2);
 }
 
-export async function loginWithPassword(password: string, displayName?: string): Promise<boolean> {
+export async function loginWithPassword(password: string): Promise<boolean> {
   const passwordHash = getAdminPasswordHash();
   if (!passwordHash) return false;
 
@@ -99,7 +101,7 @@ export async function loginWithPassword(password: string, displayName?: string):
 
   const token = await createSessionToken(passwordHash);
   storeSessionToken(token);
-  if (displayName?.trim()) storeAdminProfile({ name: displayName.trim() });
+  storeAdminProfile({ name: ADMIN_DISPLAY_NAME });
   return true;
 }
 
@@ -122,15 +124,15 @@ export interface AdminSessionState {
 }
 
 /** 首屏会话状态：token 未过期则乐观视为已登录，后续再异步校验 proof */
-export function getInitialAdminSession(defaultAdminName: string): AdminSessionState {
+export function getInitialAdminSession(): AdminSessionState {
   if (!getAdminPasswordHash() || !hasValidSessionTokenSync()) {
-    return { authenticated: false, userName: defaultAdminName };
+    return { authenticated: false, userName: ADMIN_DISPLAY_NAME };
   }
 
   const profile = getStoredAdminProfile();
   return {
     authenticated: true,
-    userName: profile?.name ?? defaultAdminName,
+    userName: profile?.name ?? ADMIN_DISPLAY_NAME,
   };
 }
 

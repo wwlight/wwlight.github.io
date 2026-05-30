@@ -1,32 +1,5 @@
-/* 前台 ThemeSelect + 管理端共用；时长由 theme.ts 按页面高度写入 --theme-transition-duration */
 :root {
   --theme-transition-duration: 400ms;
-}
-
-/* 管理端长页面：切换前锁定 body 在当前视口，html 高度压到视口 */
-html.theme-transition-freeze {
-  overflow: hidden !important;
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-}
-
-html.theme-transition-freeze body {
-  position: fixed;
-  top: var(--theme-scroll-lock-y, 0);
-  left: var(--theme-scroll-lock-x, 0);
-  right: 0;
-  width: 100%;
-  height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-
-html.theme-transition-freeze ::view-transition-group(root) {
-  overflow: clip;
-  width: 100%;
-  height: 100dvh;
-  max-height: 100dvh;
 }
 
 ::view-transition-old(root),
@@ -54,9 +27,7 @@ html.theme-transition-freeze ::view-transition-group(root) {
   animation-fill-mode: both;
 }
 
-/* 分方向控制层级：
-   切到 dark（data-theme=dark）：old 在上层（内收）
-   切到 light（data-theme=light）：new 在上层（外扩） */
+/* 切 dark：old 在上层内收；切 light：new 在上层外扩 */
 ::view-transition-old(root),
 [data-theme='light']::view-transition-new(root) {
   z-index: 2147483647;

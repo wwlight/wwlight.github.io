@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  ADMIN_DISPLAY_NAME,
   clearSessionToken,
   configureAdminPasswordHash,
   getInitialAdminSession,
   isAdminAuthenticated,
   loginWithPassword,
-  storeAdminProfile,
 } from "@/lib/bookmarks/admin-auth";
 import { readBookmarkSectionsFromPage } from "@/lib/bookmarks/page-data";
 import type { BookmarkSectionData } from "@/lib/bookmarks/types";
@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 export interface BookmarksAdminAppProps {
   isDev: boolean;
   passwordHash: string;
-  defaultAdminName?: string;
+  firstBlogPostHref: string;
 }
 
 function AdminCardHeader({ title, description }: { title: string; description: string }) {
@@ -64,20 +64,20 @@ function LoginNavLink({
   );
 }
 
-function bootstrapAdmin(passwordHash: string, defaultAdminName: string) {
+function bootstrapAdmin(passwordHash: string) {
   configureAdminPasswordHash(passwordHash);
   return {
     initialSections: readBookmarkSectionsFromPage(),
-    session: getInitialAdminSession(defaultAdminName),
+    session: getInitialAdminSession(),
   };
 }
 
 export function BookmarksAdminApp({
   isDev,
   passwordHash,
-  defaultAdminName = "admin",
+  firstBlogPostHref,
 }: BookmarksAdminAppProps) {
-  const [{ initialSections, session }] = useState(() => bootstrapAdmin(passwordHash, defaultAdminName));
+  const [{ initialSections, session }] = useState(() => bootstrapAdmin(passwordHash));
   const [authenticated, setAuthenticated] = useState(session.authenticated);
   const [password, setPassword] = useState("");
   const [passwordInvalid, setPasswordInvalid] = useState(false);
@@ -95,9 +95,9 @@ export function BookmarksAdminApp({
       if (ok) return;
       clearSessionToken();
       setAuthenticated(false);
-      setUserName(defaultAdminName);
+      setUserName(ADMIN_DISPLAY_NAME);
     });
-  }, [authenticated, defaultAdminName]);
+  }, [authenticated]);
 
   function triggerPasswordError() {
     setPasswordInvalid(true);
@@ -112,13 +112,12 @@ export function BookmarksAdminApp({
       return;
     }
 
-    const ok = await loginWithPassword(trimmed, defaultAdminName);
+    const ok = await loginWithPassword(trimmed);
     if (!ok) {
       triggerPasswordError();
       return;
     }
-    storeAdminProfile({ name: defaultAdminName });
-    setUserName(defaultAdminName);
+    setUserName(ADMIN_DISPLAY_NAME);
     setAuthenticated(true);
   }
 
@@ -194,7 +193,7 @@ export function BookmarksAdminApp({
                 </Button>
               </div>
               <div className="flex w-full items-center justify-end gap-4 border-t border-border/60 px-6 py-3 text-sm">
-                <LoginNavLink href="/memorandum/dev-qa/" icon={BookOpen}>
+                <LoginNavLink href={firstBlogPostHref} icon={BookOpen}>
                   返回博客
                 </LoginNavLink>
                 <LoginNavLink href="/bookmarks/" icon={Bookmark}>
@@ -216,6 +215,7 @@ export function BookmarksAdminApp({
         isDev={isDev}
         userName={userName}
         onLogout={handleLogout}
+        firstBlogPostHref={firstBlogPostHref}
       />
     </>
   );

@@ -22,7 +22,7 @@ jobs:
         uses: withastro/action@v3
         with:
           path: .
-          node-version: 22
+          node-version: 24
           package-manager: pnpm@11.4.0
 
   deploy:

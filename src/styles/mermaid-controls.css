@@ -1,0 +1,118 @@
+.mermaid-shell {
+  position: relative;
+  margin: 2rem 0;
+  border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-7, rgba(0, 0, 0, 0.02));
+  overflow: hidden;
+}
+
+.mermaid-shell:fullscreen {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: none;
+  background: var(--sl-color-bg);
+}
+
+.mermaid-shell:fullscreen pre.mermaid {
+  flex: 1;
+  min-height: 0;
+}
+
+.mermaid-shell pre.mermaid {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  padding: 2.5rem 1rem 1rem !important;
+  overflow: visible;
+  border: none;
+  background: transparent !important;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* 首次渲染前给一个最小占位高度，避免空白坍缩；渲染后由 shell 的明确 height 控制 */
+.mermaid-shell pre.mermaid:not([data-processed]):not(:has(svg)) {
+  min-height: 12rem;
+}
+
+.mermaid-shell pre.mermaid:active {
+  cursor: grabbing;
+}
+
+.mermaid-shell pre.mermaid[data-processed],
+.mermaid-shell pre.mermaid:not([data-processed]):has(svg) {
+  animation: none !important;
+  background: transparent !important;
+  min-height: auto !important;
+}
+
+.mermaid-shell pre.mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+}
+
+.mermaid-toolbar {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.125rem;
+  background: color-mix(in srgb, var(--sl-color-bg) 88%, transparent);
+  border: 1px solid var(--sl-color-gray-5);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.mermaid-shell:fullscreen .mermaid-toolbar {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+}
+
+.mermaid-toolbar-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--sl-color-text);
+  line-height: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.mermaid-toolbar-btn svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.mermaid-toolbar-btn.is-active {
+  color: var(--sl-color-text-accent);
+  background: var(--sl-color-accent-low);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mermaid-toolbar-btn:hover {
+    background: var(--sl-color-gray-6);
+  }
+}
