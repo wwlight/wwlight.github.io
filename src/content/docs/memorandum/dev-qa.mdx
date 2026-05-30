@@ -1,10 +1,10 @@
 ---
 title: 开发问题记录
 sidebar:
-    order: 1
+  order: 1
 ---
 
-import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## 电脑 SSH 配置管理多个远程仓库
 
@@ -34,7 +34,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
         </TabItem>
     </Tabs>
 
-2. 配置 `config` 文件
+2.  配置 `config` 文件
 
     > 本地调用私钥时默认使用 id_rsa，针对于自定义名称的，需要编写 config 文件，告诉本地调用哪个私钥。
 
@@ -43,50 +43,51 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
     ```
 
     <Tabs syncKey="pkg">
-        <TabItem label="ed25519">
-            ```md title="~/.ssh/config"
-            Host github.com
-                HostName github.com
-                User git
-                IdentityFile ~/.ssh/id_ed25519_github
-                IdentitiesOnly yes
-            ```
-        </TabItem>
-        <TabItem label="rsa">
-            ```md title="~/.ssh/config"
-            Host github.com
-                HostName github.com
-                User git
-                IdentityFile ~/.ssh/id_rsa_github
-                IdentitiesOnly yes
-            ```
-        </TabItem>
+      <TabItem label="ed25519">
+        ```md title="~/.ssh/config"
+        Host github.com
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519_github
+        IdentitiesOnly yes
+        ```
+      </TabItem>
+      <TabItem label="rsa">
+        ```md title="~/.ssh/config"
+        Host github.com
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_rsa_github
+        IdentitiesOnly yes
+        ```
+      </TabItem>
     </Tabs>
 
-3. 添加公钥到各平台
+3.  添加公钥到各平台
 
     ```sh
     cat ~/.ssh/id_ed25519_github.pub
     ```
 
     <Tabs>
-        <TabItem label="GitHub">
-            ```txt
-            Settings → SSH and GPG keys
-            ```
-        </TabItem>
-        <TabItem label="GitLab">
-            ```txt
-            Preferences → SSH Keys
-            ```
-        </TabItem>
+      <TabItem label="GitHub">
+        ```txt
+        Settings → SSH and GPG keys
+        ```
+      </TabItem>
+      <TabItem label="GitLab">
+        ```txt
+        Preferences → SSH Keys
+        ```
+      </TabItem>
     </Tabs>
 
-4. 测试 SSH 连接
+4.  测试 SSH 连接
 
     ```sh
     ssh -T git@github.com
     ```
+
 </Steps>
 
 ## ping 和 telnet 对比
@@ -121,8 +122,8 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
         telnet baidu.com 80
         ```
     </TabItem>
-</Tabs>
 
+</Tabs>
 
 ## cmd 下提示 "系统提示找不到路径"
 

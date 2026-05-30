@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# bookmarks admin local snapshots
+db/data/versions/
+db/data/bookmarks.ts.bak

@@ -1,0 +1,76 @@
+@import './bookmarks-app.css';
+
+@layer base {
+  html {
+    min-height: 100%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .admin-root :is(button, [role='button']),
+  .admin-dialog-content :is(button, [role='button']) {
+    @apply outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0;
+  }
+}
+
+@keyframes input-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+.animate-input-shake {
+  animation: input-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes admin-dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-dialog-content-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-dialog-overlay[data-state='open'] {
+  animation: admin-dialog-overlay-in 150ms ease-out;
+}
+
+.admin-dialog-content[data-state='open'] {
+  animation: admin-dialog-content-in 150ms ease-out;
+}

@@ -1,0 +1,28 @@
+---
+import { bookmarksNavItem, isModuleNavActive } from '@/lib/site-nav'
+
+const pathname = Astro.url.pathname
+const active = isModuleNavActive(bookmarksNavItem.prefix, pathname)
+---
+
+<a
+  href={bookmarksNavItem.href}
+  class:list={['header-bookmarks-link', { active }]}
+  aria-label={bookmarksNavItem.label}
+  title={bookmarksNavItem.label}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1.2rem"
+    height="1.2rem"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+  </svg>
+</a>

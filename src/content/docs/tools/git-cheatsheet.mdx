@@ -5,577 +5,278 @@ sidebar:
 ---
 
 :::tip[学习资料]
+
 - [Git 官方网站](https://git-scm.com/book/zh/v2)
 - [常用 Git 命令清单 - 阮一峰](http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
 - [Git 的奇技淫巧 - GitHub](https://github.com/521xueweihan/git-tips)
 - [Git 常用命令参考手册 - GitHub](https://github.com/xjh22222228/git-manual)
 - [Learn Git Branching - 在线练习](https://learngitbranching.js.org/?locale=zh_CN)
 - [Git飞行规则(Flight Rules)](https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md)
-:::
+  :::
 
 :::note[其他资料]
+
 - [git-extras](https://github.com/tj/git-extras) | [安装脚本：git-extras-install.sh](https://github.com/wwlight/use/blob/main/scripts/windows/git-extras-install.sh)
 - [约定式提交官网](https://www.conventionalcommits.org/zh-hans/)
 - [git commit 提交类型列表 - GitHub](https://github.com/pvdlg/conventional-changelog-metahub#commit-types)
 - [标准版本](https://github.com/conventional-changelog/standard-version)
 - [版本号格式](https://semver.org/lang/zh-CN/)
-:::
+  :::
 
 ## 配置
 
-```shell {2,5,8}
-# 设置本地默认分支 main
-$ git config --global init.defaultBranch main
-
-# 设置文件大小写敏感
-$ git config --global core.ignorecase false
-
-# 忽略目录安全限制
-$ git config --global safe.directory "*"
+```sh {8,9}
+$ git config --global init.defaultBranch main           # 设置本地默认分支为 main
+$ git config --global core.ignorecase false             # 设置文件名大小写敏感 # [注意] macOS 默认不敏感，跨平台协作慎用
+$ git config --global safe.directory "*"                # 忽略目录安全限制 # [注意] 降低所有权校验，共享机器慎用
+$ git config --list                                     # 查看所有配置
+$ git config --global -l                                # 查看全局配置
+$ git config --local -l                                 # 查看当前仓库配置
+$ git config --list --show-origin                       # 查看配置及其所在文件
+$ git config --global user.name "name"                  # 设置全局用户名
+$ git config --global user.email "example@example.com"  # 设置全局邮箱
+$ git config --local user.name "name"                   # 设置当前仓库用户名
+$ git config --local user.email "example@example.com"   # 设置当前仓库邮箱
+$ git config user.name                                  # 查看用户名配置
+$ git config user.email                                 # 查看邮箱配置
+$ git config --unset --global user.name                 # 删除全局用户名配置
+$ git config --unset --global user.email                # 删除全局邮箱配置
+$ git config --global credential.helper store           # 永久记住账号密码 # [注意] 明文存储，公共设备勿用
+$ git config --global credential.helper cache           # 临时记住账号密码（默认 15 分钟）
 ```
 
-```shell {2,12,13,16,17}
-# 检查配置信息
-$ git config --list
-# 查看全局配置列表
-$ git config --global -l
-# 查看局部配置列表
-$ git config --local -l
+## 初始化与克隆
 
-# 查看所有的配置以及它们所在的文件
-$ git config --list --show-origin
-
-# 设置全局用户名/邮箱
-$ git config --global user.name "姓名"
-$ git config --global user.email "example@example.com"
-
-# 设置当前工作区仓库用户名/邮箱
-$ git config --local user.name "姓名"
-$ git config --local user.email "example@example.com"
-
-# 检查 git 的某一项配置
-$ git config user.name
-$ git config user.email
-
-# 删除配置
-$ git config --unset --global user.name
-$ git config --unset --global user.email
-
-# 记住提交账号密码, 下次操作可免账号密码
-$ git config --global credential.helper store   # 永久
-$ git config --global credential.helper cache   # 临时，默认15分钟
+```sh {1,4}
+$ git init                                              # 在当前目录初始化仓库
+$ git init --bare                                       # 创建裸仓库（仅含 .git 内容）
+$ git init <path>                                       # 新建目录并初始化仓库
+$ git clone <url>                                       # 克隆远程仓库
+$ git clone <url> <dir>                                 # 克隆并重命名本地目录
+$ git clone -b <branch> <url>                           # 克隆指定分支
 ```
 
-## 初始化仓库
+## 远程仓库
 
-```shell
-# 当前目录生成 .git 文件
-$ git init
-
-# 在当前目录下创建一个裸仓库，里面只有 .git 下的所有文件
-$ git init --bare
-
-# 新建一个目录并初始化
-$ git init [project-name]
+```sh {2}
+$ git remote                                            # 查看远程仓库名称（默认 origin）
+$ git remote -v                                         # 查看远程仓库地址
+$ git remote -vv                                        # 查看远程仓库详细映射
+$ git remote add <remote> <url>                         # 添加远程仓库
+$ git remote show <remote>                              # 查看指定远程仓库信息
+$ git remote rename <old-remote> <new-remote>           # 重命名远程仓库
+$ git remote remove <remote>                            # 移除远程仓库 # [注意] 仅删除本地引用，不影响远端
+$ git remote set-url origin <url>                       # 修改远程仓库地址
+$ git remote prune origin                               # 清理已删除的远程分支引用
+$ git push <remote>                                     # 推送到指定远程仓库
 ```
 
-## 克隆项目
+## 暂存与提交
 
-```shell {2,5}
-# 下载远程项目
-$ git clone [url]
-
-# 下载远程项目并改名
-$ git clone [url] [rename]
-
-# 克隆指定分支并切换到 gh-pages 分支上
-$ git clone -b gh-pages [url]
+```sh {2,5}
+$ git add -A                                            # 暂存所有改动（含删除）
+$ git add .                                             # 暂存当前目录所有改动
+$ git add ./README.md                                   # 暂存指定文件
+$ git add 1.txt 2.txt                                   # 暂存多个文件
+$ git commit -m "changes log"                           # 提交并附带描述信息
+$ git commit README.md -m "message"                     # 只提交指定文件
+$ git commit -v                                         # 提交并显示 diff
+$ git commit --allow-empty-message                      # 允许空提交信息
+$ git commit --amend -m "new message"                   # 修改上一次提交信息 # [注意] 已推送需配合 force push，协作分支慎用
+$ git commit --no-verify -m "message"                   # 跳过 pre-commit 钩子验证 # [注意] 会绕过 CI/检查，仅在明确需要时使用
 ```
 
-## 管理仓库
+## 推送与拉取
 
-:::tip[说明]
-- `git remote` 命令用来管理远程仓库。
-- 一个项目对应多个仓库，可以用 `git remote` 来管理多个仓库地址，`origin` 是仓库默认名字。
-:::
-
-```shell {3,6,10}
-# 查看当前项目远程仓库名称
-# （一般打印 origin，这是仓库默认名字，除非有多个远程仓库地址）
-$ git remote
-
-# 查看当前项目远程仓库地址
-$ git remote -v
-$ git remote -vv
-
-# 自定义远程仓库名称（example 是自定义名字）
-$ git remote add [example] [url]
-
-# 刷新本地仓库和远程仓库分支
-$ git remote prune origin
-
-# 查看指定远程仓库信息
-$ git remote show [example]
-
-# 重命名远程仓库
-$ git remote rename [oldName] [newName]
-
-# 移除远程仓库
-$ git remote remove [example]
-
-# 修改远程仓库地址，从HTTPS更改为SSH
-$ git remote set-url origin [url]
-
-# 推送指定仓库
-$ git push [example]
+```sh {1,3,7,8}
+$ git push                                              # 推送当前分支到上游
+$ git push origin <local-branch>:<remote-branch>        # 推送本地分支到远端指定分支
+$ git push -u origin main                               # 推送并设置上游分支（缩写 --set-upstream）
+$ git push -f origin main                               # 强制推送（缩写 --force） # [注意] 覆盖远程历史，共享分支慎用
+$ git fetch                                             # 拉取远程所有分支更新
+$ git fetch origin <remote-branch>:<local-branch>       # 拉取远程分支到本地分支 # [注意] 可能覆盖本地同名分支
+$ git pull                                              # 拉取并合并远程更新
+$ git pull --rebase                                     # 拉取并以 rebase 方式整合
+$ git pull origin <branch>                              # 拉取指定远程分支
 ```
 
-## 暂存文件
+## 分支查看
 
-```shell
-# 暂存所有
-$ git add -A
-
-# 暂存某个文件
-$ git add ./README.md
-
-# 暂存当前目录所有改动文件
-$ git add .
-
-# 暂存一系列文件
-$ git add 1.txt 2.txt ...
+```sh {1,2}
+$ git branch                                            # 查看本地分支
+$ git branch -a                                         # 查看所有分支（含远程）
+$ git branch -r                                         # 查看远程分支
+$ git branch -v                                         # 查看本地分支及最近提交
+$ git branch -vv                                        # 查看本地与远程分支映射关系
+$ git branch --help                                     # 查看 branch 帮助文档
 ```
 
-## 提交文件
+## 分支创建与删除
 
-```shell {2,8,14,17}
-# 提交的描述信息
-$ git commit -m "changes log"
-
-# 只提交某个文件
-$ git commit README.md -m "message"
-
-# 提交并显示diff变化
-$ git commit -v
-
-# 允许提交空消息，通常必须指定 -m 参数
-$ git commit --allow-empty-message
-
-# 重写上一次提交信息，确保当前工作区没有改动
-$ git commit --amend -m "new message"
-
-# 跳过验证，如果使用了类似 husky 工具。
-$ git commit --no-verify -m "message"
+```sh {3,5,6}
+$ git branch <branch>                                   # 创建分支（不切换）
+$ git branch -f <branch>                                # 强制创建/重置分支指针 # [注意] 未合并提交可能丢失
+$ git branch -d <branch>                                # 删除已合并的本地分支
+$ git branch -D <branch>                                # 强制删除本地分支（缩写 --delete --force） # [注意] 未合并改动将丢失
+$ git push origin --delete <branch>                     # 删除远程分支 # [注意] 影响所有协作者，删除前确认
+$ git push origin :<branch>                             # 删除远程分支（旧写法） # [注意] 影响所有协作者，删除前确认
+$ git branch -m <new-branch>                            # 重命名当前分支
+$ git branch -M <new-branch>                            # 强制重命名当前分支
+$ git branch -m <old-branch> <new-branch>               # 重命名指定分支
+$ git push -u origin <new-branch>                       # 推送重命名后的分支
 ```
 
-## 推送远端
+## 分支切换
 
-```shell {2,5,10,13}
-# 默认推送当前分支（等价于 git push origin，实际上推送到一个叫 origin 默认仓库名字）
-$ git push
-
-# 推送到主分支
-$ git push -u origin main
-# 等价于
-$ git push --set-upstream origin main
-
-# 本地分支推送到远端分支， 本地分支:远端分支
-$ git push origin [branch-name]:[branch-name]
-
-# 强制推送, --force 缩写
-$ git push -f origin main
+```sh {1,2,4,7,10}
+$ git checkout <branch>                                 # 切换到指定分支
+$ git checkout -                                        # 切换到上一个分支
+$ git checkout -f main                                  # 强制切换（丢弃未保存修改） # [注意] 未提交改动将丢失
+$ git checkout -b <branch>                              # 创建并切换分支
+$ git checkout -B <branch>                              # 强制创建分支（不切换） # [注意] 已存在分支会被重置
+$ git checkout -t upstream/main                         # 跟踪远程分支并切换
+$ git switch <branch>                                   # 切换到指定分支（Git 2.23+）
+$ git switch -                                          # 切换到上一个分支
+$ git switch -f main                                    # 强制切换 # [注意] 未提交改动将丢失
+$ git switch -c <branch>                                # 创建并切换分支
+$ git switch -C <branch>                                # 强制创建分支（不切换） # [注意] 已存在分支会被重置
+$ git switch -t upstream/main                           # 跟踪远程分支并切换
+$ git checkout -b <branch> origin/<branch>              # 拉取远程分支并建立跟踪
+$ git branch --set-upstream-to=origin/<branch> <branch> # 设置本地分支跟踪远程分支
 ```
 
-## 查看分支
+## 合并
 
-```shell {2,5,8,14}
-# 查看所有分支
-$ git branch -a
-
-# 查看本地分支
-$ git branch
-
-# 查看远程分支
-$ git branch -r
-
-# 查看本地所关联的远程分支
-$ git branch -v
-
-# 查看本地与远程分支映射关系
-$ git branch -vv
-
-# 打开官方帮助文档
-$ git branch --help
+```sh {1,4}
+$ git merge <branch>                                    # 合并指定分支到当前分支
+$ git merge --no-ff <branch>                            # 非快进合并，保留合并节点
+$ git merge --squash <branch>                           # 将分支改动压成一个提交 # [注意] 不会自动提交，需手动 commit
+$ git merge --abort                                     # 中止合并并恢复原状态
 ```
 
-## 切换分支一
+## 变基 rebase
 
-```shell {2,5,11}
-# 切换到指定分支
-$ git checkout [branch-name]
-
-# 切换上一个分支
-$ git checkout -
-
-# 强制切换（如果文件未保存修改会直接覆盖掉）
-$ git checkout -f main
-
-# 创建分支并切换
-$ git checkout -b [branch-name]
-
-# 强制创建分支（不切换分支）
-$ git checkout -B [branch-name]
-
-# 切换远程分支（如果用了 git remote 添加一个新仓库就需要用 -t 进行切换）
-$ git checkout -t upstream/main
+```sh {4,5,7}
+$ git rebase main                                       # 将当前分支变基到 main 之上 # [注意] 已推送分支变基后需 force push
+$ git rebase origin/main                                # 将当前分支变基到远程 main 之上 # [注意] 已推送分支变基后需 force push
+$ git rebase -i HEAD~3                                  # 交互式变基最近 3 个提交（缩写 --interactive） # [注意] 会改写历史，共享分支慎用
+$ git rebase --continue                                 # 解决冲突后继续变基
+$ git rebase --abort                                    # 中止变基并恢复原状态
+$ git rebase --skip                                     # 跳过当前提交继续变基 # [注意] 被跳过的提交不会进入当前分支
+$ git pull --rebase                                     # 拉取远端并以 rebase 整合（避免多余 merge commit）
 ```
 
-## 切换分支二
+## 拣选 cherry-pick
 
-:::tip[说明]
-- `git switch` 命令在 git 版本 2.23 引入，用于切换分支。
-- `git switch` 相较于 `git checkout` 意义：`git checkout` 可以切换分支还可以撤销工作，导致命令含糊不清，所以引入了 `git switch`。
-:::
-
-```shell {2,5,11}
-# 切换到指定分支
-$ git switch [branch-name]
-
-# 切换到上一个分支
-$ git switch -
-
-# 强制切换（如果文件未保存修改会直接覆盖掉）
-$ git switch -f main
-
-# 创建分支并切换
-$ git switch -c [branch-name]
-
-# 强制创建分支（不切换分支）
-$ git switch -C [branch-name]
-
-# 切换远程分支（如果用了 git remote 添加一个新仓库就需要用 -t 进行切换）
-$ git switch -t upstream/main
+```sh {1}
+$ git cherry-pick <commit>                              # 将指定提交应用到当前分支 # [注意] 同一 commit 重复拣选可能产生重复改动
+$ git cherry-pick <commit1> <commit2>                   # 依次拣选多个提交
+$ git cherry-pick -n <commit>                           # 拣选但不自动提交（缩写 --no-commit）
+$ git cherry-pick -x <commit>                           # 拣选并在 message 中追加原 commit 引用
+$ git cherry-pick --continue                            # 解决冲突后继续拣选
+$ git cherry-pick --abort                               # 中止拣选并恢复原状态
 ```
 
-## 创建分支
+## 标签
 
-```shell {2,8,14}
-# 创建分支
-$ git branch [branch-name]
-
-# 强制创建分支（不输出任何警告或信息）
-$ git branch -f [branch-name]
-
-# 创建分支并切换
-$ git checkout -b [branch-name]
-
-# 强制创建分支（不切换分支）
-$ git checkout -B [branch-name]
-
-# 创建分支并切换
-$ git switch -c [branch-name]
-
-# 强制创建分支（不切换分支）
-$ git switch -C [branch-name]
+```sh {5,6}
+$ git tag                                               # 列出本地标签
+$ git tag -l                                            # 列出标签（同 --list）
+$ git ls-remote --tags origin                           # 查看远程标签
+$ git tag <tag>                                         # 在当前 HEAD 创建轻量标签
+$ git tag -a <tag> -m "tag message"                     # 创建附注标签
+$ git push origin <tag>                                 # 推送单个标签
+$ git push origin --tags                                # 推送所有本地标签
+$ git tag -d <tag>                                      # 删除本地标签 # [注意] 已推送 tag 需同步删除远程
+$ git push origin :refs/tags/<tag>                      # 删除远程标签 # [注意] 影响依赖该 tag 的发布流程
+$ git show <tag>                                        # 查看标签详情
 ```
 
-## 检出远程分支
+## 暂存工作区
 
-```shell {2,11}
-# 检出远程所有分支
-$ git fetch
-
-# 检出远程指定分支
-$ git fetch origin :[branch-name]
-# 等价于
-$ git fetch origin main:[branch-name]
-
-# 拉取远程分支并创建本地分支
-# 方式一：（建立的本地分支会和远程分支建立映射关系，自动切换分支）
-$ git checkout -b [branch-name] origin/[branch-name]
-
-# 方式二：（建立的本地建立分支不会和远程分支建立映射关系）
-$ git fetch origin [branch-name]:[branch-name]
-# 推送需注意
-$ git branch --set-upstream-to=[branch-name] origin/[branch-name]
-
-# 抛弃本地所有的修改，回到远程仓库的状态
-$ git reset --hard origin/main
-
-# 本地版本记录高于线上版本记录（本地同时出现 pull 和 push）
-$ git pull --rebase
+```sh {1,2,8}
+$ git stash                                             # 保存当前工作区与暂存区改动
+$ git stash save "修改了 issue-28 Bug"                   # 保存并添加注释（推荐）
+$ git stash -u                                          # 保存时包含未追踪文件
+$ git stash list                                        # 查看 stash 列表
+$ git stash pop                                         # 恢复最近一次 stash 并从列表移除
+$ git stash pop stash@{1}                               # 恢复指定 stash
+$ git stash pop --index                                 # 恢复时连同暂存区状态一并还原
+$ git stash apply                                       # 恢复 stash 但保留列表条目
+$ git stash drop                                        # 删除最近一次 stash # [注意] 无法恢复
+$ git stash drop stash@{0}                              # 删除指定 stash # [注意] 无法恢复
+$ git stash clear                                       # 清空所有 stash # [注意] 无法恢复
 ```
 
-## 删除分支
+## 状态与差异
 
-```shell {2,5,10,11}
-# 删除指定分支
-$ git branch -d [branch-name]
-
-# 强制删除未完全合并的分支
-$ git branch -D [branch-name]
-# 等价于
-$ git branch --delete --force [branch-name]
-
-# 删除远程分支
-$ git push origin :[branch-name]
-$ git push origin --delete [branch-name]
+```sh {1,5,6}
+$ git status                                            # 查看工作区与暂存区状态
+$ git status -s                                         # 以短格式输出状态
+$ git status --ignore-submodules                        # 忽略子模块状态
+$ git status --ignored                                  # 显示被忽略的文件
+$ git diff                                              # 查看工作区与暂存区差异
+$ git diff --staged                                     # 查看暂存区与最新 commit 差异（同 --cached）
+$ git diff <branch1> <branch2>                          # 比较两个分支差异
+$ git diff <commit> -- <file>                           # 查看指定 commit 中某文件的差异
 ```
 
-## 重命名分支
+## 日志与历史
 
-```shell {2}
-# 修改分支名称
-$ git branch -m [branch-name]
-
-# 强制修改分支名称
-$ git branch -M [branch-name]
-
-# 删除远程旧分支
-$ git push origin :[old-branch]
-
-# 将重命名分支推送到远程
-$ git push -u origin [new-branch]
-
-# 重命名指定分支
-$ git branch -m [old-branch] [new-branch]
+```sh {1,10}
+$ git log                                               # 查看完整提交历史
+$ git log -2                                            # 查看最近 N 次提交
+$ git log -p -2                                         # 查看最近 N 次提交及 diff
+$ git log -i --grep="fix: issue-28"                     # 按 commit message 搜索（-i 忽略大小写）
+$ git log -S "alert(1)"                                 # 搜索引入/删除指定代码的提交
+$ git log --author=<name>                               # 查看指定作者的提交
+$ git log README.md                                     # 查看指定文件的提交历史
+$ git log --merges                                      # 只显示合并提交
+$ git log --graph --oneline --all                       # 图形化查看所有分支历史
+$ git log --reverse                                     # 按时间正序查看历史
+$ git shortlog                                          # 按贡献者分组输出日志
+$ git shortlog -sn                                      # 统计各作者提交数量
+$ git shortlog -n                                       # 按提交数量排序并输出 message
+$ git shortlog -e                                       # 以邮箱格式化输出贡献度
+$ git reflog                                            # 查看引用日志（含 reset/rebase 等操作记录）
 ```
 
-## 打标签
+## 回滚与撤销
 
-```shell
-# 列出所有现有的标签
-$ git tag
-$ git tag -l
-$ git tag --list
+:::tip[回滚说明]
 
-# 查看远程标签
-$ git ls-remot --tags origin
+- `git reset`：回滚后历史记录被改写，适合未推送或本地整理；基本不会产生 merge 冲突。
+- `git revert`：通过新增提交来撤销，保留完整历史；多人协作时更安全，但可能产生冲突。
+  :::
 
-# 创建一个新的标签在当前的 HEAD 上
-$ git tag [tagname]
-
-# 创建一个带注释的标签
-$ git tag -a [tagname] -m "tag message"
-
-# 推送标签
-$ git push origin [tagname]
-$ git push [origin] --tags
-
-# 删除一个标签
-$ git tag -d [tagname]
-$ git push origin :refs/tags/[tagname]
-
-# 查看标签
-$ git show [tagname]
-$ git show [remote]/[tagname]
+```sh {1,7}
+$ git reset --soft HEAD^                                # 撤销最近一次 commit，保留暂存区
+$ git reset --mixed HEAD^                               # 撤销 commit 与 add，保留工作区（默认）
+$ git reset --hard HEAD^                                # 撤销 commit、add 与工作区改动 # [注意] 未提交改动无法恢复
+$ git reset --hard HEAD^^                               # 回退上两个版本 # [注意] 未提交改动无法恢复
+$ git reset --hard <commit>                             # 回退到指定 commit # [注意] 未提交改动无法恢复
+$ git reset --hard origin/main                          # 与远程 main 完全对齐，丢弃本地改动 # [注意] 本地未推送提交将全部丢失
+$ git revert HEAD^                                      # 新建提交来撤销指定 commit（保留历史）
+$ git revert <commit>                                   # 撤销指定 commit
+$ git revert HEAD^ --no-edit                            # 撤销并跳过编辑提交信息
+$ git revert --abort                                    # 中止 revert 操作
+$ git checkout main -- 1.txt 2.txt                      # 从指定分支恢复文件到工作区 # [注意] 会覆盖工作区中对应文件
+$ git checkout <commit> -- 1.txt 2.txt                  # 从指定 commit 恢复文件到工作区 # [注意] 会覆盖工作区中对应文件
+$ git push -f                                           # 强制推送（reset 后同步远程时使用） # [注意] 覆盖远程历史，共享分支慎用
 ```
 
-## 临时保存
+## Shell 辅助命令
 
-```shell {2,11,15,22,25}
-# 保存当前修改工作区内容
-$ git stash
-
-# 保存时添加注释（推荐使用此命令）
-$ git stash save "修改了#28 Bug"
-
-# 保存包含没有被git追踪的文件
-$ git stash -u
-
-# 查看当前保存列表
-$ git stash list
-
-# 恢复修改工作区内容，会从 git stash list 移除掉
-# 恢复最近一次保存内容到工作区，默认会把暂存区的改动恢复到工作区
-$ git stash pop
-# 恢复指定 id，通过 git stash list 可查到
-$ git stash pop stash@{1}
-# 恢复最近一次保存内容到工作区，但如果是暂存区的内容同样恢复到暂存区
-$ git stash pop --index
-
-# 与 pop 命令一致，唯一不同的是不会移除保存列表
-$ git stash apply
-
-# 清空所有保存
-$ git stash clear
-
-# 清空指定 stash id，如果 drop 后面不指定id清除最近的一次
-$ git stash drop stash@{0}
-# 清除最近一次
-$ git stash drop
-```
-
-## 文件状态
-
-```shell {2}
-# 完整查看文件状态
-$ git status
-
-# 以短格式给出输出
-$ git status -s
-
-# 忽略子模块
-$ git status --ignore-submodules
-
-# 显示已忽略的文件
-$ git status --ignored
-```
-
-## 查看日志
-
-:::tip[说明]
-- 查看历史日志可以通过 `git log` / `git shortlog` / `git reflog`
-:::
-
-```shell {2}
-# 查看完整历史提交记录
-$ git log
-
-# 查看前 N 次提交记录 commit message
-$ git log -2
-
-# 查看前 N 次提交记录，包括 diff
-$ git log -p -2
-
-# 从 commit 进行搜索，可以指定 -i 忽略大小写
-$ git log -i --grep="fix: #28"
-
-# 从工作目录搜索包含 alert(1) 这段代码何时引入
-$ git log -S "alert(1)"
-
-# 查看指定作者历史记录
-$ git log --author=源代码
-
-# 查看某个文件的历史提交记录
-$ git log README.md
-
-# 只显示合并日志
-$ git log --merges
-
-# 以图形查看日志记录，--oneline --all 可选
-$ git log --graph --oneline --all
-
-# 以倒序查看历史记录
-$ git log --reverse
-```
-
-> git shortlog 以简短的形式输出日志，通常用于统计贡献者代码量。
-
-```shell {2}
-# 默认以贡献者分组进行输出
-$ git shortlog
-
-# 列出提交者代码贡献数量，打印作者和贡献数量
-$ git shortlog -sn
-
-# 以提交贡献数量排序并打印出message
-$ git shortlog -n
-
-# 采用邮箱格式化的方式进行查看贡献度
-$ git shortlog -e
-```
-
-> git reflog 通常被引用为安全网，当 git log 没有想要的信息时可以尝试用 git reflog。
-
-```shell
-# 当回滚某个版本时记录是不保存在 git log 中，想要找到这条回滚版本信息时 git reflog 就用上了
-$ git reflog
-# 等价于
-$ git log -g --abbrev-commit --pretty=oneline
-```
-
-## 回滚版本
-
-:::tip[说明]
-回滚版本有 2 种方法：
-- git reset - 回滚版本后之前的历史记录将不保存，不保留痕迹，基本上不存在冲突情况。
-- git revert - 回滚版本后之前的历史记录还存在并多增加了一条 Revert 记录，很容易出现冲突。
-:::
-
-```shell {2,5,12}
-# 回滚上一个版本 (不删除工作空间的改动代码 ，撤销commit，不撤销add)
-$ git reset --soft HEAD^
-
-# 回滚上一个版本（删除工作空间的改动代码，撤销commit且撤销add）
-$ git reset --hard HEAD^
-
-# 回滚上两个版本
-$ git reset --hard HEAD^^
-
-# 回滚到指定 commit_id，对应 hash 值
-# 通过 git log / git reflog 查看
-$ git reset --hard [hash 值]
-
-# 回滚后但未推送到远程，想断开当前操作执行拉取即可
-$ git pull
-
-# 推送
-$ git push -f
-```
-
-```shell
-# 回滚上一次提交版本
-$ git revert HEAD^
-
-# 回滚指定commit
-$ git revert 8efef3d37
-
-# --no-edit 回滚并跳过编辑消息
-$ git revert HEAD^ --no-edit
-
-# 断开当前操作，还原初始状态
-$ git revert --abort
-
-# 推送到远程，假设当前是 main 分支
-$ git push -u origin main
-```
-
-```shell
-# 回滚到指定分支或 commit_id 指定文件
-$ git checkout main 1.txt 2.txt
-
-$ git checkout 8efef3d37 1.txt 2.txt
-```
-
-## 其他命令
-
-```shell
-# 切换目录
-$ cd e:
-$ cd ..
-$ cd ...
-$ cd ~
-# 使用 通配符*，只有一个f开头的文件夹，它就会进入到这个文件夹
-$ cd f*
-
-# 查看文件内容
-$ cat README.md
-
-# 查看当前目录路径
-$ pwd
-
-# 查看当前目录中的所有文件
-$ ls
-# windows不起作用
-$ ll
-
-# 新建一个文件
-$ touch README.md
-$ echo "
-	hello
-	world" ] README.md
-
-# 新建一个文件夹
-$ mkdir [file-name]
-
-# 删除一个文件
-$ rm README.md
-
-# 删除一个文件夹
-$ rm -r [file-name]
-
-# 清屏
-$ reset
-$ clear
+```sh
+$ cd e:                                                 # 切换盘符（Windows）
+$ cd ..                                                 # 返回上级目录
+$ cd ~                                                  # 返回用户主目录
+$ pwd                                                   # 查看当前目录路径
+$ ls                                                    # 列出当前目录文件
+$ cat README.md                                         # 查看文件内容
+$ touch README.md                                       # 新建空文件
+$ mkdir <dir>                                           # 新建文件夹
+$ rm README.md                                          # 删除文件 # [注意] 不可恢复
+$ rm -r <dir>                                           # 删除文件夹 # [注意] 不可恢复，慎用 rm -rf
+$ clear                                                 # 清屏
 ```

@@ -1,8 +1,12 @@
+import db from '@astrojs/db'
 import { unified } from '@astrojs/markdown-remark'
+import react from '@astrojs/react'
 import starlight from '@astrojs/starlight'
 import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
+import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
+import themeInitScript from './src/scripts/theme-init.inline.js?raw'
 
 export default defineConfig({
   site: 'https://wwlight.github.io',
@@ -33,10 +37,16 @@ export default defineConfig({
     }),
   },
   integrations: [
+    db(),
+    react(),
+    bookmarksAdmin(),
     starlight({
       title: 'wwlight',
       credits: true,
+      head: [{ tag: 'script', content: themeInitScript }],
       components: {
+        Header: './src/components/Header.astro',
+        MobileMenuFooter: './src/components/MobileMenuFooter.astro',
         ThemeSelect: './src/components/ThemeSelect.astro',
       },
       social: [
@@ -48,12 +58,8 @@ export default defineConfig({
           lang: 'zh-CN',
         },
       },
-      customCss: [
-        './src/styles/custom.css',
-        './src/styles/global.css',
-      ],
+      customCss: ['./src/styles/custom.css', './src/styles/global.css'],
       sidebar: [
-        { slug: 'bookmarks' },
         { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
         { label: '工具集', items: [{ autogenerate: { directory: 'tools' } }] },
         { label: '系统相关', items: [{ autogenerate: { directory: 'system' } }] },
@@ -63,5 +69,12 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+      tsconfigPaths: true,
+    },
+    server: {
+      strictPort: Boolean(process.env.BOOKMARKS_ADMIN_STRICT),
+    },
   },
 })

@@ -1,113 +1,159 @@
 ---
 title: git 问题记录
 sidebar:
-    order: 3
+  order: 3
 ---
 
-import { Steps } from '@astrojs/starlight/components'
+import { Steps } from "@astrojs/starlight/components";
 
-## git 仓库大小写敏感
+## 文件名大小写修改不生效
+
+:::note[场景]
+在 macOS / Windows 上把 `demo.js` 重命名为 `Demo.js`，`git status` 却没有变化；或跨平台协作时，远程仓库里同时存在仅大小写不同的两个文件。
+:::
+
+> Git 在 macOS / Windows 上默认对文件名**大小写不敏感**，直接改文件名往往不会被识别为变更。
 
 <Steps>
-1. 首先确保本地 `git` 配置启用大小写敏感
-    - `git` 默认情况下对文件名大小写不敏感
+1. 开启大小写敏感（建议只在当前仓库设置，避免影响其他项目）
 
     ```sh
-    $ git config --global core.ignorecase false
     $ git config --local core.ignorecase false
 
-    # 查询状态
+    # 查看当前配置（false 表示敏感）
     $ git config --get core.ignorecase
-    $ git config --local --get core.ignorecase
     ```
 
-2. 使用 `git mv` 命令进行重命名 (假设要将 `demo` 改为 `Demo`)
+2.  用 `git mv` 两步重命名（以 `demo` → `Demo` 为例）
 
     ```sh
-    # 先改成临时名称
-    $ git mv filename demo.tmp
-    # 再改成目标名称
-    $ git mv demo.tmp Filename
+    $ git mv demo demo.tmp   # 先改为临时名
+    $ git mv demo.tmp Demo   # 再改为目标名
     ```
 
-    - 针对文件已经提交过（线上大小写同时存在），需要清除缓存再提交
+3.  若目标大小写版本**已经存在于远程**（历史遗留），需先清除旧索引再提交
 
-    ``` sh
-    # 移除要删除的文件缓存
-    $ git rm --cached filename
+    ```sh
+    $ git rm --cached demo   # 移除旧名称的缓存记录
+    $ git add Demo
+    $ git commit -m "fix: rename demo to Demo"
     ```
+
 </Steps>
 
-## git 强制同步远程最新代码
+## 强制与远程仓库保持一致
 
-> 场景：代码回滚导致本地与远程版本不一致，无法直接拉取远程仓库
+:::note[场景]
+本地历史与远程分叉（误操作 `reset`、`rebase` 失败、或本地有大量不需要的提交），`git pull` 持续冲突，需要**完全丢弃本地改动**，以远程 `main` 为准。
+:::
 
 ```bash
-# 检出远程所有分支最新数据
 $ git fetch --all
-$ git reset --hard origin/main # 丢弃本地
+$ git reset --hard origin/main   # 将本地 main 重置为远程最新状态
 ```
 
 ## 重新关联本地项目到远程仓库
 
-> 场景：误删除了本地 git 项目的 `.git` 目录
+:::note[场景]
+误删了项目目录下的 `.git` 文件夹，工作区代码还在，但仓库失去了 Git 历史与远程关联。
+:::
 
-```sh
-$ git init
-$ git remote add origin <origin_url>
-$ git fetch
-$ git reset --hard origin/main # 丢弃本地
-$ git branch --set-upstream-to=origin/main main # 设置上游跟踪
-# 等价于
-$ git checkout -B main origin/main
-```
+<Steps>
+1. 在现有代码目录重新初始化，并关联远程地址
 
-## 关闭 git 证书验证
+    ```sh
+    $ git init
+    $ git remote add origin <origin-url>
+    $ git fetch
+    ```
 
-:::danger[场景]
-- 目的：禁用 git 通过 HTTP/HTTPS 协议与远程仓库通信时的 SSL/TLS 证书验证
-- 问题：OpenSSL SSL_read: Connection was reset, errno 10054
-- 原因：这是服务器的 SSL 证书没有经过第三方机构的签署
+2.  以远程 `main` 为准建立本地分支（会覆盖本地与远程不一致的内容）
+
+    ```sh
+    $ git checkout -B main origin/main
+    # 等价写法：
+    # git reset --hard origin/main
+    # git branch --set-upstream-to=origin/main main
+    ```
+
+</Steps>
+
+## 关闭 Git SSL 证书验证
+
+:::note[场景]
+通过 HTTPS 访问自建 Git 服务器时，出现 `OpenSSL SSL_read: Connection was reset` 或证书不受信任等错误。常见原因是服务器使用了自签名证书，未被系统或 Git 信任。
+:::
+
+:::danger[注意]
+关闭证书验证会降低传输安全性，**仅建议在受信任的内网环境临时使用**。生产环境应正确配置证书，而非关闭验证。
 :::
 
 ```sh
-$ git config --global http.sslVerify "false"
+$ git config --global http.sslVerify false
 ```
 
-## 代码回滚误操作如何恢复
+## 误操作回滚后如何恢复
 
-- 代码有进行 `commit` 操作
+:::note[场景]
+执行了 `git reset --hard` 或其他回退操作，发现删错了提交，需要找回之前的代码。
+:::
+
+**情况一：改动已经 commit 过**
 
 ```sh
-# 回滚上一个版本（删除工作空间的改动代码，撤销 commit 且撤销 add）
-$ git reset --hard HEAD^
-
-# 如何恢复删除的代码
+# 查看所有 HEAD 变动记录（含已被 reset 的提交）
 $ git reflog
-$ git reset --hard [hash]
+
+# 恢复到目标 commit（将 <commit> 替换为 reflog 中的 hash）
+$ git reset --hard <commit>
 ```
 
-- 代码没有 `commit` 操作，可借助 `vscode timeline` 功能
+**情况二：改动尚未 commit**
 
-## 出现 git 提交冲突场景
+本地工作区文件被覆盖或未保存时，可借助编辑器的历史记录功能恢复，例如 VS Code 的 **Timeline** 面板查看文件本地历史版本。
+
+## pull / push 冲突
+
+:::note[场景]
+本地有提交、远程也有新提交，直接 `git push` 被拒绝；或 `git pull` 产生多余 merge commit，希望保持提交历史线性。
+:::
 
 ```sh
-# pull 和 push 同时存在
+# 先拉取远程变更，并将本地提交变基到远程之上
 $ git pull --rebase
+
+# 若有冲突：手动解决后
+$ git add .
 $ git rebase --continue
 
-# 撤销 rebase 操作
+# 若要放弃本次 rebase，回到操作前状态
 $ git rebase --abort
 ```
 
-## git merge 时避免或移除合并记录
+## git merge 时避免产生合并节点
 
-```sh
-# 场景：将 feature 分支的改动合并到 main 分支
+:::note[场景]
+`feature` 与 `test` 两条并行分支，需要将 `feature` 的改动合入 `test`，且保持历史为一条直线（不产生 merge commit）。
+:::
 
-# 1. 切换到 main 分支
-$ git checkout main
+<Steps>
+1. 切换到 `feature` 分支，将其变基到 `test` 之上
 
-# 2. 将 feature 的提交变基到 main 分支上
-$ git rebase feature
-```
+    ```sh
+    $ git checkout feature
+    $ git rebase test
+    ```
+
+    - 若出现冲突：解决冲突后执行 `git rebase --continue`
+    - 若要放弃变基：执行 `git rebase --abort`
+
+2.  切回 `test` 分支，快进合并 `feature`
+
+    ```sh
+    $ git checkout test
+    $ git merge feature
+    ```
+
+    此时 `feature` 已在 `test` 之上，`merge` 为快进（fast-forward），不会生成合并节点。
+
+</Steps>

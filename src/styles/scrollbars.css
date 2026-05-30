@@ -1,0 +1,11 @@
+@layer base {
+  html {
+    @apply scrollbar-thin scrollbar-gutter-stable scrollbar-thumb-muted-foreground/35 scrollbar-track-transparent;
+  }
+}
+
+@layer components {
+  .app-scrollbar {
+    @apply scrollbar-thin scrollbar-gutter-stable scrollbar-thumb-muted-foreground/35 scrollbar-track-transparent;
+  }
+}

@@ -1,0 +1,68 @@
+/* 前台 ThemeSelect + 管理端共用；时长由 theme.ts 按页面高度写入 --theme-transition-duration */
+:root {
+  --theme-transition-duration: 400ms;
+}
+
+/* 管理端长页面：切换前锁定 body 在当前视口，html 高度压到视口 */
+html.theme-transition-freeze {
+  overflow: hidden !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+}
+
+html.theme-transition-freeze body {
+  position: fixed;
+  top: var(--theme-scroll-lock-y, 0);
+  left: var(--theme-scroll-lock-x, 0);
+  right: 0;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.theme-transition-freeze ::view-transition-group(root) {
+  overflow: clip;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-name: none;
+  animation-duration: var(--theme-transition-duration);
+  animation-fill-mode: both;
+  mix-blend-mode: normal;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-position: left top;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  animation-name: none;
+  animation-duration: var(--theme-transition-duration);
+  animation-fill-mode: both;
+}
+
+::view-transition-group(root) {
+  animation-name: none;
+  animation-duration: var(--theme-transition-duration);
+  animation-fill-mode: both;
+}
+
+/* 分方向控制层级：
+   切到 dark（data-theme=dark）：old 在上层（内收）
+   切到 light（data-theme=light）：new 在上层（外扩） */
+::view-transition-old(root),
+[data-theme='light']::view-transition-new(root) {
+  z-index: 2147483647;
+}
+
+::view-transition-new(root),
+[data-theme='light']::view-transition-old(root) {
+  z-index: 1;
+}

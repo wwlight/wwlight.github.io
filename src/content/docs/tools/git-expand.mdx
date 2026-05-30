@@ -1,26 +1,27 @@
 ---
 title: git 扩展命令
 sidebar:
-    order: 2
+  order: 2
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components'
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## Git LFS 大文件存储
 
 :::tip[说明]
+
 - 用于对大文件进行版本控制的开源 `Git` 扩展
 - [Git Large File storage](https://git-lfs.com/)
 - [GitHub 管理大型文件](https://docs.github.com/zh/repositories/working-with-files/managing-large-files/about-large-files-on-github)
-:::
+  :::
 
 ### Git LFS 原理
 
 - `Git LFS` 通过懒惰地 (`lazily`) 下载大文件的相关版本来减少大文件在仓库中的影响。具体来说，大文件是在 `checkout` 的过程中下载的，而不是 `clone` 或 `fetch` 过程中下载的。
 - `Git LFS` 通过将仓库中的大文件替换为小于 1 KB 的指针文件来做到这一点。在正常使用期间，我们不会看到这些指针文件，因为它们是由 `Git LFS` 自动处理的:
-	- 当我们执行 `git add` 命令时, `Git LFS` 用一个指针替换实际内容,并将实际内容存储在本地 LFS 缓存中 (本地缓存位于仓库的 _`.git/lfs/objects`_ 路径下）。
-	- `git push` 时新增的 `commit` 所引用的所有 `大文件` 都会从本地传输到远程仓库的远程存储。
-	- 当我们 `checkout` 一个包含 `Git LFS` 指针的 commit 时 (`pull` 包含了 `checkout` 命令)，指针文件将替换为本地 `Git LFS` 缓存中的文件，或者从远端 `Git LFS` 存储区下载。
+  - 当我们执行 `git add` 命令时, `Git LFS` 用一个指针替换实际内容,并将实际内容存储在本地 LFS 缓存中 (本地缓存位于仓库的 *`.git/lfs/objects`* 路径下）。
+  - `git push` 时新增的 `commit` 所引用的所有 `大文件` 都会从本地传输到远程仓库的远程存储。
+  - 当我们 `checkout` 一个包含 `Git LFS` 指针的 commit 时 (`pull` 包含了 `checkout` 命令)，指针文件将替换为本地 `Git LFS` 缓存中的文件，或者从远端 `Git LFS` 存储区下载。
 
 ![git-lfs-graphic.gif](/attachmets/git-lfs-graphic.gif)
 
@@ -34,16 +35,16 @@ import { Tabs, TabItem } from '@astrojs/starlight/components'
 ### Git LFS 使用方式
 
 <Tabs>
-    <TabItem label="windows 安装">
-        ```sh
-        scoop install git-lfs
-        ```
-    </TabItem>
-    <TabItem label="mac 安装">
-        ```sh
-        brew install git-lfs
-        ```
-    </TabItem>
+  <TabItem label="windows 安装">
+    ```sh
+    scoop install git-lfs
+    ```
+  </TabItem>
+  <TabItem label="mac 安装">
+    ```sh
+    brew install git-lfs
+    ```
+  </TabItem>
 </Tabs>
 
 ```sh
@@ -82,38 +83,115 @@ $ git lfs uninstall --local
 <Tabs>
     <TabItem label="方式 1">
         ```sh
-        $ git-extras --version / git-extras -v
-        $ git-extras --help / git-extras -h
+        # --- 工具版本与帮助 ---
+        $ git extras --version    # 查看 git-extras 版本号（缩写：-v）
+        $ git extras --help       # 查看 git-extras 帮助文档（缩写：-h）
 
-        $ git-info            # 显示当前仓库的详细信息
-        $ git-root            # 显示当前仓库的根目录
-        $ git-browse          # 在浏览器中打开当前仓库
-        $ git-browse-ci       # 在浏览器中打开当前仓库的 CI 页面
-        $ git-setup           # 初始化一个新的 Git 仓库并设置远程仓库
-        $ git-summary         # 显示当前仓库的摘要信息
-        $ git-count           # 统计代码行数
-        $ git-changelog       # 显示项目的变更日志
-        $ git-undo            # 撤销上一次提交
-        $ git-wip             # 保存当前工作进度
-        $ git-unwip           # 恢复上一次保存的工作进度
+        # --- 仓库基础与信息查询 ---
+        $ git info                # 显示当前仓库详细信息（作者、提交数、分支、最后提交等）
+        $ git root                # 输出当前 Git 仓库的根目录绝对路径
+        $ git summary             # 输出当前仓库的摘要信息（提交总数、作者排名、活跃天数等）
+        $ git count               # 统计提交次数
+        $ git line-summary        # 按作者汇总代码行数的增加与减少量
+        $ git effort              # 统计每个文件的提交次数与活跃度（柱状图展示）
+        $ git churn               # 统计文件修改频率
+
+        # --- 快捷网页跳转 ---
+        $ git browse              # 浏览器中打开当前项目的远程仓库页面
+        $ git browse-ci           # 浏览器中打开当前项目的 CI 页面
+
+        # --- 分支与合并增强 ---
+        $ git bclean              # 删除已合并到当前分支的其他本地分支
+        $ git bulk                # 在多个 Git 仓库中批量执行指定命令
+        $ git delta               # 列出当前分支与指定分支之间有差异的文件列表
+        $ git merge-into          # 将 A 分支合并到 B 分支（无需切换到 B 分支）
+        $ git merge-repo          # 将外部 Git 仓库合并到当前仓库的指定目录并保留历史
+        $ git pull-request        # 创建 GitHub/GitLab 的 Pull Request
+
+        # --- 日志、历史与站会 ---
+        $ git changelog           # 依据提交历史生成或更新 CHANGELOG.md
+        $ git commits-since       # 查看指定时间点以来的所有提交记录
+        $ git graft               # 合并指定分支到当前分支并删除原分支
+        $ git standup             # 展示指定作者最近的提交记录
+
+        # --- 提交控制与进度管理 ---
+        $ git undo                # 撤销最后一次提交，保留修改至暂存区（同 git reset --soft HEAD~1）
+        $ git wip                 # 创建临时提交以保存当前未完成的工作进度
+        $ git unwip               # 撤销 wip 临时提交并恢复工作区
+        $ git bug                 # 创建 bug 修复分支，修复完成后自动合并并删除该分支
+
+        # --- 代码清理与安全删除 ---
+        $ git clear               # 强制清理所有未追踪的文件和目录（比 git clean -fd 更彻底） # [注意] 无法恢复
+        $ git fresh               # 强制拉取远程最新代码并丢弃本地所有未提交修改 # [注意] 覆盖本地，慎用
+        $ git obliterate          # 从所有历史提交中彻底删除指定文件 # [注意] 涉及历史重写，需强推远程
+
+        # --- 文件锁定与防误触 ---
+        $ git locked              # 列出被锁定的文件（assume-unchanged 标记）
+        $ git lock                # 锁定指定文件，使其不参与版本追踪与提交
+        $ git unlock              # 解锁指定文件
+
+        # --- 仓库初始化与发布 ---
+        $ git setup               # 初始化本地 Git 仓库并交互式配置远程仓库
+        $ git release             # 自动执行发布流程：打 Tag、推送到远程、生成 Release
+        $ git ignore              # 将指定规则或文件追加至 .gitignore 文件
+        $ git alias               # 配置和查看 Git 别名
         ```
     </TabItem>
     <TabItem label="方式 2">
         ```sh
-        $ git extras --version / git extras -v
-        $ git extras --help / git extras -h
+        # --- 工具版本与帮助 ---
+        $ git-extras --version    # 查看 git-extras 版本号（缩写：-v）
+        $ git-extras --help       # 查看 git-extras 帮助文档（缩写：-h）
 
-        $ git info            # 显示当前仓库的详细信息
-        $ git root            # 显示当前仓库的根目录
-        $ git browse          # 在浏览器中打开当前仓库
-        $ git browse-ci       # 在浏览器中打开当前仓库的 CI 页面
-        $ git setup           # 初始化一个新的 Git 仓库并设置远程仓库
-        $ git summary         # 显示当前仓库的摘要信息
-        $ git count           # 统计代码行数
-        $ git changelog       # 显示项目的变更日志
-        $ git undo            # 撤销上一次提交
-        $ git wip             # 保存当前工作进度
-        $ git unwip           # 恢复上一次保存的工作进度
+        # --- 仓库基础与信息查询 ---
+        $ git-info                # 显示当前仓库详细信息（作者、提交数、分支、最后提交等）
+        $ git-root                # 输出当前 Git 仓库的根目录绝对路径
+        $ git-summary             # 输出当前仓库的摘要信息（提交总数、作者排名、活跃天数等）
+        $ git-count               # 统计提交次数
+        $ git-line-summary        # 按作者汇总代码行数的增加与减少量
+        $ git-effort              # 统计每个文件的提交次数与活跃度（柱状图展示）
+        $ git-churn               # 统计文件修改频率
+
+        # --- 快捷网页跳转 ---
+        $ git-browse              # 浏览器中打开当前项目的远程仓库页面
+        $ git-browse-ci           # 浏览器中打开当前项目的 CI 页面
+
+        # --- 分支与合并增强 ---
+        $ git-bclean              # 删除已合并到当前分支的其他本地分支
+        $ git-bulk                # 在多个 Git 仓库中批量执行指定命令
+        $ git-delta               # 列出当前分支与指定分支之间有差异的文件列表
+        $ git-merge-into          # 将 A 分支合并到 B 分支（无需切换到 B 分支）
+        $ git-merge-repo          # 将外部 Git 仓库合并到当前仓库的指定目录并保留历史
+        $ git-pull-request        # 创建 GitHub/GitLab 的 Pull Request
+
+        # --- 日志、历史与站会 ---
+        $ git-changelog           # 依据提交历史生成或更新 CHANGELOG.md
+        $ git-commits-since       # 查看指定时间点以来的所有提交记录
+        $ git-graft               # 合并指定分支到当前分支并删除原分支
+        $ git-standup             # 展示指定作者最近的提交记录
+
+        # --- 提交控制与进度管理 ---
+        $ git-undo                # 撤销最后一次提交，保留修改至暂存区（同 git reset --soft HEAD~1）
+        $ git-wip                 # 创建临时提交以保存当前未完成的工作进度
+        $ git-unwip               # 撤销 wip 临时提交并恢复工作区
+        $ git-bug                 # 创建 bug 修复分支，修复完成后自动合并并删除该分支
+
+        # --- 代码清理与安全删除 ---
+        $ git-clear               # 强制清理所有未追踪的文件和目录（比 git clean -fd 更彻底） # [注意] 无法恢复
+        $ git-fresh               # 强制拉取远程最新代码并丢弃本地所有未提交修改 # [注意] 覆盖本地，慎用
+        $ git-obliterate          # 从所有历史提交中彻底删除指定文件 # [注意] 涉及历史重写，需强推远程
+
+        # --- 文件锁定与防误触 ---
+        $ git-locked              # 列出被锁定的文件（assume-unchanged 标记）
+        $ git-lock                # 锁定指定文件，使其不参与版本追踪与提交
+        $ git-unlock              # 解锁指定文件
+
+        # --- 仓库初始化与发布 ---
+        $ git-setup               # 初始化本地 Git 仓库并交互式配置远程仓库
+        $ git-release             # 自动执行发布流程：打 Tag、推送到远程、生成 Release
+        $ git-ignore              # 将指定规则或文件追加至 .gitignore 文件
+        $ git-alias               # 配置和查看 Git 别名
         ```
     </TabItem>
+
 </Tabs>

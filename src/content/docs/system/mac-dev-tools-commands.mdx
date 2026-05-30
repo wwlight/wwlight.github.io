@@ -4,67 +4,78 @@ sidebar:
   order: 3
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+import { Badge } from "@astrojs/starlight/components";
 
 ## [Homebrew](https://brew.sh/) 包管理工具
 
 :::tip[说明]
+
 - 简称 brew，是 macOS 和 Linux 上最流行的包管理工具，它可以帮助你安装、更新和管理软件包。
 - 类似于 Ubuntu 的 apt 或 CentOS 的 yum。
-:::
+  :::
 
 ```bash title="命令"
-$ brew config                         # 显示配置信息
-$ brew list/ls                        # 查看已安装的软件包
-$ brew list/ls [软件名]                # 查看软件包安装路径
-$ brew info [软件名]                   # 显示软件包信息
-$ brew home [软件名]                   # 打开软件包主页
-$ brew help                           # 查看详细帮助信息
+# --- 基础信息与查看 ---
+$ brew help                             # 查看 Homebrew 的基础帮助信息
+$ brew config                           # 显示当前 Homebrew 的配置信息（如镜像源、版本等）
+$ brew doctor                           # 检查系统环境，诊断并提示潜在的配置问题
+$ brew doctor --verbose                 # 输出详细诊断信息的检查
+$ brew info <formula|cask>              # 显示某个软件包的详细信息（大小、依赖、官方主页等）
+$ brew home <formula|cask>              # 直接在浏览器中打开该软件的官方主页
 
-# 搜索和安装软件
-$ brew search [软件名]                 # 搜索软件包
-$ brew install [软件名]                # 安装软件
-$ brew uninstall [软件名]              # 卸载软件
-$ brew install --cask [应用名]         # 安装 GUI 应用程序
+# --- 软件的搜索、安装与卸载 ---
+$ brew search <formula|cask>            # 在线搜索软件包（支持模糊匹配）
+$ brew fetch <formula|cask>             # 仅下载软件的安装包到缓存目录，不执行安装
+$ brew fetch --force <formula|cask>     # 强制重新下载指定软件的安装包
+$ brew install <formula>                # 安装一个命令行工具（Formula）
+$ brew install --cask <cask>            # 安装一个 macOS 图形界面应用程序（Cask）
+$ brew uninstall <formula|cask>         # 卸载指定的软件包或应用
 
-$ brew tap                            # 查看已添加的仓库
-$ brew tap [用户名/仓库名]              # 添加第三方仓库
-$ brew untap [用户名/仓库名]            # 删除仓库
-$ brew tap --repair                   # 修复所有 tap 的 git 仓库状态
+# --- 已安装软件管理 ---
+$ brew list/ls                          # 列出本地所有已经安装的软件包/应用
+$ brew list <formula|cask>              # 查看某个已安装软件的具体文件安装路径
+$ brew deps <formula>                   # 查看当前包依赖于哪些其他底层插件
+$ brew uses <formula> --installed       # 查看本地有哪些已安装的软件正依赖着这个包
 
-# 更新
-$ brew update                         # 更新 Homebrew 自身
-$ brew update-reset                   # 强制更新到最新版本，update 失败可尝试
-$ brew outdated                       # 查看可更新的软件包
-$ brew upgrade                        # 更新所有安装的包
-$ brew upgrade -g                     # 更新所有安装的包
-$ brew upgrade [软件名]                # 更新指定安装包
-$ brew pin [软件名]                    # 锁定不想更新的软件包
-$ brew unpin [软件名]                  # 取消锁定
+# --- 软件更新与锁定 ---
+$ brew update                           # 更新 Homebrew 自身以及所有的软件索引
+$ brew update-reset                     # 【急救】强制将 Homebrew 核心重置到官方最新状态
+$ brew outdated                         # 列出本地所有有新版本可更新的软件包
+$ brew upgrade                          # 更新本地所有已经过期的软件包
+$ brew upgrade <formula|cask>           # 仅更新指定的软件包
+$ brew pin <formula>                    # 锁定该软件版本，使其在运行 upgrade 时不被自动更新
+$ brew unpin <formula>                  # 取消版本锁定
 
-$ brew services list/ls               # 查看所有服务状态
-$ brew services list/ls -d            # 查看所有服务状态带日志
-$ brew services start [服务名]         # 启动服务
-$ brew services stop [服务名]          # 停止服务
-$ brew services restart [服务名]       # 重启服务
-$ brew services info [服务名]          # 查看服务状态
+# --- 系统清理与维护 ---
+$ brew cleanup -n                       # 预览可以清理的旧版本和缓存文件（不实际执行删除）
+$ brew cleanup                          # 清理所有已过期的旧版本软件、未下载完的碎片和缓存
+$ brew cleanup <formula|cask>           # 仅清理指定软件的旧版本留存
+$ brew autoremove                       # 自动卸载那些因为别的软件被删、现在孤立无用的依赖包
+$ open $(brew --cache)                  # 直接在 Finder 中打开 Homebrew 的下载缓存文件夹
 
-$ brew deps [软件名]                   # 查看包的依赖关系
-$ brew uses [软件名] --installed       # 查看哪些包依赖于这个包
+# --- 第三方仓库管理 (Tap) ---
+$ brew tap                              # 查看本地已经添加的所有第三方软件仓库
+$ brew tap <user/repo>                  # 添加并追踪一个第三方的 GitHub 软件仓库
+$ brew untap <user/repo>                # 移除已经添加的第三方仓库
+$ brew tap --repair                     # 修复本地所有 tap 的 Git 仓库指针状态
 
-$ brew doctor                         # 检查系统是否有问题
-$ brew doctor --verbose
-$ brew autoremove                     # 删除没有被其他包依赖的依赖包
-$ brew cleanup                        # 清理相关的旧版本和缓存文件
-$ brew cleanup [软件名]                # 清理指定软件包的旧版本
-$ brew cleanup -n                     # 查看可清理的内容（不实际清理）
+# --- 后台服务管理 (Services) ---
+$ brew services list                    # 查看当前所有后台服务的运行状态（简写：brew services ls）
+$ brew services list -d                 # 查看所有服务状态并显示详细的调试日志
+$ brew services start <formula>         # 启动该服务，并设置开机自启
+$ brew services stop <formula>          # 停止该后台服务，并取消开机自启
+$ brew services restart <formula>       # 重启该后台服务
+$ brew services info <formula>          # 查看该服务的详细运行信息（如进程 ID、路径等）
 
-# 生成 Brewfile
+# --- 环境备份与迁移 (Bundle) ---
+# 备份当前 Mac 上的所有 brew 软件到桌面（排除 VS Code 插件）
 $ brew bundle dump --no-vscode --force --file=~/Desktop/Brewfile
-# 读取 Brewfile 并安装所有依赖
+
+# 检查桌面的 Brewfile 列表里有哪些软件在当前电脑上还没安装
+$ brew bundle check --file=~/Desktop/Brewfile
+
+# 读取桌面的 Brewfile 并自动开始批量静默安装
 $ brew bundle install --file=~/Desktop/Brewfile
-# 检查 Brewfile 中的软件是否已安装
-$ brew bundle check
 ```
 
 ```bash title="Brew services 问题"
@@ -208,7 +219,6 @@ $ rm -rf /opt/homebrew/etc/nginx     # 删除配置文件
   ```
 </details>
 
-
 ```bash
 # nginx 启动失败
 
@@ -243,30 +253,27 @@ $ ngrok http http://localhost:8080
 
 :::tip[说明]
 用来管理多个软件开发工具包（SDK）版本的工具，主要用于 Unix 系统（Mac、Linux），它的主要作用包括：
+
 1. 多版本管理
-	- 可以在同一系统上安装和管理多个版本的 Java、Kotlin、Groovy 等
-	- 方便地在不同版本间切换，比如项目A需要 Java 8，项目B需要 Java 17
+   - 可以在同一系统上安装和管理多个版本的 Java、Kotlin、Groovy 等
+   - 方便地在不同版本间切换，比如项目A需要 Java 8，项目B需要 Java 17
 2. 简化安装过程
-	- 不需要手动下载、解压、配置环境变量
-	- 一行命令就能完成安装：`sdk install java 17.0.2-tem`
-	- 自动处理环境变量配置
+   - 不需要手动下载、解压、配置环境变量
+   - 一行命令就能完成安装：`sdk install java 17.0.2-tem`
+   - 自动处理环境变量配置
 3. 支持多种开发工具
-	- Java (各种发行版如 OpenJDK, Oracle JDK, GraalVM)
-	- 构建工具（Maven, Gradle）
-	- 各种 JVM 语言（Kotlin, Groovy, Scala）
-	- Spring Boot, Micronaut 等框架
+   - Java (各种发行版如 OpenJDK, Oracle JDK, GraalVM)
+   - 构建工具（Maven, Gradle）
+   - 各种 JVM 语言（Kotlin, Groovy, Scala）
+   - Spring Boot, Micronaut 等框架
 4. 项目级版本管理
-	- 可以为不同项目设置不同的SDK版本
-	- 通过 .sdkmanrc 文件管理项目依赖的版本
+   - 可以为不同项目设置不同的SDK版本
+   - 通过 .sdkmanrc 文件管理项目依赖的版本
 5. 版本更新
-	- 及时获取各种工具的最新版本
-	- 方便地进行版本升级和回退
-6. 实际使用场景：
-	- 开发者需要在不同 Java 版本间切换时
-	- 测试应用在不同 JDK 版本上的兼容性
-	- 团队统一开发环境配置
-	- 快速配置新的开发环境
-:::
+   - 及时获取各种工具的最新版本
+   - 方便地进行版本升级和回退
+6. 实际使用场景：- 开发者需要在不同 Java 版本间切换时 - 测试应用在不同 JDK 版本上的兼容性 - 团队统一开发环境配置 - 快速配置新的开发环境
+   :::
 
 ```bash title="安装和卸载"
 # install
@@ -356,7 +363,7 @@ echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-```bash  title="命令"
+```bash title="命令"
 # 安装 python，uv 能检测系统上已经安装并使用安装的 Python
 $ uv python install
 

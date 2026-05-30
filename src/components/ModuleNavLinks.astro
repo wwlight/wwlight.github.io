@@ -1,0 +1,23 @@
+---
+import { isModuleNavActive, siteModuleNav } from '@/lib/site-nav'
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+const pathname = Astro.url.pathname
+---
+
+<nav class:list={['module-nav', className]} aria-label="模块导航">
+  {
+    siteModuleNav.map(item => (
+      <a
+        href={item.href}
+        class:list={['module-nav-link', { active: isModuleNavActive(item.prefix, pathname) }]}
+      >
+        {item.label}
+      </a>
+    ))
+  }
+</nav>

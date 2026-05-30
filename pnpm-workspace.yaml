@@ -6,6 +6,16 @@ minimumReleaseAgeExclude:
 shellEmulator: true
 
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - tinyexec@1.2.2
+  - tinyclip@0.1.13
+  - semver@6.3.1
 
 overrides:
   '@astrojs/mdx': 6.0.1
+  vite: 7.3.3
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  simple-git-hooks: true

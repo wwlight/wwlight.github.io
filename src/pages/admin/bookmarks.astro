@@ -1,0 +1,34 @@
+---
+import BookmarksAdmin from '../../components/admin/BookmarksAdmin.tsx'
+import { serializeBookmarkSectionsForPage } from '../../lib/bookmarks/page-data'
+import { getBookmarkSections } from '../../lib/bookmarks/queries'
+import themeInitScript from '../../scripts/theme-init.inline.js?raw'
+import '../../styles/admin.css'
+
+const sections = await getBookmarkSections()
+const isDev = import.meta.env.DEV
+const adminHash = (import.meta.env.PUBLIC_BOOKMARKS_ADMIN_HASH ?? '').trim()
+const adminName = (import.meta.env.PUBLIC_BOOKMARKS_ADMIN_NAME ?? 'admin').trim() || 'admin'
+const sectionsJson = serializeBookmarkSectionsForPage(sections)
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>书签管理 · wwlight</title>
+    <script is:inline set:html={themeInitScript} />
+  </head>
+  <body>
+    <script type="application/json" id="bookmarks-sections-data" set:html={sectionsJson} />
+
+    <BookmarksAdmin
+      client:only="react"
+      isDev={isDev}
+      passwordHash={adminHash}
+      defaultAdminName={adminName}
+    />
+  </body>
+</html>
