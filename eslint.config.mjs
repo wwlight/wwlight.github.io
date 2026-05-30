@@ -5,7 +5,6 @@ export default antfu({
   formatters: {
     css: true,
     html: true,
-    markdown: 'prettier',
   },
   rules: {
     'node/prefer-global/process': 'off',
