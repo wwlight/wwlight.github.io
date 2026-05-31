@@ -37,11 +37,9 @@ vpr lint          # ESLint 检查
 
 ## 书签管理端
 
-:::tip[本地使用]
-
-本地编辑 `/admin/bookmarks/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
-
-:::
+> [!TIP] 本地使用
+>
+> 本地编辑 `/admin/bookmarks/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
 
 | 变量 | 说明 |
 | ---- | ---- |
@@ -52,19 +50,15 @@ vpr lint          # ESLint 检查
 | 登录                 |  ✅  |  ✅  |
 | 增删改 / 排序 / 版本 |  ✅  |  ❌  |
 
-:::danger[注意]
+> [!CAUTION] 注意
+>
+> 哈希打进前端 bundle，仅作门控，非服务端鉴权。
 
-哈希打进前端 bundle，仅作门控，非服务端鉴权。
-
-:::
-
-:::note[部署与流程]
-
-- 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
-- 静态站点不可保存，数据随 `pnpm build` 发布
-- 流程：`vpr dev:admin` → commit `db/data/bookmarks.ts` → push
-
-:::
+> [!NOTE] 部署与流程
+>
+> - 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
+> - 静态站点不可保存，数据随 `vpr build` 发布
+> - 流程：`vpr dev:admin` → commit `db/data/bookmarks.ts` → push
 
 ## 项目结构
 
@@ -73,7 +67,7 @@ vpr lint          # ESLint 检查
 │   ├── content/docs/          # Starlight 文档（memorandum / tools / system / other）
 │   ├── pages/
 │   │   ├── bookmarks/         # 公开书签页
-│   │   └── admin/bookmarks/   # 书签管理端
+│   │   └── admin/bookmarks.astro  # 书签管理端
 │   ├── components/            # Astro / React（admin、bookmarks、ui）
 │   ├── lib/bookmarks/         # 书签逻辑、查询、管理端 API
 │   └── styles/                # 全局与页面样式

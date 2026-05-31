@@ -34,6 +34,7 @@
     "@radix-ui/react-tooltip": "catalog:frontend",
     "@tailwindcss/vite": "catalog:frontend",
     "astro": "catalog:astro",
+    "astro-mermaid": "catalog:content",
     "class-variance-authority": "catalog:frontend",
     "clsx": "catalog:frontend",
     "lucide-react": "catalog:frontend",
@@ -59,6 +60,6 @@
     "pre-commit": "node node_modules/lint-staged/bin/lint-staged.js"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*.{js,jsx,ts,tsx,mjs,cjs,astro,mdx,json,css,md}": "eslint --fix"
   }
 }

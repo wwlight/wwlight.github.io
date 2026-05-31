@@ -1,12 +1,12 @@
 import db from '@astrojs/db'
-import { unified } from '@astrojs/markdown-remark'
 import react from '@astrojs/react'
 import starlight from '@astrojs/starlight'
 import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
+import mermaid from 'astro-mermaid'
 import { defineConfig } from 'astro/config'
 import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
-import { mermaid } from './integrations/mermaid.ts'
+import { mermaidControls } from './integrations/mermaid-controls.ts'
 import themeInitScript from './src/scripts/theme-init.inline.js?raw'
 
 export default defineConfig({
@@ -24,25 +24,24 @@ export default defineConfig({
       },
       wrap: true,
     },
-    processor: unified({
-      rehypePlugins: [
-        [
-          inspectUrls,
-          {
-            selectors: ['a[href]'],
-            inspectEach(url) {
-              if (url.node.properties.href?.startsWith('http')) {
-                url.node.properties.target = '_blank'
-                url.node.properties.rel = 'noopener noreferrer'
-              }
-            },
+    rehypePlugins: [
+      [
+        inspectUrls,
+        {
+          selectors: ['a[href]'],
+          inspectEach(url) {
+            if (url.node.properties.href?.startsWith('http')) {
+              url.node.properties.target = '_blank'
+              url.node.properties.rel = 'noopener noreferrer'
+            }
           },
-        ],
+        },
       ],
-    }),
+    ],
   },
   integrations: [
-    mermaid(),
+    mermaid({ autoTheme: true, enableLog: false }),
+    mermaidControls(),
     db(),
     react(),
     bookmarksAdmin(),
@@ -82,7 +81,7 @@ export default defineConfig({
       tsconfigPaths: true,
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'mermaid'],
+      include: ['react', 'react-dom'],
     },
   },
 })

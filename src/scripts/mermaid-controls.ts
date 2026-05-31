@@ -23,76 +23,6 @@ const MAX_SCALE = 8
 const ZOOM_FACTOR = 1.2
 
 let controlsStarted = false
-let themeRerenderQueued = false
-let mermaidPromise: Promise<typeof import('mermaid').default> | null = null
-
-function mermaidTheme() {
-  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default'
-}
-
-async function getMermaid() {
-  if (!mermaidPromise) {
-    mermaidPromise = import('mermaid').then(({ default: mermaid }) => {
-      mermaid.initialize({ startOnLoad: false, theme: mermaidTheme() })
-      return mermaid
-    })
-  }
-  return mermaidPromise
-}
-
-async function renderMermaid(force = false) {
-  const diagrams = document.querySelectorAll<HTMLElement>('pre.mermaid')
-  if (diagrams.length === 0) return
-
-  const mermaid = await getMermaid()
-  mermaid.initialize({ startOnLoad: false, theme: mermaidTheme() })
-
-  for (const diagram of diagrams) {
-    if (!force && diagram.hasAttribute('data-processed')) continue
-
-    const definition = diagram.getAttribute('data-diagram') ?? diagram.textContent ?? ''
-    if (!diagram.hasAttribute('data-diagram'))
-      diagram.setAttribute('data-diagram', definition)
-
-    const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`
-    try {
-      const { svg } = await mermaid.render(id, definition)
-      diagram.innerHTML = svg
-      diagram.setAttribute('data-processed', 'true')
-    }
-    catch (error) {
-      diagram.removeAttribute('data-processed')
-      console.error('[mermaid]', error)
-    }
-  }
-
-  scheduleSync(true)
-}
-
-async function rerenderForTheme() {
-  const diagrams = document.querySelectorAll<HTMLElement>('pre.mermaid')
-  if (diagrams.length === 0) return
-
-  for (const pre of diagrams)
-    destroyDiagram(pre)
-
-  mermaidPromise = null
-  await renderMermaid(true)
-}
-
-function queueThemeRerender() {
-  if (!document.querySelector('pre.mermaid')) return
-  if (themeRerenderQueued) return
-  themeRerenderQueued = true
-  requestAnimationFrame(() => {
-    themeRerenderQueued = false
-    void rerenderForTheme()
-  })
-}
-
-function startPage() {
-  void renderMermaid().then(() => bootstrap())
-}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
@@ -103,7 +33,7 @@ function safeSetPointerCapture(target: HTMLElement, pointerId: number) {
     target.setPointerCapture(pointerId)
   }
   catch {
-    // 部分浏览器在特定节点上会抛错，忽略即可
+    // ignore
   }
 }
 
@@ -196,6 +126,10 @@ class MermaidDiagramController implements DiagramController {
   }
 }
 
+function toolbarButtonHtml(icon: string) {
+  return `<div aria-hidden="true"></div>${icon}`
+}
+
 function createToolbar(controller: DiagramController, shell: HTMLElement) {
   const toolbar = document.createElement('div')
   toolbar.className = 'mermaid-toolbar'
@@ -215,7 +149,7 @@ function createToolbar(controller: DiagramController, shell: HTMLElement) {
     button.className = 'mermaid-toolbar-btn'
     button.dataset.action = action
     button.setAttribute('aria-label', label)
-    button.innerHTML = ICONS[action]
+    button.innerHTML = toolbarButtonHtml(ICONS[action])
 
     button.addEventListener('click', (event) => {
       event.preventDefault()
@@ -250,12 +184,11 @@ function updateFullscreenButton(shell: HTMLElement) {
 
   const active = document.fullscreenElement === shell
   button.setAttribute('aria-label', active ? '退出全屏' : '全屏')
-  button.innerHTML = active ? ICONS['exit-fullscreen'] : ICONS.fullscreen
+  button.innerHTML = toolbarButtonHtml(active ? ICONS['exit-fullscreen'] : ICONS.fullscreen)
   button.classList.toggle('is-active', active)
 }
 
 function isThemeRefresh(pre: HTMLElement) {
-  // 主题刷新时 data-processed 会短暂消失，保护 shell 不被 destroy
   return pre.getAttribute(MARK) !== null && !pre.hasAttribute('data-processed')
 }
 
@@ -293,7 +226,6 @@ function enhanceDiagram(pre: HTMLElement) {
   shell.append(pre)
 
   pre.style.transformOrigin = 'center center'
-  // 渲染前先移除可能导致高度不稳定的 min-height
   pre.style.minHeight = ''
 
   const controller = new MermaidDiagramController(pre)
@@ -301,7 +233,6 @@ function enhanceDiagram(pre: HTMLElement) {
   createToolbar(controller, shell)
   pre.setAttribute(MARK, 'ready')
 
-  // 首次渲染成功后，锁定 shell 的内容高度，避免主题切换时高度跳变导致布局抖动
   if (!shell.style.height) {
     const h = shell.offsetHeight
     if (h > 0) shell.style.height = `${h}px`
@@ -330,7 +261,6 @@ function lockShellHeights() {
       const h = shell.offsetHeight
       if (h > 0) shell.style.height = `${h}px`
     }
-    // 主题刷新期间，清除 pre 上的 min-height，避免骨架屏高度干扰
     const pre = shell.querySelector<HTMLElement>('pre.mermaid')
     if (pre) pre.style.minHeight = ''
   }
@@ -356,6 +286,8 @@ function scheduleSync(force = false) {
 }
 
 function bootstrap() {
+  if (!document.querySelector('pre.mermaid')) return
+
   scheduleSync()
 
   let attempts = 0
@@ -372,12 +304,12 @@ function bootstrap() {
 
 function init() {
   if (controlsStarted) {
-    startPage()
+    bootstrap()
     return
   }
   controlsStarted = true
 
-  startPage()
+  bootstrap()
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -395,14 +327,8 @@ function init() {
     attributeFilter: ['data-processed'],
   })
 
-  const themeObserver = new MutationObserver(() => queueThemeRerender())
-  themeObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  })
-
-  document.addEventListener('astro:page-load', startPage)
-  document.addEventListener('astro:after-swap', startPage)
+  document.addEventListener('astro:page-load', bootstrap)
+  document.addEventListener('astro:after-swap', bootstrap)
   document.addEventListener('fullscreenchange', () => {
     for (const shell of document.querySelectorAll<HTMLElement>('.mermaid-shell')) {
       updateFullscreenButton(shell)

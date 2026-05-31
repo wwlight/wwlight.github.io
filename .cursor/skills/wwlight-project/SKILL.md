@@ -35,7 +35,7 @@ vpr lint
 | `src/components/Footer.astro` | Starlight 页脚 + BackToTop |
 | `db/data/bookmarks.ts` | 书签数据源（可提交 Git） |
 | `integrations/bookmarks-admin.ts` | 开发态 API 中间件 |
-| `integrations/mermaid.ts` | Mermaid 按需客户端加载入口 |
+| `integrations/mermaid-controls.ts` | Mermaid 缩放 / 全屏工具栏 |
 | `pnpm-workspace.yaml` | pnpm catalog 版本源 + overrides / trustPolicy |
 | `.node-version` | Node.js 24 |
 | `scripts/dev-bootstrap.mjs` | dev 环境初始化与启动 |
@@ -47,7 +47,7 @@ vpr lint
 
 配置在 `astro.config.mjs`：
 
-- `mermaid()` 在 `starlight()` **之前**
+- `mermaid()`（[astro-mermaid](https://github.com/joesaby/astro-mermaid)）在 `starlight()` **之前**
 - `credits: false`
 - `customCss`: `custom.css` + `global.css`（后者引入 shadcn 变量，供 BackToTop 等）
 
@@ -55,13 +55,13 @@ vpr lint
 
 ## Mermaid
 
-Starlight 用 Expressive Code 高亮 ` ```mermaid `，不会直接输出 `pre.mermaid`。
+使用 [astro-mermaid](https://github.com/joesaby/astro-mermaid) 集成：remark/rehype 在构建时将 ` ```mermaid ` 转为 `<pre class="mermaid">`，客户端按需渲染；`autoTheme: true` 跟随 `data-theme` 切换。
 
-- `integrations/mermaid.ts` — `injectScript('page')` 导入 `mermaid-expressive.ts`
-- `src/scripts/mermaid-expressive.ts` — 从 EC 块提取源码（保留 `.ec-line` 换行），转为 `pre.mermaid`，按需 `import('mermaid-controls.ts')`
-- `src/scripts/mermaid-controls.ts` + `mermaid-controls.css` — 渲染、主题重绘、缩放/全屏工具栏
+- `astro.config.mjs`：`mermaid({ autoTheme: true })` 置于 `starlight()` 之前
+- `integrations/mermaid-controls.ts` + `src/scripts/mermaid-controls.ts` — 渲染完成后挂载缩放 / 全屏工具栏
+- `markdown.syntaxHighlight.excludeLangs` 含 `mermaid`，避免 Shiki/Expressive Code 干扰
 
-注意：flowchart 节点含 `?` 等特殊字符时需加引号，如 `B{"DEV?"}`。不要用 remark 阶段转 HTML（会破坏 MDX 构建）。
+注意：flowchart 节点含 `?` 等特殊字符时需加引号，如 `B{"DEV?"}`。
 
 ## 主题切换
 
@@ -104,7 +104,7 @@ Starlight 用 Expressive Code 高亮 ` ```mermaid `，不会直接输出 `pre.me
 
 **新增博客文章**：在 `src/content/docs/blog/` 建 MDX，设置 `sidebar.order`。
 
-**改 Mermaid**：`mermaid-expressive.ts`（EC 转换）+ `mermaid-controls.ts/css`（渲染与工具栏）。
+**改 Mermaid**：`astro.config.mjs` 的 `mermaid()` 选项；工具栏见 `mermaid-controls.ts` / `mermaid-controls.css`。
 
 **改 dev 启动**：`scripts/dev-bootstrap.mjs`、`dev-all.mjs`、`dev-admin.mjs`、`open-browser.mjs`。
 

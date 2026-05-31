@@ -7,6 +7,7 @@ shellEmulator: true
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
+  - astro-mermaid@2.0.1
   - tinyexec@1.2.2
   - tinyclip@0.1.13
   - semver@6.3.1
@@ -33,6 +34,7 @@ catalogs:
     vite: ^7.3.3
   content:
     '@jsdevtools/rehype-url-inspector': ^2.0.2
+    astro-mermaid: ^2.0.1
     mermaid: ^11.15.0
     sharp: ^0.34.5
   devtools:

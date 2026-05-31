@@ -1,3 +1,4 @@
+import { BackToTop } from "@/components/BackToTop";
 import { ThemeProvider } from "@/components/theme-provider";
 import { BookmarksPublic } from "@/components/bookmarks/public/BookmarksPublic";
 import { PublicPageActions } from "@/components/bookmarks/public/PublicPageActions";
@@ -14,6 +15,7 @@ export function PublicBookmarksPage({ firstBlogPostHref }: { firstBlogPostHref: 
           <BookmarksPublic sections={sections} actions={<PublicPageActions blogHref={firstBlogPostHref} />} />
         </div>
       </div>
+      <BackToTop />
     </ThemeProvider>
   );
 }
