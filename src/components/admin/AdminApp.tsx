@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AdminHeaderActions } from "@/components/admin/AdminHeaderActions";
-import { AdminStats } from "@/components/admin/AdminStats";
+import { BookmarkStatsCards } from "@/components/bookmarks/shared/BookmarkStatsCards";
+import { BookmarkPageHeader } from "@/components/bookmarks/shared/BookmarkPageHeader";
+import { countBookmarkStats } from "@/lib/bookmarks/stats";
 import { BookmarkAddTile } from "@/components/admin/bookmarks/BookmarkAddTile";
 import { BookmarkCard } from "@/components/admin/bookmarks/BookmarkCard";
 import { BookmarkCardGroup } from "@/components/admin/bookmarks/BookmarkCardGroup";
+import { DragTransferStation } from "@/components/admin/bookmarks/DragTransferStation";
 import { BookmarkSectionPanel } from "@/components/admin/bookmarks/BookmarkSectionPanel";
 import {
-  adminDragSwapTargetClass,
-  adminDropZoneActiveClass,
+  adminDragSwapTargetHoverClass,
+  adminDropZoneHoverClass,
 } from "@/components/admin/bookmarks/ui-helpers";
 import { DeleteConfirmDialog, type DeleteTarget } from "@/components/admin/DeleteConfirmDialog";
+import { AdminDialogProvider } from "@/components/admin/AdminDialogLayer";
 import { EditDialog } from "@/components/admin/EditDialog";
 import { LeaveUnsavedDialog } from "@/components/admin/LeaveUnsavedDialog";
 import { RestoreConfirmDialog } from "@/components/admin/RestoreConfirmDialog";
@@ -31,18 +35,40 @@ import {
   countBookmarks,
   type DragPayload,
   type EditContext,
+  type GridDragPayload,
   insertBookmark,
+  insertTransferBookmark,
+  isGridDragPayload,
+  isStationDragPayload,
+  loadTransferStationItems,
+  loadTransferStationDock,
   normalizeSortOrders,
+  parseDragPayload,
   parseExtraLinksInput,
+  persistTransferStationDock,
+  persistTransferStationItems,
+  clearTransferStationStorage,
+  readDragPayloadData,
+  restoreTransferBookmark,
+  resolveTransferInsertIndex,
+  resolveTransferStationSide,
   sectionCanDelete,
   sectionsEqual,
   STORAGE_KEY,
   swapBookmarks,
+  takeBookmarkForTransfer,
+  transferStationHasBookmark,
+  type StationDragPayload,
+  type TransferStationItem,
+  type TransferStationSide,
+  writeDragPayloadData,
 } from "@/lib/bookmarks/admin-helpers";
 import { downloadTextFile, serializeBookmarkSections } from "@/lib/bookmarks/serialize";
 import { getVisibleCardsInSection, sectionMatchesSearch } from "@/lib/bookmarks/search";
 import type { BookmarkData, BookmarkSectionData } from "@/lib/bookmarks/types";
+import { migrateAllLegacyStorageKeys } from "@/lib/site-storage";
 import { cn } from "@/lib/utils";
+import { useAdminDragEnabled } from "@/lib/use-admin-drag-enabled";
 
 interface AdminAppProps {
   initialSections: BookmarkSectionData[];
@@ -50,6 +76,12 @@ interface AdminAppProps {
   userName: string;
   onLogout: () => void;
   firstBlogPostHref: string;
+}
+
+interface BookmarkDragTarget {
+  sectionIndex: number;
+  cardIndex: number;
+  bookmarkIndex: number;
 }
 
 function getInsertIndex(
@@ -62,11 +94,13 @@ function getInsertIndex(
   const cards = [...grid.querySelectorAll<HTMLElement>("[data-bookmark-card]")];
   for (const card of cards) {
     const bookmarkIndex = Number(card.dataset.bookmarkIndex);
-    const isSelf =
-      dragging.sectionIndex === targetSectionIndex &&
-      dragging.cardIndex === targetCardIndex &&
-      dragging.bookmarkIndex === bookmarkIndex;
-    if (isSelf) continue;
+    if (isGridDragPayload(dragging)) {
+      const isSelf =
+        dragging.sectionIndex === targetSectionIndex &&
+        dragging.cardIndex === targetCardIndex &&
+        dragging.bookmarkIndex === bookmarkIndex;
+      if (isSelf) continue;
+    }
 
     const rect = card.getBoundingClientRect();
     if (clientY < rect.top + rect.height / 2) return bookmarkIndex;
@@ -82,6 +116,8 @@ function resolveDropCard(
   targetSectionIndex: number,
   targetCardIndex: number,
 ) {
+  if (isStationDragPayload(payload)) return null;
+
   const element = document.elementFromPoint(clientX, clientY);
   const cardEl = element?.closest("[data-bookmark-card]") as HTMLElement | null;
   if (!cardEl || !grid.contains(cardEl)) return null;
@@ -106,6 +142,7 @@ export function AdminApp({
   firstBlogPostHref,
 }: AdminAppProps) {
   const [sections, setSections] = useState<BookmarkSectionData[]>(() => {
+    migrateAllLegacyStorageKeys();
     const draft = localStorage.getItem(STORAGE_KEY);
     if (draft) {
       try {
@@ -117,14 +154,119 @@ export function AdminApp({
     return cloneSections(initialSections);
   });
   const [savedBaseline, setSavedBaseline] = useState(() => cloneSections(initialSections));
-  const [hadDraft] = useState(() => Boolean(localStorage.getItem(STORAGE_KEY)));
+  const [hadDraft] = useState(() => {
+    migrateAllLegacyStorageKeys();
+    return Boolean(localStorage.getItem(STORAGE_KEY));
+  });
   const [selectedSection, setSelectedSection] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const normalizedSearch = searchQuery.trim().toLowerCase();
   const [editContext, setEditContext] = useState<EditContext | null>(null);
   const [dragPayload, setDragPayload] = useState<DragPayload | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
-  const [swapHover, setSwapHover] = useState<DragPayload | null>(null);
+  const [swapHover, setSwapHover] = useState<BookmarkDragTarget | null>(null);
+  const [insertHover, setInsertHover] = useState<BookmarkDragTarget | null>(null);
+  const [transferItems, setTransferItems] = useState<TransferStationItem[]>(() => {
+    migrateAllLegacyStorageKeys();
+    return loadTransferStationItems();
+  });
+  const [hadTransferDraft] = useState(() => loadTransferStationItems().length > 0);
+  const [transferDropActive, setTransferDropActive] = useState(false);
+  const [stationReveal, setStationReveal] = useState(false);
+  const [stationSide, setStationSide] = useState<TransferStationSide>(
+    () => loadTransferStationDock().side,
+  );
+  const [dragApproachSide, setDragApproachSide] = useState<TransferStationSide | null>(null);
+  const dragPayloadRef = useRef<DragPayload | null>(null);
+  const dragSessionPayloadRef = useRef<DragPayload | null>(null);
+  const dragOriginXRef = useRef<number | null>(null);
+  const dragOriginYRef = useRef<number | null>(null);
+  const stationPanelRef = useRef<HTMLElement | null>(null);
+  const transferItemsRef = useRef(transferItems);
+  const sectionsRef = useRef(sections);
+  const dragEnabled = useAdminDragEnabled();
+
+  transferItemsRef.current = transferItems;
+  sectionsRef.current = sections;
+
+  function replaceTransferItems(next: TransferStationItem[]) {
+    persistTransferStationItems(next);
+    setTransferItems(next);
+  }
+
+  function appendTransferItem(item: TransferStationItem) {
+    if (transferStationHasBookmark(transferItemsRef.current, item.bookmark.url)) {
+      return false;
+    }
+    replaceTransferItems([...transferItemsRef.current, item]);
+    return true;
+  }
+
+  function removeTransferItemFromState(id: string) {
+    replaceTransferItems(transferItemsRef.current.filter((entry) => entry.id !== id));
+  }
+
+  function findTransferItem(id: string) {
+    return transferItemsRef.current.find((entry) => entry.id === id) ?? null;
+  }
+
+  function handleStationSideChange(next: TransferStationSide) {
+    setStationSide(next);
+    const dock = loadTransferStationDock();
+    persistTransferStationDock({ ...dock, side: next });
+  }
+
+  const forceStationExpanded =
+    transferItems.length > 0 ||
+    transferDropActive ||
+    stationReveal ||
+    (Boolean(dragPayload && isGridDragPayload(dragPayload)) && dragApproachSide === stationSide);
+  const draggingStationItemId =
+    dragPayload && isStationDragPayload(dragPayload) ? dragPayload.itemId : null;
+
+  function setActiveDragPayload(payload: DragPayload | null) {
+    dragSessionPayloadRef.current = payload;
+    dragPayloadRef.current = payload;
+    setDragPayload(payload);
+  }
+
+  function clearActiveDragPayload() {
+    disableStationDropPassthrough();
+    dragSessionPayloadRef.current = null;
+    dragPayloadRef.current = null;
+    dragOriginXRef.current = null;
+    dragOriginYRef.current = null;
+    setDragPayload(null);
+    setDropTarget(null);
+    setSwapHover(null);
+    setInsertHover(null);
+    setTransferDropActive(false);
+    setDragApproachSide(null);
+  }
+
+  function clearDragUiState() {
+    dragPayloadRef.current = null;
+    setDragPayload(null);
+    setDropTarget(null);
+    setSwapHover(null);
+    setInsertHover(null);
+    setTransferDropActive(false);
+    setDragApproachSide(null);
+  }
+
+  function scheduleClearActiveDragPayload() {
+    requestAnimationFrame(() => {
+      clearDragUiState();
+    });
+  }
+
+  function readDragPayload(event: React.DragEvent): DragPayload | null {
+    return (
+      parseDragPayload(dragSessionPayloadRef.current) ??
+      readDragPayloadData(event.dataTransfer) ??
+      parseDragPayload(dragPayloadRef.current ?? dragPayload)
+    );
+  }
 
   useEffect(() => {
     if (!dragPayload) return;
@@ -134,6 +276,67 @@ export function AdminApp({
       document.body.style.cursor = prev;
     };
   }, [dragPayload]);
+
+  useEffect(() => {
+    if (!dragEnabled || !dragPayload) {
+      setDragApproachSide(null);
+      return;
+    }
+    if (!isGridDragPayload(dragPayload) && !isStationDragPayload(dragPayload)) {
+      setDragApproachSide(null);
+      return;
+    }
+
+    function onDragOver(event: DragEvent) {
+      event.preventDefault();
+
+      const originX = dragOriginXRef.current;
+      const originY = dragOriginYRef.current;
+      if (originX == null || originY == null) return;
+
+      const resolvedSide = resolveTransferStationSide(
+        event.clientX,
+        event.clientY,
+        originX,
+        originY,
+        window.innerWidth,
+        window.innerHeight,
+      );
+
+      if (resolvedSide) {
+        handleStationSideChange(resolvedSide);
+        if (isGridDragPayload(dragPayloadRef.current ?? dragPayload)) {
+          setStationReveal(true);
+        }
+        setDragApproachSide(resolvedSide);
+        return;
+      }
+
+      const deltaX = event.clientX - originX;
+      const deltaY = event.clientY - originY;
+      if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+        if (deltaX <= -20) setDragApproachSide("left");
+        else if (deltaX >= 20) setDragApproachSide("right");
+        else setDragApproachSide(null);
+      } else {
+        if (deltaY <= -20) setDragApproachSide("top");
+        else if (deltaY >= 20) setDragApproachSide("bottom");
+        else setDragApproachSide(null);
+      }
+    }
+
+    document.addEventListener("dragover", onDragOver);
+    return () => {
+      document.removeEventListener("dragover", onDragOver);
+      setDragApproachSide(null);
+    };
+  }, [dragPayload, dragEnabled]);
+
+  useEffect(() => {
+    if (dragPayload) return;
+    setStationReveal(false);
+  }, [dragPayload]);
+
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
   const pendingLeaveRef = useRef<(() => void) | null>(null);
@@ -148,20 +351,28 @@ export function AdminApp({
     if (hadDraft) toast.message("已恢复本地草稿");
   }, [hadDraft]);
 
+  useEffect(() => {
+    if (hadTransferDraft) toast.message("已恢复中转站暂存");
+  }, [hadTransferDraft]);
+
   const hasUnsavedChanges = useMemo(
     () => !sectionsEqual(sections, savedBaseline),
     [sections, savedBaseline],
   );
 
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    function onBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+    }
+
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [hasUnsavedChanges]);
+
   const sectionIndex = clampSelectedSection(sections, selectedSection);
-  const stats = useMemo(
-    () => ({
-      sections: sections.length,
-      cards: sections.reduce((n, s) => n + s.cards.length, 0),
-      bookmarks: countBookmarks(sections),
-    }),
-    [sections],
-  );
+  const stats = useMemo(() => countBookmarkStats(sections), [sections]);
 
   useEffect(() => {
     if (!normalizedSearch) return;
@@ -261,8 +472,14 @@ export function AdminApp({
     return `${sections.length} 个模块、${cardCount} 个分组、${bookmarkCount} 条书签`;
   }, [sections]);
 
+  const initialSummary = useMemo(() => {
+    const bookmarkCount = countBookmarks(initialSections);
+    const cardCount = initialSections.reduce((n, s) => n + s.cards.length, 0);
+    return `${initialSections.length} 个模块、${cardCount} 个分组、${bookmarkCount} 条书签`;
+  }, [initialSections]);
+
   function openSaveDialog() {
-    if (countBookmarks(sections) === 0) {
+    if (countBookmarks(buildSectionsForSave()) === 0) {
       toast.error("当前没有书签数据，已阻止保存以免覆盖源文件");
       return;
     }
@@ -281,13 +498,13 @@ export function AdminApp({
   }
 
   async function saveToProject(): Promise<boolean> {
-    if (countBookmarks(sections) === 0) {
+    const restoredTransferCount = transferItemsRef.current.length;
+    const sectionsToSave = buildSectionsForSave();
+
+    if (countBookmarks(sectionsToSave) === 0) {
       toast.error("当前没有书签数据，已阻止保存以免覆盖源文件");
       return false;
     }
-
-    const payload = { sections: cloneSections(sections) };
-    normalizeSortOrders(payload.sections);
 
     setSaving(true);
     try {
@@ -295,15 +512,26 @@ export function AdminApp({
         const authorization = await getAuthorizationHeader();
         if (!authorization) throw new Error("登录已过期，请重新登录");
 
-        await saveSectionsToProject(authorization, payload.sections);
-        toast.success("已写入 db/data/bookmarks.ts，等待 Astro 重新 seed");
+        await saveSectionsToProject(authorization, sectionsToSave);
+        toast.success(
+          restoredTransferCount > 0
+            ? `已写入 db/data/bookmarks.ts（${restoredTransferCount} 个中转站书签已还原原分组）`
+            : "已写入 db/data/bookmarks.ts，等待 Astro 重新 seed",
+        );
       } else {
-        downloadTextFile("bookmarks.ts", serializeBookmarkSections(payload.sections));
-        toast.success("已导出 bookmarks.ts，请替换 db/data/bookmarks.ts 后提交");
+        downloadTextFile("bookmarks.ts", serializeBookmarkSections(sectionsToSave));
+        toast.success(
+          restoredTransferCount > 0
+            ? `已导出 bookmarks.ts（${restoredTransferCount} 个中转站书签已还原原分组）`
+            : "已导出 bookmarks.ts，请替换 db/data/bookmarks.ts 后提交",
+        );
       }
 
       localStorage.removeItem(STORAGE_KEY);
-      setSavedBaseline(cloneSections(sections));
+      replaceTransferItems([]);
+      const saved = cloneSections(sectionsToSave);
+      setSections(saved);
+      setSavedBaseline(saved);
       return true;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "保存失败");
@@ -325,6 +553,7 @@ export function AdminApp({
 
   function requestLeave(action: () => void) {
     if (!hasUnsavedChanges) {
+      restoreAllTransferItemsToSections();
       action();
       return;
     }
@@ -340,17 +569,17 @@ export function AdminApp({
   }
 
   function confirmSaveAndLeave() {
-    setLeaveDialogOpen(false);
-    if (countBookmarks(sections) === 0) {
+    if (countBookmarks(buildSectionsForSave()) === 0) {
       toast.error("当前没有书签数据，已阻止保存以免覆盖源文件");
-      setLeaveDialogOpen(true);
       return;
     }
     setSaveDialogOpen(true);
+    setLeaveDialogOpen(false);
   }
 
   function confirmLeaveWithoutSave() {
     setLeaveDialogOpen(false);
+    restoreAllTransferItemsToSections();
     const leave = pendingLeaveRef.current;
     clearPendingLeave();
     leave?.();
@@ -455,6 +684,8 @@ export function AdminApp({
     const next = cloneSections(initialSections);
     setSections(next);
     localStorage.removeItem(STORAGE_KEY);
+    clearTransferStationStorage();
+    replaceTransferItems([]);
     setSelectedSection(0);
     setRestoreDialogOpen(false);
     toast.success("已恢复初始数据");
@@ -477,10 +708,172 @@ export function AdminApp({
       normalizeSortOrders(next);
       setSections(next);
       persistDraft(next);
+      clearTransferStationStorage();
+      replaceTransferItems([]);
       setSelectedSection(0);
       toast.success("JSON 已导入");
     });
     input.click();
+  }
+
+  function handleTransferStationDrop(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setTransferDropActive(false);
+
+    const payload = readDragPayload(event);
+    if (!payload || !isGridDragPayload(payload)) return;
+
+    const sourceBookmark =
+      sectionsRef.current[payload.sectionIndex]?.cards[payload.cardIndex]?.bookmarks[
+        payload.bookmarkIndex
+      ];
+    if (!sourceBookmark) return;
+
+    if (transferStationHasBookmark(transferItemsRef.current, sourceBookmark.url)) {
+      toast.message("该书签已在中转站中");
+      clearActiveDragPayload();
+      return;
+    }
+
+    const next = cloneSections(sectionsRef.current);
+    const bookmark = takeBookmarkForTransfer(next, payload);
+    if (!bookmark) return;
+
+    const item: TransferStationItem = {
+      id: crypto.randomUUID(),
+      bookmark,
+      from: payload,
+    };
+
+    normalizeSortOrders(next);
+    persistDraft(next);
+    setSections(next);
+
+    if (!appendTransferItem(item)) {
+      restoreTransferBookmark(next, bookmark, payload);
+      normalizeSortOrders(next);
+      persistDraft(next);
+      setSections(next);
+      toast.message("该书签已在中转站中");
+      clearActiveDragPayload();
+      return;
+    }
+
+    setStationReveal(true);
+    toast.success("已加入中转站");
+    clearActiveDragPayload();
+  }
+
+  function removeTransferItem(id: string) {
+    const item = transferItemsRef.current.find((entry) => entry.id === id);
+    if (!item) return;
+
+    updateSections((prev) => {
+      restoreTransferBookmark(prev, item.bookmark, item.from);
+      return prev;
+    });
+    removeTransferItemFromState(id);
+    toast.message("已移出中转站");
+  }
+
+  function clearAllTransferItems() {
+    if (transferItemsRef.current.length === 0) return;
+    restoreAllTransferItemsToSections();
+    toast.message("已清空中转站");
+  }
+
+  function restoreAllTransferItemsToSections() {
+    const items = transferItemsRef.current;
+    if (items.length === 0) return;
+
+    updateSections((prev) => {
+      for (const item of items) {
+        restoreTransferBookmark(prev, item.bookmark, item.from);
+      }
+      return prev;
+    });
+    replaceTransferItems([]);
+  }
+
+  /** 保存前把中转站书签还原到原分组，再写入项目 */
+  function buildSectionsForSave() {
+    const next = cloneSections(sectionsRef.current);
+    for (const item of transferItemsRef.current) {
+      restoreTransferBookmark(next, item.bookmark, item.from);
+    }
+    normalizeSortOrders(next);
+    return next;
+  }
+
+  function enableStationDropPassthrough() {
+    requestAnimationFrame(() => {
+      stationPanelRef.current?.style.setProperty("pointer-events", "none");
+    });
+  }
+
+  function disableStationDropPassthrough() {
+    stationPanelRef.current?.style.removeProperty("pointer-events");
+  }
+
+  function handleStationDragStart(event: React.DragEvent<HTMLDivElement>, itemId: string) {
+    const active = parseDragPayload(dragSessionPayloadRef.current ?? dragPayloadRef.current);
+    if (active && isStationDragPayload(active) && active.itemId !== itemId) {
+      event.preventDefault();
+      return;
+    }
+
+    const item = findTransferItem(itemId);
+    if (!item) {
+      event.preventDefault();
+      return;
+    }
+
+    dragOriginXRef.current = event.clientX;
+    dragOriginYRef.current = event.clientY;
+    const payload: StationDragPayload = { source: "station", itemId };
+    dragSessionPayloadRef.current = payload;
+    dragPayloadRef.current = payload;
+    event.dataTransfer.effectAllowed = "move";
+    writeDragPayloadData(event.dataTransfer, payload);
+    // 延迟更新 UI，避免 dragStart 同步 re-render / pointer-events 变化取消拖拽
+    requestAnimationFrame(() => {
+      setDragPayload(payload);
+      enableStationDropPassthrough();
+    });
+  }
+
+  function handleStationDragEnd() {
+    disableStationDropPassthrough();
+    requestAnimationFrame(() => {
+      // drop 先于 dragend；session 仍在表示未成功放入分组
+      if (dragSessionPayloadRef.current && isStationDragPayload(dragSessionPayloadRef.current)) {
+        clearActiveDragPayload();
+      } else {
+        clearDragUiState();
+      }
+    });
+  }
+
+  function handleTransferStationDragOver(event: React.DragEvent<HTMLDivElement>) {
+    const payload = parseDragPayload(dragSessionPayloadRef.current);
+    if (payload && isStationDragPayload(payload)) {
+      event.dataTransfer.dropEffect = "none";
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "move";
+    setTransferDropActive(true);
+    setStationReveal(true);
+  }
+
+  function handleTransferStationDragLeave(event: React.DragEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      setTransferDropActive(false);
+    }
   }
 
   function handleDrop(
@@ -491,28 +884,58 @@ export function AdminApp({
     event.preventDefault();
     setDropTarget(null);
     setSwapHover(null);
+    setInsertHover(null);
 
-    let payload = dragPayload;
-    if (!payload) {
-      try {
-        payload = JSON.parse(event.dataTransfer.getData("text/plain") || "null") as DragPayload;
-      } catch {
-        payload = null;
-      }
-    }
+    const payload = readDragPayload(event);
     if (!payload) return;
 
+    if (isStationDragPayload(payload)) {
+      const item = findTransferItem(payload.itemId);
+      if (!item) {
+        clearActiveDragPayload();
+        return;
+      }
+
+      const grid = event.currentTarget;
+      const insertIndex = resolveTransferInsertIndex(grid, event.clientX, event.clientY);
+
+      removeTransferItemFromState(payload.itemId);
+
+      const next = cloneSections(sectionsRef.current);
+      const moved = insertTransferBookmark(next, item.bookmark, {
+        sectionIndex: targetSectionIndex,
+        cardIndex: targetCardIndex,
+        bookmarkIndex: insertIndex,
+      });
+
+      if (!moved) {
+        replaceTransferItems([...transferItemsRef.current, item]);
+        clearActiveDragPayload();
+        return;
+      }
+
+      normalizeSortOrders(next);
+      persistDraft(next);
+      setSections(next);
+      toast.success("书签已添加");
+      clearActiveDragPayload();
+      return;
+    }
+
+    if (!isGridDragPayload(payload)) return;
+
+    const gridPayload = payload;
     const grid = event.currentTarget;
     const dropElement = document.elementFromPoint(event.clientX, event.clientY);
     const droppedOnCard = dropElement?.closest("[data-bookmark-card]") as HTMLElement | null;
     if (droppedOnCard && grid.contains(droppedOnCard)) {
       const droppedIndex = Number(droppedOnCard.dataset.bookmarkIndex);
       if (
-        payload.sectionIndex === targetSectionIndex &&
-        payload.cardIndex === targetCardIndex &&
-        payload.bookmarkIndex === droppedIndex
+        gridPayload.sectionIndex === targetSectionIndex &&
+        gridPayload.cardIndex === targetCardIndex &&
+        gridPayload.bookmarkIndex === droppedIndex
       ) {
-        setDragPayload(null);
+        clearActiveDragPayload();
         return;
       }
     }
@@ -521,7 +944,7 @@ export function AdminApp({
       grid,
       event.clientX,
       event.clientY,
-      payload,
+      gridPayload,
       targetSectionIndex,
       targetCardIndex,
     );
@@ -529,18 +952,18 @@ export function AdminApp({
     updateSections((prev) => {
       const changed =
         swapTargetIndex != null
-          ? swapBookmarks(prev, payload!, {
+          ? swapBookmarks(prev, gridPayload, {
               sectionIndex: targetSectionIndex,
               cardIndex: targetCardIndex,
               bookmarkIndex: swapTargetIndex,
             })
-          : insertBookmark(prev, payload!, {
+          : insertBookmark(prev, gridPayload, {
               sectionIndex: targetSectionIndex,
               cardIndex: targetCardIndex,
               bookmarkIndex: getInsertIndex(
                 grid,
                 event.clientY,
-                payload!,
+                gridPayload,
                 targetSectionIndex,
                 targetCardIndex,
               ),
@@ -549,23 +972,23 @@ export function AdminApp({
       if (changed) toast.success("排序已更新");
       return prev;
     });
-    setDragPayload(null);
+    clearActiveDragPayload();
   }
 
   return (
+    <AdminDialogProvider>
     <TooltipProvider delayDuration={300}>
     <div className="bookmarks-app min-h-screen p-4 md:p-6">
       <div className="mx-auto max-w-6xl space-y-4">
-      <header className="space-y-4">
-        <div className="grid gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto] md:grid-rows-[auto_auto]">
-          <h1 className="text-2xl font-semibold tracking-tight">书签管理后台</h1>
-          <p className="text-sm text-muted-foreground md:col-start-1 md:row-start-2">
-            {isDev
-              ? "开发模式：保存会直接写入 db/data/bookmarks.ts"
-              : "静态部署：请导出文件后手动替换并提交"}
-          </p>
+      <BookmarkPageHeader
+        title="书签管理后台"
+        description={
+          isDev
+            ? "开发模式：保存会直接写入 db/data/bookmarks.ts"
+            : "静态部署：请导出文件后手动替换并提交"
+        }
+        actions={(
           <AdminHeaderActions
-            className="md:col-start-2 md:row-start-1 md:row-span-2 md:self-start"
             isDev={isDev}
             userName={userName}
             onImportJson={importJson}
@@ -577,10 +1000,10 @@ export function AdminApp({
             onReturnToBlog={handleReturnToBlog}
             onLogout={handleLogout}
           />
-        </div>
-      </header>
+        )}
+      />
 
-      <AdminStats sections={stats.sections} cards={stats.cards} bookmarks={stats.bookmarks} />
+      <BookmarkStatsCards sections={stats.sections} cards={stats.cards} bookmarks={stats.bookmarks} />
 
       {sections.length === 0 ? (
         <>
@@ -634,24 +1057,50 @@ export function AdminApp({
                         key={card.title + cIndex}
                         title={card.title}
                         showTitle={visibleCards.length > 1}
-                        gridClassName={cn(
-                          "rounded-lg min-h-10 transition-colors",
-                          dragPayload && "cursor-grabbing",
-                          dropTarget === `${sIndex}-${cIndex}` &&
+                        dropZoneClassName={cn(
+                          dragEnabled &&
+                            dragPayload &&
+                            dropTarget === `${sIndex}-${cIndex}` &&
                             !swapHover &&
-                            adminDropZoneActiveClass,
+                            !insertHover &&
+                            adminDropZoneHoverClass,
+                        )}
+                        gridClassName={cn(
+                          "min-h-10",
+                          dragEnabled && dragPayload && "cursor-grabbing",
                         )}
                         data-drop-zone
-                        onDragOver={(e) => {
+                        onDragOver={
+                          dragEnabled
+                            ? (e) => {
                           e.preventDefault();
-                          setDropTarget(`${sIndex}-${cIndex}`);
-                          if (!dragPayload) return;
+                          e.dataTransfer.dropEffect = "move";
+                          const dropKey = `${sIndex}-${cIndex}`;
+                          setDropTarget((prev) => (prev === dropKey ? prev : dropKey));
+                          const activePayload = parseDragPayload(dragPayloadRef.current ?? dragPayload);
+                          if (!activePayload) return;
 
+                          if (isStationDragPayload(activePayload)) {
+                            setSwapHover(null);
+                            const insertIndex = resolveTransferInsertIndex(
+                              e.currentTarget,
+                              e.clientX,
+                              e.clientY,
+                            );
+                            setInsertHover({
+                              sectionIndex: sIndex,
+                              cardIndex: cIndex,
+                              bookmarkIndex: insertIndex,
+                            });
+                            return;
+                          }
+
+                          setInsertHover(null);
                           const hoverIndex = resolveDropCard(
                             e.currentTarget,
                             e.clientX,
                             e.clientY,
-                            dragPayload,
+                            activePayload,
                             sIndex,
                             cIndex,
                           );
@@ -664,20 +1113,46 @@ export function AdminApp({
                           } else {
                             setSwapHover(null);
                           }
-                        }}
-                        onDragLeave={(e) => {
-                          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                            setDropTarget(null);
-                            setSwapHover(null);
-                          }
-                        }}
-                        onDrop={(e) => handleDrop(e, sIndex, cIndex)}
+                            }
+                            : undefined
+                        }
+                        onDragLeave={
+                          dragEnabled
+                            ? (e) => {
+                                const related = e.relatedTarget as Node | null;
+                                if (related == null) return;
+                                if (e.currentTarget.contains(related)) return;
+                                setDropTarget(null);
+                                setSwapHover(null);
+                                setInsertHover(null);
+                              }
+                            : undefined
+                        }
+                        onDrop={dragEnabled ? (e) => handleDrop(e, sIndex, cIndex) : undefined}
                       >
                         {visibleBookmarks.map(({ bookmark, bookmarkIndex: bIndex }) => {
+                            const activePayload = parseDragPayload(dragPayloadRef.current ?? dragPayload);
                             const isDraggingHost =
-                              dragPayload?.sectionIndex === sIndex &&
-                              dragPayload?.cardIndex === cIndex &&
-                              dragPayload?.bookmarkIndex === bIndex;
+                              activePayload != null &&
+                              isGridDragPayload(activePayload) &&
+                              activePayload.sectionIndex === sIndex &&
+                              activePayload.cardIndex === cIndex &&
+                              activePayload.bookmarkIndex === bIndex;
+
+                            const isSwapTarget =
+                              dragEnabled &&
+                              dragPayload != null &&
+                              isGridDragPayload(dragPayload) &&
+                              swapHover?.sectionIndex === sIndex &&
+                              swapHover?.cardIndex === cIndex &&
+                              swapHover?.bookmarkIndex === bIndex;
+                            const isInsertTarget =
+                              dragEnabled &&
+                              dragPayload != null &&
+                              isStationDragPayload(dragPayload) &&
+                              insertHover?.sectionIndex === sIndex &&
+                              insertHover?.cardIndex === cIndex &&
+                              insertHover?.bookmarkIndex === bIndex;
 
                             return (
                               <div
@@ -686,16 +1161,13 @@ export function AdminApp({
                                 data-bookmark-card-item
                                 data-bookmark-index={bIndex}
                                 className={cn(
-                                  isDraggingHost && "h-auto self-start",
-                                  swapHover?.sectionIndex === sIndex &&
-                                    swapHover?.cardIndex === cIndex &&
-                                    swapHover?.bookmarkIndex === bIndex &&
-                                    adminDragSwapTargetClass,
+                                  (isSwapTarget || isInsertTarget) && adminDragSwapTargetHoverClass,
                                 )}
                               >
                                 <BookmarkCard
                                   bookmark={bookmark}
                                   dragging={isDraggingHost}
+                                  dragEnabled={dragEnabled}
                                   onEdit={() =>
                                     openEdit({
                                       type: "bookmark",
@@ -713,21 +1185,28 @@ export function AdminApp({
                                       title: bookmark.title,
                                     })
                                   }
-                                  onDragStart={(e) => {
-                                    const payload = {
-                                      sectionIndex: sIndex,
-                                      cardIndex: cIndex,
-                                      bookmarkIndex: bIndex,
-                                    };
-                                    setDragPayload(payload);
-                                    e.dataTransfer.effectAllowed = "move";
-                                    e.dataTransfer.setData("text/plain", JSON.stringify(payload));
-                                  }}
-                                  onDragEnd={() => {
-                                    setDragPayload(null);
-                                    setDropTarget(null);
-                                    setSwapHover(null);
-                                  }}
+                                  onDragStart={
+                                    dragEnabled
+                                      ? (e) => {
+                                          const payload: GridDragPayload = {
+                                            source: "grid",
+                                            sectionIndex: sIndex,
+                                            cardIndex: cIndex,
+                                            bookmarkIndex: bIndex,
+                                          };
+                                          dragSessionPayloadRef.current = payload;
+                                          dragPayloadRef.current = payload;
+                                          dragOriginXRef.current = e.clientX;
+                                          dragOriginYRef.current = e.clientY;
+                                          e.dataTransfer.effectAllowed = "move";
+                                          writeDragPayloadData(e.dataTransfer, payload);
+                                          requestAnimationFrame(() => {
+                                            setDragPayload(payload);
+                                          });
+                                        }
+                                      : () => {}
+                                  }
+                                  onDragEnd={dragEnabled ? scheduleClearActiveDragPayload : () => {}}
                                 />
                               </div>
                             );
@@ -802,6 +1281,8 @@ export function AdminApp({
 
       <RestoreConfirmDialog
         open={restoreDialogOpen}
+        isDev={isDev}
+        summary={initialSummary}
         onClose={() => setRestoreDialogOpen(false)}
         onConfirm={confirmRestore}
       />
@@ -814,7 +1295,66 @@ export function AdminApp({
         onApplyVersion={applyVersion}
       />
       </div>
+
+      {dragEnabled ? (
+        <DragTransferStation
+          items={transferItems}
+          side={stationSide}
+          dragEnabled={dragEnabled}
+          gripEnabled={dragEnabled}
+          dropActive={transferDropActive}
+          gridDragging={Boolean(dragEnabled && dragPayload && isGridDragPayload(dragPayload))}
+          forceExpanded={forceStationExpanded}
+          draggingItemId={draggingStationItemId}
+          panelRef={stationPanelRef}
+          onSideChange={handleStationSideChange}
+          onDragOver={handleTransferStationDragOver}
+          onDragLeave={handleTransferStationDragLeave}
+          onDrop={handleTransferStationDrop}
+          onRemoveItem={removeTransferItem}
+          onClearAll={clearAllTransferItems}
+          onItemDragStart={handleStationDragStart}
+          onItemDragEnd={handleStationDragEnd}
+        />
+      ) : null}
+      {dragEnabled &&
+      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
+      !forceStationExpanded &&
+      dragApproachSide === "left" ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-y-0 left-0 z-10 hidden w-2 bg-linear-to-r from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
+        />
+      ) : null}
+      {dragEnabled &&
+      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
+      !forceStationExpanded &&
+      dragApproachSide === "right" ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-y-0 right-0 z-10 hidden w-2 bg-linear-to-l from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
+        />
+      ) : null}
+      {dragEnabled &&
+      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
+      !forceStationExpanded &&
+      dragApproachSide === "top" ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-x-0 top-0 z-10 hidden h-2 bg-linear-to-b from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
+        />
+      ) : null}
+      {dragEnabled &&
+      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
+      !forceStationExpanded &&
+      dragApproachSide === "bottom" ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-10 hidden h-2 bg-linear-to-t from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
+        />
+      ) : null}
     </div>
     </TooltipProvider>
+    </AdminDialogProvider>
   );
 }

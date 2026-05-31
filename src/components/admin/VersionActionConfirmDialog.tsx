@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 import type { VersionEntry } from "@/lib/bookmarks/types";
 
 export type VersionAction = "use" | "restore";
@@ -43,11 +44,12 @@ export function VersionActionConfirmDialog({
   onClose,
   onConfirm,
 }: VersionActionConfirmDialogProps) {
+  useAdminDialogLayer(target != null);
   const isRestore = target?.action === "restore";
 
   return (
     <Dialog open={target != null} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent showOverlay={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isRestore ? "确认写入项目" : "确认使用此版本"}</DialogTitle>
           <DialogDescription>

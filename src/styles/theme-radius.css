@@ -1,0 +1,53 @@
+/* Theme radius — driven by html[data-radius] → --radius in color-themes.css */
+
+:root {
+  --radius: 0.25rem;
+}
+
+@layer utilities {
+  /* 相对 --radius 比例缩放，避免小值时被固定 px 偏移 clamp 成 0 */
+  .theme-r-sm {
+    border-radius: max(0px, calc(var(--radius) * 0.5));
+  }
+
+  .theme-r-md {
+    border-radius: max(0px, calc(var(--radius) * 0.75));
+  }
+
+  .theme-r-lg {
+    border-radius: var(--radius);
+  }
+
+  .theme-r-xl {
+    border-radius: calc(var(--radius) * 1.25);
+  }
+}
+
+/* Starlight blog — unlayered overrides for @layer starlight.* hardcoded radii */
+site-search {
+  --sl-search-corners: var(--radius);
+}
+
+.sl-link-card,
+.pagination-links a,
+mobile-starlight-toc .toggle {
+  border-radius: var(--radius);
+}
+
+@media (min-width: 50rem) {
+  site-search button[data-open-modal] {
+    border-radius: var(--radius);
+  }
+}
+
+.sl-badge,
+article.card .icon,
+site-search button > kbd,
+starlight-file-tree {
+  border-radius: max(0px, calc(var(--radius) * 0.75));
+}
+
+.sidebar-content a[href],
+starlight-toc nav a {
+  border-radius: max(0px, calc(var(--radius) * 0.75));
+}

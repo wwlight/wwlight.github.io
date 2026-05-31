@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 
 interface LeaveUnsavedDialogProps {
   open: boolean;
@@ -25,9 +26,11 @@ export function LeaveUnsavedDialog({
   onSaveAndLeave,
   onLeaveWithoutSave,
 }: LeaveUnsavedDialogProps) {
+  useAdminDialogLayer(open);
+
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent showOverlay={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>未保存的修改</DialogTitle>
           <DialogDescription>

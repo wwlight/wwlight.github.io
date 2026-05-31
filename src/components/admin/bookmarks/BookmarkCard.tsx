@@ -3,36 +3,21 @@ import { BookmarkCardFooter } from "@/components/admin/bookmarks/BookmarkCardFoo
 import { BookmarkCardPreview } from "@/components/admin/bookmarks/BookmarkCardPreview";
 import { Card } from "@/components/ui/card";
 import type { BookmarkData } from "@/lib/bookmarks/types";
-import { adminBookmarkCardHeightClass, bookmarkCardShellClass } from "./ui-helpers";
+import {
+  adminBookmarkCardHeightClass,
+  bookmarkCardShellClass,
+  setAdminDragImage,
+} from "./ui-helpers";
 import { cn } from "@/lib/utils";
 
 interface BookmarkCardProps {
   bookmark: BookmarkData;
   dragging?: boolean;
+  dragEnabled?: boolean;
   onEdit: () => void;
   onDelete: () => void;
-  onDragStart: (event: React.DragEvent<HTMLButtonElement>) => void;
+  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: () => void;
-}
-
-function setCardDragImage(event: React.DragEvent, card: HTMLElement) {
-  const rect = card.getBoundingClientRect();
-  const offsetX = event.clientX - rect.left;
-  const offsetY = event.clientY - rect.top;
-  const clone = card.cloneNode(true) as HTMLElement;
-  clone.style.position = "fixed";
-  clone.style.top = "-9999px";
-  clone.style.left = "0";
-  clone.style.width = `${rect.width}px`;
-  clone.style.opacity = "1";
-  clone.style.transform = "none";
-  clone.style.height = "auto";
-  clone.style.minHeight = "0";
-  clone.style.pointerEvents = "none";
-  clone.style.margin = "0";
-  document.body.appendChild(clone);
-  event.dataTransfer.setDragImage(clone, offsetX, offsetY);
-  requestAnimationFrame(() => clone.remove());
 }
 
 function openBookmarkLink(url: string) {
@@ -42,6 +27,7 @@ function openBookmarkLink(url: string) {
 export function BookmarkCard({
   bookmark,
   dragging,
+  dragEnabled = true,
   onEdit,
   onDelete,
   onDragStart,
@@ -49,30 +35,36 @@ export function BookmarkCard({
 }: BookmarkCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  function handleDragStart(event: React.DragEvent<HTMLButtonElement>) {
-    if (cardRef.current) setCardDragImage(event, cardRef.current);
+  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
+    if ((event.target as HTMLElement).closest("button")) {
+      event.preventDefault();
+      return;
+    }
+    if (cardRef.current) setAdminDragImage(event, cardRef.current);
     onDragStart(event);
   }
 
   return (
     <Card
       ref={cardRef}
+      draggable={dragEnabled}
+      onDragStart={dragEnabled ? handleDragStart : undefined}
+      onDragEnd={dragEnabled ? onDragEnd : undefined}
+      aria-label={dragEnabled ? `拖拽：${bookmark.title}` : undefined}
       className={cn(
+        "admin-bookmark-card",
         bookmarkCardShellClass,
         adminBookmarkCardHeightClass,
         "h-full",
-        dragging && [
-          "h-auto self-start",
-          "border-dashed shadow-none transition-none",
-          "opacity-45 bg-muted/60",
-          "dark:opacity-25 dark:bg-muted/20",
+        dragEnabled && [
+          "cursor-grab active:cursor-grabbing",
+          "[&_*:not(button)]:cursor-[inherit]",
         ],
+        dragging && "admin-bookmark-card--dragging",
       )}
     >
       <BookmarkCardPreview bookmark={bookmark} />
       <BookmarkCardFooter
-        onDragStart={handleDragStart}
-        onDragEnd={onDragEnd}
         onEdit={onEdit}
         onDelete={onDelete}
         onOpenLink={() => openBookmarkLink(bookmark.url)}

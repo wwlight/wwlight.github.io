@@ -53,7 +53,7 @@ export default defineConfig({
         Header: './src/components/Header.astro',
         Footer: './src/components/Footer.astro',
         MobileMenuFooter: './src/components/MobileMenuFooter.astro',
-        ThemeSelect: './src/components/ThemeSelect.astro',
+        Hero: './src/components/starlight/Hero.astro',
       },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/wwlight/wwlight.github.io' },
@@ -81,7 +81,7 @@ export default defineConfig({
       tsconfigPaths: true,
     },
     optimizeDeps: {
-      include: ['react', 'react-dom'],
+      include: ['react', 'react-dom', 'mermaid'],
     },
   },
 })

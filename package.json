@@ -11,6 +11,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "generate:color-themes": "node scripts/generate-color-theme-css.mjs",
+    "generate:theme-init": "node scripts/generate-theme-init.mjs",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "lint-staged": "lint-staged",

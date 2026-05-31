@@ -1,7 +1,10 @@
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { BookmarkStatsCards } from "@/components/bookmarks/shared/BookmarkStatsCards";
+import { BookmarkPageHeader } from "@/components/bookmarks/shared/BookmarkPageHeader";
 import { PublicBookmarkCard } from "@/components/bookmarks/public/PublicBookmarkCard";
+import { countBookmarkStats } from "@/lib/bookmarks/stats";
 import { PublicBookmarkCardGroup } from "@/components/bookmarks/public/PublicBookmarkCardGroup";
 import { PublicSectionPanel } from "@/components/bookmarks/public/PublicSectionPanel";
 import { PublicSectionTabsNav } from "@/components/bookmarks/public/PublicSectionTabsNav";
@@ -10,7 +13,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { clampSelectedSection } from "@/lib/bookmarks/section-helpers";
 import { filterBookmarkSections } from "@/lib/bookmarks/search";
 import type { BookmarkSectionData } from "@/lib/bookmarks/types";
-import { toolbarSearchInputClass } from "@/lib/bookmarks/toolbar-ui";
+import { bookmarkSearchPlaceholder, toolbarSearchInputClass } from "@/lib/bookmarks/toolbar-ui";
 import { cn } from "@/lib/utils";
 
 interface BookmarksPublicProps {
@@ -18,18 +21,11 @@ interface BookmarksPublicProps {
   actions?: ReactNode;
 }
 
-function countBookmarks(sections: BookmarkSectionData[]) {
-  return sections.reduce(
-    (sum, section) => sum + section.cards.reduce((n, card) => n + card.bookmarks.length, 0),
-    0,
-  );
-}
-
 export function BookmarksPublic({ sections, actions }: BookmarksPublicProps) {
   const [query, setQuery] = useState("");
   const [selectedSection, setSelectedSection] = useState(0);
   const normalizedQuery = query.trim().toLowerCase();
-  const totalCount = useMemo(() => countBookmarks(sections), [sections]);
+  const stats = useMemo(() => countBookmarkStats(sections), [sections]);
 
   const visibleSections = useMemo(
     () => filterBookmarkSections(sections, normalizedQuery),
@@ -45,18 +41,19 @@ export function BookmarksPublic({ sections, actions }: BookmarksPublicProps) {
 
   return (
     <div className="space-y-4">
-      <header className="space-y-4">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">书签导航</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              共 {totalCount} 个链接 · {sections.length} 个模块
-            </p>
-          </div>
-          {actions}
-        </div>
+      <BookmarkPageHeader
+        title="书签导航"
+        description="按模块分类整理，方便浏览与查找。"
+        actions={actions}
+      />
 
-        <div className="relative max-w-md">
+      <BookmarkStatsCards
+        sections={stats.sections}
+        cards={stats.cards}
+        bookmarks={stats.bookmarks}
+      />
+
+      <div className="relative max-w-md">
           <Search
             className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
             aria-hidden
@@ -65,12 +62,11 @@ export function BookmarksPublic({ sections, actions }: BookmarksPublicProps) {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索标题、描述或模块…"
+            placeholder={bookmarkSearchPlaceholder}
             autoComplete="off"
             className={toolbarSearchInputClass}
           />
         </div>
-      </header>
 
       {hasResults ? (
         <Tabs
@@ -81,7 +77,7 @@ export function BookmarksPublic({ sections, actions }: BookmarksPublicProps) {
 
           {visibleSections.map((section, sIndex) => (
             <TabsContent key={`${section.title}-${sIndex}`} value={String(sIndex)} className="mt-4">
-              <PublicSectionPanel>
+              <PublicSectionPanel title={section.title}>
                 {section.cards.map((card, cardIndex) => (
                   <PublicBookmarkCardGroup
                     key={`${card.title}-${cardIndex}`}

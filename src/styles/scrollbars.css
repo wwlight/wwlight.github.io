@@ -9,3 +9,10 @@
     @apply scrollbar-thin scrollbar-gutter-stable scrollbar-thumb-muted-foreground/35 scrollbar-track-transparent;
   }
 }
+
+/* Theme popover — unlayered; panel content exceeds 32rem on typical layouts */
+.theme-customizer-popover {
+  height: auto;
+  max-height: calc(100dvh - 5rem);
+  overflow: hidden auto;
+}

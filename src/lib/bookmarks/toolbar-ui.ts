@@ -4,6 +4,9 @@ export const toolbarControlClass = "h-8";
 /** 顶栏搜索框 */
 export const toolbarSearchInputClass = "h-8 pl-8 text-xs shadow-sm";
 
+/** 书签模块搜索框 placeholder（管理端与公开页共用） */
+export const bookmarkSearchPlaceholder = "搜索模块、分组或书签…";
+
 /** 模块 Tab 列表容器 */
 export const sectionTabsListClass =
   "inline-flex h-8 w-max max-w-none flex-nowrap items-center justify-start gap-0.5 bg-muted/80 p-0.5";

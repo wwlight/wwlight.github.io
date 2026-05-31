@@ -1,6 +1,7 @@
 import { ChevronDown, Folder, FolderPlus, Layers, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AdminActionButton } from "@/components/admin/AdminActionButton";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +48,7 @@ export function SectionManageDialog({
   onEditCard,
   onDeleteCard,
 }: SectionManageDialogProps) {
+  useAdminDialogLayer(open);
   const [expandedIndex, setExpandedIndex] = useState(selectedIndex);
 
   useEffect(() => {
@@ -54,23 +56,23 @@ export function SectionManageDialog({
   }, [open, selectedIndex]);
 
   function handleAddSection() {
-    onClose();
     onAddSection();
+    onClose();
   }
 
   function handleEditSection(index: number) {
-    onClose();
     onEditSection(index);
+    onClose();
   }
 
   function handleAddCard(sectionIndex: number) {
-    onClose();
     onAddCard(sectionIndex);
+    onClose();
   }
 
   function handleEditCard(sectionIndex: number, cardIndex: number) {
-    onClose();
     onEditCard(sectionIndex, cardIndex);
+    onClose();
   }
 
   function handleSelectSection(index: number) {
@@ -84,7 +86,7 @@ export function SectionManageDialog({
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="flex max-h-[min(85vh,720px)] flex-col gap-0 overflow-hidden p-0 sm:max-w-xl">
+      <DialogContent showOverlay={false} className="flex max-h-[min(85vh,720px)] flex-col gap-0 overflow-hidden p-0 sm:max-w-xl">
         <DialogHeader className="space-y-1 border-b px-6 py-4">
           <DialogTitle>模块与分组管理</DialogTitle>
           <DialogDescription>

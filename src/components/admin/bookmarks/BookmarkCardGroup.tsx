@@ -6,6 +6,7 @@ interface BookmarkCardGroupProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   showTitle?: boolean;
   gridClassName?: string;
+  dropZoneClassName?: string;
   children: ReactNode;
 }
 
@@ -13,6 +14,7 @@ export function BookmarkCardGroup({
   title,
   showTitle = true,
   gridClassName,
+  dropZoneClassName,
   children,
   className,
   ...gridProps
@@ -24,9 +26,9 @@ export function BookmarkCardGroup({
           <h3 className={bookmarkGroupTitleClass}>{title}</h3>
         </div>
       ) : null}
-      <BookmarkCardGrid className={gridClassName} {...gridProps}>
-        {children}
-      </BookmarkCardGrid>
+      <div className={dropZoneClassName} {...gridProps}>
+        <BookmarkCardGrid className={gridClassName}>{children}</BookmarkCardGrid>
+      </div>
     </div>
   );
 }

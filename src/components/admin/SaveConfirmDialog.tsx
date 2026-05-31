@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 
 interface SaveConfirmDialogProps {
   open: boolean;
@@ -27,9 +28,11 @@ export function SaveConfirmDialog({
   onClose,
   onConfirm,
 }: SaveConfirmDialogProps) {
+  useAdminDialogLayer(open);
+
   return (
     <Dialog open={open} onOpenChange={(value) => !value && !saving && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent showOverlay={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>确认保存</DialogTitle>
           <DialogDescription>

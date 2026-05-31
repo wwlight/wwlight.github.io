@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -25,6 +27,12 @@ import {
 import type { EditContext } from "@/lib/bookmarks/admin-helpers";
 import { formatExtraLinksInput } from "@/lib/bookmarks/admin-helpers";
 import type { BookmarkSectionData } from "@/lib/bookmarks/types";
+import { cn } from "@/lib/utils";
+
+interface EditFieldErrors {
+  title?: boolean;
+  url?: boolean;
+}
 
 interface EditDialogProps {
   open: boolean;
@@ -75,10 +83,17 @@ function getInitialValues(
 }
 
 export function EditDialog({ open, context, sections, onClose, onSubmit }: EditDialogProps) {
+  useAdminDialogLayer(open);
   const [form, setForm] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<EditFieldErrors>({});
+  const [shakeKey, setShakeKey] = useState(0);
 
   useEffect(() => {
-    if (open && context) setForm(getInitialValues(context, sections));
+    if (open && context) {
+      setForm(getInitialValues(context, sections));
+      setFieldErrors({});
+      setShakeKey(0);
+    }
   }, [open, context, sections]);
 
   if (!context) return null;
@@ -87,20 +102,59 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
 
   function updateField(name: string, value: string) {
     setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "title" || name === "url") {
+      setFieldErrors((prev) => {
+        if (!prev[name as keyof EditFieldErrors])
+          return prev;
+        const next = { ...prev };
+        delete next[name as keyof EditFieldErrors];
+        return next;
+      });
+    }
+  }
+
+  function triggerFieldErrors(errors: EditFieldErrors) {
+    setFieldErrors(errors);
+    setShakeKey((key) => key + 1);
   }
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+
+    const errors: EditFieldErrors = {};
+    if (!(form.title ?? "").trim())
+      errors.title = true;
+    if (context.type === "bookmark" && !(form.url ?? "").trim())
+      errors.url = true;
+
+    if (errors.title || errors.url) {
+      triggerFieldErrors(errors);
+      return;
+    }
+
+    setFieldErrors({});
     onSubmit(form);
   }
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent
+        showOverlay={false}
+        className="flex max-h-[min(85vh,720px)] min-h-[min(24rem,70vh)] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg"
+      >
+        <DialogHeader className="shrink-0 space-y-1.5 px-6 pb-4 pt-6">
           <DialogTitle>{getTitle(context, sections)}</DialogTitle>
+          <DialogDescription className="sr-only">
+            编辑书签、分组或模块的表单。
+          </DialogDescription>
         </DialogHeader>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+        <form
+          className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          noValidate
+          onSubmit={handleSubmit}
+        >
+          <div className="app-scrollbar min-h-0 flex-1 overflow-y-auto px-6">
+            <div className="grid gap-4 pb-4">
           {context.type === "bookmark" && (
             <div className="grid gap-2">
               <Label htmlFor="cardTitle">所属分组</Label>
@@ -124,26 +178,49 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
 
           <div className="grid gap-2">
             <Label htmlFor="title">标题</Label>
-            <Input
-              id="title"
-              value={form.title ?? ""}
-              onChange={(e) => updateField("title", e.target.value)}
-              required
-            />
+            <div
+              key={fieldErrors.title ? `title-shake-${shakeKey}` : "title"}
+              className={cn(fieldErrors.title && shakeKey > 0 && "animate-input-shake")}
+            >
+              <Input
+                id="title"
+                value={form.title ?? ""}
+                onChange={(e) => updateField("title", e.target.value)}
+                invalid={fieldErrors.title}
+                aria-label="标题"
+              />
+            </div>
+            {fieldErrors.title ? (
+              <p className="text-sm text-destructive" role="alert">
+                请输入标题
+              </p>
+            ) : null}
           </div>
 
           {context.type === "bookmark" && (
             <>
               <div className="grid gap-2">
                 <Label htmlFor="url">链接 URL</Label>
-                <Input
-                  id="url"
-                  type="url"
-                  value={form.url ?? ""}
-                  onChange={(e) => updateField("url", e.target.value)}
-                  placeholder="https://example.com"
-                  required
-                />
+                <div
+                  key={fieldErrors.url ? `url-shake-${shakeKey}` : "url"}
+                  className={cn(fieldErrors.url && shakeKey > 0 && "animate-input-shake")}
+                >
+                  <Input
+                    id="url"
+                    type="text"
+                    inputMode="url"
+                    value={form.url ?? ""}
+                    onChange={(e) => updateField("url", e.target.value)}
+                    placeholder="https://example.com"
+                    invalid={fieldErrors.url}
+                    aria-label="链接 URL"
+                  />
+                </div>
+                {fieldErrors.url ? (
+                  <p className="text-sm text-destructive" role="alert">
+                    请输入链接 URL
+                  </p>
+                ) : null}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="description">描述</Label>
@@ -214,7 +291,10 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
             </>
           )}
 
-          <DialogFooter>
+            </div>
+          </div>
+
+          <DialogFooter className="shrink-0 gap-2 border-t px-6 py-4 sm:gap-0">
             <Button type="button" variant="outline" onClick={onClose}>
               取消
             </Button>

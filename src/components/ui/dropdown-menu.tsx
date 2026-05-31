@@ -69,7 +69,7 @@ function DropdownMenuContent({
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border/80 bg-popover p-1.5 text-popover-foreground shadow-lg",
+          "overlay-panel-enter z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border/80 bg-popover p-1.5 text-popover-foreground shadow-lg",
           className,
         )}
         {...props}

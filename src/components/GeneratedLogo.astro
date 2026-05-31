@@ -1,0 +1,40 @@
+---
+import {
+  GENERATED_LOGO_PATHS,
+  GENERATED_LOGO_STROKE,
+} from '../../scripts/generated-logo.data.mjs'
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+const { width, linecap, linejoin } = GENERATED_LOGO_STROKE
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 128 128"
+  role="img"
+  aria-label="logo"
+  class:list={['generated-logo', className]}
+>
+  {
+    GENERATED_LOGO_PATHS.map(d => (
+      <path
+        d={d}
+        fill="none"
+        stroke="currentColor"
+        stroke-width={width}
+        stroke-linecap={linecap}
+        stroke-linejoin={linejoin}
+      />
+    ))
+  }
+</svg>
+
+<style>
+  .generated-logo {
+    color: var(--primary);
+  }
+</style>

@@ -5,6 +5,7 @@ import {
   VersionActionConfirmDialog,
   type VersionActionTarget,
 } from "@/components/admin/VersionActionConfirmDialog";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -47,6 +48,7 @@ export function VersionHistoryDialog({
   onClose,
   onApplyVersion,
 }: VersionHistoryDialogProps) {
+  useAdminDialogLayer(open);
   const [versions, setVersions] = useState<VersionEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [actingId, setActingId] = useState<string | null>(null);
@@ -116,7 +118,7 @@ export function VersionHistoryDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent showOverlay={false} className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <History className="size-4" />

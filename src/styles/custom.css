@@ -11,6 +11,18 @@ summary {
   --sl-content-width: 60rem;
 }
 
+[data-theme-customizer-trigger] [data-part='swatch'] {
+  background-color: var(--primary);
+}
+
+[data-theme-customizer-trigger] [data-part='label']:empty::after {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .module-nav {
   display: none;
   align-items: center;
@@ -29,7 +41,7 @@ summary {
   display: inline-flex;
   align-items: center;
   padding: 0.35rem 0.65rem;
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--sl-color-gray-2);
   font-size: 0.8125rem;
   line-height: 1;
@@ -57,7 +69,7 @@ summary {
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
-  border-radius: 9999px;
+  border-radius: var(--radius);
   color: var(--sl-color-text-accent);
   text-decoration: none;
   transition:

@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BookmarkOverflowText } from "@/components/admin/bookmarks/BookmarkOverflowText";
+import { UserAvatar } from "@/components/bookmarks/shared/UserAvatar";
 import { cardIconClass } from "@/lib/bookmarks/admin-helpers";
 import { cn } from "@/lib/utils";
 
@@ -16,30 +17,6 @@ interface AdminUserMenuProps {
   onReturnToFrontend: () => void;
   onReturnToBlog: () => void;
   onLogout: () => void;
-}
-
-function AdminAvatar({ name }: { name: string }) {
-  const initial = (name.trim().charAt(0) || "A").toUpperCase();
-
-  return (
-    <div
-      className={cn(
-        "relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full",
-        "bg-gradient-to-br from-neutral-800 via-neutral-700 to-neutral-900",
-        "shadow-[0_1px_2px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.14)]",
-        "ring-1 ring-black/10 dark:from-neutral-100 dark:via-neutral-200 dark:to-neutral-300 dark:ring-white/20",
-      )}
-      aria-hidden
-    >
-      <span className="relative text-[13px] font-semibold leading-none tracking-tight text-white dark:text-neutral-900">
-        {initial}
-      </span>
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/0 via-white/12 to-white/0 dark:via-black/5"
-        aria-hidden
-      />
-    </div>
-  );
 }
 
 function deferMenuAction(action: () => void) {
@@ -127,7 +104,7 @@ export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogo
           onPointerEnter={handlePointerEnter}
           onPointerLeave={handlePointerLeave}
         >
-          <AdminAvatar name={name} />
+          <UserAvatar name={name} />
           <div className="min-w-0 flex-1 px-1 text-left">
             <BookmarkOverflowText
               as="span"

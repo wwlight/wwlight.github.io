@@ -1,6 +1,6 @@
 ---
 name: wwlight-project
-description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo, Starlight docs/blog, bookmarks admin, Mermaid diagrams, site navigation, or theme switching.
+description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions, Tailwind CSS). Use when editing this repo, Starlight docs/blog, bookmarks admin, Mermaid diagrams, site navigation, theme switching, scrollable UI, or writing README.md.
 ---
 
 # wwlight.github.io
@@ -65,10 +65,25 @@ vpr lint
 
 ## 主题切换
 
+### 明暗模式
+
 - 逻辑：`src/lib/theme.ts` — View Transition 圆形揭示
 - 样式：`src/styles/view-transition-theme.css`
-- 组件：`src/components/ThemeSelect.astro`
-- 存储键：`starlight-theme`
+- 存储键：`SITE_STORAGE_KEYS.colorMode`（`wwlight:color-mode`，见 `src/lib/site-storage.keys.mjs`）
+
+### 配色主题（shadcn Theme）
+
+- 数据：`scripts/color-themes.data.mjs` → `vpr generate:color-themes` 生成 `src/styles/color-themes.css` 与 `src/lib/theme-options.json`
+- 默认（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`；面板内「重置」恢复上述值
+- Primary 色值直接引用 Tailwind 色阶（亮 `500` / 暗 `400`，与 Nuxt `--ui-primary` 一致）；各 primary 统一用 `html[data-color-primary]` 选择器，含默认 green；shadcn 仍用 `--primary` / `--ring`，表面 token 不变
+- 逻辑：`src/lib/color-theme.ts` — `data-color-primary` / `data-color-neutral` / `data-radius` + localStorage
+- 存储：`src/lib/site-storage.keys.mjs` — 前缀 `SITE_STORAGE_PREFIX`（默认 `wwlight`），键如 `wwlight:color-primary`；改前缀后运行 `vpr generate:theme-init`
+- 全站 localStorage（含管理端草稿 `wwlight:bookmarks-admin-draft`）共用 `src/lib/site-storage.ts` 迁移逻辑
+- Starlight accent / gray：`--color-accent-*`、`--color-gray-*`（`@astrojs/starlight-tailwind` 官方映射）
+- shadcn primary：同 CSS 内 `--primary` / `--ring` 明暗两套
+- 面板：`ThemeCustomizerPanel.tsx`（Primary / Neutral / Radius / Color Mode；无 Font、Icons）
+- 触发器：`ThemeCustomizerTrigger.tsx`（文档站 `ColorThemeSelect.astro`、书签/管理端 `ColorThemePicker`）
+- 首屏：`theme-init.inline.js` 写入上述 data 属性
 
 ## 书签模块要点
 
@@ -93,9 +108,33 @@ vpr lint
 
 安装与脚本一律走 Vite+（`vp i`、`vpr build` 等），不要直接裸跑 `pnpm` / `npm install`。
 
+## Tailwind CSS
+
+UI 基于 **Tailwind CSS 4**（`@tailwindcss/vite`）。自研 React/Astro 组件优先用 utility class，样式封装在 `src/styles/`，不要在组件里重复写 webkit 伪元素。
+
+### 滚动条
+
+可滚动区域（对话框、面板、下拉、Tab 等）统一用 Tailwind + **`app-scrollbar`**（`src/styles/scrollbars.css` 内 `@apply` 封装 `scrollbar-thin` 等 utility）：
+
+1. 容器加 `app-scrollbar`
+2. 加 `overflow-y-auto` / `overflow-x-auto` / `overflow-auto`
+3. 限高用 `max-h-*`、`h-*`；flex 子项滚动必加 `min-h-0`
+
+```tsx
+<div className="app-scrollbar max-h-96 overflow-y-auto p-3">{children}</div>
+<div className="min-h-0 flex-1 overflow-y-auto px-3 py-3 app-scrollbar">…</div>
+```
+
+隐藏滚动条（横向 Tab）：`overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden`（见 `SectionTabsNav.tsx`）。
+
+**CSS 入口：** 书签公开页 `bookmarks-public-app.css`、管理端 `bookmarks-app.css` 已引入；Starlight/React 新区域类不生效时在 `global.css` 补 `@import './scrollbars.css'`。
+
+**禁止：** 组件 `<style>` / CSS 模块 / 内联 `style` 写 `::-webkit-scrollbar`；不要复制 `app-scrollbar` 内的 utility 组合。
+
 ## 编码约定
 
 - 遵循 `.cursor/rules/karpathy-guidelines.mdc`
+- 可滚动自研组件：见上文 **Tailwind CSS → 滚动条**
 - 博客 MDX 用 Starlight 内置 prev/next，正文不写「下一篇」链接
 - 文档页 React 岛屿用 `client:only="react"`；BackToTop 用 Portal 挂到 `document.body`
 - 只在你明确要求时创建 git commit
@@ -109,3 +148,23 @@ vpr lint
 **改 dev 启动**：`scripts/dev-bootstrap.mjs`、`dev-all.mjs`、`dev-admin.mjs`、`open-browser.mjs`。
 
 **升级依赖**：只改 `pnpm-workspace.yaml` 的 `catalogs`，然后 `vp i`。
+
+**写 README**：`src/content/docs/` 内 Starlight 文档用 `:::note` / `:::tip` 等指令；**仅写 README.md**（及 Issue/PR 等 GitHub 原生 GFM）时可用 GitHub Alerts：
+
+```markdown
+> [!TYPE]
+> 正文每一行都以 > 开头。
+```
+
+- `TYPE`：`NOTE` | `TIP` | `IMPORTANT` | `WARNING` | `CAUTION`（不区分大小写）
+- 可选标题：`> [!TIP] 自定义标题`
+
+| 类型 | 适用场景 |
+| --- | --- |
+| NOTE | 补充说明、背景信息 |
+| TIP | 更好或更省力的做法 |
+| IMPORTANT | 达成目标必须知道的关键信息 |
+| WARNING | 需立刻注意的紧急信息 |
+| CAUTION | 行为可能带来的风险或负面后果 |
+
+不要在 Starlight MDX 里改用 `[!TYPE]`，除非用户明确要求且确认构建链支持。

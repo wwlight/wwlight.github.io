@@ -1,8 +1,9 @@
+/* 图表容器与工具栏布局；明暗配色由 astro-mermaid autoTheme + mermaid.js 内部处理 */
+
 .mermaid-shell {
   position: relative;
   margin: 2rem 0;
   border: 1px solid var(--sl-color-gray-5);
-  background: var(--sl-color-gray-7, rgba(0, 0, 0, 0.02));
   overflow: hidden;
   --ec-brdWd: 1px;
   --ec-uiPadInl: 1rem;
@@ -14,10 +15,6 @@
   --ec-frm-inlBtnBgActOpa: 0.3;
   --ec-frm-inlBtnBrd: var(--sl-color-text);
   --ec-frm-inlBtnBrdOpa: 0.4;
-}
-
-:root[data-theme='light'] .mermaid-shell {
-  --ec-frm-edBg: var(--sl-color-gray-7);
 }
 
 .mermaid-shell:fullscreen {
@@ -34,14 +31,13 @@
 }
 
 .mermaid-shell pre.mermaid {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 !important;
-  padding: 2.5rem 1rem 1rem !important;
+  margin: 0;
+  padding: 2.5rem 1rem 1rem;
   overflow: visible;
   border: none;
-  background: transparent !important;
   cursor: grab;
   touch-action: none;
 }
@@ -52,13 +48,6 @@
 
 .mermaid-shell pre.mermaid:active {
   cursor: grabbing;
-}
-
-.mermaid-shell pre.mermaid[data-processed],
-.mermaid-shell pre.mermaid:not([data-processed]):has(svg) {
-  animation: none !important;
-  background: transparent !important;
-  min-height: auto !important;
 }
 
 .mermaid-shell pre.mermaid svg {

@@ -1,7 +1,28 @@
+import {
+  SITE_STORAGE_KEYS,
+  migrateAllLegacyStorageKeys,
+} from "@/lib/site-storage";
+import { syncSiteFavicon } from "@/lib/generated-logo";
+
 export type ResolvedTheme = "dark" | "light";
 export type ThemePreference = ResolvedTheme | "system";
 
-export const THEME_STORAGE_KEY = "starlight-theme";
+const THEME_PREFERENCES: ThemePreference[] = ["dark", "light", "system"];
+
+function parseThemePreference(stored: string | null): ThemePreference {
+  if (stored === "dark" || stored === "light" || stored === "system")
+    return stored;
+  return "system";
+}
+
+function persistThemePreference(stored: string | null, preference: ThemePreference) {
+  if (typeof localStorage === "undefined")
+    return;
+  if (stored !== preference)
+    localStorage.setItem(THEME_STORAGE_KEY, preference);
+}
+
+export const THEME_STORAGE_KEY = SITE_STORAGE_KEYS.colorMode;
 export const THEME_TRANSITION_DURATION = 400;
 export const THEME_TRANSITION_EASING = "ease-in-out";
 
@@ -35,9 +56,11 @@ export function getSystemTheme(): ResolvedTheme {
 
 export function getStoredThemePreference(): ThemePreference {
   if (typeof localStorage === "undefined") return "system";
+  migrateAllLegacyStorageKeys();
   const stored = localStorage.getItem(THEME_STORAGE_KEY);
-  if (stored === "dark" || stored === "light" || stored === "system") return stored;
-  return "system";
+  const preference = parseThemePreference(stored);
+  persistThemePreference(stored, preference);
+  return preference;
 }
 
 export function resolveTheme(preference: ThemePreference): ResolvedTheme {
@@ -63,10 +86,31 @@ export function applyResolvedTheme(theme: ResolvedTheme) {
   root.dataset.theme = theme;
   root.classList.remove("light", "dark");
   root.classList.add(theme);
+  syncSiteFavicon();
 }
 
 export function applyThemePreference(preference: ThemePreference) {
   applyResolvedTheme(resolveTheme(preference));
+}
+
+export function storeThemePreference(preference: ThemePreference) {
+  if (typeof localStorage === "undefined") return;
+  if (!THEME_PREFERENCES.includes(preference))
+    return;
+  localStorage.setItem(THEME_STORAGE_KEY, preference);
+}
+
+export function setThemePreference(preference: ThemePreference) {
+  storeThemePreference(preference);
+  applyThemePreference(preference);
+}
+
+export async function setThemePreferenceWithTransition(
+  preference: ThemePreference,
+  event: { clientX: number; clientY: number },
+) {
+  storeThemePreference(preference);
+  await setThemeWithTransition(resolveTheme(preference), event);
 }
 
 /** 圆形揭示：切 dark 时 old 内收，切 light 时 new 外扩 */
@@ -117,7 +161,7 @@ export async function setThemeWithTransition(
 
 export function toggleThemeWithTransition(event: { clientX: number; clientY: number }) {
   const next = getResolvedTheme() === "dark" ? "light" : "dark";
-  localStorage.setItem(THEME_STORAGE_KEY, next);
+  storeThemePreference(next);
   void setThemeWithTransition(next, event);
   return next;
 }

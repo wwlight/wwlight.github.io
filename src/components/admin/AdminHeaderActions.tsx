@@ -7,8 +7,8 @@ import {
   Upload,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { AdminThemeControl } from "@/components/admin/AdminThemeToggle";
 import { AdminUserMenu } from "@/components/admin/AdminUserMenu";
+import { ColorThemePicker } from "@/components/theme/ColorThemePicker";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cardIconClass } from "@/lib/bookmarks/admin-helpers";
 import { cn } from "@/lib/utils";
@@ -112,7 +112,7 @@ export function AdminHeaderActions({
         </AdminHeaderAction>
       </div>
 
-      <AdminThemeControl />
+      <ColorThemePicker />
 
       <AdminUserMenu
         name={userName}

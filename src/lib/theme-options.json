@@ -1,0 +1,172 @@
+{
+  "defaultPrimary": "green",
+  "defaultNeutral": "slate",
+  "defaultRadius": "0.25",
+  "defaultColorMode": "system",
+  "primaryThemes": [
+    {
+      "id": "black",
+      "label": "Black",
+      "swatch": "var(--color-zinc-950)"
+    },
+    {
+      "id": "red",
+      "label": "Red",
+      "swatch": "var(--color-red-500)"
+    },
+    {
+      "id": "orange",
+      "label": "Orange",
+      "swatch": "var(--color-orange-500)"
+    },
+    {
+      "id": "amber",
+      "label": "Amber",
+      "swatch": "var(--color-amber-500)"
+    },
+    {
+      "id": "yellow",
+      "label": "Yellow",
+      "swatch": "var(--color-yellow-500)"
+    },
+    {
+      "id": "lime",
+      "label": "Lime",
+      "swatch": "var(--color-lime-500)"
+    },
+    {
+      "id": "green",
+      "label": "Green",
+      "swatch": "var(--color-green-500)"
+    },
+    {
+      "id": "emerald",
+      "label": "Emerald",
+      "swatch": "var(--color-emerald-500)"
+    },
+    {
+      "id": "teal",
+      "label": "Teal",
+      "swatch": "var(--color-teal-500)"
+    },
+    {
+      "id": "cyan",
+      "label": "Cyan",
+      "swatch": "var(--color-cyan-500)"
+    },
+    {
+      "id": "sky",
+      "label": "Sky",
+      "swatch": "var(--color-sky-500)"
+    },
+    {
+      "id": "blue",
+      "label": "Blue",
+      "swatch": "var(--color-blue-500)"
+    },
+    {
+      "id": "indigo",
+      "label": "Indigo",
+      "swatch": "var(--color-indigo-500)"
+    },
+    {
+      "id": "violet",
+      "label": "Violet",
+      "swatch": "var(--color-violet-500)"
+    },
+    {
+      "id": "purple",
+      "label": "Purple",
+      "swatch": "var(--color-purple-500)"
+    },
+    {
+      "id": "fuchsia",
+      "label": "Fuchsia",
+      "swatch": "var(--color-fuchsia-500)"
+    },
+    {
+      "id": "pink",
+      "label": "Pink",
+      "swatch": "var(--color-pink-500)"
+    },
+    {
+      "id": "rose",
+      "label": "Rose",
+      "swatch": "var(--color-rose-500)"
+    }
+  ],
+  "neutralThemes": [
+    {
+      "id": "slate",
+      "label": "Slate",
+      "swatch": "hsl(215 16% 47%)"
+    },
+    {
+      "id": "gray",
+      "label": "Gray",
+      "swatch": "hsl(220 9% 46%)"
+    },
+    {
+      "id": "zinc",
+      "label": "Zinc",
+      "swatch": "hsl(240 5% 64%)"
+    },
+    {
+      "id": "neutral",
+      "label": "Neutral",
+      "swatch": "hsl(0 0% 45%)"
+    },
+    {
+      "id": "stone",
+      "label": "Stone",
+      "swatch": "hsl(25 5% 45%)"
+    },
+    {
+      "id": "taupe",
+      "label": "Taupe",
+      "swatch": "hsl(30 6% 42%)"
+    },
+    {
+      "id": "mauve",
+      "label": "Mauve",
+      "swatch": "hsl(270 5% 48%)"
+    },
+    {
+      "id": "mist",
+      "label": "Mist",
+      "swatch": "hsl(210 12% 55%)"
+    },
+    {
+      "id": "olive",
+      "label": "Olive",
+      "swatch": "hsl(80 6% 42%)"
+    }
+  ],
+  "radiusOptions": [
+    {
+      "id": "0",
+      "label": "0",
+      "value": "0rem"
+    },
+    {
+      "id": "0.125",
+      "label": "0.125",
+      "value": "0.125rem"
+    },
+    {
+      "id": "0.25",
+      "label": "0.25",
+      "value": "0.25rem"
+    },
+    {
+      "id": "0.375",
+      "label": "0.375",
+      "value": "0.375rem"
+    },
+    {
+      "id": "0.5",
+      "label": "0.5",
+      "value": "0.5rem"
+    }
+  ]
+}

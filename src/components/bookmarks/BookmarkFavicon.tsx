@@ -63,6 +63,8 @@ export function BookmarkFavicon({ url, className, ...props }: BookmarkFaviconPro
           ref={iconRef}
           alt=""
           decoding="async"
+          draggable={false}
+          onDragStart={(event) => event.preventDefault()}
           className={cn(
             "size-full object-cover transition-opacity",
             status === "loaded" ? "opacity-100" : "absolute inset-0 opacity-0",

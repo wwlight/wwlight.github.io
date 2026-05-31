@@ -28,13 +28,15 @@ function DialogContent({
   ref,
   className,
   children,
+  showOverlay = true,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
   ref?: React.RefObject<HTMLDivElement | null>;
+  showOverlay?: boolean;
 }) {
   return (
     <DialogPortal>
-      <DialogOverlay />
+      {showOverlay ? <DialogOverlay /> : null}
       <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
         <DialogPrimitive.Content
           ref={ref}

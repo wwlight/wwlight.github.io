@@ -1,0 +1,41 @@
+@keyframes overlay-panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translate3d(0, -4px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes overlay-panel-in-top {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translate3d(0, 4px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+.overlay-panel-enter {
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin));
+}
+
+.overlay-panel-enter[data-state='open'] {
+  animation: overlay-panel-in 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.overlay-panel-enter[data-state='open'][data-side='top'] {
+  animation-name: overlay-panel-in-top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay-panel-enter[data-state='open'] {
+    animation: none;
+  }
+}

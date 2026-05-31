@@ -2,5 +2,9 @@
 
 @import '@astrojs/starlight-tailwind';
 @import './shadcn-theme.css';
+@import './color-themes.css';
+@import './theme-radius.css';
+@import './scrollbars.css';
+@import './overlay-panel.css';
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);

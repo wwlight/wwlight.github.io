@@ -1,5 +1,5 @@
 import { BackToTop } from "@/components/BackToTop";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { BookmarksPublic } from "@/components/bookmarks/public/BookmarksPublic";
 import { PublicPageActions } from "@/components/bookmarks/public/PublicPageActions";
 import { readBookmarkSectionsFromPage } from "@/lib/bookmarks/page-data";
@@ -9,7 +9,7 @@ export function PublicBookmarksPage({ firstBlogPostHref }: { firstBlogPostHref: 
   const [sections] = useState(readBookmarkSectionsFromPage);
 
   return (
-    <ThemeProvider storageKey="starlight-theme">
+    <ThemeProvider>
       <div className="bookmarks-public min-h-screen p-4 md:p-6">
         <div className="mx-auto max-w-6xl space-y-4">
           <BookmarksPublic sections={sections} actions={<PublicPageActions blogHref={firstBlogPostHref} />} />

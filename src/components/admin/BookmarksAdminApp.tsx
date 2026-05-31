@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Bookmark } from "lucide-react";
+import { BookOpen, Bookmark, LockKeyhole } from "lucide-react";
 import { Toaster } from "sonner";
 import { AdminApp } from "@/components/admin/AdminApp";
 import { AdminGateShell } from "@/components/admin/AdminGateShell";
-import { AdminThemeControl } from "@/components/admin/AdminThemeToggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,14 +31,11 @@ export interface BookmarksAdminAppProps {
   firstBlogPostHref: string;
 }
 
-function AdminCardHeader({ title, description }: { title: string; description: string }) {
+function GateCardHeader({ title, description }: { title: string; description: string }) {
   return (
-    <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
-      <div className="space-y-1.5">
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </div>
-      <AdminThemeControl className="shrink-0" />
+    <CardHeader className="space-y-1.5 pb-2 text-center">
+      <CardTitle>{title}</CardTitle>
+      <CardDescription>{description}</CardDescription>
     </CardHeader>
   );
 }
@@ -129,8 +125,8 @@ export function BookmarksAdminApp({
   if (!passwordHash) {
     return (
       <AdminGateShell>
-        <Card className="w-full max-w-md">
-          <AdminCardHeader
+        <Card className="border-border/70 shadow-xl">
+          <GateCardHeader
             title="书签管理后台"
             description="未配置 PUBLIC_BOOKMARKS_ADMIN_HASH，请先设置 .env"
           />
@@ -144,12 +140,12 @@ export function BookmarksAdminApp({
       <>
         <Toaster richColors position="bottom-right" />
         <AdminGateShell>
-          <Card className="w-full max-w-lg">
-            <AdminCardHeader
+          <Card className="border-border/70 shadow-xl">
+            <GateCardHeader
               title="书签数据为空"
               description="数据库未加载书签。请重启 dev 服务器（vpr dev:admin）以重新 seed，或检查 db/data/bookmarks.ts。"
             />
-            <CardFooter>
+            <CardFooter className="justify-center pb-6">
               <Button variant="outline" asChild>
                 <a href="/bookmarks/">返回书签</a>
               </Button>
@@ -163,10 +159,20 @@ export function BookmarksAdminApp({
   if (!authenticated) {
     return (
       <AdminGateShell>
-        <Card className="w-full max-w-md">
-          <AdminCardHeader title="书签管理后台" description="请输入管理员密码继续" />
+        <Card className="overflow-hidden border-border/70 shadow-xl">
+          <div className="border-b border-border/60 bg-muted/30 px-6 py-8 text-center">
+            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
+              <Bookmark className="size-7" aria-hidden />
+            </div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">书签管理后台</h1>
+            <p className="mt-2 text-sm text-muted-foreground">登录以管理本地书签数据</p>
+          </div>
           <form noValidate onSubmit={handleLogin}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-6 pb-2 pt-6">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <LockKeyhole className="size-4 shrink-0 opacity-70" aria-hidden />
+                <span>请输入管理员密码</span>
+              </div>
               <div
                 key={`password-shake-${passwordShakeKey}`}
                 className={cn(passwordInvalid && passwordShakeKey > 0 && "animate-input-shake")}
@@ -179,20 +185,26 @@ export function BookmarksAdminApp({
                   aria-label="管理员密码"
                   invalid={passwordInvalid}
                   value={password}
+                  className="h-10"
                   onChange={(e) => {
                     setPassword(e.target.value);
                     setPasswordInvalid(false);
                   }}
                 />
               </div>
+              {passwordInvalid && (
+                <p className="text-sm text-destructive" role="alert">
+                  密码错误或为空，请重试
+                </p>
+              )}
             </CardContent>
             <CardFooter className="flex-col gap-0 p-0">
-              <div className="w-full px-6 pb-4 pt-0">
-                <Button type="submit" className="w-full">
+              <div className="w-full px-6 pb-5 pt-0">
+                <Button type="submit" className="h-10 w-full">
                   登录
                 </Button>
               </div>
-              <div className="flex w-full items-center justify-end gap-4 border-t border-border/60 px-6 py-3 text-sm">
+              <div className="flex w-full items-center justify-center gap-6 border-t border-border/60 bg-muted/20 px-6 py-3.5 text-sm">
                 <LoginNavLink href={firstBlogPostHref} icon={BookOpen}>
                   返回博客
                 </LoginNavLink>

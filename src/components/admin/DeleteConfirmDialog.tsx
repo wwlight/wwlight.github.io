@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAdminDialogLayer } from "@/components/admin/AdminDialogLayer";
 
 export type DeleteTarget =
   | { type: "section"; sectionIndex: number; title: string }
@@ -39,9 +40,11 @@ interface DeleteConfirmDialogProps {
 }
 
 export function DeleteConfirmDialog({ target, onClose, onConfirm }: DeleteConfirmDialogProps) {
+  useAdminDialogLayer(target != null);
+
   return (
     <Dialog open={target != null} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent showOverlay={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{target ? deleteTitle(target) : "确认删除"}</DialogTitle>
           <DialogDescription>{target ? deleteMessage(target) : ""}</DialogDescription>

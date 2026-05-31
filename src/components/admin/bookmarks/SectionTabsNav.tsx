@@ -12,6 +12,7 @@ import {
   adminSectionTabsTriggerClass,
   sectionTabBadgeClass,
   sectionTabsListClass,
+  bookmarkSearchPlaceholder,
   toolbarSearchInputClass,
 } from "@/lib/bookmarks/toolbar-ui";
 import { cn } from "@/lib/utils";
@@ -109,7 +110,7 @@ export function SectionTabsNav({
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索模块、分组或书签…"
+                placeholder={bookmarkSearchPlaceholder}
                 className={toolbarSearchInputClass}
               />
             </div>

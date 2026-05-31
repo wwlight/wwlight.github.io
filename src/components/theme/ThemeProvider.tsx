@@ -4,17 +4,17 @@ import {
   getStoredThemePreference,
   resolveTheme,
   setThemeWithTransition,
+  storeThemePreference,
   syncStoredTheme,
-  THEME_STORAGE_KEY,
   type ResolvedTheme,
   type ThemePreference,
 } from "@/lib/theme";
+import { syncSiteThemeFromStorage, subscribeSiteThemeStorage } from "@/lib/site-theme";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: ThemePreference;
-  storageKey?: string;
 };
 
 type ThemeProviderState = {
@@ -29,7 +29,6 @@ const ThemeProviderContext = createContext<ThemeProviderState | undefined>(undef
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = THEME_STORAGE_KEY,
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<ThemePreference>(() => {
     if (typeof localStorage === "undefined") return defaultTheme;
@@ -39,7 +38,13 @@ export function ThemeProvider({
   const resolvedTheme = resolveTheme(theme);
 
   useEffect(() => {
-    syncStoredTheme();
+    syncSiteThemeFromStorage();
+  }, []);
+
+  useEffect(() => {
+    return subscribeSiteThemeStorage(() => {
+      setThemeState(getStoredThemePreference());
+    });
   }, []);
 
   useEffect(() => {
@@ -52,7 +57,7 @@ export function ThemeProvider({
 
   const setTheme = useCallback(
     (next: ThemePreference, event?: React.MouseEvent) => {
-      localStorage.setItem(storageKey, next);
+      storeThemePreference(next);
       const nextResolved = resolveTheme(next);
       if (event) {
         void setThemeWithTransition(nextResolved, event).then(() => {
@@ -63,7 +68,7 @@ export function ThemeProvider({
       setThemeState(next);
       applyResolvedTheme(nextResolved);
     },
-    [storageKey],
+    [],
   );
 
   const toggleTheme = useCallback(

@@ -1,5 +1,2 @@
-@import 'tailwindcss';
-@import './scrollbars.css';
-@import './view-transition-theme.css';
-@import './shadcn-theme-public.css';
+@import './bookmarks-theme-shared.css';
 @import './bookmarks-public-tokens.css';
