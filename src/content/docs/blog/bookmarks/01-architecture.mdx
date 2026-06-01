@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { Steps, FileTree } from '@astrojs/starlight/components';
 
 ## 问题背景
 
@@ -24,24 +24,34 @@ import { Steps } from '@astrojs/starlight/components';
 
 ## 模块边界
 
-```text
-src/
-├── content/docs/          # Starlight 文档（含 blog/bookmarks）
-├── pages/
-│   ├── bookmarks/         # 公开书签页 /bookmarks/
-│   └── admin/bookmarks.astro  # 管理端 /admin/bookmarks/
-├── components/
-│   ├── bookmarks/public/  # 公开页 React 组件
-│   └── admin/             # 管理端 React 组件
-└── lib/bookmarks/         # 查询、鉴权、序列化、API 客户端
+<FileTree>
 
-db/
-├── config.ts              # Astro DB 表定义
-├── seed.ts                # 从 TS 文件灌入 DB
-└── data/bookmarks.ts      # 唯一数据源（可提交 Git）
-```
+- src/bookmarks/
+  - README.md — 模块目录与数据流
+  - shared/
+    - types.ts — Section / Card / Bookmark 领域类型
+    - data/ — queries、page-data、serialize
+    - lib/ — 搜索、统计、Tab、favicon、badge
+    - components/ — BookmarkFavicon、PageHeader、StatsCards
+    - styles/ — bookmarks-theme-shared.css
+  - nav/
+    - components/ — NavBookmarksPage、卡片与 Tab
+    - styles/ — bookmarks-page.css
+  - admin/
+    - lib/ — 鉴权、API、拖拽 CRUD、api.server
+    - components/ — AdminApp、对话框、卡片网格
+    - styles/ — admin.css、bookmarks-app.css
+- src/pages/
+  - bookmarks/nav.astro — 导航薄入口 → `/bookmarks/nav/`
+  - bookmarks/admin.astro — 管理端薄入口 → `/bookmarks/admin/`
+- db/
+  - data/bookmarks.ts — 唯一可提交数据源
+  - config.ts / seed.ts — Astro DB
+- integrations/bookmarks-admin.ts — dev `/admin/api/*`
 
-文档站与书签模块 **共享 Header 主题**，但书签页 **不走 Starlight 布局**——它们是独立的 Astro 页面，各自挂载 React 根组件。这样公开页可以全宽布局，不受 docs 侧边栏限制。
+</FileTree>
+
+文档站与书签模块 **共享 Header 主题**，但书签页 **不走 Starlight 布局**——独立 Astro 页面挂载 React 根组件，导航页可全宽布局。
 
 ## 数据流
 
@@ -62,7 +72,7 @@ sequenceDiagram
 
 **关键点：** 运行时 React 不直接读 DB，而是读页面内嵌的 JSON。Astro 在 SSR/SSG 阶段查 DB，序列化后注入 DOM。这保证了：
 
-- 公开页可以是 `client:only="react"`，hydration 前已有数据
+- 导航页可以是 `client:only="react"`，hydration 前已有数据
 - 构建产物仍是静态 HTML + JS，无服务端运行时
 
 ## 管理端为何「本地可写、线上只读」
@@ -111,14 +121,14 @@ integrations: [
 
    ```bash
    vpr dev
-   # /bookmarks/
+   # /bookmarks/nav/
    ```
 
 3. 启动管理端（首次会创建 `.env` 并提示设密码）
 
    ```bash
    vpr dev:admin
-   # /admin/bookmarks/
+   # /bookmarks/admin/
    ```
 
 4. 在管理端改一条书签标题 → 保存 → 查看 `db/data/bookmarks.ts` 是否更新
@@ -126,10 +136,3 @@ integrations: [
 5. commit 该文件，push 后 CI 重新 build，线上书签页同步更新
 
 </Steps>
-
-## 本章小结
-
-- 书签是 **独立 Astro 页面 + React 岛屿**，与 Starlight 文档并列
-- **数据源** 是 `db/data/bookmarks.ts`，经 seed 进入 Astro DB
-- 管理端 API 绑定 **开发服务器**，符合静态部署模型
-- 整体遵循「本地编辑、Git 发布」的 Jamstack 工作流

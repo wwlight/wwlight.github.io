@@ -30,9 +30,11 @@ summary {
   border-radius: var(--radius);
   color: var(--sl-color-gray-2);
   font-size: 0.8125rem;
+  font-weight: 500;
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  background-color: transparent;
   transition:
     color 0.15s,
     background-color 0.15s;
@@ -46,29 +48,53 @@ summary {
 @media (hover: hover) and (pointer: fine) {
   .module-nav-link:hover {
     color: var(--sl-color-text);
-    background: var(--sl-color-gray-6);
+    background: var(--sl-color-gray-5);
+  }
+
+  .module-nav-link.active:hover {
+    color: var(--sl-color-text-accent);
+    background: var(--sl-color-accent-low);
   }
 }
 
-.header-bookmarks-link {
+.header-bookmarks-link,
+.social-icons a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  box-sizing: border-box;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
   border-radius: var(--radius);
   color: var(--sl-color-text-accent);
   text-decoration: none;
+  background-color: transparent;
+  flex-shrink: 0;
   transition:
-    color 0.3s,
-    background-color 0.3s;
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.social-icons a {
+  margin: 0;
+}
+
+.header-bookmarks-link svg,
+.social-icons a svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
 }
 
 .header-bookmarks-link.active {
-  background: var(--sl-color-accent-low);
+  background-color: var(--sl-color-accent-low);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .header-bookmarks-link:hover {
-    background: var(--sl-color-gray-5);
+  .header-bookmarks-link:hover,
+  .social-icons a:hover {
+    background-color: var(--sl-color-gray-5);
+    color: var(--sl-color-text-accent);
   }
 }

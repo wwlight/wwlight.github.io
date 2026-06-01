@@ -95,9 +95,9 @@ downloadTextFile("bookmarks.ts", serializeBookmarkSections(sections));
 - **Radix UI**：Dialog、Tabs、Select、Tooltip
 - **sonner**：操作 toast
 - **lucide-react**：图标
-- **Tailwind + cn()**：与公开页一致的语义样式
+- **Tailwind + cn()**：与导航页一致的语义样式
 
-样式入口 `src/styles/admin.css`，根节点 `.admin-root` 隔离于 Starlight。
+样式入口 `src/bookmarks/admin/styles/admin.css`，根节点 `.admin-root` 隔离于 Starlight。
 
 ## 练习：只读预览模式
 
@@ -110,9 +110,3 @@ downloadTextFile("bookmarks.ts", serializeBookmarkSections(sections));
 3. 在 `BookmarksAdminApp` 里：`readOnly={!isDev}`，使线上 build 自动只读
 
 这与现有 `isDev` 保存限制理念一致，可进一步改善 UX（目前线上仍可编辑 UI，只是保存失败）。
-
-## 本章小结
-
-- 单文件 `AdminApp` 集中状态，对话框按「一次只开一个」模式驱动
-- 拖拽 + `normalizeSortOrders` 保证 UI 顺序与文件序列化一致
-- 导出 TS 是静态环境下的兜底写回路径

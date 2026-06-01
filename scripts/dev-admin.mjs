@@ -5,6 +5,6 @@ await ensureAdminEnv()
 loadEnvToProcess()
 
 startAstroDev({
-  openPaths: ['/admin/bookmarks/'],
-  labels: { '/admin/bookmarks/': '管理端已就绪: /admin/bookmarks/' },
+  openPaths: ['/bookmarks/admin/'],
+  labels: { '/bookmarks/admin/': '管理端已就绪: /bookmarks/admin/' },
 })

@@ -7,7 +7,7 @@ sidebar:
 
 import { Steps } from '@astrojs/starlight/components';
 
-管理端 `/admin/bookmarks/` 需要一层 **访问控制**：防止路人打开就改数据。在纯静态 + 本地 API 的架构下，采用 **前端密码门控 + Bearer Token** 方案。
+管理端 `/bookmarks/admin/` 需要一层 **访问控制**：防止路人打开就改数据。在纯静态 + 本地 API 的架构下，采用 **前端密码门控 + Bearer Token** 方案。
 
 ## 威胁模型（务必读）
 
@@ -31,7 +31,7 @@ PUBLIC_BOOKMARKS_ADMIN_HASH=<sha256-hex>
 
 1. 从 `.env.example` 复制 `.env`
 2. 交互输入密码 → `crypto.createHash('sha256')` → 写入 hash
-3. 启动 dev（`scripts/dev-bootstrap.mjs`），自动打开 `/admin/bookmarks/`
+3. 启动 dev（`scripts/dev-bootstrap.mjs`），自动打开 `/bookmarks/admin/`
 
 Hash 通过 Astro 的 `import.meta.env.PUBLIC_*` 注入管理端页面 props。
 
@@ -52,7 +52,7 @@ sequenceDiagram
   UI->>UI: setAuthenticated(true)
 ```
 
-核心逻辑在 `src/lib/bookmarks/admin-auth.ts`：
+核心逻辑在 `src/bookmarks/admin/lib/admin-auth.ts`：
 
 ```ts
 export async function createSessionToken(passwordHash: string): Promise<string> {
@@ -98,7 +98,7 @@ export function verifyAdminToken(token: string, passwordHash?: string): boolean 
 未登录时 `BookmarksAdminApp` 渲染 `AdminGateShell` + 登录 Card：
 
 - 密码 Input、错误抖动反馈
-- 链接到公开书签页 / 文档站
+- 链接到书签导航页 / 文档站
 - 未配置 hash 时提示先运行 `vpr dev:admin`
 
 已登录后渲染 `AdminApp` 主界面。
@@ -126,9 +126,3 @@ Build 后：
 - 登录 UI 仍可用（hash 来自 CI 环境变量）
 - `handleSave` / `handleRestore` 检查 `import.meta.env.DEV`，返回 403
 - 用户可浏览、导出，但不能写回仓库
-
-## 本章小结
-
-- **PUBLIC hash + sessionStorage Token** 实现轻量门控
-- 客户端与服务端 **各自** 校验 token 结构，API 不依赖 cookie
-- 生产写操作被 DEV 守卫拦截，符合静态站模型

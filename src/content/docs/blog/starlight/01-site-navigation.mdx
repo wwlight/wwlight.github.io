@@ -32,7 +32,7 @@ flowchart LR
   end
 
   ModNav -->|"prefix 匹配"| docs
-  Bmk -->|"/bookmarks/"| Bookmarks[书签公开页]
+  Bmk -->|"/bookmarks/nav/"| Bookmarks[书签导航页]
 ```
 
 ## Starlight sidebar
@@ -123,12 +123,12 @@ export function isModuleNavActive(prefix: string, pathname: string) {
 ```ts
 export const bookmarksNavItem = {
   label: "书签",
-  href: "/bookmarks/",
-  prefix: "/bookmarks",
+  href: "/bookmarks/nav/",
+  prefix: "/bookmarks/nav",
 } as const;
 ```
 
-`HeaderBookmarksLink.astro` 放在顶栏右侧（社交图标与主题切换之间），用 SVG 图标节省空间，移动端可通过书签页内 `PublicPageActions` 返回文档站。
+`HeaderBookmarksLink.astro` 放在顶栏右侧（社交图标与主题切换之间），用 SVG 图标节省空间，移动端可通过书签页内 `NavPageActions` 返回文档站。
 
 ## 自定义 Header
 
@@ -168,7 +168,7 @@ starlight({
 </Steps>
 
 :::tip[书签页不需要改 sidebar]
-`/bookmarks/` 是独立页面，不会出现在 Starlight sidebar。用户通过顶栏书签图标或首页 CTA 进入。
+`/bookmarks/nav/` 是独立页面，不会出现在 Starlight sidebar。用户通过顶栏书签图标或首页 CTA 进入。
 :::
 
 ## 本章小结

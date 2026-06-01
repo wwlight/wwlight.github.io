@@ -12,6 +12,9 @@ import themeInitScript from './src/theme/scripts/init.inline.js?raw'
 export default defineConfig({
   site: 'https://wwlight.github.io',
   devToolbar: { enabled: false },
+  redirects: {
+    '/bookmarks': '/bookmarks/nav/',
+  },
   markdown: {
     syntaxHighlight: {
       type: 'shiki',

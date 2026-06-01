@@ -85,7 +85,7 @@ Primary 在亮色取 Tailwind `500`、暗色取 `400`；`black` 的 `--primary` 
 | 表面 | 注入位置 |
 | --- | --- |
 | Starlight | `astro.config.mjs` → `starlight.head` |
-| 书签 / 管理端 | `src/pages/bookmarks/index.astro`、`admin/bookmarks.astro` 内联 `<script>` |
+| 书签 / 管理端 | `src/pages/bookmarks/nav.astro`、`bookmarks/admin.astro` 内联 `<script>` |
 
 Starlight 与书签页不共享 layout，两处都要挂同一份 `init.inline.js?raw`。
 

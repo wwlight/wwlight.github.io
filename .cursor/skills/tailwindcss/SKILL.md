@@ -13,7 +13,7 @@ description: Tailwind CSS v4 utilities, arbitrary values, and wwlight styling co
 | --- | --- |
 | 版本 | Tailwind **4**（`@tailwindcss/vite`） |
 | Starlight | `src/styles/global.css` — `@import 'tailwindcss/theme.css'` / `utilities.css` |
-| 书签 | `src/styles/bookmarks-theme-shared.css` — `@import 'tailwindcss'` |
+| 书签 | `src/bookmarks/shared/styles/bookmarks-theme-shared.css` — `@import 'tailwindcss'` |
 | shadcn 语义色 | `src/styles/shadcn-theme.css` — `@theme inline` 映射 `--primary`、`--border` 等 |
 | 暗色变体 | `@custom-variant dark`（`.dark` + `[data-theme='dark']`） |
 | 主题圆角工具类 | `theme-r-sm` … `theme-r-xl`（`src/theme/styles/radius.css`） |

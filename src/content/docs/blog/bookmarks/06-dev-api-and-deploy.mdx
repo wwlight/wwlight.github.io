@@ -81,7 +81,7 @@ db/data/versions/
 
 <Steps>
 
-1. 本地 `vpr dev:admin` 编辑书签，确认 UI 与公开页预览
+1. 本地 `vpr dev:admin` 编辑书签，确认 UI 与导航页预览
 
 2. 点击「保存到项目」，确认 `db/data/bookmarks.ts` diff 合理
 
@@ -122,22 +122,8 @@ db/data/versions/
 **Q：能否用 CMS 替代？**  
 可以，但会失去「Git 即数据源」的 review 流程；本方案优先简单与可版本化。
 
-## 文章索引
-
-| 篇 | 主题 |
-| --- | --- |
-| [索引](/blog/bookmarks/) | 系列总览 |
-| [01](/blog/bookmarks/01-architecture/) | 模块边界与数据流 |
-| [02](/blog/bookmarks/02-data-layer/) | Astro DB 与 seed |
-| [03](/blog/bookmarks/03-public-page/) | 公开页 islands |
-| [04](/blog/bookmarks/04-admin-auth/) | 鉴权门控 |
-| [05](/blog/bookmarks/05-admin-ui/) | 管理 UI |
-| [06](/blog/bookmarks/06-dev-api-and-deploy/) | API 与部署 |
-
-Starlight 配置见 [Astro Starlight 使用](/blog/starlight/)。
-
 ## 可选扩展
 
 - admin API 对接 GitHub Contents API（线上 PR 式保存）
 - Vite middleware 换为 Serverless Function
-- 书签公开页接入 Pagefind
+- 书签导航页接入 Pagefind

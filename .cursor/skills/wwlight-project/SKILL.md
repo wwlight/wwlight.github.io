@@ -5,7 +5,7 @@ description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, 
 
 # wwlight.github.io
 
-个人站点：Starlight 文档站 + 书签公开页 + 本地管理端。
+个人站点：Starlight 文档站 + 书签导航 + 本地管理端。
 
 ## 命令
 
@@ -13,7 +13,7 @@ Node.js **24**（`.node-version`）。
 
 ```bash
 vp i              # 安装依赖（pnpm 11.4.0）
-vpr dev           # 本地开发 http://localhost:4321（/bookmarks/ 与 /admin/bookmarks/）
+vpr dev           # 本地开发 http://localhost:4321（/bookmarks/nav/ 与 /bookmarks/admin/）
 vpr dev:admin     # 同上，就绪后自动打开管理端
 vpr dev:all       # 同上，就绪后自动打开主站与管理端
 vpr build
@@ -28,16 +28,17 @@ vpr lint
 | --- | --- |
 | `src/content/docs/blog/` | 博客总览；`blog/bookmarks/` 书签系列、`blog/starlight/` Starlight 系列、`blog/theme/` 主题系统系列 |
 | `src/content/docs/{memorandum,tools,system,other}/` | 其他文档分区 |
-| `src/pages/bookmarks/` | 公开书签页（独立布局，非 Starlight） |
-| `src/pages/admin/bookmarks.astro` | 管理端入口 |
-| `src/components/bookmarks/public/` | 公开页 React |
-| `src/components/admin/` | 管理端 React |
+| `src/pages/bookmarks/nav.astro` | 书签导航 → `/bookmarks/nav/`（路由见 [paths.md](../module-structure/paths.md)） |
+| `src/pages/bookmarks/admin.astro` | 管理端 → `/bookmarks/admin/` |
+| `src/bookmarks/` | 书签模块（**详读** [`src/bookmarks/README.md`](../../src/bookmarks/README.md)） |
 | `src/components/Footer.astro` | Starlight 页脚 + BackToTop |
 | `src/theme/` | 主题系统（**详读** [`src/theme/README.md`](../../src/theme/README.md)） |
 | `db/data/bookmarks.ts` | 书签数据源（可提交 Git） |
 | `scripts/color-themes.data.mjs` | 主题 token 数据源（生成 CSS/JSON） |
 | `integrations/bookmarks-admin.ts` | 开发态 API 中间件 |
 | `integrations/mermaid-controls.ts` | Mermaid 缩放 / 全屏工具栏 |
+| `.cursor/skills/module-structure/SKILL.md` | **模块重构 / 结构优化** 流程（改目录、路由、import 前先读） |
+| `.cursor/skills/module-structure/paths.md` | **path alias、pages 路由**（唯一说明，勿在别处复制；与上表一起读） |
 | `pnpm-workspace.yaml` | pnpm catalog 版本源 + overrides / trustPolicy |
 | `.node-version` | Node.js 24 |
 | `scripts/dev-bootstrap.mjs` | dev 环境初始化与启动 |
@@ -76,7 +77,7 @@ vpr lint
 | 配色状态 | `src/theme/customizer/state.ts`；选项 `options.json`（生成） |
 | 全站同步 | `src/theme/site/sync.ts`；键名 `src/lib/site-storage.keys.mjs` |
 | UI | `src/theme/components/customizer/`；`ColorThemePicker` / `ColorThemeSelect.astro` |
-| 样式入口 | `src/theme/styles/index.css`（`global.css`、书签 `bookmarks-theme-shared.css` 引入） |
+| 样式入口 | `src/theme/styles/index.css`（`global.css`）；书签 `src/bookmarks/shared/styles/bookmarks-theme-shared.css` |
 | 生成 | `vpr generate:color-themes`、`vpr generate:theme-init`（改 `scripts/color-themes.data.mjs` 后必跑） |
 | API | `import { … } from '@/theme'` |
 
@@ -84,7 +85,19 @@ vpr lint
 
 ## 书签模块要点
 
-- 数据流：`db/data/bookmarks.ts` → `db/seed.ts` → Astro DB → 公开页/管理端
+**改书签相关代码前**：用 Read 读取 [`src/bookmarks/README.md`](../../src/bookmarks/README.md)（shared / nav / admin 职责、数据流、对外入口）。**整模块重组**见 [module-structure/SKILL.md](../module-structure/SKILL.md)（必先读）。
+
+| 项 | 路径 |
+| --- | --- |
+| 局部文档 | [`src/bookmarks/README.md`](../../src/bookmarks/README.md) |
+| 数据源 | `db/data/bookmarks.ts` → `db/seed.ts` → Astro DB |
+| 查询 / 注水 | `src/bookmarks/shared/data/queries.ts`、`page-data.ts` |
+| 管理端鉴权 | `src/bookmarks/admin/lib/admin-auth.ts`（客户端）、`admin-auth.server.ts`（API） |
+| dev API | `integrations/bookmarks-admin.ts` → `admin/lib/admin-api.server.ts` |
+| 导航 | `src/pages/bookmarks/nav.astro`、`src/bookmarks/nav/` |
+| 管理端 | `src/pages/bookmarks/admin.astro`、`src/bookmarks/admin/` |
+
+- 数据流：`db/data/bookmarks.ts` → `db/seed.ts` → Astro DB → 导航页/管理端
 - 管理端 API 仅 dev 可用
 - 鉴权：`PUBLIC_BOOKMARKS_ADMIN_HASH`
 
@@ -120,7 +133,7 @@ vpr lint
 | 路径 | 内容 |
 | --- | --- |
 | `blog/index.mdx` | 总览：各系列 `LinkCard` 即可，少写导读废话 |
-| `blog/bookmarks/` | 书签 `/bookmarks/`、管理端、Astro DB、dev API |
+| `blog/bookmarks/` | 书签 `/bookmarks/nav/`、管理端、Astro DB、dev API |
 | `blog/starlight/` | Starlight 配置、导航、Hero 覆盖等文档站壳 |
 | `blog/theme/` | `src/theme/` 明暗、配色 token、双表面集成 |
 
@@ -160,6 +173,7 @@ vpr lint
 - 可滚动自研组件：见上文 **Tailwind CSS → 滚动条**
 - 博客：见上文 **博客（技术笔记）**；正文不写「下一篇」链接
 - 文档页 React 岛屿用 `client:only="react"`；BackToTop 用 Portal 挂到 `document.body`
+- 跨目录 import / CSS `@import`、**pages 路由与 URL 对齐**：见 [module-structure/paths.md](../module-structure/paths.md)（alias 只在该文件维护）
 - 只在你明确要求时创建 git commit
 
 ## 常见任务
@@ -171,6 +185,15 @@ vpr lint
 **改 dev 启动**：`scripts/dev-bootstrap.mjs`、`dev-all.mjs`、`dev-admin.mjs`、`open-browser.mjs`。
 
 **改主题**：先读 [`src/theme/README.md`](../../src/theme/README.md)；改 `scripts/color-themes.data.mjs` 后 `vpr generate:color-themes`（必要时 `vpr generate:theme-init`）；勿手改 `color-tokens.css` / `options.json` / `init.inline.js`。
+
+**模块重构 / 结构优化**（含书签、主题或任意 `src/` 功能模块的目录重组、路由迁移、`git mv`）：
+
+1. Read [module-structure/SKILL.md](../module-structure/SKILL.md) — 检查清单、原则、反模式、全局文档同步表
+2. Read [module-structure/paths.md](../module-structure/paths.md) — alias、pages 路由、例外
+3. Read 目标模块 `src/<module>/README.md`（若有）
+4. 理解后再改代码；`vpr lint` / 必要时 `vpr build`
+
+**日常改书签**（非整模块重组）：先读 [`src/bookmarks/README.md`](../../src/bookmarks/README.md) 即可；若动 pages 或跨目录路径，仍须对照 paths.md。
 
 **升级依赖**：只改 `pnpm-workspace.yaml` 的 `catalogs`，然后 `vp i`。
 

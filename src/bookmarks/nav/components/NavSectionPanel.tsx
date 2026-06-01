@@ -1,0 +1,18 @@
+import type { ReactNode } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+interface NavSectionPanelProps {
+  title: string;
+  children: ReactNode;
+}
+
+export function NavSectionPanel({ title, children }: NavSectionPanelProps) {
+  return (
+    <Card>
+      <CardHeader className="pb-4">
+        <CardTitle className="text-base">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-5">{children}</CardContent>
+    </Card>
+  );
+}

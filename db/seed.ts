@@ -1,3 +1,4 @@
+/** 从 db/data/bookmarks.ts 灌入 Astro DB 三层表 */
 import { Bookmark, BookmarkCard, BookmarkSection, db } from "astro:db";
 import { bookmarkSections } from "./data/bookmarks";
 

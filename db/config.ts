@@ -1,3 +1,4 @@
+/** Astro DB 表定义：BookmarkSection / BookmarkCard / Bookmark */
 import { column, defineDb, defineTable } from "astro:db";
 
 const BookmarkSection = defineTable({

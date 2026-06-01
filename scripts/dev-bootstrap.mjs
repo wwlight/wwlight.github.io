@@ -87,7 +87,7 @@ export function loadEnvToProcess() {
 
 /**
  * @param {{ openPaths?: string[], labels?: Record<string, string> }} options
- * openPaths: 相对路径，如 ['/', '/admin/bookmarks/']
+ * openPaths: 相对路径，如 ['/', '/bookmarks/admin/']
  */
 export function startAstroDev({ openPaths = [], labels = {} } = {}) {
   const bin = path.join(root, 'node_modules', '.bin')

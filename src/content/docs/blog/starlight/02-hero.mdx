@@ -93,7 +93,7 @@ hero:
     alt: generated
   actions:
     - text: 书签导航
-      link: /bookmarks/
+      link: /bookmarks/nav/
       icon: right-arrow
     - text: 博客
       link: /blog/
@@ -217,7 +217,7 @@ if (href === '#random-theme') {
 ## 和本站其他模块的关系
 
 - **顶栏主题**：`Header.astro` + `ColorThemeSelect` / `ThemeCustomizerPopover`（另一套覆盖），与 Hero 内「随机主题」共用 `src/theme/` 状态，但入口不同。
-- **书签 / 管理端**：不在 Starlight 布局内，不走 `Hero`；首页 `actions` 链到 `/bookmarks/`、`/blog/`。
+- **书签 / 管理端**：不在 Starlight 布局内，不走 `Hero`；首页 `actions` 链到 `/bookmarks/nav/`、`/blog/`。
 
 ## 小结
 

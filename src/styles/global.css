@@ -7,3 +7,8 @@
 @import './overlay-panel.css';
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
+
+/* FileTree.astro: starlight-file-tree .comment { max-width: 24rem } — unlayered beats @layer starlight.components */
+starlight-file-tree .comment {
+  max-width: none;
+}

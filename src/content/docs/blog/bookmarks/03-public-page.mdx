@@ -1,22 +1,22 @@
 ---
-title: 03 · 公开书签页
-description: Astro 页面、JSON 注水与 React 公开页组件
+title: 03 · 书签导航页
+description: Astro 页面、JSON 注水与 React 导航页组件
 sidebar:
   order: 3
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 
-公开书签页 `/bookmarks/` 目标是：加载快、可搜索、分区清晰、与 Starlight **主题一致**，但不依赖 docs 布局。
+书签导航页 `/bookmarks/nav/` 目标是：加载快、可搜索、分区清晰、与 Starlight **主题一致**，但不依赖 docs 布局。
 
 ## 页面骨架
 
 ```astro
 ---
-// src/pages/bookmarks/index.astro
-import { PublicBookmarksPage } from '../../components/bookmarks/public/PublicBookmarksPage.tsx'
-import { getBookmarkSections } from '../../lib/bookmarks/queries'
-import { serializeBookmarkSectionsForPage } from '../../lib/bookmarks/page-data'
+// src/pages/bookmarks/nav.astro
+import { NavBookmarksPage } from '@/bookmarks/nav/components/NavBookmarksPage.tsx'
+import { getBookmarkSections } from '@/bookmarks/shared/data/queries'
+import { serializeBookmarkSectionsForPage } from '@/bookmarks/shared/data/page-data'
 
 const sections = await getBookmarkSections()
 const sectionsJson = serializeBookmarkSectionsForPage(sections)
@@ -30,7 +30,7 @@ const sectionsJson = serializeBookmarkSectionsForPage(sections)
   </head>
   <body>
     <script type="application/json" id="bookmarks-sections-data" set:html={sectionsJson} />
-    <PublicBookmarksPage client:only="react" />
+    <NavBookmarksPage client:only="react" />
   </body>
 </html>
 ```
@@ -44,7 +44,7 @@ const sectionsJson = serializeBookmarkSectionsForPage(sections)
 ## JSON 注水与 XSS 防护
 
 ```ts
-// src/lib/bookmarks/page-data.ts
+// src/bookmarks/shared/data/page-data.ts
 export function serializeBookmarkSectionsForPage(sections): string {
   return JSON.stringify(sections)
     .replace(/<\//g, "\\u003c/")
@@ -62,15 +62,15 @@ export function readBookmarkSectionsFromPage(): BookmarkSectionData[] {
 ## 组件结构
 
 ```text
-PublicBookmarksPage
+NavBookmarksPage
 └── ThemeProvider（与 Starlight 共用 localStorage key）
-    └── BookmarksPublic
-        ├── 标题 + 统计 + PublicPageActions（返回文档 / 管理端链接）
+    └── NavBookmarks
+        ├── 标题 + 统计 + NavPageActions（返回文档 / 管理端链接）
         ├── 搜索框
         └── Tabs（按 Section 切换）
-            └── PublicSectionPanel
-                └── PublicBookmarkCardGroup
-                    └── PublicBookmarkCard
+            └── NavSectionPanel
+                └── NavBookmarkCardGroup
+                    └── NavBookmarkCard
 ```
 
 ## 搜索与过滤
@@ -81,18 +81,18 @@ PublicBookmarksPage
 
 `ThemeProvider` 使用 `storageKey="starlight-theme"`，与文档站读写同一 localStorage。页面 head 内联 `theme-init.inline.js`，在 CSS 加载前设置 `data-theme`，避免闪白。
 
-样式在 `src/styles/bookmarks-page.css`，复用 shadcn 语义色变量（`--background`、`--muted-foreground` 等）。
+样式在 `src/bookmarks/nav/styles/bookmarks-page.css`，复用 shadcn 语义色变量（`--background`、`--muted-foreground` 等）。
 
-## 搭一个最小公开页
+## 搭一个最小导航页
 
 <Steps>
 
-1. 新建 `src/pages/demo-bookmarks.astro`，复制 `bookmarks/index.astro` 内容
+1. 新建 `src/pages/demo-nav-bookmarks.astro`，复制 `bookmarks/nav.astro` 内容
 
 2. 新建极简 React 组件，只渲染 section 数量：
 
    ```tsx
-   import { readBookmarkSectionsFromPage } from "@/lib/bookmarks/page-data";
+   import { readBookmarkSectionsFromPage } from "@/bookmarks/shared/data/page-data";
 
    export function Demo() {
      const sections = readBookmarkSectionsFromPage();
@@ -108,16 +108,10 @@ PublicBookmarksPage
 
 ## 与管理端 UI 的复用
 
-公开页与管理端共享：
+导航页与管理端共享：
 
 - `BookmarkSectionData` 类型
 - `filterBookmarkSections` / `clampSelectedSection` 等工具
 - shadcn 风格 `Input`、`Tabs`、`Card`
 
 管理端在此基础上叠加编辑、拖拽、对话框——见 [05 · 管理端 UI](/blog/bookmarks/05-admin-ui/)。
-
-## 本章小结
-
-- Astro 负责 **取数 + 静态壳**；React 负责 **交互**
-- JSON script 标签是 islands 之间传递大量结构化数据的简单方案
-- 独立页面 + 共享主题，使书签模块既「脱钩」又「一体」

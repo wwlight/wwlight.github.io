@@ -56,7 +56,7 @@ Starlight Header 以 Astro 为主。若整颗触发器都是 React island，hydr
 
 ## 书签侧
 
-`PublicBookmarksPage.tsx` / `BookmarksAdmin.tsx`：
+`NavBookmarksPage.tsx` / `BookmarksAdmin.tsx`：
 
 ```tsx
 <ThemeProvider>
@@ -108,7 +108,7 @@ global.css
   @import theme/styles/index.css
 ```
 
-**书签**（`bookmarks-theme-shared.css`）：
+**书签**（`src/bookmarks/shared/styles/bookmarks-theme-shared.css`）：
 
 ```text
 @import tailwindcss
@@ -148,6 +148,6 @@ global.css
 
 - `ModuleNavLinks.astro` 圆角用 `var(--radius)`（`custom.css`）
 - `HeaderBookmarksLink` 高亮用 Starlight accent，随 primary 变
-- 管理端 `AdminHeaderActions` 与公开页 `PublicPageActions` 均挂 `ColorThemePicker`
+- 管理端 `AdminHeaderActions` 与导航页 `NavPageActions` 均挂 `ColorThemePicker`
 
-全站 preference 一致：在文档站改 primary 后打开 `/bookmarks/`，init 或 `storage` 事件应用相同 `data-color-primary`。
+全站 preference 一致：在文档站改 primary 后打开 `/bookmarks/nav/`，init 或 `storage` 事件应用相同 `data-color-primary`。

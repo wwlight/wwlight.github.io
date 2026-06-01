@@ -1,3 +1,7 @@
+/**
+ * 功能：Astro Integration，dev 时在 Vite 挂载 `/admin/api/*` 中间件。
+ * 关联：src/bookmarks/admin/lib/admin-api.server.ts
+ */
 import type { ServerResponse } from "node:http";
 import type { Connect } from "vite";
 import type { AstroIntegration } from "astro";
@@ -7,7 +11,7 @@ import {
   handleRestore,
   handleSave,
   requireAdminAuth,
-} from "../src/lib/bookmarks/admin-api.server.ts";
+} from "../src/bookmarks/admin/lib/admin-api.server.ts";
 
 function readBody(req: Connect.IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {

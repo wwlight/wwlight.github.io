@@ -6,8 +6,8 @@ export interface SiteModuleNavItem {
 
 export const bookmarksNavItem = {
   label: "书签",
-  href: "/bookmarks/",
-  prefix: "/bookmarks",
+  href: "/bookmarks/nav/",
+  prefix: "/bookmarks/nav",
 } as const;
 
 export const siteModuleNav: SiteModuleNavItem[] = [

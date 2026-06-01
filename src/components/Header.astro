@@ -29,8 +29,8 @@ const shouldRenderSearch
     <ColorThemeSelect />
     <LanguageSelect />
   </div>
-  <ThemeCustomizerPopover client:only="react" variant="starlight" />
 </div>
+<ThemeCustomizerPopover client:only="react" variant="starlight" />
 
 <style>
   @layer starlight.core {
@@ -59,6 +59,11 @@ const shouldRenderSearch
     .social-icons {
       gap: 1rem;
       align-items: center;
+    }
+
+    .right-group {
+      flex-shrink: 0;
+      justify-self: end;
     }
 
     .social-icons::after {

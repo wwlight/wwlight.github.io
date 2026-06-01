@@ -1,0 +1,7 @@
+/* 书签页 Tailwind + 主题 token 入口（nav/admin 的 app.css 都会链到这里）
+ * @/ 即 src/，与 tsconfig paths 一致；下列文件仍在全站 styles/、theme/，未迁入 bookmarks */
+@import 'tailwindcss';
+@import '@/styles/scrollbars.css';
+@import '@/styles/overlay-panel.css';
+@import '@/styles/shadcn-theme.css';
+@import '@/theme/styles/index.css';

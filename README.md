@@ -7,8 +7,8 @@
 ## 功能
 
 - **文档笔记** — Starlight 文档站，收录备忘录、工具集、系统相关等 Markdown 笔记
-- **书签导航** — `/bookmarks/` 公开书签页，按分区展示常用链接
-- **书签管理** — `/admin/bookmarks/` 本地管理端，支持增删改、拖拽排序、版本历史
+- **书签导航** — `/bookmarks/nav/` 书签导航页，按分区展示常用链接
+- **书签管理** — `/bookmarks/admin/` 本地管理端，支持增删改、拖拽排序、版本历史
 - **主题定制** — 全站明暗模式与 Primary / Neutral / Radius 配色（Starlight 与书签页共用）
 
 ## 主题系统
@@ -36,7 +36,7 @@
 
 ```bash
 vp i                      # 安装依赖
-vpr dev                   # 本地开发，http://localhost:4321（/bookmarks/ 与 /admin/bookmarks/ 同端口）
+vpr dev                   # 本地开发，http://localhost:4321（/bookmarks/nav/ 与 /bookmarks/admin/ 同端口）
 vpr dev:admin             # 同上，就绪后自动打开管理端（首次运行创建 .env 并设置密码）
 vpr dev:all               # 同上，就绪后自动打开主站与管理端两个标签页
 vpr build                 # 构建到 dist/
@@ -50,13 +50,21 @@ vpr lint-staged           # 对暂存文件运行 lint（pre-commit 调用）
 vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 ```
 
-前台书签页与管理端共用同一 dev 进程，通过路径区分（`/bookmarks/`、`/admin/bookmarks/`）。
+前台导航页与管理端共用同一 dev 进程，通过路径区分（`/bookmarks/nav/`、`/bookmarks/admin/`）。
 
 ## 书签管理端
 
+实现集中在 [`src/bookmarks/`](src/bookmarks/README.md)（子目录说明、数据流、对外 import 见该文档）。
+
+| 入口 | 说明 |
+| ---- | ---- |
+| [`src/bookmarks/README.md`](src/bookmarks/README.md) | shared / nav / admin 目录职责 |
+| `db/data/bookmarks.ts` | 唯一可提交数据源 |
+| `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
+
 > [!TIP] 本地使用
 >
-> 本地编辑 `/admin/bookmarks/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
+> 本地编辑 `/bookmarks/admin/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
 
 | 变量 | 说明 |
 | ---- | ---- |
@@ -91,10 +99,13 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 │   │   ├── scripts/           # 首屏 init.inline.js（生成）
 │   │   └── index.ts           # 公共 API（@/theme）
 │   ├── pages/
-│   │   ├── bookmarks/         # 公开书签页
-│   │   └── admin/bookmarks.astro  # 书签管理端
-│   ├── components/            # Astro / React（admin、bookmarks、ui）
-│   ├── lib/bookmarks/         # 书签逻辑、查询、管理端 API
+│   │   ├── bookmarks/nav.astro    # 书签导航 → /bookmarks/nav/
+│   │   └── bookmarks/admin.astro  # 书签管理端 → /bookmarks/admin/
+│   ├── components/            # Astro / React（Starlight 壳、ui）
+│   ├── bookmarks/             # 书签模块 → 见 bookmarks/README.md
+│   │   ├── shared/            # 类型、数据、共用 lib/组件/样式
+│   │   ├── nav/               # 导航 /bookmarks/nav/
+│   │   └── admin/             # 管理端 /bookmarks/admin/
 │   └── styles/                # 全局与页面样式（Starlight global 等）
 ├── db/
 │   ├── config.ts              # Astro DB 配置
@@ -125,6 +136,8 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | `.cursor/rules/wwlight-project.mdc` | 每轮任务先读项目 skill；脚本用 `vp` / `vpr`；依赖走 pnpm catalog |
 | `.cursor/rules/karpathy-guidelines.mdc` | 编码行为准则：先想清楚、最小改动、可验证目标 |
 | `.cursor/skills/wwlight-project/SKILL.md` | 目录结构、Starlight / 书签 / Mermaid / 主题等；主题细节以 [`src/theme/README.md`](src/theme/README.md) 为准 |
+| `.cursor/skills/module-structure/SKILL.md` | **模块重构 / 结构优化** 标准流程（必先读；含检查清单与反模式） |
+| `.cursor/skills/module-structure/paths.md` | path alias 与 pages 路由（全书唯一说明处；重构时与上表一起读） |
 | `.cursor/skills/tailwindcss/SKILL.md` | Tailwind v4：何时用方括号、`(--var)` 简写、`app-scrollbar`、本仓库 `@theme` |
 | `.cursor/skills/karpathy-guidelines/SKILL.md` | 上述准则的完整版 |
 
