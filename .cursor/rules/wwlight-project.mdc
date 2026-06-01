@@ -11,5 +11,5 @@ alwaysApply: true
 
 - 安装与脚本：`vp i`、`vpr dev` 等，不要裸跑 `pnpm` / `npm install`
 - 依赖版本：只改 `pnpm-workspace.yaml` 的 `catalogs`；`package.json` 用 `catalog:<组名>`
-- 改 dev 脚本、Mermaid、书签模块、Starlight 导航前，对照 skill 对应章节
+- 改 dev 脚本、Mermaid、书签模块、Starlight 导航、主题系统前，对照 skill 对应章节；主题细节以 `src/theme/README.md` 为准
 - 只在你明确要求时创建 git commit

@@ -1,4 +1,4 @@
-/* 语义色与圆角由 html[data-color-*] / html[data-radius] 统一提供，见 color-themes.css */
+/* 语义色与圆角由 html[data-color-*] / html[data-radius] 统一提供，见 theme/styles/color-tokens.css */
 .bookmarks-app {
   @apply text-foreground;
 }

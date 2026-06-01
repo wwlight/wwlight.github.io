@@ -16,7 +16,7 @@ import {
 import { GENERATED_LOGO_PATHS, GENERATED_LOGO_STROKE } from './generated-logo.data.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const outPath = join(root, 'src/scripts/theme-init.inline.js')
+const outPath = join(root, 'src/theme/scripts/init.inline.js')
 
 const primaryIds = PRIMARY_THEMES.map(theme => theme.id)
 const neutralIds = NEUTRAL_THEMES.map(theme => theme.id)
@@ -222,4 +222,4 @@ const script = `;(function () {
 `
 
 writeFileSync(outPath, script)
-console.log('Generated src/scripts/theme-init.inline.js')
+console.log('Generated src/theme/scripts/init.inline.js')

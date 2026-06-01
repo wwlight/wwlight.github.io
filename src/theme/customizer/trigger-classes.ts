@@ -1,9 +1,19 @@
+/**
+ * 功能：定制器触发按钮、Popover、色块圆点的 Tailwind 类名。
+ * 问题：starlight / bookmarks 两套表面色硬编码，未共用 design token。
+ */
 import { cn } from '@/lib/utils'
 
 export const THEME_CUSTOMIZER_TRIGGER_SELECTOR = '[data-theme-customizer-trigger]'
 
+export type ThemeSurface = 'bookmarks' | 'starlight'
+
+export function themeCustomizerSwatchClass() {
+  return 'size-2.5 shrink-0 rounded-full'
+}
+
 export function themeCustomizerTriggerButtonClass(
-  variant: 'bookmarks' | 'starlight',
+  variant: ThemeSurface,
   className?: string,
 ) {
   return cn(
@@ -15,15 +25,11 @@ export function themeCustomizerTriggerButtonClass(
   )
 }
 
-export function themeCustomizerTriggerSwatchClass(_variant: 'bookmarks' | 'starlight') {
-  return 'size-2.5 shrink-0 rounded-full'
-}
-
 export function themeCustomizerTriggerLabelClass() {
   return 'w-[7ch] shrink-0 truncate text-center'
 }
 
-export function themeCustomizerPopoverClass(variant: 'bookmarks' | 'starlight') {
+export function themeCustomizerPopoverClass(variant: ThemeSurface) {
   return cn(
     'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] p-3',
     variant === 'starlight'

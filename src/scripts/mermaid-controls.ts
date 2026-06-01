@@ -1,6 +1,4 @@
-import '../styles/mermaid-controls.css'
-
-/** 缩放 / 全屏工具栏。图表明暗主题由 astro-mermaid autoTheme + mermaid.js 负责，此处不覆盖配色。 */
+/** 缩放 / 全屏工具栏。图表明暗主题由 astro-mermaid autoTheme + mermaid.js 负责，此处不覆盖配色。样式见 src/styles/mermaid-controls.css（Starlight customCss）。 */
 
 interface DiagramController {
   zoomIn: () => void

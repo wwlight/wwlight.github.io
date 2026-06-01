@@ -1,9 +1,12 @@
 ---
+/**
+ * 功能：Starlight 顶栏静态主题按钮（由 ThemeCustomizerPopover 绑定点击）。
+ */
 import {
+  themeCustomizerSwatchClass,
   themeCustomizerTriggerButtonClass,
   themeCustomizerTriggerLabelClass,
-  themeCustomizerTriggerSwatchClass,
-} from '@/lib/theme-customizer-trigger-styles'
+} from '@/theme/customizer/trigger-classes'
 
 interface Props {
   variant?: 'bookmarks' | 'starlight'
@@ -20,7 +23,7 @@ const { variant = 'bookmarks', class: className } = Astro.props
   aria-expanded="false"
   data-theme-customizer-trigger
 >
-  <span class={themeCustomizerTriggerSwatchClass(variant)} data-part="swatch" aria-hidden="true"></span>
+  <span class={themeCustomizerSwatchClass()} data-part="swatch" aria-hidden="true"></span>
   <span class={themeCustomizerTriggerLabelClass()} data-part="label"></span>
   <svg
     xmlns="http://www.w3.org/2000/svg"

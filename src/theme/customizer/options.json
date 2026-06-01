@@ -7,7 +7,7 @@
     {
       "id": "black",
       "label": "Black",
-      "swatch": "var(--color-zinc-950)"
+      "swatch": "var(--theme-primary-swatch-black)"
     },
     {
       "id": "red",

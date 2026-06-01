@@ -7,7 +7,7 @@ import mermaid from 'astro-mermaid'
 import { defineConfig } from 'astro/config'
 import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
 import { mermaidControls } from './integrations/mermaid-controls.ts'
-import themeInitScript from './src/scripts/theme-init.inline.js?raw'
+import themeInitScript from './src/theme/scripts/init.inline.js?raw'
 
 export default defineConfig({
   site: 'https://wwlight.github.io',
@@ -64,7 +64,11 @@ export default defineConfig({
           lang: 'zh-CN',
         },
       },
-      customCss: ['./src/styles/custom.css', './src/styles/global.css'],
+      customCss: [
+        './src/styles/custom.css',
+        './src/styles/global.css',
+        './src/styles/mermaid-controls.css',
+      ],
       sidebar: [
         { label: '博客', items: [{ autogenerate: { directory: 'blog' } }] },
         { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },

@@ -1,0 +1,14 @@
+/* 功能：Starlight 静态触发按钮（TriggerButton.astro）色块与空标签回退文案。
+ * 说明：React 触发器用 var(--primary) 内联；标签回退文案在生成的 color-tokens.css 末尾。 */
+
+[data-theme-customizer-trigger] [data-part='swatch'] {
+  background-color: var(--primary);
+}
+
+[data-theme-customizer-trigger] [data-part='label']:empty::after {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

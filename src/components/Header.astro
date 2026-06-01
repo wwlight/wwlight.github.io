@@ -6,8 +6,8 @@ import SocialIcons from 'virtual:starlight/components/SocialIcons'
 import config from 'virtual:starlight/user-config'
 import HeaderBookmarksLink from '@/components/HeaderBookmarksLink.astro'
 import ModuleNavLinks from '@/components/ModuleNavLinks.astro'
-import ColorThemeSelect from '@/components/theme/ColorThemeSelect.astro'
-import { ThemeCustomizerPopover } from '@/components/theme/ThemeCustomizerPopover.tsx'
+import ColorThemeSelect from '@/theme/components/ColorThemeSelect.astro'
+import { ThemeCustomizerPopover } from '@/theme/components/customizer/Popover'
 
 const shouldRenderSearch
   = config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro'

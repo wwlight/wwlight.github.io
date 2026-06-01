@@ -1,6 +1,6 @@
 import { BookOpen, Bookmark, Settings2 } from "lucide-react";
 import type { ReactNode } from "react";
-import { ColorThemePicker } from "@/components/theme/ColorThemePicker";
+import { ColorThemePicker } from "@/theme/components/ColorThemePicker";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cardIconClass } from "@/components/bookmarks/public/ui-helpers";
 import { cn } from "@/lib/utils";

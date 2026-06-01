@@ -1,5 +1,3 @@
-@import './view-transition-theme.css';
-
 button,
 a,
 [role='button'],
@@ -9,18 +7,6 @@ summary {
 
 :root {
   --sl-content-width: 60rem;
-}
-
-[data-theme-customizer-trigger] [data-part='swatch'] {
-  background-color: var(--primary);
-}
-
-[data-theme-customizer-trigger] [data-part='label']:empty::after {
-  display: block;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .module-nav {

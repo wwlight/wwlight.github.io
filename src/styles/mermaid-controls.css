@@ -1,9 +1,10 @@
-/* 图表容器与工具栏布局；明暗配色由 astro-mermaid autoTheme + mermaid.js 内部处理 */
+/* 图表容器与工具栏；对齐 Expressive Code copy 按钮，不受站点 --radius 影响 */
 
 .mermaid-shell {
   position: relative;
   margin: 2rem 0;
   border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-7, rgba(0, 0, 0, 0.02));
   overflow: hidden;
   --ec-brdWd: 1px;
   --ec-uiPadInl: 1rem;
@@ -15,6 +16,10 @@
   --ec-frm-inlBtnBgActOpa: 0.3;
   --ec-frm-inlBtnBrd: var(--sl-color-text);
   --ec-frm-inlBtnBrdOpa: 0.4;
+}
+
+:root[data-theme='light'] .mermaid-shell {
+  --ec-frm-edBg: var(--sl-color-gray-7);
 }
 
 .mermaid-shell:fullscreen {
@@ -31,13 +36,14 @@
 }
 
 .mermaid-shell pre.mermaid {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding: 2.5rem 1rem 1rem;
+  margin: 0 !important;
+  padding: 2.5rem 1rem 1rem !important;
   overflow: visible;
   border: none;
+  background: transparent !important;
   cursor: grab;
   touch-action: none;
 }
@@ -50,6 +56,13 @@
   cursor: grabbing;
 }
 
+.mermaid-shell pre.mermaid[data-processed],
+.mermaid-shell pre.mermaid:not([data-processed]):has(svg) {
+  animation: none !important;
+  background: transparent !important;
+  min-height: auto !important;
+}
+
 .mermaid-shell pre.mermaid svg {
   display: block;
   max-width: 100%;
@@ -57,7 +70,6 @@
   width: auto;
 }
 
-/* 对齐 Expressive Code `.frame.not-content .copy` 工具栏 */
 .mermaid-toolbar {
   display: flex;
   flex-direction: row;
@@ -75,8 +87,9 @@
   right: 1rem;
 }
 
-.mermaid-toolbar-btn {
+.mermaid-shell .mermaid-toolbar-btn {
   position: relative;
+  box-sizing: border-box;
   flex: 0 0 auto;
   align-self: flex-end;
   margin: 0;
@@ -98,7 +111,7 @@
   transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.mermaid-toolbar-btn > div {
+.mermaid-shell .mermaid-toolbar-btn > div {
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -109,7 +122,7 @@
   transition-timing-function: inherit;
 }
 
-.mermaid-toolbar-btn::before {
+.mermaid-shell .mermaid-toolbar-btn::before {
   content: '';
   position: absolute;
   pointer-events: none;
@@ -119,7 +132,7 @@
   opacity: var(--ec-frm-inlBtnBrdOpa, 0.4);
 }
 
-.mermaid-toolbar-btn svg {
+.mermaid-shell .mermaid-toolbar-btn svg {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -131,27 +144,27 @@
   pointer-events: none;
 }
 
-.mermaid-toolbar-btn:hover,
-.mermaid-toolbar-btn:focus-visible {
+.mermaid-shell .mermaid-toolbar-btn:hover,
+.mermaid-shell .mermaid-toolbar-btn:focus-visible {
   opacity: 1;
 }
 
-.mermaid-toolbar-btn:hover > div,
-.mermaid-toolbar-btn:focus-visible > div,
-.mermaid-toolbar-btn.is-active > div {
+.mermaid-shell .mermaid-toolbar-btn:hover > div,
+.mermaid-shell .mermaid-toolbar-btn:focus-visible > div,
+.mermaid-shell .mermaid-toolbar-btn.is-active > div {
   opacity: var(--ec-frm-inlBtnBgHoverOrFocusOpa, 0.2);
 }
 
-.mermaid-toolbar-btn:active {
+.mermaid-shell .mermaid-toolbar-btn:active {
   opacity: 1;
 }
 
-.mermaid-toolbar-btn:active > div {
+.mermaid-shell .mermaid-toolbar-btn:active > div {
   opacity: var(--ec-frm-inlBtnBgActOpa, 0.3);
 }
 
 @media (hover: hover) {
-  .mermaid-toolbar-btn {
+  .mermaid-shell .mermaid-toolbar-btn {
     opacity: 0;
   }
 
@@ -163,7 +176,7 @@
 }
 
 @media (hover: none) {
-  .mermaid-toolbar-btn {
+  .mermaid-shell .mermaid-toolbar-btn {
     opacity: 0.75;
   }
 }

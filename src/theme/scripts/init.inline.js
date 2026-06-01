@@ -1,6 +1,6 @@
 ;(function () {
   // 存储键见 src/lib/site-storage.keys.mjs（由 scripts/generate-theme-init.mjs 生成）
-  const KEYS = {"colorMode":"wwlight:color-mode","primary":"wwlight:color-primary","neutral":"wwlight:color-neutral","radius":"wwlight:theme-radius","bookmarksAdminDraft":"wwlight:bookmarks-admin-draft"}
+  const KEYS = {"colorMode":"wwlight:color-mode","primary":"wwlight:color-primary","neutral":"wwlight:color-neutral","radius":"wwlight:theme-radius","bookmarksAdminDraft":"wwlight:bookmarks-admin-draft","bookmarksAdminTransfer":"wwlight:bookmarks-admin-transfer","bookmarksAdminTransferDock":"wwlight:bookmarks-admin-transfer-dock"}
   const LEGACY = {"colorMode":"starlight-theme","primary":"color-primary","neutral":"color-neutral","radius":"theme-radius","primaryLegacy":"color-theme","bookmarksAdminDraft":"bookmarks-admin-draft"}
   const DEFAULT_PRIMARY = "green"
   const DEFAULT_NEUTRAL = "slate"

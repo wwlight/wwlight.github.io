@@ -1,14 +1,16 @@
+/**
+ * 功能：Starlight Hero 区「随机主题」按钮（仅随机 Primary/Neutral/Radius，不改 Color Mode）。
+ */
 import { Shuffle } from 'lucide-react'
 import { flushSync } from 'react-dom'
 import { Button } from '@/components/ui/button'
-import { getDocumentThemeCustomizerState, randomThemeCustomizerState } from '@/lib/color-theme'
+import { getDocumentThemeCustomizerState, randomThemeCustomizerState } from '@/theme/customizer/state'
 import { cn } from '@/lib/utils'
 
 interface HeroRandomThemeButtonProps {
   className?: string
 }
 
-/** 与 Starlight LinkButton 字号、间距、圆角对齐 */
 const heroLinkButtonClass = cn(
   'hero-action-button',
   'inline-flex h-auto min-h-0 w-auto items-center rounded-full border shadow-none',

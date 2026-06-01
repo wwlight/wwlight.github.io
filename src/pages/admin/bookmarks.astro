@@ -3,7 +3,7 @@ import BookmarksAdmin from '../../components/admin/BookmarksAdmin.tsx'
 import { getFirstBlogPostHref } from '../../lib/blog-nav'
 import { serializeBookmarkSectionsForPage } from '../../lib/bookmarks/page-data'
 import { getBookmarkSections } from '../../lib/bookmarks/queries'
-import themeInitScript from '../../scripts/theme-init.inline.js?raw'
+import themeInitScript from '../../theme/scripts/init.inline.js?raw'
 import '../../styles/admin.css'
 
 const sections = await getBookmarkSections()

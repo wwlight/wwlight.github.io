@@ -1,3 +1,7 @@
+/**
+ * 功能：Primary / Neutral / Radius 读写 localStorage 与 html data-*；随机、重置、订阅。
+ * 问题：仍同步 legacy `data-color-theme`；favicon 随 primary 变化。
+ */
 import {
   DEFAULT_NEUTRAL,
   DEFAULT_PRIMARY,
@@ -11,24 +15,22 @@ import {
   isNeutralThemeId,
   isPrimaryThemeId,
   isRadiusOptionId,
-} from '@/lib/theme-options'
+} from '@/theme/customizer/options'
 import {
   migrateAllLegacyStorageKeys,
   SITE_STORAGE_KEYS,
 } from '@/lib/site-storage'
 import { syncSiteFavicon } from '@/lib/generated-logo'
+
 export const COLOR_PRIMARY_STORAGE_KEY = SITE_STORAGE_KEYS.primary
 export const COLOR_NEUTRAL_STORAGE_KEY = SITE_STORAGE_KEYS.neutral
 export const THEME_RADIUS_STORAGE_KEY = SITE_STORAGE_KEYS.radius
-
-/** @deprecated */
-export const COLOR_THEME_STORAGE_KEY = COLOR_PRIMARY_STORAGE_KEY
 
 export {
   DEFAULT_NEUTRAL,
   DEFAULT_PRIMARY,
   DEFAULT_RADIUS,
-} from '@/lib/theme-options'
+} from '@/theme/customizer/options'
 
 export interface ThemeCustomizerState {
   primary: PrimaryThemeId
@@ -42,12 +44,10 @@ const SSR_THEME_CUSTOMIZER_SNAPSHOT: ThemeCustomizerState = {
   radius: DEFAULT_RADIUS,
 }
 
-/** useSyncExternalStore 要求 getSnapshot 在值未变时返回同一引用 */
 let cachedDocumentSnapshot: ThemeCustomizerState = { ...SSR_THEME_CUSTOMIZER_SNAPSHOT }
 
 const themeCustomizerListeners = new Set<() => void>()
 
-/** 订阅 html[data-color-*] 变更（同页 apply 与跨标签 sync 后触发） */
 export function subscribeThemeCustomizerState(onStoreChange: () => void) {
   themeCustomizerListeners.add(onStoreChange)
   return () => {
@@ -66,7 +66,6 @@ export function applyThemeCustomizerState(state: ThemeCustomizerState) {
   root.dataset.colorPrimary = state.primary
   root.dataset.colorNeutral = state.neutral
   root.dataset.radius = state.radius
-  // 兼容旧选择器
   root.dataset.colorTheme = state.primary
   if (
     cachedDocumentSnapshot.primary !== state.primary
@@ -110,7 +109,6 @@ export function getDocumentThemeCustomizerState(): ThemeCustomizerState {
   return cachedDocumentSnapshot
 }
 
-/** useSyncExternalStore 服务端快照 */
 export function getServerThemeCustomizerStateSnapshot(): ThemeCustomizerState {
   return SSR_THEME_CUSTOMIZER_SNAPSHOT
 }
@@ -188,28 +186,3 @@ export function isDefaultThemeCustomizerState(state: ThemeCustomizerState) {
 export function syncStoredThemeCustomizerState() {
   applyThemeCustomizerState(getStoredThemeCustomizerState())
 }
-
-/** @deprecated Use setThemeCustomizerState({ primary }) */
-export function setColorTheme(theme: PrimaryThemeId) {
-  setThemeCustomizerState({ primary: theme })
-}
-
-/** @deprecated Use getStoredThemeCustomizerState().primary */
-export function getStoredColorTheme(): PrimaryThemeId {
-  return getStoredThemeCustomizerState().primary
-}
-
-/** @deprecated */
-export function applyColorTheme(theme: PrimaryThemeId) {
-  applyThemeCustomizerState({ ...getStoredThemeCustomizerState(), primary: theme })
-}
-
-/** @deprecated */
-export function syncStoredColorTheme() {
-  syncStoredThemeCustomizerState()
-}
-
-export {
-  LEGACY_STORAGE_KEYS,
-  SITE_STORAGE_KEYS,
-} from '@/lib/site-storage'

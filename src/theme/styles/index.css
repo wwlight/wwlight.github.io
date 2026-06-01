@@ -1,0 +1,5 @@
+/* 主题样式入口：明暗过渡、配色 token、圆角、定制器触发器 */
+@import './view-transition.css';
+@import './color-tokens.css';
+@import './radius.css';
+@import './customizer-trigger.css';

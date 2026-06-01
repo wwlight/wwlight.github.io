@@ -1,11 +1,11 @@
-/* Theme radius — driven by html[data-radius] → --radius in color-themes.css */
+/* 功能：html[data-radius] → --radius 与 theme-r-* 工具类；Starlight 部分硬编码圆角覆盖。
+ * 问题：Starlight @layer 内固定圆角需单独覆盖，新增组件时要补选择器。 */
 
 :root {
   --radius: 0.25rem;
 }
 
 @layer utilities {
-  /* 相对 --radius 比例缩放，避免小值时被固定 px 偏移 clamp 成 0 */
   .theme-r-sm {
     border-radius: max(0px, calc(var(--radius) * 0.5));
   }
@@ -23,7 +23,6 @@
   }
 }
 
-/* Starlight blog — unlayered overrides for @layer starlight.* hardcoded radii */
 site-search {
   --sl-search-corners: var(--radius);
 }

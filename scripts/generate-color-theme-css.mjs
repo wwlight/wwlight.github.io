@@ -8,7 +8,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const css = buildColorThemesCss()
 validateColorThemesCss(css)
 
-writeFileSync(join(root, 'src/styles/color-themes.css'), css)
-writeFileSync(join(root, 'src/lib/theme-options.json'), buildColorThemesJson())
+writeFileSync(join(root, 'src/theme/styles/color-tokens.css'), css)
+writeFileSync(join(root, 'src/theme/customizer/options.json'), buildColorThemesJson())
 
-console.log('Generated src/styles/color-themes.css and src/lib/theme-options.json')
+console.log('Generated src/theme/styles/color-tokens.css and src/theme/customizer/options.json')

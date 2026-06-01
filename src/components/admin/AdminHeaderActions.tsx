@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { AdminUserMenu } from "@/components/admin/AdminUserMenu";
-import { ColorThemePicker } from "@/components/theme/ColorThemePicker";
+import { ColorThemePicker } from "@/theme/components/ColorThemePicker";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cardIconClass } from "@/lib/bookmarks/admin-helpers";
 import { cn } from "@/lib/utils";

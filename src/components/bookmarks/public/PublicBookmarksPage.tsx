@@ -1,5 +1,5 @@
 import { BackToTop } from "@/components/BackToTop";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeProvider } from "@/theme/components/Provider";
 import { BookmarksPublic } from "@/components/bookmarks/public/BookmarksPublic";
 import { PublicPageActions } from "@/components/bookmarks/public/PublicPageActions";
 import { readBookmarkSectionsFromPage } from "@/lib/bookmarks/page-data";

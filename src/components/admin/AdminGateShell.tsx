@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ColorThemePicker } from "@/components/theme/ColorThemePicker";
+import { ColorThemePicker } from "@/theme/components/ColorThemePicker";
 
 /** 登录 / 配置 / 空数据等门禁页的居中容器 */
 export function AdminGateShell({ children }: { children: ReactNode }) {

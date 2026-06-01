@@ -1,5 +1,5 @@
 import { BackToTop } from "@/components/BackToTop";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeProvider } from "@/theme/components/Provider";
 import { BookmarksAdminApp, type BookmarksAdminAppProps } from "@/components/admin/BookmarksAdminApp";
 
 export default function BookmarksAdmin(props: BookmarksAdminAppProps) {
