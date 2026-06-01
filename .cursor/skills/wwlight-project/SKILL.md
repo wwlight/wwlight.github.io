@@ -1,6 +1,6 @@
 ---
 name: wwlight-project
-description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions, Tailwind CSS). Use when editing this repo, Starlight docs/blog, bookmarks admin, Mermaid diagrams, site navigation, theme switching, scrollable UI, or writing README.md.
+description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo, Starlight docs/blog, bookmarks admin, Mermaid, site navigation, or theme switching. For Tailwind className and CSS utilities, read tailwindcss skill.
 ---
 
 # wwlight.github.io
@@ -107,26 +107,9 @@ vpr lint
 
 ## Tailwind CSS
 
-UI 基于 **Tailwind CSS 4**（`@tailwindcss/vite`）。自研 React/Astro 组件优先用 utility class；通用样式在 `src/styles/`，主题 token 在 `src/theme/styles/`（见 [`src/theme/README.md`](../../src/theme/README.md)），不要在组件里重复写 webkit 伪元素。
+**改 className、`@apply`、组件样式前**：读取 [`.cursor/skills/tailwindcss/SKILL.md`](../tailwindcss/SKILL.md)（v4 方括号规则、`bg-(--var)` 简写、`app-scrollbar`、与本仓库 `@theme` 约定）。
 
-### 滚动条
-
-可滚动区域（对话框、面板、下拉、Tab 等）统一用 Tailwind + **`app-scrollbar`**（`src/styles/scrollbars.css` 内 `@apply` 封装 `scrollbar-thin` 等 utility）：
-
-1. 容器加 `app-scrollbar`
-2. 加 `overflow-y-auto` / `overflow-x-auto` / `overflow-auto`
-3. 限高用 `max-h-*`、`h-*`；flex 子项滚动必加 `min-h-0`
-
-```tsx
-<div className="app-scrollbar max-h-96 overflow-y-auto p-3">{children}</div>
-<div className="min-h-0 flex-1 overflow-y-auto px-3 py-3 app-scrollbar">…</div>
-```
-
-隐藏滚动条（横向 Tab）：`overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden`（见 `SectionTabsNav.tsx`）。
-
-**CSS 入口：** 书签公开页 `bookmarks-public-app.css`、管理端 `bookmarks-app.css` 已引入；Starlight/React 新区域类不生效时在 `global.css` 补 `@import './scrollbars.css'`。
-
-**禁止：** 组件 `<style>` / CSS 模块 / 内联 `style` 写 `::-webkit-scrollbar`；不要复制 `app-scrollbar` 内的 utility 组合。
+要点速记：scale 内建值用 `p-1`、`gap-2`，勿写 `p-[1]`；CSS 变量优先 `text-(--sl-color-text)` 而非 `text-[var(...)]`；可滚动区见 tailwindcss skill 的滚动条一节。
 
 ## 编码约定
 

@@ -124,7 +124,8 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | ---- | ---- |
 | `.cursor/rules/wwlight-project.mdc` | 每轮任务先读项目 skill；脚本用 `vp` / `vpr`；依赖走 pnpm catalog |
 | `.cursor/rules/karpathy-guidelines.mdc` | 编码行为准则：先想清楚、最小改动、可验证目标 |
-| `.cursor/skills/wwlight-project/SKILL.md` | 目录结构、Tailwind、Starlight / 书签 / Mermaid 等；主题细节以 [`src/theme/README.md`](src/theme/README.md) 为准 |
+| `.cursor/skills/wwlight-project/SKILL.md` | 目录结构、Starlight / 书签 / Mermaid / 主题等；主题细节以 [`src/theme/README.md`](src/theme/README.md) 为准 |
+| `.cursor/skills/tailwindcss/SKILL.md` | Tailwind v4：何时用方括号、`(--var)` 简写、`app-scrollbar`、本仓库 `@theme` |
 | `.cursor/skills/karpathy-guidelines/SKILL.md` | 上述准则的完整版 |
 
 **本地使用：** 用 Cursor 打开仓库即可；Rules 会自动生效，Skills 在相关任务时由 Agent 按需读取。
