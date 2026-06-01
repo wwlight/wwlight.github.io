@@ -4,8 +4,8 @@
 
 - 仓库总览：[README.md](../../README.md#书签管理端)
 - Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「书签模块要点」
-- 结构优化：`.cursor/skills/module-structure/SKILL.md`
-- **路由与 path alias（唯一说明）**：`.cursor/skills/module-structure/paths.md`
+- 结构优化：`.cursor/skills/dev-foundation/SKILL.md`
+- **路由与 path alias（唯一说明）**：`.cursor/skills/wwlight-project/paths.md`
 
 ## 模块范围（模块外）
 

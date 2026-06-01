@@ -1,0 +1,38 @@
+---
+title: Astro 使用
+description: Astro 构建与 Starlight 文档站壳：配置、导航、组件覆盖
+sidebar:
+  order: 0
+  hidden: true
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+本站用 **Astro 6** 做 SSG；文档区通过 **Starlight** 集成。系列名「Astro 使用」：Astro 层配置与约定为主，Starlight 为文档壳实现细节。
+
+## 范围
+
+- `astro.config.mjs`：Starlight、`prefetch`、集成顺序
+- 顶栏 / 侧栏导航、`components` 覆盖
+- 首页 `splash` / `hero` frontmatter
+- MPA 导航下的轻量优化（同页拦截、prefetch）
+
+## 文章列表
+
+<CardGrid stagger>
+  <LinkCard title="01 · 站点导航" href="/blog/astro/01-site-navigation/" description="Starlight sidebar、顶栏 ModuleNav、书签入口" />
+  <LinkCard title="02 · Starlight Hero 定制" href="/blog/astro/02-hero/" description="splash 落地页、hero frontmatter、components 覆盖与首页约定" />
+  <LinkCard title="03 · 文档站导航轻量优化" href="/blog/astro/03-doc-nav-optimization/" description="同页 click 拦截、prefetch hover，保持 MPA" />
+</CardGrid>
+
+## 代码路径
+
+| 主题 | 路径 |
+| --- | --- |
+| Astro / Starlight 集成 | `astro.config.mjs` |
+| 顶栏 / 模块导航 | `src/components/Header.astro`、`src/lib/site-nav.ts` |
+| Hero 覆盖 | `src/components/starlight/Hero.astro` |
+| 导航优化 | `src/scripts/skip-same-page-nav.inline.js`、`src/components/Footer.astro` |
+| 首页内容 | `src/content/docs/index.mdx` |
+
+书签模块见 [书签导航与管理端搭建](/blog/bookmarks/)。

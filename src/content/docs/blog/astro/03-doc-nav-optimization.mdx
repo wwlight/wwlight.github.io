@@ -1,0 +1,68 @@
+---
+title: 03 · 文档站导航轻量优化
+description: Starlight MPA 下同页点击拦截与 Astro prefetch，避免 SPA 式大改
+sidebar:
+  order: 3
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+Starlight 侧栏链接是普通 `<a href>`，点击会触发**整页导航**（MPA）。再点当前高亮项也会 reload。本节在**不改 SPA、不加 Client Router** 的前提下做两处渐进增强。
+
+## 默认行为
+
+| 现象 | 原因 |
+| --- | --- |
+| 换一篇文档整页刷新 | 每篇 MDX 预渲染为独立 HTML，无客户端路由 |
+| 点侧栏当前项仍 reload | `SidebarSublist` 只设 `aria-current="page"`，不拦截 click |
+| dev 下「闪」更明显 | SSR + React 岛（`ThemeCustomizerPopover` 等）每次重新 hydration |
+
+侧栏状态（折叠、滚动）由 `SidebarPersistState` 在 `pageHide` 时写入 `sessionStorage`，也表明 Starlight 假定**全页跳转**。
+
+## 同页别 reload
+
+`src/scripts/skip-same-page-nav.inline.js`：捕获阶段监听 click，对下列区域内**同文档**链接 `preventDefault()`：
+
+- `#starlight__sidebar a`
+- `.module-nav a`
+- `.header-bookmarks-link`
+
+同文档判定：同 origin、pathname（尾斜杠归一化）、search；若 `href` 带不同 hash 仍允许跳转。
+
+注入点：`src/components/Footer.astro`（仅 Starlight 文档页挂载 Footer）。
+
+```astro
+<script is:inline set:html={skipSamePageNavScript} />
+```
+
+## hover prefetch
+
+`astro.config.mjs` 顶层（全站生效，含书签页）：
+
+```js
+prefetch: {
+  prefetchAll: true,
+  defaultStrategy: 'hover',
+},
+```
+
+仍是 MPA：预取 HTML，缩短换页等待；不替代 View Transitions。
+
+## 未采用
+
+| 方案 | 说明 |
+| --- | --- |
+| Client Router / SPA | 与 Starlight 默认模型偏差大，Mermaid、岛屿需额外处理 |
+| View Transitions | 可减轻硬切，对本站 React 岛与主题 init 帮助有限，暂未启用 |
+
+## 相关路径
+
+<FileTree>
+
+- astro.config.mjs — `prefetch`
+- src/scripts/skip-same-page-nav.inline.js — 同页拦截
+- src/components/Footer.astro — 脚本注入
+
+</FileTree>
+
+侧栏链接由 Starlight `SidebarSublist.astro` 渲染为 `<a href>`（`aria-current="page"` 标记当前项）。

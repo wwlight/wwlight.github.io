@@ -12,8 +12,18 @@ import themeInitScript from './src/theme/scripts/init.inline.js?raw'
 export default defineConfig({
   site: 'https://wwlight.github.io',
   devToolbar: { enabled: false },
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   redirects: {
     '/bookmarks': '/bookmarks/nav/',
+    '/blog/starlight': '/blog/astro/',
+    '/blog/starlight/': '/blog/astro/',
+    '/blog/starlight/01-site-navigation': '/blog/astro/01-site-navigation/',
+    '/blog/starlight/01-site-navigation/': '/blog/astro/01-site-navigation/',
+    '/blog/starlight/02-hero': '/blog/astro/02-hero/',
+    '/blog/starlight/02-hero/': '/blog/astro/02-hero/',
   },
   markdown: {
     syntaxHighlight: {
@@ -85,10 +95,10 @@ export default defineConfig({
               ],
             },
             {
-              label: 'Astro Starlight 使用',
+              label: 'Astro 使用',
               collapsed: true,
               items: [
-                { autogenerate: { directory: 'blog/starlight', collapsed: true } },
+                { autogenerate: { directory: 'blog/astro', collapsed: true } },
               ],
             },
             {

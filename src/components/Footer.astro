@@ -1,7 +1,9 @@
 ---
 import Default from '@astrojs/starlight/components/Footer.astro'
 import { BackToTop } from '@/components/BackToTop.tsx'
+import skipSamePageNavScript from '@/scripts/skip-same-page-nav.inline.js?raw'
 ---
 
 <Default />
 <BackToTop client:only="react" />
+<script is:inline set:html={skipSamePageNavScript} />

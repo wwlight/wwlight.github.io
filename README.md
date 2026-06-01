@@ -63,7 +63,6 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
 
 > [!TIP] 本地使用
->
 > 本地编辑 `/bookmarks/admin/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
 
 | 变量 | 说明 |
@@ -76,11 +75,9 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | 增删改 / 排序 / 版本 |  ✅  |  ❌  |
 
 > [!CAUTION] 注意
->
 > 哈希打进前端 bundle，仅作门控，非服务端鉴权。
 
 > [!NOTE] 部署与流程
->
 > - 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
 > - 静态站点不可保存，数据随 `vpr build` 发布
 > - 流程：`vpr dev:admin` → commit `db/data/bookmarks.ts` → push
@@ -89,7 +86,7 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 ```
 ├── src/
-│   ├── content/docs/          # Starlight 文档；blog/bookmarks、blog/starlight 两个系列
+│   ├── content/docs/          # Starlight 文档；blog/bookmarks、blog/astro 等系列
 │   ├── theme/                 # 主题系统 → 见 theme/README.md
 │   │   ├── color-mode/        # 明暗模式、View Transition
 │   │   ├── customizer/        # Primary / Neutral / Radius 状态与选项
@@ -136,11 +133,12 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | `.cursor/rules/wwlight-project.mdc` | 每轮任务先读项目 skill；脚本用 `vp` / `vpr`；依赖走 pnpm catalog |
 | `.cursor/rules/karpathy-guidelines.mdc` | 编码行为准则：先想清楚、最小改动、可验证目标 |
 | `.cursor/skills/wwlight-project/SKILL.md` | 目录结构、Starlight / 书签 / Mermaid / 主题等；主题细节以 [`src/theme/README.md`](src/theme/README.md) 为准 |
-| `.cursor/skills/module-structure/SKILL.md` | **模块重构 / 结构优化** 标准流程（必先读；含检查清单与反模式） |
-| `.cursor/skills/module-structure/paths.md` | path alias 与 pages 路由（全书唯一说明处；重构时与上表一起读） |
-| `.cursor/skills/tailwindcss/SKILL.md` | Tailwind v4：何时用方括号、`(--var)` 简写、`app-scrollbar`、本仓库 `@theme` |
+| `.cursor/skills/dev-foundation/SKILL.md` | **开发基础** 通用：结构优化、技术说明写法、子文件索引 |
+| `.cursor/skills/dev-foundation/tailwindcss.md` | Tailwind v4：方括号、`(--var)` 简写；本仓库接入见 wwlight skill |
+| `.cursor/skills/dev-foundation/vite-plus.md` | Vite+ `vp` / `vpr` 与 pnpm catalog 约定 |
+| `.cursor/skills/wwlight-project/paths.md` | path alias 与 pages 路由（本书唯一说明处） |
 | `.cursor/skills/karpathy-guidelines/SKILL.md` | 上述准则的完整版 |
 
 **本地使用：** 用 Cursor 打开仓库即可；Rules 会自动生效，Skills 在相关任务时由 Agent 按需读取。
 
-**协作提示：** 大改前可在对话里 `@` 引用 skill 或说明范围；只有明确要求时才提交 commit。博客 [`src/content/docs/blog/`](/src/content/docs/blog/) 含 [书签系列](/src/content/docs/blog/bookmarks/) 与 [Starlight 使用](/src/content/docs/blog/starlight/) 两个目录，可与 Agent 对照使用。
+**协作提示：** 大改前可在对话里 `@` 引用 skill 或说明范围；只有明确要求时才提交 commit。博客 [`src/content/docs/blog/`](/src/content/docs/blog/) 含 [书签系列](/src/content/docs/blog/bookmarks/) 与 [Astro 使用](/src/content/docs/blog/astro/) 等目录，可与 Agent 对照使用。

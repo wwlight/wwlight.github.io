@@ -1,8 +1,8 @@
-# 路径与路由约定（本仓库唯一说明处）
+# 路径与路由约定（wwlight · 唯一说明处）
 
-Agent 与重构时 **只在这里查 alias / 路由规则**；`module-structure/SKILL.md`、各模块 README 只链到本文，不重复展开。
+Agent 与重构时 **只在这里查 alias / 路由规则**；`wwlight-project/SKILL.md`、各模块 README 只链到本文，不重复展开。
 
-**重构 / 结构优化**：先读 [SKILL.md](./SKILL.md) 全文，再读本文；勿只读 alias 表就动手改路径。
+**重构 / 结构优化**：先读 [dev-foundation/SKILL.md](../dev-foundation/SKILL.md) 全文，再读本文；勿只读 alias 表就动手改路径。
 
 ## Path alias
 
@@ -87,7 +87,7 @@ src/bookmarks/shared/  … 共用
 - [ ] pages 文件路径与目标 URL 一致
 - [ ] grep `/bookmarks/`、`site-nav`、`openPaths`（dev 脚本）
 - [ ] grep `from '../`、`@import '../`（除 paths.md 例外表）
-- [ ] 模块 README 目录表 + 链到本文（与 git mv **同轮**更新，见 SKILL.md「目录与文档同步」）
+- [ ] 模块 README 目录表 + 链到本文（与 git mv **同轮**更新，见 dev-foundation「目录与文档同步」）
 - [ ] grep 根 README、wwlight skill、博客 MDX 旧路径
 - [ ] vpr build → dist/ 下目录与 URL 一致
 ```

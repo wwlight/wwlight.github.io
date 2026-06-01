@@ -1,24 +1,25 @@
 ---
 name: wwlight-project
-description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo, writing or revising blog MDX under src/content/docs/blog, bookmarks admin, Mermaid, site navigation, or theme switching. Blog prose must be implementation-focused (see 博客 section). For Tailwind, read tailwindcss skill.
+description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo. Read dev-foundation skill (tailwindcss.md, vite-plus.md, docs) and this skill for project-specific paths and scripts.
 ---
 
 # wwlight.github.io
 
 个人站点：Starlight 文档站 + 书签导航 + 本地管理端。
 
-## 命令
+## 脚本速查
 
-Node.js **24**（`.node-version`）。
+Node.js **24**（`.node-version`）。`vp` / `vpr` 约定见 [dev-foundation/vite-plus.md](../dev-foundation/vite-plus.md)。
 
-```bash
-vp i              # 安装依赖（pnpm 11.4.0）
-vpr dev           # 本地开发 http://localhost:4321（/bookmarks/nav/ 与 /bookmarks/admin/）
-vpr dev:admin     # 同上，就绪后自动打开管理端
-vpr dev:all       # 同上，就绪后自动打开主站与管理端
-vpr build
-vpr lint
-```
+| 命令 | 说明 |
+| --- | --- |
+| `vpr dev` | 本地开发 http://localhost:4321（`/bookmarks/nav/` 与 `/bookmarks/admin/` 同端口） |
+| `vpr dev:admin` | 同上，就绪后自动打开管理端 |
+| `vpr dev:all` | 同上，就绪后自动打开主站与管理端 |
+| `vpr build` / `vpr preview` | 构建与预览 |
+| `vpr lint` / `vpr lint:fix` | ESLint |
+| `vpr generate:color-themes` | 生成 `color-tokens.css`、`customizer/options.json` |
+| `vpr generate:theme-init` | 生成 `scripts/init.inline.js` |
 
 前台与管理端共用同一 Astro dev 进程，通过路径区分。
 
@@ -26,9 +27,9 @@ vpr lint
 
 | 路径 | 用途 |
 | --- | --- |
-| `src/content/docs/blog/` | 博客总览；`blog/bookmarks/` 书签系列、`blog/starlight/` Starlight 系列、`blog/theme/` 主题系统系列 |
+| `src/content/docs/blog/` | 博客总览；`blog/bookmarks/` 书签系列、`blog/astro/` Astro 使用系列、`blog/theme/` 主题系统系列 |
 | `src/content/docs/{memorandum,tools,system,other}/` | 其他文档分区 |
-| `src/pages/bookmarks/nav.astro` | 书签导航 → `/bookmarks/nav/`（路由见 [paths.md](../module-structure/paths.md)） |
+| `src/pages/bookmarks/nav.astro` | 书签导航 → `/bookmarks/nav/`（路由见 [paths.md](./paths.md)） |
 | `src/pages/bookmarks/admin.astro` | 管理端 → `/bookmarks/admin/` |
 | `src/bookmarks/` | 书签模块（**详读** [`src/bookmarks/README.md`](../../src/bookmarks/README.md)） |
 | `src/components/Footer.astro` | Starlight 页脚 + BackToTop |
@@ -37,8 +38,10 @@ vpr lint
 | `scripts/color-themes.data.mjs` | 主题 token 数据源（生成 CSS/JSON） |
 | `integrations/bookmarks-admin.ts` | 开发态 API 中间件 |
 | `integrations/mermaid-controls.ts` | Mermaid 缩放 / 全屏工具栏 |
-| `.cursor/skills/module-structure/SKILL.md` | **模块重构 / 结构优化** 流程（改目录、路由、import 前先读） |
-| `.cursor/skills/module-structure/paths.md` | **path alias、pages 路由**（唯一说明，勿在别处复制；与上表一起读） |
+| `.cursor/skills/dev-foundation/SKILL.md` | **开发基础** 通用：结构优化、技术说明写法、子文件索引 |
+| `.cursor/skills/dev-foundation/vite-plus.md` | `vp` / `vpr` 与 pnpm catalog 通用约定 |
+| `.cursor/skills/dev-foundation/tailwindcss.md` | Tailwind v4 方括号与 `bg-(--var)` |
+| `.cursor/skills/wwlight-project/paths.md` | **path alias、pages 路由**（本书唯一说明，勿在别处复制） |
 | `pnpm-workspace.yaml` | pnpm catalog 版本源 + overrides / trustPolicy |
 | `.node-version` | Node.js 24 |
 | `scripts/dev-bootstrap.mjs` | dev 环境初始化与启动 |
@@ -85,7 +88,7 @@ vpr lint
 
 ## 书签模块要点
 
-**改书签相关代码前**：用 Read 读取 [`src/bookmarks/README.md`](../../src/bookmarks/README.md)（shared / nav / admin 职责、数据流、对外入口）。**整模块重组**见 [module-structure/SKILL.md](../module-structure/SKILL.md)（必先读）。
+**改书签相关代码前**：用 Read 读取 [`src/bookmarks/README.md`](../../src/bookmarks/README.md)（shared / nav / admin 职责、数据流、对外入口）。**整模块重组**见 [dev-foundation/SKILL.md](../dev-foundation/SKILL.md)（必先读）。
 
 | 项 | 路径 |
 | --- | --- |
@@ -114,19 +117,49 @@ vpr lint
 | `types` | `@types/*` |
 | `build` | 构建链 pin（如 `vite`，供 `overrides` 引用） |
 
-升级依赖：改 yaml 里对应 catalog 条目 → `vp i`。`overrides` 也优先用 `catalog:astro` / `catalog:build`，避免 yaml 与 override 两处各写一遍版本。
-
-安装与脚本一律走 Vite+（`vp i`、`vpr build` 等），不要直接裸跑 `pnpm` / `npm install`。
+升级依赖：改 yaml 里对应 catalog 条目 → `vp i`（见 [vite-plus.md](../dev-foundation/vite-plus.md)）。`overrides` 也优先用 `catalog:astro` / `catalog:build`，避免 yaml 与 override 两处各写一遍版本。
 
 ## Tailwind CSS
 
-**改 className、`@apply`、组件样式前**：读取 [`.cursor/skills/tailwindcss/SKILL.md`](../tailwindcss/SKILL.md)（v4 方括号规则、`bg-(--var)` 简写、`app-scrollbar`、与本仓库 `@theme` 约定）。
+**改 className、`@apply`、组件样式前**：先读 [dev-foundation/tailwindcss.md](../dev-foundation/tailwindcss.md)。**本仓库**接入与滚动条见下文。
 
-要点速记：scale 内建值用 `p-1`、`gap-2`，勿写 `p-[1]`；CSS 变量优先 `text-(--sl-color-text)` 而非 `text-[var(...)]`；可滚动区见 tailwindcss skill 的滚动条一节。
+### 本仓库接入
+
+| 项 | 路径 |
+| --- | --- |
+| 版本 | Tailwind **4**（`@tailwindcss/vite`） |
+| Starlight | `src/styles/global.css` — `@import 'tailwindcss/theme.css'` / `utilities.css` |
+| 书签 | `src/bookmarks/shared/styles/bookmarks-theme-shared.css` — `@import 'tailwindcss'` |
+| shadcn 语义色 | `src/styles/shadcn-theme.css` — `@theme inline` 映射 `--primary`、`--border` 等 |
+| 暗色变体 | `@custom-variant dark`（`.dark` + `[data-theme='dark']`） |
+| 主题圆角工具类 | `theme-r-sm` … `theme-r-xl`（`src/theme/styles/radius.css`） |
+
+Starlight 变量（`--sl-color-*`）无 shadcn 别名时用 `bg-(--sl-color-black)` 等；书签页优先 `bg-card`、`text-foreground`、`border-border`。
+
+### 滚动条
+
+可滚动区：**`app-scrollbar`** + `overflow-*` + 限高；flex 子项滚动加 **`min-h-0`**。
+
+```tsx
+<div className="app-scrollbar max-h-96 min-h-0 flex-1 overflow-y-auto p-3" />
+```
+
+横向 Tab 隐藏滚动条：`overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden`（见 `SectionTabsNav.tsx`）。
+
+**禁止**：在组件里写 `<style>` / CSS 模块 / 内联样式定制 `::-webkit-scrollbar`；不要复制 `scrollbars.css` 里 `@apply` 组合。
+
+定义见 `src/styles/scrollbars.css`；书签/管理端入口已 `@import`；Starlight 新区域不生效时在 `global.css` 补 `scrollbars.css`。
+
+### 主题相关样式
+
+- 配色 token、圆角：`src/theme/styles/`（见 `src/theme/README.md`）
+- 通用布局/Starlight：`src/styles/`
+
+要点速记：scale 内建值用 `p-1`、`gap-2`，勿写 `p-[1]`；CSS 变量优先 `text-(--sl-color-text)` 而非 `text-[var(...)]`。
 
 ## 博客（技术笔记）
 
-`src/content/docs/blog/` 下 MDX 是**按仓库真实代码路径写的技术说明**，不是教程体、宣传体。写或改博客前对照本节。
+`src/content/docs/blog/` 下 MDX 按仓库真实路径写技术说明。写或改前先读 [dev-foundation/SKILL.md](../dev-foundation/SKILL.md) 的 **技术说明写法**。
 
 ### 目录（勿混系列）
 
@@ -134,51 +167,29 @@ vpr lint
 | --- | --- |
 | `blog/index.mdx` | 总览：各系列 `LinkCard` 即可，少写导读废话 |
 | `blog/bookmarks/` | 书签 `/bookmarks/nav/`、管理端、Astro DB、dev API |
-| `blog/starlight/` | Starlight 配置、导航、Hero 覆盖等文档站壳 |
+| `blog/astro/` | Astro 配置与 Starlight 文档站壳（导航、Hero、MPA 优化等） |
 | `blog/theme/` | `src/theme/` 明暗、配色 token、双表面集成 |
 
-新文章放进对应子目录；`sidebar.order` 在**该目录内**连续编号。系列 `index.mdx` 设 `sidebar.hidden: true`（侧栏只列正文，索引仍可通过 `/blog/bookmarks/` 等访问）。侧栏分组见 `astro.config.mjs` → 博客 →「书签导航与管理端搭建」「Astro Starlight 使用」两组 + `autogenerate`。
+新文章放进对应子目录；`sidebar.order` 在**该目录内**连续编号。系列 `index.mdx` 设 `sidebar.hidden: true`（侧栏只列正文，索引仍可通过 `/blog/bookmarks/` 等访问）。侧栏分组见 `astro.config.mjs` → 博客 →「书签导航与管理端搭建」「Astro 使用」两组 + `autogenerate`。
 
-### 写什么（稳扎、可核对）
+### 格式（本书 Starlight）
 
-- **具体路径**：`src/…`、`astro.config.mjs`、`db/…`，用 ``FileTree`` / 表格 / 代码块
-- **机制**：数据流、调用链、frontmatter 字段、配置项含义；需要时链 [Starlight](https://starlight.astro.build/) / [Astro](https://docs.astro.build/) 官方文档
-- **本仓库取舍**：为何用某文件、某 API、某约束（静态部署、dev-only 等）
-- **图示**：Mermaid 流程/结构图优先于空泛段落
-- 系列索引页结构：**范围**（技术要点列表）→ **架构**（可选）→ **文章列表**（`LinkCard`）
-
-### 不要写什么（禁止套话）
-
-- 「从 0 到 1」「不是抽象讲概念」「你会学到什么」「建议按顺序阅读」「怎么读」
-- 解释「为何把 A 和 B 分目录」之类元叙述（目录结构在 skill 里约定即可，正文不重复说教）
-- 「业务 / 壳层」「高大上」概括代替实现细节
-- 「系列完结」「若你要在此基础上…」等教程收尾、展望口语
-- 正文手动「上一篇 / 下一篇」链接（用 Starlight prev/next）
-- 与实现无关的「前置要求」「快速体验」长段（命令一行带过即可，且放在正文仅当该篇主题需要）
-
-### 文风
-
-- 句子短、陈述事实；用「`路径` 负责 …」而不是「带你走进 …」
-- 标题用「01 · 主题」+ `description` 一句话技术摘要
-- Q&A、延伸仅保留**可落地的技术选项**（如换 middleware、接 GitHub API），不写鼓动性结语
-
-### 格式
-
-- Starlight MDX：`:::note` / `:::tip` 等（见下文 **写 README** 与 Starlight 指令的区别）
-- 组件：`@astrojs/starlight/components` 的 `Steps`、`FileTree`、`LinkCard` 等，服务于步骤与路径说明
+- MDX：`:::note` / `:::tip` 等（见下文 **写 README** 与 Starlight 指令的区别）
+- 组件：`@astrojs/starlight/components` 的 `Steps`、`FileTree`、`LinkCard` 等
+- 官方参考：[Starlight](https://starlight.astro.build/) / [Astro](https://docs.astro.build/)
 
 ## 编码约定
 
 - 遵循 `.cursor/rules/karpathy-guidelines.mdc`
 - 可滚动自研组件：见上文 **Tailwind CSS → 滚动条**
-- 博客：见上文 **博客（技术笔记）**；正文不写「下一篇」链接
+- 博客：见 [dev-foundation](../dev-foundation/SKILL.md) 技术说明写法 + 上文 **博客（技术笔记）** 目录与 Starlight 格式
 - 文档页 React 岛屿用 `client:only="react"`；BackToTop 用 Portal 挂到 `document.body`
-- 跨目录 import / CSS `@import`、**pages 路由与 URL 对齐**：见 [module-structure/paths.md](../module-structure/paths.md)（alias 只在该文件维护）
+- 跨目录 import / CSS `@import`、**pages 路由与 URL 对齐**：见 [paths.md](./paths.md)（alias 只在该文件维护）
 - 只在你明确要求时创建 git commit
 
 ## 常见任务
 
-**新增或修订博客**：先定系列（`bookmarks` / `starlight` / `theme`），再建 MDX；遵守 **博客（技术笔记）** 禁止套话与索引页结构；更新同系列 `index.mdx` 的 `LinkCard`（若有）。`autogenerate.directory` 路径相对 `src/content/docs/`（如 `blog/bookmarks`）。
+**新增或修订博客**：先读 [dev-foundation](../dev-foundation/SKILL.md)；定系列（`bookmarks` / `astro` / `theme`），再建 MDX；更新同系列 `index.mdx` 的 `LinkCard`（若有）。`autogenerate.directory` 路径相对 `src/content/docs/`（如 `blog/bookmarks`）。
 
 **改 Mermaid**：`astro.config.mjs` 的 `mermaid()` 选项；工具栏见 `mermaid-controls.ts` / `mermaid-controls.css`。
 
@@ -188,25 +199,27 @@ vpr lint
 
 **模块重构 / 结构优化**（含书签、主题或任意 `src/` 功能模块的目录重组、路由迁移、`git mv`）：
 
-1. Read [module-structure/SKILL.md](../module-structure/SKILL.md) — 检查清单、原则、反模式、全局文档同步表
-2. Read [module-structure/paths.md](../module-structure/paths.md) — alias、pages 路由、例外
+1. Read [dev-foundation/SKILL.md](../dev-foundation/SKILL.md) — 检查清单、原则、反模式、文档同步表
+2. Read [paths.md](./paths.md) — alias、pages 路由、例外
 3. Read 目标模块 `src/<module>/README.md`（若有）
 4. 理解后再改代码；`vpr lint` / 必要时 `vpr build`
 
 **日常改书签**（非整模块重组）：先读 [`src/bookmarks/README.md`](../../src/bookmarks/README.md) 即可；若动 pages 或跨目录路径，仍须对照 paths.md。
 
-**升级依赖**：只改 `pnpm-workspace.yaml` 的 `catalogs`，然后 `vp i`。
+**升级依赖**：只改 `pnpm-workspace.yaml` 的 `catalogs`，然后 `vp i`（见 dev-foundation/vite-plus.md）。
 
 **写 README**：`src/content/docs/` 内 Starlight 文档用 `:::note` / `:::tip` 等指令；**仅写 README.md**（及 Issue/PR 等 GitHub 原生 GFM）时可用 GitHub Alerts：
 
 ```markdown
-> [!TYPE]
-> 正文每一行都以 > 开头。
+> [!TIP] 自定义标题
+> 正文第一行紧接在下一行，每一行都以 > 开头。
+> 第二行正文。
 ```
 
 - `TYPE`：`NOTE` | `TIP` | `IMPORTANT` | `WARNING` | `CAUTION`（不区分大小写）
-- 可选标题：`> [!TIP] 自定义标题`（`]` 后的文字会替换默认英文标题；**GitHub 上有效**）
-- Cursor / VS Code 内置 Markdown 预览不支持同行自定义标题：`> [!TYPE] 标题` 会整段退化为普通 blockquote。本地预览要么只用 `> [!TYPE]` 接受默认标题，要么正文首行用 `**粗体**` 作强调
+- 自定义标题：写在 `]` 后同一行（如 `> [!NOTE] 部署与流程`），**GitHub 上会替换默认英文标题**
+- **不要**在标题行与正文之间插入空行或单独的 `>` 行，否则 alert 断块、标题不生效（见 [GitHub Alerts 语法](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts)）
+- Cursor / VS Code 内置 Markdown 预览对同行自定义标题支持不完整，可能退化为普通 blockquote；以 GitHub 渲染为准
 
 | 类型 | 适用场景 |
 | --- | --- |
