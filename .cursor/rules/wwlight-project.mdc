@@ -13,4 +13,5 @@ alwaysApply: true
 - 依赖版本：只改 `pnpm-workspace.yaml` 的 `catalogs`；`package.json` 用 `catalog:<组名>`
 - 改 dev 脚本、Mermaid、书签模块、Starlight 导航、主题系统前，对照 skill 对应章节；主题细节以 `src/theme/README.md` 为准
 - 改 Tailwind className 或 `src/styles` 前，读取 `.cursor/skills/tailwindcss/SKILL.md`（勿对 scale 滥用方括号，如 `p-1` 而非 `p-[1]`）
+- 写或改 `src/content/docs/blog/**` 前，对照 skill **博客（技术笔记）**：实现细节与仓库路径为主，禁止教程体、套话与元叙述
 - 只在你明确要求时创建 git commit

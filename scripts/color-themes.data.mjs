@@ -35,6 +35,7 @@ export const PRIMARY_THEMES = [
     id: 'black',
     label: 'Black',
     accent: 'zinc',
+    // Panel 预览：var(--theme-primary-swatch-black)，见 styles/customizer-trigger.css（非 var(--primary)，未选中时 primary 仍是别的色）
     swatch: 'var(--theme-primary-swatch-black)',
     special: 'black',
   },
@@ -397,20 +398,6 @@ function buildThemeTriggerFallbackLabelBlock() {
   ].join('\n')
 }
 
-/** Primary picker swatch for black — mirrors --primary light/dark inversion */
-function buildPrimarySwatchVars() {
-  return [
-    ':root {',
-    '  --theme-primary-swatch-black: var(--color-zinc-950);',
-    '}',
-    '',
-    'html.dark,',
-    'html[data-theme=\'dark\'] {',
-    '  --theme-primary-swatch-black: var(--color-white);',
-    '}',
-  ].join('\n')
-}
-
 /** @returns {string} CSS for theme customizer variables */
 export function buildColorThemesCss() {
   const primaryBlocks = PRIMARY_THEMES.flatMap((theme) => {
@@ -444,7 +431,6 @@ export function buildColorThemesCss() {
   )
 
   return `/* Generated — src/theme/styles/color-tokens.css (scripts/generate-color-theme-css.mjs) */\n\n${[
-    buildPrimarySwatchVars(),
     ...primaryBlocks,
     ...neutralBlocks,
     ...radiusBlocks,

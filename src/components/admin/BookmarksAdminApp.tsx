@@ -28,7 +28,6 @@ import { cn } from "@/lib/utils";
 export interface BookmarksAdminAppProps {
   isDev: boolean;
   passwordHash: string;
-  firstBlogPostHref: string;
 }
 
 function GateCardHeader({ title, description }: { title: string; description: string }) {
@@ -71,7 +70,6 @@ function bootstrapAdmin(passwordHash: string) {
 export function BookmarksAdminApp({
   isDev,
   passwordHash,
-  firstBlogPostHref,
 }: BookmarksAdminAppProps) {
   const [{ initialSections, session }] = useState(() => bootstrapAdmin(passwordHash));
   const [authenticated, setAuthenticated] = useState(session.authenticated);
@@ -205,7 +203,7 @@ export function BookmarksAdminApp({
                 </Button>
               </div>
               <div className="flex w-full items-center justify-center gap-6 border-t border-border/60 bg-muted/20 px-6 py-3.5 text-sm">
-                <LoginNavLink href={firstBlogPostHref} icon={BookOpen}>
+                <LoginNavLink href="/blog/" icon={BookOpen}>
                   返回博客
                 </LoginNavLink>
                 <LoginNavLink href="/bookmarks/" icon={Bookmark}>
@@ -227,7 +225,6 @@ export function BookmarksAdminApp({
         isDev={isDev}
         userName={userName}
         onLogout={handleLogout}
-        firstBlogPostHref={firstBlogPostHref}
       />
     </>
   );

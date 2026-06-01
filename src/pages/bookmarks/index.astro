@@ -1,13 +1,11 @@
 ---
 import { PublicBookmarksPage } from '../../components/bookmarks/public/PublicBookmarksPage.tsx'
-import { getFirstBlogPostHref } from '../../lib/blog-nav'
 import { serializeBookmarkSectionsForPage } from '../../lib/bookmarks/page-data'
 import { getBookmarkSections } from '../../lib/bookmarks/queries'
 import themeInitScript from '../../theme/scripts/init.inline.js?raw'
 import '../../styles/bookmarks-page.css'
 
 const sections = await getBookmarkSections()
-const firstBlogPostHref = await getFirstBlogPostHref()
 const sectionsJson = serializeBookmarkSectionsForPage(sections)
 ---
 
@@ -23,6 +21,6 @@ const sectionsJson = serializeBookmarkSectionsForPage(sections)
   <body>
     <script type="application/json" id="bookmarks-sections-data" set:html={sectionsJson} />
 
-    <PublicBookmarksPage client:only="react" firstBlogPostHref={firstBlogPostHref} />
+    <PublicBookmarksPage client:only="react" />
   </body>
 </html>

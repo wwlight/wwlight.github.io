@@ -1,13 +1,11 @@
 ---
 import BookmarksAdmin from '../../components/admin/BookmarksAdmin.tsx'
-import { getFirstBlogPostHref } from '../../lib/blog-nav'
 import { serializeBookmarkSectionsForPage } from '../../lib/bookmarks/page-data'
 import { getBookmarkSections } from '../../lib/bookmarks/queries'
 import themeInitScript from '../../theme/scripts/init.inline.js?raw'
 import '../../styles/admin.css'
 
 const sections = await getBookmarkSections()
-const firstBlogPostHref = await getFirstBlogPostHref()
 const isDev = import.meta.env.DEV
 const adminHash = (import.meta.env.PUBLIC_BOOKMARKS_ADMIN_HASH ?? '').trim()
 const sectionsJson = serializeBookmarkSectionsForPage(sections)
@@ -26,11 +24,6 @@ const sectionsJson = serializeBookmarkSectionsForPage(sections)
   <body>
     <script type="application/json" id="bookmarks-sections-data" set:html={sectionsJson} />
 
-    <BookmarksAdmin
-      client:only="react"
-      isDev={isDev}
-      passwordHash={adminHash}
-      firstBlogPostHref={firstBlogPostHref}
-    />
+    <BookmarksAdmin client:only="react" isDev={isDev} passwordHash={adminHash} />
   </body>
 </html>

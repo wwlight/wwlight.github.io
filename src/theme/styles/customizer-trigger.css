@@ -1,6 +1,17 @@
 /* 功能：Starlight 静态触发按钮（TriggerButton.astro）色块与空标签回退文案。
  * 说明：React 触发器用 var(--primary) 内联；标签回退文案在生成的 color-tokens.css 末尾。 */
 
+/* Black primary：Panel 选项预览须在「未选中 black」时也能显示 black 的代表色，不能用 var(--primary)（会随当前 primary 变）。
+ * 触发器色块在已选 black 时用 var(--primary) 即可，与 tailwindPrimaryTokens 暗色反转一致。 */
+:root {
+  --theme-primary-swatch-black: var(--color-zinc-950);
+}
+
+html.dark,
+html[data-theme='dark'] {
+  --theme-primary-swatch-black: var(--color-white);
+}
+
 [data-theme-customizer-trigger] [data-part='swatch'] {
   background-color: var(--primary);
 }

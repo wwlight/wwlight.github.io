@@ -1,0 +1,153 @@
+---
+title: 04 · Starlight 与书签表面集成
+description: ThemeSurface、触发器挂载方式与两套 Tailwind 表面样式
+sidebar:
+  order: 4
+---
+
+Starlight 与书签共用 `ThemeCustomizerPanel`，但 **触发器形态**、**Popover 挂载**、**面板 chrome 色** 按表面区分。类型为 `ThemeSurface = 'starlight' | 'bookmarks'`（`trigger-classes.ts`）。
+
+## 集成对照
+
+```mermaid
+flowchart TB
+  subgraph starlight["Starlight 文档站"]
+    Head["Header.astro"]
+    Btn["TriggerButton.astro<br/>静态 HTML"]
+    Pop["ThemeCustomizerPopover<br/>client:only"]
+    Head --> Btn
+    Head --> Pop
+    Pop -.->|querySelector 点击| Btn
+  end
+
+  subgraph bookmarks["书签 / 管理端"]
+    Prov["ThemeProvider"]
+    Trig["ThemeCustomizerTrigger<br/>React PopoverTrigger"]
+    Prov --> Trig
+  end
+
+  Panel["ThemeCustomizerPanel<br/>variant prop"]
+  Pop --> Panel
+  Trig --> Panel
+```
+
+| 项 | Starlight | 书签 / 管理端 |
+| --- | --- | --- |
+| 触发器 | `ColorThemeSelect.astro` → `TriggerButton.astro` | `ColorThemePicker` → `Trigger.tsx` |
+| Popover | 独立 island，锚定静态按钮 | 内嵌于 Trigger |
+| 标签文案 | CSS `:empty::after` 回退 | React 读 `PRIMARY_THEMES` |
+| 明暗 Context | 无 `ThemeProvider` | `ThemeProvider` 包根组件 |
+| variant | `starlight` | `bookmarks`（默认） |
+
+## 为何 Starlight 拆静态按钮 + React Popover
+
+Starlight Header 以 Astro 为主。若整颗触发器都是 React island，hydration 前后按钮位置/文案可能错位。当前做法：
+
+1. `TriggerButton.astro` 输出纯 HTML + `data-theme-customizer-trigger`
+2. `ThemeCustomizerPopover` mount 后 `querySelectorAll` 绑定 click，用 `PopoverAnchor virtualRef` 对齐
+3. 色块 `background-color: var(--primary)`（`customizer-trigger.css`）；label 留空靠生成 CSS 填文案
+
+`Header.astro` 片段：
+
+```astro
+<ColorThemeSelect />
+<ThemeCustomizerPopover client:only="react" variant="starlight" />
+```
+
+## 书签侧
+
+`PublicBookmarksPage.tsx` / `BookmarksAdmin.tsx`：
+
+```tsx
+<ThemeProvider>
+  {/* … */}
+  <ColorThemePicker />  {/* variant 默认 bookmarks */}
+</ThemeProvider>
+```
+
+`ThemeProvider` 职责：
+
+- mount 时 `syncSiteThemeFromStorage()`
+- 订阅 `subscribeSiteThemeStorage` 更新 preference state
+- `system` 时监听 `prefers-color-scheme` 变化
+- 暴露 `setTheme` / `toggleTheme`（可选 View Transition）
+
+Starlight 文档页不包 Provider；明暗完全靠 init + Panel 的 Color Mode 区。
+
+## 双表面 Tailwind（未共享 token）
+
+`trigger-classes.ts` — 触发按钮与 Popover 容器：
+
+```ts
+variant === 'starlight'
+  ? 'border-[var(--sl-color-gray-5)] bg-[var(--sl-color-black)] …'
+  : 'border-border bg-card …'
+```
+
+`surface.ts` — Panel 内选项按钮、分区标题、页脚边框：同样按 surface 分支 Starlight CSS 变量 vs shadcn 语义 class。
+
+这是 **已知限制**：面板 UI 样式硬编码两套，没有单独的 `--panel-border` 抽象。改 Starlight 灰阶时需同步改 `starlight` 分支字符串。
+
+扩展新表面（例如第四个独立 layout）：
+
+1. 扩展 `ThemeSurface` 联合类型
+2. 在 `trigger-classes.ts`、`surface.ts` 补分支
+3. 选择 Trigger 模式（静态+Astro Popover 或纯 React）
+4. CSS 入口 `@import` `theme/styles/index.css`
+
+## 样式加载链
+
+**Starlight**（`astro.config.mjs` → `customCss`）：
+
+```text
+custom.css
+global.css
+  @layer base, starlight, theme, components, utilities
+  @import '@astrojs/starlight-tailwind'
+  @import shadcn-theme.css
+  @import theme/styles/index.css
+```
+
+**书签**（`bookmarks-theme-shared.css`）：
+
+```text
+@import tailwindcss
+@import shadcn-theme.css
+@import theme/styles/index.css
+```
+
+`theme/styles/index.css` 顺序：
+
+```css
+@import './view-transition.css';
+@import './color-tokens.css';
+@import './radius.css';
+@import './customizer-trigger.css';
+```
+
+书签页 **不** 引入 `@astrojs/starlight-tailwind`，故文档内 `--sl-color-*` 不可用；定制器 `starlight` 分支在书签页也不会被用到。
+
+## 组件文件 map
+
+| 路径 | 作用 |
+| --- | --- |
+| `components/customizer/Panel.tsx` | Primary / Neutral / Radius / Color Mode、随机、重置 |
+| `components/customizer/Popover.tsx` | Starlight 专用，绑定静态 trigger |
+| `components/customizer/Trigger.tsx` | 书签 React 触发器 + Popover |
+| `components/customizer/TriggerButton.astro` | Starlight 静态按钮 |
+| `components/ColorThemeSelect.astro` | 导出 TriggerButton variant=starlight |
+| `components/ColorThemePicker.tsx` | Trigger 别名 |
+| `components/Provider.tsx` | 书签明暗 Context |
+| `components/HeroRandomThemeButton.tsx` | 首页 splash 随机配色（调 `randomThemeCustomizerState`） |
+
+## Hero 随机按钮
+
+`src/components/starlight/Hero.astro` 可挂 `HeroRandomThemeButton`：单次点击随机 primary/neutral/radius，与 Panel「随机」共用 `randomThemeCustomizerState`，写入同一套 storage。
+
+## 与顶栏其它模块
+
+- `ModuleNavLinks.astro` 圆角用 `var(--radius)`（`custom.css`）
+- `HeaderBookmarksLink` 高亮用 Starlight accent，随 primary 变
+- 管理端 `AdminHeaderActions` 与公开页 `PublicPageActions` 均挂 `ColorThemePicker`
+
+全站 preference 一致：在文档站改 primary 后打开 `/bookmarks/`，init 或 `storage` 事件应用相同 `data-color-primary`。

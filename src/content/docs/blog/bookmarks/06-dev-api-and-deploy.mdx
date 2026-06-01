@@ -1,8 +1,8 @@
 ---
-title: 07 · 开发 API 与部署流程
+title: 06 · 开发 API 与部署流程
 description: Vite 中间件、版本快照与本地编辑到上线
 sidebar:
-  order: 7
+  order: 6
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -122,27 +122,22 @@ db/data/versions/
 **Q：能否用 CMS 替代？**  
 可以，但会失去「Git 即数据源」的 review 流程；本方案优先简单与可版本化。
 
-## 系列回顾
+## 文章索引
 
 | 篇 | 主题 |
 | --- | --- |
-| [导读](/blog/) | 架构总览 |
-| [01](/blog/01-architecture/) | 模块边界与数据流 |
-| [02](/blog/02-site-navigation/) | 双层导航 |
-| [03](/blog/03-data-layer/) | Astro DB 与 seed |
-| [04](/blog/04-public-page/) | 公开页 islands |
-| [05](/blog/05-admin-auth/) | 鉴权门控 |
-| [06](/blog/06-admin-ui/) | 管理 UI |
-| [07](/blog/07-dev-api-and-deploy/) | API 与部署 |
+| [索引](/blog/bookmarks/) | 系列总览 |
+| [01](/blog/bookmarks/01-architecture/) | 模块边界与数据流 |
+| [02](/blog/bookmarks/02-data-layer/) | Astro DB 与 seed |
+| [03](/blog/bookmarks/03-public-page/) | 公开页 islands |
+| [04](/blog/bookmarks/04-admin-auth/) | 鉴权门控 |
+| [05](/blog/bookmarks/05-admin-ui/) | 管理 UI |
+| [06](/blog/bookmarks/06-dev-api-and-deploy/) | API 与部署 |
 
-## 延伸方向
+Starlight 配置见 [Astro Starlight 使用](/blog/starlight/)。
 
-若你要在此基础上继续演进，常见路径：
+## 可选扩展
 
-- 把 admin API 接到 GitHub Contents API，实现 **线上 PR 式保存**
-- 用 Serverless Function 替代 Vite middleware（Vercel / Netlify Functions）
-- 书签公开页接入 Pagefind，与 Starlight 搜索统一
-
----
-
-至此，书签导航与管理端系列完结。代码仓库：[github.com/wwlight/wwlight.github.io](https://github.com/wwlight/wwlight.github.io)。
+- admin API 对接 GitHub Contents API（线上 PR 式保存）
+- Vite middleware 换为 Serverless Function
+- 书签公开页接入 Pagefind

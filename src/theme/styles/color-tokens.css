@@ -1,14 +1,5 @@
 /* Generated — src/theme/styles/color-tokens.css (scripts/generate-color-theme-css.mjs) */
 
-:root {
-  --theme-primary-swatch-black: var(--color-zinc-950);
-}
-
-html.dark,
-html[data-theme='dark'] {
-  --theme-primary-swatch-black: var(--color-white);
-}
-
 html[data-color-primary='black'] {
   --color-accent-50: var(--color-zinc-50);
   --color-accent-100: var(--color-zinc-100);

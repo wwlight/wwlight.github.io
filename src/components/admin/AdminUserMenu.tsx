@@ -1,5 +1,5 @@
 import { BookOpen, Bookmark, ChevronDown, LogOut } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BookmarkOverflowText } from "@/components/admin/bookmarks/BookmarkOverflowText";
 import { UserAvatar } from "@/components/bookmarks/shared/UserAvatar";
 import { cardIconClass } from "@/lib/bookmarks/admin-helpers";
 import { cn } from "@/lib/utils";
@@ -28,12 +27,10 @@ function deferMenuAction(action: () => void) {
 const HOVER_CLOSE_DELAY_MS = 120;
 
 export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogout }: AdminUserMenuProps) {
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const pointerInsideRef = useRef(false);
   const openedByPointerRef = useRef(false);
   const [open, setOpen] = useState(false);
-  const [triggerWidth, setTriggerWidth] = useState<number>();
 
   const clearCloseTimer = () => {
     if (closeTimerRef.current) {
@@ -72,56 +69,29 @@ export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogo
 
   useEffect(() => () => clearCloseTimer(), []);
 
-  useLayoutEffect(() => {
-    const node = triggerRef.current;
-    if (!node) return;
-
-    const updateWidth = () => setTriggerWidth(node.getBoundingClientRect().width);
-
-    updateWidth();
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(node);
-    window.addEventListener("resize", updateWidth);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, [name]);
-
   return (
     <DropdownMenu open={open} onOpenChange={handleOpenChange} modal={false}>
       <DropdownMenuTrigger asChild>
         <button
-          ref={triggerRef}
           type="button"
           className={cn(
-            "group flex min-w-0 cursor-pointer items-center gap-1 rounded-lg border border-border bg-card py-1 pl-1.5 pr-1 shadow-sm outline-none transition-colors focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-accent/60",
+            "group flex h-9 max-w-42 min-w-0 cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-card py-0.5 pl-0.5 pr-1.5 shadow-sm outline-none transition-colors focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-accent/60",
             cardIconClass,
           )}
-          aria-label="管理员菜单"
+          aria-label={`${name}，管理员菜单`}
           aria-expanded={open}
           onPointerEnter={handlePointerEnter}
           onPointerLeave={handlePointerLeave}
         >
-          <UserAvatar name={name} />
-          <div className="min-w-0 flex-1 px-1 text-left">
-            <BookmarkOverflowText
-              as="span"
-              text={name}
-              enableFocus={false}
-              className="text-sm font-medium leading-none"
-            />
-            <p className="mt-1 text-[11px] leading-none text-muted-foreground">Administrator</p>
-          </div>
-          <ChevronDown className="size-3.5 shrink-0 text-foreground/65 transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-foreground/85" />
+          <UserAvatar name={name} size="sm" />
+          <span className="min-w-0 flex-1 truncate text-xs font-medium leading-none">{name}</span>
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-foreground" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         sideOffset={4}
-        className="min-w-0 p-1.5"
-        style={triggerWidth ? { width: triggerWidth } : undefined}
+        className="min-w-36 p-1"
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         {...({

@@ -25,6 +25,16 @@ vpr generate:theme-init     # scripts/init.inline.js
 
 数据源：`scripts/color-themes.data.mjs`（勿手改生成 CSS/JSON）。
 
+## Primary `black` 特殊项
+
+| 场景 | 变量 / 位置 | 说明 |
+| --- | --- | --- |
+| 运行时 primary / ring | 生成 `color-tokens.css` 内 `tailwindPrimaryTokens` | 亮 `zinc-950`、暗 `white`；chromatic 为 500/400 |
+| Panel 色块预览 | `--theme-primary-swatch-black`（`styles/customizer-trigger.css`） | **不能**用 `var(--primary)`：未选中 black 时 `--primary` 仍是当前主题色 |
+| 触发器色块 | `var(--primary)`（同文件 `[data-part='swatch']`） | 已选 black 时与运行时一致，无需单独变量 |
+
+Black 的 swatch 明暗定义放在手写 CSS，不进入 `vpr generate:color-themes` 产出。
+
 ## 已知限制
 
 - **双表面样式**：`bookmarks` 与 `starlight` 在 `customizer/surface.ts`、`trigger-classes.ts` 各写一套 Tailwind，未抽成共享 token。

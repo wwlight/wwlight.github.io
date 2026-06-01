@@ -11,6 +11,7 @@
   animation-duration: var(--theme-transition-duration);
   animation-fill-mode: both;
   mix-blend-mode: normal;
+  position: fixed;
   inset: 0;
   height: 100%;
   width: 100%;
@@ -39,4 +40,11 @@
 ::view-transition-new(root),
 [data-theme='light']::view-transition-old(root) {
   z-index: 1;
+}
+
+/* 长页切换时暂停卡片等局部 transition，避免与 root 圆形揭示冲突（如管理端首模块） */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
 }

@@ -70,7 +70,33 @@ export default defineConfig({
         './src/styles/mermaid-controls.css',
       ],
       sidebar: [
-        { label: '博客', items: [{ autogenerate: { directory: 'blog' } }] },
+        {
+          label: '博客',
+          items: [
+            { label: '总览', link: '/blog/' },
+            {
+              label: '书签导航与管理端搭建',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: 'blog/bookmarks', collapsed: true } },
+              ],
+            },
+            {
+              label: 'Astro Starlight 使用',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: 'blog/starlight', collapsed: true } },
+              ],
+            },
+            {
+              label: '主题系统',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: 'blog/theme', collapsed: true } },
+              ],
+            },
+          ],
+        },
         { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
         { label: '工具集', items: [{ autogenerate: { directory: 'tools' } }] },
         { label: '系统相关', items: [{ autogenerate: { directory: 'system' } }] },

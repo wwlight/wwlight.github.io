@@ -81,7 +81,7 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 ```
 ├── src/
-│   ├── content/docs/          # Starlight 文档（memorandum / tools / system / other）
+│   ├── content/docs/          # Starlight 文档；blog/bookmarks、blog/starlight 两个系列
 │   ├── theme/                 # 主题系统 → 见 theme/README.md
 │   │   ├── color-mode/        # 明暗模式、View Transition
 │   │   ├── customizer/        # Primary / Neutral / Radius 状态与选项
@@ -130,4 +130,4 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 **本地使用：** 用 Cursor 打开仓库即可；Rules 会自动生效，Skills 在相关任务时由 Agent 按需读取。
 
-**协作提示：** 大改前可在对话里 `@` 引用 skill 或说明范围；只有明确要求时才提交 commit。博客系列 [`src/content/docs/blog/`](/src/content/docs/blog/) 记录了书签模块从 0 到 1 的实现过程，可与 Agent 对照使用。
+**协作提示：** 大改前可在对话里 `@` 引用 skill 或说明范围；只有明确要求时才提交 commit。博客 [`src/content/docs/blog/`](/src/content/docs/blog/) 含 [书签系列](/src/content/docs/blog/bookmarks/) 与 [Starlight 使用](/src/content/docs/blog/starlight/) 两个目录，可与 Agent 对照使用。

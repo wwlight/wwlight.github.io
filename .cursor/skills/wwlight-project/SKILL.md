@@ -1,6 +1,6 @@
 ---
 name: wwlight-project
-description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo, Starlight docs/blog, bookmarks admin, Mermaid, site navigation, or theme switching. For Tailwind className and CSS utilities, read tailwindcss skill.
+description: Guides development on wwlight.github.io (Astro 6 + Starlight docs, bookmarks module, Mermaid, theme transitions). Use when editing this repo, writing or revising blog MDX under src/content/docs/blog, bookmarks admin, Mermaid, site navigation, or theme switching. Blog prose must be implementation-focused (see 博客 section). For Tailwind, read tailwindcss skill.
 ---
 
 # wwlight.github.io
@@ -26,7 +26,7 @@ vpr lint
 
 | 路径 | 用途 |
 | --- | --- |
-| `src/content/docs/blog/` | 博客系列 MDX（sidebar autogenerate） |
+| `src/content/docs/blog/` | 博客总览；`blog/bookmarks/` 书签系列、`blog/starlight/` Starlight 系列、`blog/theme/` 主题系统系列 |
 | `src/content/docs/{memorandum,tools,system,other}/` | 其他文档分区 |
 | `src/pages/bookmarks/` | 公开书签页（独立布局，非 Starlight） |
 | `src/pages/admin/bookmarks.astro` | 管理端入口 |
@@ -80,7 +80,7 @@ vpr lint
 | 生成 | `vpr generate:color-themes`、`vpr generate:theme-init`（改 `scripts/color-themes.data.mjs` 后必跑） |
 | API | `import { … } from '@/theme'` |
 
-默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。Primary 亮 `500` / 暗 `400`；Black 在暗色下 primary 为白（见 `color-tokens.css`）。
+默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。Primary 亮 `500` / 暗 `400`；**Black**：`--primary` 亮 `zinc-950` / 暗 `white`（生成）；Panel 预览色块用 `--theme-primary-swatch-black`（`customizer-trigger.css`）；触发器色块用 `var(--primary)`。View Transition 长页已滚动时会 `lockDocumentScroll`（`color-mode.ts`），并加 `html.theme-transitioning` 暂停子元素 transition。
 
 ## 书签模块要点
 
@@ -111,17 +111,60 @@ vpr lint
 
 要点速记：scale 内建值用 `p-1`、`gap-2`，勿写 `p-[1]`；CSS 变量优先 `text-(--sl-color-text)` 而非 `text-[var(...)]`；可滚动区见 tailwindcss skill 的滚动条一节。
 
+## 博客（技术笔记）
+
+`src/content/docs/blog/` 下 MDX 是**按仓库真实代码路径写的技术说明**，不是教程体、宣传体。写或改博客前对照本节。
+
+### 目录（勿混系列）
+
+| 路径 | 内容 |
+| --- | --- |
+| `blog/index.mdx` | 总览：各系列 `LinkCard` 即可，少写导读废话 |
+| `blog/bookmarks/` | 书签 `/bookmarks/`、管理端、Astro DB、dev API |
+| `blog/starlight/` | Starlight 配置、导航、Hero 覆盖等文档站壳 |
+| `blog/theme/` | `src/theme/` 明暗、配色 token、双表面集成 |
+
+新文章放进对应子目录；`sidebar.order` 在**该目录内**连续编号。系列 `index.mdx` 设 `sidebar.hidden: true`（侧栏只列正文，索引仍可通过 `/blog/bookmarks/` 等访问）。侧栏分组见 `astro.config.mjs` → 博客 →「书签导航与管理端搭建」「Astro Starlight 使用」两组 + `autogenerate`。
+
+### 写什么（稳扎、可核对）
+
+- **具体路径**：`src/…`、`astro.config.mjs`、`db/…`，用 ``FileTree`` / 表格 / 代码块
+- **机制**：数据流、调用链、frontmatter 字段、配置项含义；需要时链 [Starlight](https://starlight.astro.build/) / [Astro](https://docs.astro.build/) 官方文档
+- **本仓库取舍**：为何用某文件、某 API、某约束（静态部署、dev-only 等）
+- **图示**：Mermaid 流程/结构图优先于空泛段落
+- 系列索引页结构：**范围**（技术要点列表）→ **架构**（可选）→ **文章列表**（`LinkCard`）
+
+### 不要写什么（禁止套话）
+
+- 「从 0 到 1」「不是抽象讲概念」「你会学到什么」「建议按顺序阅读」「怎么读」
+- 解释「为何把 A 和 B 分目录」之类元叙述（目录结构在 skill 里约定即可，正文不重复说教）
+- 「业务 / 壳层」「高大上」概括代替实现细节
+- 「系列完结」「若你要在此基础上…」等教程收尾、展望口语
+- 正文手动「上一篇 / 下一篇」链接（用 Starlight prev/next）
+- 与实现无关的「前置要求」「快速体验」长段（命令一行带过即可，且放在正文仅当该篇主题需要）
+
+### 文风
+
+- 句子短、陈述事实；用「`路径` 负责 …」而不是「带你走进 …」
+- 标题用「01 · 主题」+ `description` 一句话技术摘要
+- Q&A、延伸仅保留**可落地的技术选项**（如换 middleware、接 GitHub API），不写鼓动性结语
+
+### 格式
+
+- Starlight MDX：`:::note` / `:::tip` 等（见下文 **写 README** 与 Starlight 指令的区别）
+- 组件：`@astrojs/starlight/components` 的 `Steps`、`FileTree`、`LinkCard` 等，服务于步骤与路径说明
+
 ## 编码约定
 
 - 遵循 `.cursor/rules/karpathy-guidelines.mdc`
 - 可滚动自研组件：见上文 **Tailwind CSS → 滚动条**
-- 博客 MDX 用 Starlight 内置 prev/next，正文不写「下一篇」链接
+- 博客：见上文 **博客（技术笔记）**；正文不写「下一篇」链接
 - 文档页 React 岛屿用 `client:only="react"`；BackToTop 用 Portal 挂到 `document.body`
 - 只在你明确要求时创建 git commit
 
 ## 常见任务
 
-**新增博客文章**：在 `src/content/docs/blog/` 建 MDX，设置 `sidebar.order`。
+**新增或修订博客**：先定系列（`bookmarks` / `starlight` / `theme`），再建 MDX；遵守 **博客（技术笔记）** 禁止套话与索引页结构；更新同系列 `index.mdx` 的 `LinkCard`（若有）。`autogenerate.directory` 路径相对 `src/content/docs/`（如 `blog/bookmarks`）。
 
 **改 Mermaid**：`astro.config.mjs` 的 `mermaid()` 选项；工具栏见 `mermaid-controls.ts` / `mermaid-controls.css`。
 

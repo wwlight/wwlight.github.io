@@ -33,7 +33,7 @@ function HeaderIconLink({
           <a
             href={href}
             className={cn(
-              "flex size-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300",
+              "flex size-8 shrink-0 items-center justify-center theme-r-md transition-colors duration-300",
               cardIconClass,
             )}
             aria-label={label}
@@ -49,19 +49,13 @@ function HeaderIconLink({
   );
 }
 
-export function PublicPageActions({
-  className,
-  blogHref,
-}: {
-  className?: string;
-  blogHref: string;
-}) {
+export function PublicPageActions({ className }: { className?: string }) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className={cn("flex items-center gap-2", className)}>
         <ColorThemePicker />
 
-        <HeaderIconLink href={blogHref} label="返回博客">
+        <HeaderIconLink href="/blog/" label="返回博客">
           <BookOpen className="size-[1.2rem]" />
         </HeaderIconLink>
 

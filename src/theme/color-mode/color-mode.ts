@@ -53,6 +53,29 @@ function animatePseudo(
     .finished
 }
 
+/** 长页已滚动时固定 body，避免 root 快照只覆盖视口导致揭示动画错位 */
+function lockDocumentScroll(): () => void {
+  const scrollY = window.scrollY
+  if (scrollY <= 0)
+    return () => {}
+
+  const { body } = document
+  body.style.position = 'fixed'
+  body.style.top = `-${scrollY}px`
+  body.style.left = '0'
+  body.style.right = '0'
+  body.style.width = '100%'
+
+  return () => {
+    body.style.position = ''
+    body.style.top = ''
+    body.style.left = ''
+    body.style.right = ''
+    body.style.width = ''
+    window.scrollTo(0, scrollY)
+  }
+}
+
 export function getSystemTheme(): ResolvedTheme {
   if (typeof window === 'undefined') return 'dark'
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -136,6 +159,10 @@ export async function setThemeWithTransition(
     Math.max(y, window.innerHeight - y),
   )
 
+  const root = document.documentElement
+  root.classList.add('theme-transitioning')
+  const unlockScroll = lockDocumentScroll()
+
   try {
     const transition = document.startViewTransition(() => applyResolvedTheme(next))
     await transition.ready
@@ -160,6 +187,10 @@ export async function setThemeWithTransition(
   }
   catch {
     applyResolvedTheme(next)
+  }
+  finally {
+    root.classList.remove('theme-transitioning')
+    unlockScroll()
   }
 }
 

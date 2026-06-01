@@ -75,7 +75,6 @@ interface AdminAppProps {
   isDev: boolean;
   userName: string;
   onLogout: () => void;
-  firstBlogPostHref: string;
 }
 
 interface BookmarkDragTarget {
@@ -139,7 +138,6 @@ export function AdminApp({
   isDev,
   userName,
   onLogout,
-  firstBlogPostHref,
 }: AdminAppProps) {
   const [sections, setSections] = useState<BookmarkSectionData[]>(() => {
     migrateAllLegacyStorageKeys();
@@ -593,7 +591,7 @@ export function AdminApp({
 
   function handleReturnToBlog() {
     requestLeave(() => {
-      window.location.href = firstBlogPostHref;
+      window.location.href = "/blog/";
     });
   }
 

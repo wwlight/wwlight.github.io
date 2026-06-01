@@ -34,7 +34,7 @@ function AdminHeaderAction({
         <button
           type="button"
           className={cn(
-            "flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors duration-300 focus-visible:ring-0 focus-visible:ring-offset-0",
+            "flex size-8 shrink-0 cursor-pointer items-center justify-center theme-r-md transition-colors duration-300 focus-visible:ring-0 focus-visible:ring-offset-0",
             primary
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : cardIconClass,

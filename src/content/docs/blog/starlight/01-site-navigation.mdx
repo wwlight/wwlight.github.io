@@ -1,8 +1,8 @@
 ---
-title: 02 · 站点导航
+title: 01 · 站点导航
 description: Starlight 侧边栏、顶栏模块导航与书签入口的实现
 sidebar:
-  order: 2
+  order: 1
 ---
 
 import { Steps, FileTree } from '@astrojs/starlight/components';
@@ -41,21 +41,34 @@ flowchart LR
 
 ```js
 sidebar: [
-  { label: '博客', items: [{ autogenerate: { directory: 'blog' } }] },
+  {
+    label: '博客',
+    items: [
+      { label: '总览', link: '/blog/' },
+      {
+        label: '书签导航与管理端搭建',
+        items: [{ autogenerate: { directory: 'blog/bookmarks' } }],
+      },
+      {
+        label: 'Astro Starlight 使用',
+        items: [{ autogenerate: { directory: 'blog/starlight' } }],
+      },
+    ],
+  },
   { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
   // …
 ],
 ```
 
-对应文件目录：
+系列索引页（`blog/bookmarks/index.mdx` 等）在 frontmatter 设 `sidebar.hidden: true`，避免侧栏再出现一层「系列目录 + 索引标题」。
 
 <FileTree>
 
 - src/content/docs/
   - blog/
     - index.mdx
-    - 01-architecture.mdx
-    - …
+    - bookmarks/（index 隐藏于侧栏）
+    - starlight/（index 隐藏于侧栏）
   - memorandum/
   - tools/
   - system/
