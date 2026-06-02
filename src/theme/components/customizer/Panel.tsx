@@ -204,7 +204,7 @@ export function ThemeCustomizerPanel({ variant = 'bookmarks', open = true, onUpd
   }, THEME_ACTION_DEBOUNCE_MS)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-theme-surface={variant}>
       <section className="space-y-2">
         <p className={sectionTitleClass(variant)}>Primary</p>
         <div className="grid grid-cols-3 gap-1.5">

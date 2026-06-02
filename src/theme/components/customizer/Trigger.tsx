@@ -45,10 +45,12 @@ export function ThemeCustomizerTrigger({
           type="button"
           className={themeCustomizerTriggerButtonClass(variant, className)}
           aria-label="主题设置"
+          data-theme-customizer-trigger
+          data-theme-surface={variant}
         >
           <span
             className={themeCustomizerSwatchClass()}
-            style={{ backgroundColor: 'var(--primary)' }}
+            data-part="swatch"
             aria-hidden
           />
           <span className={themeCustomizerTriggerLabelClass()}>{selected.label}</span>
@@ -58,7 +60,8 @@ export function ThemeCustomizerTrigger({
       <PopoverContent
         align="end"
         sideOffset={8}
-        className={themeCustomizerPopoverClass(variant)}
+        className={themeCustomizerPopoverClass()}
+        data-theme-surface={variant}
       >
         <ThemeCustomizerPanel
           variant={variant}

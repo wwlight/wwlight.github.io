@@ -74,26 +74,18 @@ Starlight Header 以 Astro 为主。若整颗触发器都是 React island，hydr
 
 Starlight 文档页不包 Provider；明暗完全靠 init + Panel 的 Color Mode 区。
 
-## 双表面 Tailwind（未共享 token）
+## 定制器 UI token（`customizer-ui.css`）
 
-`trigger-classes.ts` — 触发按钮与 Popover 容器：
+触发器、Popover、Panel 选项共用 `--theme-ui-*` 语义变量；Starlight / 书签差异写在 `[data-theme-surface='starlight'|'bookmarks']`，由触发器与 Popover 根节点挂载 `data-theme-surface={variant}`。
 
-```ts
-variant === 'starlight'
-  ? 'border-[var(--sl-color-gray-5)] bg-[var(--sl-color-black)] …'
-  : 'border-border bg-card …'
-```
+`trigger-classes.ts`、`surface.ts` 只引用 token（如 `bg-(--theme-ui-trigger-bg)`），不再在 TS 里分支 `--sl-color-*` vs shadcn class。
 
-`surface.ts` — Panel 内选项按钮、分区标题、页脚边框：同样按 surface 分支 Starlight CSS 变量 vs shadcn 语义 class。
-
-这是 **已知限制**：面板 UI 样式硬编码两套，没有单独的 `--panel-border` 抽象。改 Starlight 灰阶时需同步改 `starlight` 分支字符串。
-
-扩展新表面（例如第四个独立 layout）：
+扩展新表面：
 
 1. 扩展 `ThemeSurface` 联合类型
-2. 在 `trigger-classes.ts`、`surface.ts` 补分支
-3. 选择 Trigger 模式（静态+Astro Popover 或纯 React）
-4. CSS 入口 `@import` `theme/styles/index.css`
+2. 在 `customizer-ui.css` 增加 `[data-theme-surface='…']` token 块
+3. 组件挂 `data-theme-surface`
+4. 选择 Trigger 模式（静态+Astro Popover 或纯 React）
 
 ## 样式加载链
 
@@ -120,8 +112,11 @@ global.css
 
 ```css
 @import './view-transition.css';
+@import './neutral-scales.css';
 @import './color-tokens.css';
 @import './radius.css';
+@import './search.css';
+@import './customizer-ui.css';
 @import './customizer-trigger.css';
 ```
 

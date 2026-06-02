@@ -13,31 +13,28 @@
 | `customizer/` | 配色状态、选项清单、`localStorage`、触发器 Tailwind 类 |
 | `site/` | 从 storage 同步 DOM、跨标签页 `storage` 事件 |
 | `components/` | React / Astro UI（面板、触发器、Provider） |
-| `styles/` | CSS token 与工具类（含 `vpr generate:color-themes` 产出） |
+| `styles/` | CSS token 与工具类（含 `vpr generate:color-themes` 产出）；定制器 chrome 见 `customizer-ui.css` |
 | `scripts/` | 首屏内联脚本（`vpr generate:theme-init` 产出） |
 
 ## 生成命令
 
 ```bash
-vpr generate:color-themes   # styles/color-tokens.css + customizer/options.json
+vpr generate:color-themes   # styles/neutral-scales.css + color-tokens.css + customizer/options.json
 vpr generate:theme-init     # scripts/init.inline.js
 ```
 
-数据源：`scripts/color-themes.data.mjs`（勿手改生成 CSS/JSON）。
+数据源：`scripts/color-themes.data.mjs`（勿手改生成 CSS/JSON）。色值引用 Tailwind `--color-*`：内置五档来自 `tailwindcss/theme.css`；`taupe` / `mauve` / `mist` / `olive` 由生成器写入 `neutral-scales.css`。
 
-## Primary `black` 特殊项
+## Primary `black`
 
-| 场景 | 变量 / 位置 | 说明 |
-| --- | --- | --- |
-| 运行时 primary / ring | 生成 `color-tokens.css` 内 `tailwindPrimaryTokens` | 亮 `zinc-950`、暗 `white`；chromatic 为 500/400 |
-| Panel 色块预览 | `--theme-primary-swatch-black`（`styles/customizer-trigger.css`） | **不能**用 `var(--primary)`：未选中 black 时 `--primary` 仍是当前主题色 |
-| 触发器色块 | `var(--primary)`（同文件 `[data-part='swatch']`） | 已选 black 时与运行时一致，无需单独变量 |
+运行时 `--primary` 亮 `zinc-950` / 暗 `white`（`tailwindPrimaryTokens`）。Panel 与触发器色块用 `--theme-primary-swatch-black`（`customizer-trigger.css`，暗色同为 white）；触发器在已选 black 时走该变量而非 `var(--primary)`。
 
-Black 的 swatch 明暗定义放在手写 CSS，不进入 `vpr generate:color-themes` 产出。
+## 定制器 UI
+
+触发器 / Popover 容器用 `customizer-ui.css` 的 `--theme-ui-*` token（`data-theme-surface`）。Panel 选项 hover / 选中样式在 `surface.ts`（与 `286a2de` 一致：`hover:bg-accent/50`、Starlight `gray-6`）。
 
 ## 已知限制
 
-- **双表面样式**：`bookmarks` 与 `starlight` 在 `customizer/surface.ts`、`trigger-classes.ts` 各写一套 Tailwind，未抽成共享 token。
 - **legacy `data-color-theme`**：与 `data-color-primary` 同步，供旧选择器；移除前需全库检索。
 - **Color Mode 面板**：同页切换靠本地 state；跨标签靠 `subscribeSiteThemeStorage`，无独立 color-mode store。
 

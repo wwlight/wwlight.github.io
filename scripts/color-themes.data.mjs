@@ -1,8 +1,15 @@
-/** @typedef {{ primary: string, primaryForeground: string, ring: string }} ShadcnTokens */
+/** @typedef {{ primary: string, primaryForeground: string, ring: string }} PrimaryTokens */
 
-/** @typedef {{ id: string, label: string, accent: string, swatch: string, special?: 'black' }} PrimaryThemeDefinition */
+/** @typedef {{ id: string, label: string, accent: string, swatch: string }} PrimaryThemeDefinition */
 
-/** @typedef {{ id: string, label: string, scale: string, swatch: string, preset?: string }} NeutralThemeDefinition */
+/** @typedef {{ id: string, label: string, scale: string, swatch: string }} NeutralThemeDefinition */
+
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const TAILWIND_THEME_CSS = readFileSync(join(ROOT, 'node_modules/tailwindcss/theme.css'), 'utf8')
 
 /** Nuxt UI primary: Tailwind 500 (light) / 400 (dark) — https://ui.nuxt.com/docs/getting-started/theme/css-variables */
 const CHROMA_PRIMARY_SCALES = [
@@ -25,7 +32,23 @@ const CHROMA_PRIMARY_SCALES = [
   'rose',
 ]
 
-function primaryLabel(id) {
+const NEUTRAL_BUILTIN_SCALES = ['slate', 'gray', 'zinc', 'neutral', 'stone']
+
+/** 独立 oklch 色阶：由 Tailwind 内置 scale 的 L/chroma 曲线推导，固定 hue */
+const NEUTRAL_CUSTOM_SCALES = ['taupe', 'mauve', 'mist', 'olive']
+
+/** @type {Record<string, { base: string, hue: number, chromaScale: number, chromaMin?: number }>} */
+const CUSTOM_NEUTRAL_SCALE_CONFIG = {
+  taupe: { base: 'stone', hue: 42, chromaScale: 1.35, chromaMin: 0.005 },
+  mauve: { base: 'zinc', hue: 300, chromaScale: 1.45, chromaMin: 0.007 },
+  mist: { base: 'slate', hue: 215, chromaScale: 0.55, chromaMin: 0.003 },
+  olive: { base: 'neutral', hue: 118, chromaScale: 1, chromaMin: 0.006 },
+}
+
+const ACCENT_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+const GRAY_STEPS = ACCENT_STEPS
+
+function titleCase(id) {
   return id.charAt(0).toUpperCase() + id.slice(1)
 }
 
@@ -35,30 +58,24 @@ export const PRIMARY_THEMES = [
     id: 'black',
     label: 'Black',
     accent: 'zinc',
-    // Panel 预览：var(--theme-primary-swatch-black)，见 styles/customizer-trigger.css（非 var(--primary)，未选中时 primary 仍是别的色）
+    // Panel 预览：见 styles/customizer-trigger.css（暗色反转为 white，非固定 zinc-950）
     swatch: 'var(--theme-primary-swatch-black)',
-    special: 'black',
   },
   ...CHROMA_PRIMARY_SCALES.map(scale => ({
     id: scale,
-    label: primaryLabel(scale),
+    label: titleCase(scale),
     accent: scale,
     swatch: `var(--color-${scale}-500)`,
   })),
 ]
 
 /** @type {NeutralThemeDefinition[]} */
-export const NEUTRAL_THEMES = [
-  { id: 'slate', label: 'Slate', scale: 'slate', preset: 'slate', swatch: 'hsl(215 16% 47%)' },
-  { id: 'gray', label: 'Gray', scale: 'gray', preset: 'gray', swatch: 'hsl(220 9% 46%)' },
-  { id: 'zinc', label: 'Zinc', scale: 'zinc', preset: 'zinc', swatch: 'hsl(240 5% 64%)' },
-  { id: 'neutral', label: 'Neutral', scale: 'neutral', preset: 'neutral', swatch: 'hsl(0 0% 45%)' },
-  { id: 'stone', label: 'Stone', scale: 'stone', preset: 'stone', swatch: 'hsl(25 5% 45%)' },
-  { id: 'taupe', label: 'Taupe', scale: 'stone', preset: 'stone', swatch: 'hsl(30 6% 42%)' },
-  { id: 'mauve', label: 'Mauve', scale: 'gray', preset: 'gray', swatch: 'hsl(270 5% 48%)' },
-  { id: 'mist', label: 'Mist', scale: 'slate', preset: 'slate', swatch: 'hsl(210 12% 55%)' },
-  { id: 'olive', label: 'Olive', scale: 'neutral', preset: 'neutral', swatch: 'hsl(80 6% 42%)' },
-]
+export const NEUTRAL_THEMES = [...NEUTRAL_BUILTIN_SCALES, ...NEUTRAL_CUSTOM_SCALES].map(scale => ({
+  id: scale,
+  label: titleCase(scale),
+  scale,
+  swatch: `var(--color-${scale}-500)`,
+}))
 
 /** @type {{ id: string, label: string, value: string }[]} */
 export const RADIUS_OPTIONS = [
@@ -74,178 +91,75 @@ export const DEFAULT_NEUTRAL = 'slate'
 export const DEFAULT_RADIUS = '0.25'
 export const DEFAULT_COLOR_MODE = 'system'
 
-/** shadcn 表面语义色（与 primary / ring 分离，供书签页 shadcn 组件使用） */
-const SHADCN_NEUTRAL_PRESETS = {
-  slate: {
-    light: {
-      background: '0 0% 100%',
-      foreground: '222.2 84% 4.9%',
-      card: '0 0% 100%',
-      cardForeground: '222.2 84% 4.9%',
-      popover: '0 0% 100%',
-      popoverForeground: '222.2 84% 4.9%',
-      secondary: '210 40% 96.1%',
-      secondaryForeground: '222.2 47.4% 11.2%',
-      muted: '210 40% 96.1%',
-      mutedForeground: '215.4 16.3% 46.9%',
-      accent: '210 40% 96.1%',
-      accentForeground: '222.2 47.4% 11.2%',
-      border: '214.3 31.8% 91.4%',
-      input: '214.3 31.8% 91.4%',
-    },
-    dark: {
-      background: '222.2 84% 4.9%',
-      foreground: '210 40% 98%',
-      card: '222.2 84% 4.9%',
-      cardForeground: '210 40% 98%',
-      popover: '222.2 84% 4.9%',
-      popoverForeground: '210 40% 98%',
-      secondary: '217.2 32.6% 17.5%',
-      secondaryForeground: '210 40% 98%',
-      muted: '217.2 32.6% 17.5%',
-      mutedForeground: '215 20.2% 65.1%',
-      accent: '217.2 32.6% 17.5%',
-      accentForeground: '210 40% 98%',
-      border: '217.2 32.6% 17.5%',
-      input: '217.2 32.6% 17.5%',
-    },
-  },
-  gray: {
-    light: {
-      background: '0 0% 100%',
-      foreground: '224 71.4% 4.1%',
-      card: '0 0% 100%',
-      cardForeground: '224 71.4% 4.1%',
-      popover: '0 0% 100%',
-      popoverForeground: '224 71.4% 4.1%',
-      secondary: '220 14.3% 95.9%',
-      secondaryForeground: '220.9 39.3% 11%',
-      muted: '220 14.3% 95.9%',
-      mutedForeground: '220 8.9% 46.1%',
-      accent: '220 14.3% 95.9%',
-      accentForeground: '220.9 39.3% 11%',
-      border: '220 13% 91%',
-      input: '220 13% 91%',
-    },
-    dark: {
-      background: '224 71.4% 4.1%',
-      foreground: '210 20% 98%',
-      card: '224 71.4% 4.1%',
-      cardForeground: '210 20% 98%',
-      popover: '224 71.4% 4.1%',
-      popoverForeground: '210 20% 98%',
-      secondary: '215 27.9% 16.9%',
-      secondaryForeground: '210 20% 98%',
-      muted: '215 27.9% 16.9%',
-      mutedForeground: '217.9 10.6% 64.9%',
-      accent: '215 27.9% 16.9%',
-      accentForeground: '210 20% 98%',
-      border: '215 27.9% 16.9%',
-      input: '215 27.9% 16.9%',
-    },
-  },
-  zinc: {
-    light: {
-      background: '0 0% 100%',
-      foreground: '240 10% 3.9%',
-      card: '0 0% 100%',
-      cardForeground: '240 10% 3.9%',
-      popover: '0 0% 100%',
-      popoverForeground: '240 10% 3.9%',
-      secondary: '240 4.8% 95.9%',
-      secondaryForeground: '240 5.9% 10%',
-      muted: '240 4.8% 95.9%',
-      mutedForeground: '240 3.8% 46.1%',
-      accent: '240 4.8% 95.9%',
-      accentForeground: '240 5.9% 10%',
-      border: '240 5.9% 90%',
-      input: '240 5.9% 90%',
-    },
-    dark: {
-      background: '240 10% 3.9%',
-      foreground: '0 0% 98%',
-      card: '240 10% 3.9%',
-      cardForeground: '0 0% 98%',
-      popover: '240 10% 3.9%',
-      popoverForeground: '0 0% 98%',
-      secondary: '240 3.7% 15.9%',
-      secondaryForeground: '0 0% 98%',
-      muted: '240 3.7% 15.9%',
-      mutedForeground: '240 5% 64.9%',
-      accent: '240 3.7% 15.9%',
-      accentForeground: '0 0% 98%',
-      border: '240 3.7% 15.9%',
-      input: '240 3.7% 15.9%',
-    },
-  },
-  neutral: {
-    light: {
-      background: '0 0% 100%',
-      foreground: '0 0% 3.9%',
-      card: '0 0% 100%',
-      cardForeground: '0 0% 3.9%',
-      popover: '0 0% 100%',
-      popoverForeground: '0 0% 3.9%',
-      secondary: '0 0% 96.1%',
-      secondaryForeground: '0 0% 9%',
-      muted: '0 0% 96.1%',
-      mutedForeground: '0 0% 45.1%',
-      accent: '0 0% 96.1%',
-      accentForeground: '0 0% 9%',
-      border: '0 0% 89.8%',
-      input: '0 0% 89.8%',
-    },
-    dark: {
-      background: '0 0% 3.9%',
-      foreground: '0 0% 98%',
-      card: '0 0% 3.9%',
-      cardForeground: '0 0% 98%',
-      popover: '0 0% 3.9%',
-      popoverForeground: '0 0% 98%',
-      secondary: '0 0% 14.9%',
-      secondaryForeground: '0 0% 98%',
-      muted: '0 0% 14.9%',
-      mutedForeground: '0 0% 63.9%',
-      accent: '0 0% 14.9%',
-      accentForeground: '0 0% 98%',
-      border: '0 0% 14.9%',
-      input: '0 0% 14.9%',
-    },
-  },
-  stone: {
-    light: {
-      background: '0 0% 100%',
-      foreground: '20 14.3% 4.1%',
-      card: '0 0% 100%',
-      cardForeground: '20 14.3% 4.1%',
-      popover: '0 0% 100%',
-      popoverForeground: '20 14.3% 4.1%',
-      secondary: '60 4.8% 95.9%',
-      secondaryForeground: '24 9.8% 10%',
-      muted: '60 4.8% 95.9%',
-      mutedForeground: '25 5.3% 44.7%',
-      accent: '60 4.8% 95.9%',
-      accentForeground: '24 9.8% 10%',
-      border: '20 5.9% 90%',
-      input: '20 5.9% 90%',
-    },
-    dark: {
-      background: '20 14.3% 4.1%',
-      foreground: '60 9.1% 97.8%',
-      card: '20 14.3% 4.1%',
-      cardForeground: '60 9.1% 97.8%',
-      popover: '20 14.3% 4.1%',
-      popoverForeground: '60 9.1% 97.8%',
-      secondary: '12 6.5% 15.1%',
-      secondaryForeground: '60 9.1% 97.8%',
-      muted: '12 6.5% 15.1%',
-      mutedForeground: '24 5.4% 63.9%',
-      accent: '12 6.5% 15.1%',
-      accentForeground: '60 9.1% 97.8%',
-      border: '12 6.5% 15.1%',
-      input: '12 6.5% 15.1%',
-    },
-  },
+/** @param {string} value */
+function parseOklch(value) {
+  const match = value.match(/oklch\(([0-9.]+%)\s+([0-9.]+)\s+([0-9.]+)\)/)
+  if (!match)
+    throw new Error(`Invalid oklch: ${value}`)
+  return { l: match[1], c: Number.parseFloat(match[2]), h: Number.parseFloat(match[3]) }
+}
+
+/** @param {{ l: string, c: number, h: number }} color */
+function formatOklch(color) {
+  const chroma = Number(color.c.toFixed(3))
+  const hue = Number(color.h.toFixed(3))
+  return `oklch(${color.l} ${chroma} ${hue})`
+}
+
+/** @param {string} name */
+function readTailwindScale(name) {
+  /** @type {Record<number, { l: string, c: number, h: number }>} */
+  const scale = {}
+  for (const step of ACCENT_STEPS) {
+    const match = TAILWIND_THEME_CSS.match(new RegExp(`--color-${name}-${step}:\\s*([^;]+)`))
+    if (!match)
+      throw new Error(`Missing Tailwind scale --color-${name}-${step}`)
+    scale[step] = parseOklch(match[1].trim())
+  }
+  return scale
+}
+
+/** @param {number} step @param {{ chromaScale: number, chromaMin?: number }} config */
+function neutralChromaForStep(step, config) {
+  const t = step / 950
+  const peak = Math.sin(t * Math.PI) * 0.038 + 0.014
+  return Math.max(config.chromaMin ?? 0, peak * config.chromaScale)
+}
+
+/** @param {string} name */
+function buildCustomNeutralScale(name) {
+  const config = CUSTOM_NEUTRAL_SCALE_CONFIG[name]
+  const baseScale = readTailwindScale(config.base)
+  /** @type {Record<number, string>} */
+  const scale = {}
+
+  for (const step of ACCENT_STEPS) {
+    const base = baseScale[step]
+    const chroma = config.base === 'neutral'
+      ? neutralChromaForStep(step, config)
+      : Math.max(config.chromaMin ?? 0, base.c * config.chromaScale)
+
+    scale[step] = formatOklch({ l: base.l, c: chroma, h: config.hue })
+  }
+
+  return scale
+}
+
+/** @returns {string} @theme 块：扩展 taupe / mauve / mist / olive 色阶 */
+export function buildNeutralScalesCss() {
+  const lines = [
+    '/* Generated — src/theme/styles/neutral-scales.css (scripts/generate-color-theme-css.mjs) */',
+    '@theme {',
+  ]
+
+  for (const name of NEUTRAL_CUSTOM_SCALES) {
+    const scale = buildCustomNeutralScale(name)
+    for (const step of ACCENT_STEPS)
+      lines.push(`  --color-${name}-${step}: ${scale[step]};`)
+  }
+
+  lines.push('}', '')
+  return lines.join('\n')
 }
 
 const SURFACE_VAR_MAP = [
@@ -269,7 +183,7 @@ function formatSurfaceTokens(tokens) {
   return SURFACE_VAR_MAP.map(([key, cssVar]) => `  ${cssVar}: ${tokens[key]};`).join('\n')
 }
 
-function shadcnNeutralSurfaceBlock(id, mode, tokens) {
+function neutralSurfaceBlock(id, mode, tokens) {
   const selector
     = mode === 'light'
       ? `html[data-color-neutral='${id}']`
@@ -278,11 +192,46 @@ function shadcnNeutralSurfaceBlock(id, mode, tokens) {
   return `${selector} {\n${formatSurfaceTokens(tokens)}\n}`
 }
 
-const ACCENT_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
-const GRAY_STEPS = ACCENT_STEPS
+/** Tailwind 灰阶 step → shadcn 语义 token（无手写 HSL） */
+function tailwindNeutralSurfaceTokens(scale, mode) {
+  if (mode === 'light') {
+    return {
+      background: 'var(--color-white)',
+      foreground: `var(--color-${scale}-950)`,
+      card: 'var(--color-white)',
+      cardForeground: `var(--color-${scale}-950)`,
+      popover: 'var(--color-white)',
+      popoverForeground: `var(--color-${scale}-950)`,
+      secondary: `var(--color-${scale}-100)`,
+      secondaryForeground: `var(--color-${scale}-900)`,
+      muted: `var(--color-${scale}-100)`,
+      mutedForeground: `var(--color-${scale}-500)`,
+      accent: `var(--color-${scale}-100)`,
+      accentForeground: `var(--color-${scale}-900)`,
+      border: `var(--color-${scale}-200)`,
+      input: `var(--color-${scale}-200)`,
+    }
+  }
+
+  return {
+    background: `var(--color-${scale}-950)`,
+    foreground: `var(--color-${scale}-50)`,
+    card: `var(--color-${scale}-950)`,
+    cardForeground: `var(--color-${scale}-50)`,
+    popover: `var(--color-${scale}-950)`,
+    popoverForeground: `var(--color-${scale}-50)`,
+    secondary: `var(--color-${scale}-800)`,
+    secondaryForeground: `var(--color-${scale}-50)`,
+    muted: `var(--color-${scale}-800)`,
+    mutedForeground: `var(--color-${scale}-400)`,
+    accent: `var(--color-${scale}-800)`,
+    accentForeground: `var(--color-${scale}-50)`,
+    border: `var(--color-${scale}-800)`,
+    input: `var(--color-${scale}-800)`,
+  }
+}
 
 function accentScale(theme) {
-  // Starlight `--color-accent-*`; remapping accent → accent would be circular.
   if (theme.accent === 'accent')
     return null
 
@@ -292,7 +241,6 @@ function accentScale(theme) {
 }
 
 function grayScale(theme) {
-  // Starlight reads `--color-gray-*`; remapping gray → gray is circular and breaks borders.
   if (theme.scale === 'gray')
     return null
 
@@ -301,9 +249,9 @@ function grayScale(theme) {
   ).join('\n')
 }
 
-/** Tailwind primary：亮 500 / 暗 400（Nuxt --ui-primary），前景同块设置 */
+/** Tailwind primary：亮 500 / 暗 400；black 用 zinc-950 / white */
 function tailwindPrimaryTokens(theme) {
-  if (theme.special === 'black') {
+  if (theme.id === 'black') {
     return {
       light: {
         primary: 'var(--color-zinc-950)',
@@ -342,7 +290,7 @@ function formatPrimaryCssVars(tokens) {
   ].join('\n')
 }
 
-function shadcnPrimaryBlock(themeId, mode, tokens) {
+function primaryBlock(themeId, mode, tokens) {
   const selector
     = mode === 'light'
       ? `html[data-color-primary='${themeId}']`
@@ -406,23 +354,20 @@ export function buildColorThemesCss() {
     const accent = accentVars
       ? `html[data-color-primary='${theme.id}'] {\n${accentVars}\n}`
       : null
-    const light = shadcnPrimaryBlock(theme.id, 'light', tokens.light)
-    const dark = shadcnPrimaryBlock(theme.id, 'dark', tokens.dark)
+    const light = primaryBlock(theme.id, 'light', tokens.light)
+    const dark = primaryBlock(theme.id, 'dark', tokens.dark)
     return [...(accent ? [accent] : []), light, dark]
   })
 
   const neutralBlocks = NEUTRAL_THEMES.flatMap((theme) => {
-    const preset = SHADCN_NEUTRAL_PRESETS[theme.preset || theme.id]
     const grayVars = grayScale(theme)
     const gray = grayVars
       ? `html[data-color-neutral='${theme.id}'] {\n${grayVars}\n}`
       : null
-    if (!preset)
-      return gray ? [gray] : []
     return [
       ...(gray ? [gray] : []),
-      shadcnNeutralSurfaceBlock(theme.id, 'light', preset.light),
-      shadcnNeutralSurfaceBlock(theme.id, 'dark', preset.dark),
+      neutralSurfaceBlock(theme.id, 'light', tailwindNeutralSurfaceTokens(theme.scale, 'light')),
+      neutralSurfaceBlock(theme.id, 'dark', tailwindNeutralSurfaceTokens(theme.scale, 'dark')),
     ]
   })
 

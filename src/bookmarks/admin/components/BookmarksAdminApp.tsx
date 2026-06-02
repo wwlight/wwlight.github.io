@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BookOpen, Bookmark, LockKeyhole } from "lucide-react";
+import { BookmarkSettingsIcon } from "@/bookmarks/shared/components/BookmarkSettingsIcon";
 import { Toaster } from "sonner";
 import { AdminApp } from "@/bookmarks/admin/components/AdminApp";
 import { AdminGateShell } from "@/bookmarks/admin/components/AdminGateShell";
@@ -160,7 +161,7 @@ export function BookmarksAdminApp({
         <Card className="overflow-hidden border-border/70 shadow-xl">
           <div className="border-b border-border/60 bg-muted/30 px-6 py-8 text-center">
             <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
-              <Bookmark className="size-7" aria-hidden />
+              <BookmarkSettingsIcon className="size-7" />
             </div>
             <h1 className="text-xl font-semibold tracking-tight text-foreground">书签管理后台</h1>
             <p className="mt-2 text-sm text-muted-foreground">登录以管理本地书签数据</p>

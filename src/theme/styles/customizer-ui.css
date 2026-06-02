@@ -1,0 +1,19 @@
+/* 定制器 chrome：触发器、Popover 容器语义 token（Panel 选项样式见 surface.ts）。 */
+
+[data-theme-surface='bookmarks'] {
+  --theme-ui-trigger-bg: var(--card);
+  --theme-ui-trigger-border: var(--border);
+  --theme-ui-trigger-text: var(--foreground);
+  --theme-ui-popover-bg: var(--popover);
+  --theme-ui-popover-border: var(--border);
+  --theme-ui-popover-text: var(--popover-foreground);
+}
+
+[data-theme-surface='starlight'] {
+  --theme-ui-trigger-bg: var(--sl-color-black);
+  --theme-ui-trigger-border: var(--sl-color-gray-5);
+  --theme-ui-trigger-text: var(--sl-color-gray-2);
+  --theme-ui-popover-bg: var(--sl-color-black);
+  --theme-ui-popover-border: var(--sl-color-gray-5);
+  --theme-ui-popover-text: var(--sl-color-text);
+}

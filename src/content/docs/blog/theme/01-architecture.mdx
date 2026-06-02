@@ -78,7 +78,7 @@ Primary × Neutral × Radius 组合量大。用 `html[data-color-primary='green'
 | Radius | `0.25` |
 | Color Mode | `system` |
 
-Primary 在亮色取 Tailwind `500`、暗色取 `400`；`black` 的 `--primary` 亮 `zinc-950` / 暗 `white`（见 `color-tokens.css`）。Panel 里 black 预览色块见 `customizer-trigger.css` 的 `--theme-primary-swatch-black`。
+Primary 在亮色取 Tailwind `500`、暗色取 `400`；`black` 的 `--primary` 亮 `zinc-950` / 暗 `white`（见 `color-tokens.css`）。Panel / 触发器 black 色块用 `--theme-primary-swatch-black`（暗色反转为 white，见 `customizer-trigger.css`）。
 
 ### 首屏脚本注入点
 
@@ -121,7 +121,6 @@ import {
 
 ## 已知限制
 
-- `trigger-classes.ts`、`surface.ts` 为 `starlight` / `bookmarks` 各写一套 Tailwind，未抽共享 design token
 - Color Mode 面板同页用 React state；跨标签靠 `subscribeSiteThemeStorage`，无独立 color-mode store
 - `radius.css` 内 Starlight 组件圆角需手动补选择器
 

@@ -1,0 +1,47 @@
+/* Generated — src/theme/styles/neutral-scales.css (scripts/generate-color-theme-css.mjs) */
+@theme {
+  --color-taupe-50: oklch(98.5% 0.005 42);
+  --color-taupe-100: oklch(97% 0.005 42);
+  --color-taupe-200: oklch(92.3% 0.005 42);
+  --color-taupe-300: oklch(86.9% 0.007 42);
+  --color-taupe-400: oklch(70.9% 0.014 42);
+  --color-taupe-500: oklch(55.3% 0.018 42);
+  --color-taupe-600: oklch(44.4% 0.015 42);
+  --color-taupe-700: oklch(37.4% 0.014 42);
+  --color-taupe-800: oklch(26.8% 0.009 42);
+  --color-taupe-900: oklch(21.6% 0.008 42);
+  --color-taupe-950: oklch(14.7% 0.005 42);
+  --color-mauve-50: oklch(98.5% 0.007 300);
+  --color-mauve-100: oklch(96.7% 0.007 300);
+  --color-mauve-200: oklch(92% 0.007 300);
+  --color-mauve-300: oklch(87.1% 0.009 300);
+  --color-mauve-400: oklch(70.5% 0.022 300);
+  --color-mauve-500: oklch(55.2% 0.023 300);
+  --color-mauve-600: oklch(44.2% 0.025 300);
+  --color-mauve-700: oklch(37% 0.019 300);
+  --color-mauve-800: oklch(27.4% 0.009 300);
+  --color-mauve-900: oklch(21% 0.009 300);
+  --color-mauve-950: oklch(14.1% 0.007 300);
+  --color-mist-50: oklch(98.4% 0.003 215);
+  --color-mist-100: oklch(96.8% 0.004 215);
+  --color-mist-200: oklch(92.9% 0.007 215);
+  --color-mist-300: oklch(86.9% 0.012 215);
+  --color-mist-400: oklch(70.4% 0.022 215);
+  --color-mist-500: oklch(55.4% 0.025 215);
+  --color-mist-600: oklch(44.6% 0.024 215);
+  --color-mist-700: oklch(37.2% 0.024 215);
+  --color-mist-800: oklch(27.9% 0.023 215);
+  --color-mist-900: oklch(20.8% 0.023 215);
+  --color-mist-950: oklch(12.9% 0.023 215);
+  --color-olive-50: oklch(98.5% 0.02 118);
+  --color-olive-100: oklch(97% 0.026 118);
+  --color-olive-200: oklch(92.2% 0.037 118);
+  --color-olive-300: oklch(87% 0.046 118);
+  --color-olive-400: oklch(70.8% 0.051 118);
+  --color-olive-500: oklch(55.6% 0.052 118);
+  --color-olive-600: oklch(43.9% 0.049 118);
+  --color-olive-700: oklch(37.1% 0.042 118);
+  --color-olive-800: oklch(26.9% 0.032 118);
+  --color-olive-900: oklch(20.5% 0.02 118);
+  --color-olive-950: oklch(14.5% 0.014 118);
+}

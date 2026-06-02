@@ -1,0 +1,21 @@
+/* Starlight 顶栏搜索触发器与 Pagefind 弹层输入框 focus 边框，与 --ring（主题 primary）同步。 */
+
+:root {
+  --sl-search-focus-border: var(--ring);
+}
+
+site-search button[data-open-modal]:focus-visible {
+  outline: 2px solid var(--sl-search-focus-border);
+  outline-offset: 2px;
+}
+
+@media (min-width: 50rem) {
+  site-search button[data-open-modal]:focus-visible {
+    outline: none;
+    border-color: var(--sl-search-focus-border);
+  }
+}
+
+#starlight__search input:focus {
+  --pagefind-ui-border: var(--sl-search-focus-border);
+}

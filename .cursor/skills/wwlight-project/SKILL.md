@@ -84,7 +84,7 @@ Node.js **24**（`.node-version`）。`vp` / `vpr` 约定见 [dev-foundation/vit
 | 生成 | `vpr generate:color-themes`、`vpr generate:theme-init`（改 `scripts/color-themes.data.mjs` 后必跑） |
 | API | `import { … } from '@/theme'` |
 
-默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。Primary 亮 `500` / 暗 `400`；**Black**：`--primary` 亮 `zinc-950` / 暗 `white`（生成）；Panel 预览色块用 `--theme-primary-swatch-black`（`customizer-trigger.css`）；触发器色块用 `var(--primary)`。View Transition 长页已滚动时会 `lockDocumentScroll`（`color-mode.ts`），并加 `html.theme-transitioning` 暂停子元素 transition。
+默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。色值均引用 Tailwind `--color-*`：Primary 亮 `500` / 暗 `400`；Neutral 9 项（五档 + 扩展 taupe/mauve/mist/olive 独立 oklch 色阶）。View Transition 长页已滚动时会 `lockDocumentScroll`（`color-mode.ts`），并加 `html.theme-transitioning` 暂停子元素 transition。
 
 ## 书签模块要点
 

@@ -1,6 +1,6 @@
 ---
 name: dev-foundation
-description: Public dev foundation—technical writing, module restructuring, paths patterns; sub-files tailwindcss.md, vite-plus.md, paths.md. Use for 重构, git mv, blog MDX, className, vp/vpr. Project-specific paths and scripts live in that repo's project skill.
+description: Public dev foundation—technical writing, module restructuring, paths patterns, icon usage; sub-files tailwindcss.md, vite-plus.md, paths.md. Use for 重构, git mv, blog MDX, className, icons, vp/vpr. Project-specific paths and scripts live in that repo's project skill.
 ---
 
 # 开发基础
@@ -31,8 +31,31 @@ description: Public dev foundation—technical writing, module restructuring, pa
 | **写 / 改技术文档、博客 MDX** | 下文 **技术说明写法** |
 | **重构、结构优化、目录重组、路由迁移** | 下文 **目录与文档同步** 起至文末 + 本项目 skill **paths.md** |
 | **Tailwind / className** | [tailwindcss.md](./tailwindcss.md) + 项目 skill Tailwind 接入 |
+| **Icon / 图标** | 下文 **Icon（图标）** |
 | **安装、脚本、依赖** | [vite-plus.md](./vite-plus.md) + 项目 skill 命令速查 |
 | 涉及具体模块 | 该模块 `src/<module>/README.md`（或项目约定路径） |
+
+---
+
+## Icon（图标）
+
+UI 图标**优先用项目已接入的知名图标库**（如 [Lucide](https://lucide.dev/) `lucide-react`），保持 stroke、viewBox、线宽与全站一致；不要随手画 SVG、也不要用两个图标 DOM 叠拼冒充一个。
+
+### 选用顺序
+
+1. **库内直接 import** — 语义匹配的官方组件（如 `Bookmark`、`Settings2`、`FolderCog`）
+2. **库内组合后缀 icon** — 优先 `-cog`、`-plus`、`-check` 等**单一**复合造型（与 `folder-cog` 同系列），仍是一个组件或一条 SVG path 集
+3. **库暂无、造型已定** — 单 SVG，路径与库风格对齐（如 Lucide 提案 / 官方 PR 中的 `bookmark-cog`）；注明来源
+4. **避免** — 两个 Lucide 组件 absolute 角标拼接；与库无关的手绘杂糅；为已有库 icon 重复造同名 wrapper
+
+### 写法
+
+- React / Astro 岛屿：`import { IconName } from 'lucide-react'`；尺寸用 Tailwind `size-*`，少用内联 `width`/`height`
+- 多页面共用：抽到模块 `shared/components/`，nav / admin 不要各写一份
+- Astro 静态区无 React 时：可 inline SVG，但 **path 仍优先抄自 Lucide 官方**（与 `HeaderBookmarksLink.astro` 等同源）
+- 装饰性图标加 `aria-hidden`；仅图标按钮保留 `aria-label`
+
+项目若固定 Lucide 版本且无某 icon，升级 catalog 前先查 [Lucide Icons](https://lucide.dev/icons/) 与仓库 PR；不要自造与库并行的第二套 icon 体系。
 
 ---
 
@@ -145,3 +168,4 @@ description: Public dev foundation—technical writing, module restructuring, pa
 - **目录已变、文档仍写旧结构**
 - 技术文档写教程套话、元叙述代替实现路径
 - 裸跑 `pnpm` / `npm` 而不用 `vp` / `vpr`（见 vite-plus.md）
+- 手写 SVG 或双 icon 叠拼，而库内已有同语义 icon 或 `-cog` 等标准复合造型

@@ -1,21 +1,10 @@
-import { BookOpen, Bookmark, Settings2 } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
+import { BookmarkSettingsIcon } from "@/bookmarks/shared/components/BookmarkSettingsIcon";
 import { ColorThemePicker } from "@/theme/components/ColorThemePicker";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cardIconClass } from "@/bookmarks/nav/components/ui-helpers";
 import { cn } from "@/lib/utils";
-
-function BookmarkSettingsIcon({ className }: { className?: string }) {
-  return (
-    <span className={cn("relative inline-block shrink-0", className)}>
-      <Bookmark className="size-full" strokeWidth={2} aria-hidden />
-      <Settings2
-        className="absolute -bottom-px -right-px size-[0.52em] rounded-full bg-card stroke-[2.5] p-px"
-        aria-hidden
-      />
-    </span>
-  );
-}
 
 function HeaderIconLink({
   href,

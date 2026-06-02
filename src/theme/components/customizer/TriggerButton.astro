@@ -22,6 +22,7 @@ const { variant = 'bookmarks', class: className } = Astro.props
   aria-label="主题设置"
   aria-expanded="false"
   data-theme-customizer-trigger
+  data-theme-surface={variant}
 >
   <span class={themeCustomizerSwatchClass()} data-part="swatch" aria-hidden="true"></span>
   <span class={themeCustomizerTriggerLabelClass()} data-part="label"></span>

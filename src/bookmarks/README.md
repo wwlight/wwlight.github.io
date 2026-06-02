@@ -25,7 +25,7 @@
 | `shared/` | 两表面共用：类型、数据管线、搜索/统计、favicon、共用组件与 theme CSS |
 | `shared/data/` | `queries`、`page-data`、`serialize` |
 | `shared/lib/` | `search`、`stats`、`section-helpers`、`toolbar-ui`、`badge-variants`、`favicon` |
-| `shared/components/` | `BookmarkFavicon`、`BookmarkPageHeader`、`BookmarkStatsCards`、`UserAvatar` |
+| `shared/components/` | `BookmarkFavicon`、`BookmarkPageHeader`、`BookmarkSettingsIcon`、`BookmarkStatsCards`、`UserAvatar` |
 | `shared/styles/` | `bookmarks-theme-shared.css` |
 | `nav/` | 导航 `/bookmarks/nav/`：React 组件与页面样式 |
 | `admin/` | 管理端 `/bookmarks/admin/`：鉴权、API、编辑 UI、admin 样式 |

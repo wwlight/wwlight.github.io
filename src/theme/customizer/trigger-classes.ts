@@ -1,6 +1,6 @@
 /**
- * 功能：定制器触发按钮、Popover、色块圆点的 Tailwind 类名。
- * 问题：starlight / bookmarks 两套表面色硬编码，未共用 design token。
+ * 功能：定制器触发按钮、Popover、色块的 Tailwind 类名。
+ * 触发器 / Popover 容器用 customizer-ui.css token；Panel 选项见 surface.ts。
  */
 import { cn } from '@/lib/utils'
 
@@ -17,10 +17,11 @@ export function themeCustomizerTriggerButtonClass(
   className?: string,
 ) {
   return cn(
-    'theme-r-lg inline-flex h-9 min-w-[7.25rem] cursor-pointer items-center gap-2 px-2.5 py-0.5 border shadow-sm text-xs transition-colors',
+    'theme-r-lg inline-flex h-9 min-w-[7.25rem] cursor-pointer items-center gap-2 border px-2.5 py-0.5 text-xs shadow-sm transition-colors',
+    'border-(--theme-ui-trigger-border) bg-(--theme-ui-trigger-bg) text-(--theme-ui-trigger-text)',
     variant === 'starlight'
-      ? 'border-[var(--sl-color-gray-5)] bg-[var(--sl-color-black)] text-[var(--sl-color-gray-2)] hover:bg-[var(--sl-color-gray-6)] hover:text-[var(--sl-color-white)]'
-      : 'border-border bg-card text-foreground hover:bg-accent/50',
+      ? 'hover:bg-[var(--sl-color-gray-6)] hover:text-[var(--sl-color-white)]'
+      : 'hover:bg-accent/50',
     className,
   )
 }
@@ -29,11 +30,10 @@ export function themeCustomizerTriggerLabelClass() {
   return 'w-[7ch] shrink-0 truncate text-center'
 }
 
-export function themeCustomizerPopoverClass(variant: ThemeSurface) {
+export function themeCustomizerPopoverClass(className?: string) {
   return cn(
-    'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] p-3',
-    variant === 'starlight'
-      ? 'border-[var(--sl-color-gray-5)] bg-[var(--sl-color-black)] text-[var(--sl-color-text)] shadow-lg'
-      : 'border-border bg-popover text-popover-foreground',
+    'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] border p-3 shadow-lg',
+    'border-(--theme-ui-popover-border) bg-(--theme-ui-popover-bg) text-(--theme-ui-popover-text)',
+    className,
   )
 }

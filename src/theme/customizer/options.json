@@ -99,47 +99,47 @@
     {
       "id": "slate",
       "label": "Slate",
-      "swatch": "hsl(215 16% 47%)"
+      "swatch": "var(--color-slate-500)"
     },
     {
       "id": "gray",
       "label": "Gray",
-      "swatch": "hsl(220 9% 46%)"
+      "swatch": "var(--color-gray-500)"
     },
     {
       "id": "zinc",
       "label": "Zinc",
-      "swatch": "hsl(240 5% 64%)"
+      "swatch": "var(--color-zinc-500)"
     },
     {
       "id": "neutral",
       "label": "Neutral",
-      "swatch": "hsl(0 0% 45%)"
+      "swatch": "var(--color-neutral-500)"
     },
     {
       "id": "stone",
       "label": "Stone",
-      "swatch": "hsl(25 5% 45%)"
+      "swatch": "var(--color-stone-500)"
     },
     {
       "id": "taupe",
       "label": "Taupe",
-      "swatch": "hsl(30 6% 42%)"
+      "swatch": "var(--color-taupe-500)"
     },
     {
       "id": "mauve",
       "label": "Mauve",
-      "swatch": "hsl(270 5% 48%)"
+      "swatch": "var(--color-mauve-500)"
     },
     {
       "id": "mist",
       "label": "Mist",
-      "swatch": "hsl(210 12% 55%)"
+      "swatch": "var(--color-mist-500)"
     },
     {
       "id": "olive",
       "label": "Olive",
-      "swatch": "hsl(80 6% 42%)"
+      "swatch": "var(--color-olive-500)"
     }
   ],
   "radiusOptions": [

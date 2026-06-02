@@ -501,73 +501,73 @@ html[data-color-neutral='slate'] {
 }
 
 html[data-color-neutral='slate'] {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  --background: var(--color-white);
+  --foreground: var(--color-slate-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-slate-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-slate-950);
+  --secondary: var(--color-slate-100);
+  --secondary-foreground: var(--color-slate-900);
+  --muted: var(--color-slate-100);
+  --muted-foreground: var(--color-slate-500);
+  --accent: var(--color-slate-100);
+  --accent-foreground: var(--color-slate-900);
+  --border: var(--color-slate-200);
+  --input: var(--color-slate-200);
 }
 
 html.dark[data-color-neutral='slate'],
 html[data-theme='dark'][data-color-neutral='slate'] {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
+  --background: var(--color-slate-950);
+  --foreground: var(--color-slate-50);
+  --card: var(--color-slate-950);
+  --card-foreground: var(--color-slate-50);
+  --popover: var(--color-slate-950);
+  --popover-foreground: var(--color-slate-50);
+  --secondary: var(--color-slate-800);
+  --secondary-foreground: var(--color-slate-50);
+  --muted: var(--color-slate-800);
+  --muted-foreground: var(--color-slate-400);
+  --accent: var(--color-slate-800);
+  --accent-foreground: var(--color-slate-50);
+  --border: var(--color-slate-800);
+  --input: var(--color-slate-800);
 }
 
 html[data-color-neutral='gray'] {
-  --background: 0 0% 100%;
-  --foreground: 224 71.4% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 224 71.4% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 224 71.4% 4.1%;
-  --secondary: 220 14.3% 95.9%;
-  --secondary-foreground: 220.9 39.3% 11%;
-  --muted: 220 14.3% 95.9%;
-  --muted-foreground: 220 8.9% 46.1%;
-  --accent: 220 14.3% 95.9%;
-  --accent-foreground: 220.9 39.3% 11%;
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
+  --background: var(--color-white);
+  --foreground: var(--color-gray-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-gray-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-gray-950);
+  --secondary: var(--color-gray-100);
+  --secondary-foreground: var(--color-gray-900);
+  --muted: var(--color-gray-100);
+  --muted-foreground: var(--color-gray-500);
+  --accent: var(--color-gray-100);
+  --accent-foreground: var(--color-gray-900);
+  --border: var(--color-gray-200);
+  --input: var(--color-gray-200);
 }
 
 html.dark[data-color-neutral='gray'],
 html[data-theme='dark'][data-color-neutral='gray'] {
-  --background: 224 71.4% 4.1%;
-  --foreground: 210 20% 98%;
-  --card: 224 71.4% 4.1%;
-  --card-foreground: 210 20% 98%;
-  --popover: 224 71.4% 4.1%;
-  --popover-foreground: 210 20% 98%;
-  --secondary: 215 27.9% 16.9%;
-  --secondary-foreground: 210 20% 98%;
-  --muted: 215 27.9% 16.9%;
-  --muted-foreground: 217.9 10.6% 64.9%;
-  --accent: 215 27.9% 16.9%;
-  --accent-foreground: 210 20% 98%;
-  --border: 215 27.9% 16.9%;
-  --input: 215 27.9% 16.9%;
+  --background: var(--color-gray-950);
+  --foreground: var(--color-gray-50);
+  --card: var(--color-gray-950);
+  --card-foreground: var(--color-gray-50);
+  --popover: var(--color-gray-950);
+  --popover-foreground: var(--color-gray-50);
+  --secondary: var(--color-gray-800);
+  --secondary-foreground: var(--color-gray-50);
+  --muted: var(--color-gray-800);
+  --muted-foreground: var(--color-gray-400);
+  --accent: var(--color-gray-800);
+  --accent-foreground: var(--color-gray-50);
+  --border: var(--color-gray-800);
+  --input: var(--color-gray-800);
 }
 
 html[data-color-neutral='zinc'] {
@@ -585,38 +585,38 @@ html[data-color-neutral='zinc'] {
 }
 
 html[data-color-neutral='zinc'] {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
+  --background: var(--color-white);
+  --foreground: var(--color-zinc-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-zinc-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-zinc-950);
+  --secondary: var(--color-zinc-100);
+  --secondary-foreground: var(--color-zinc-900);
+  --muted: var(--color-zinc-100);
+  --muted-foreground: var(--color-zinc-500);
+  --accent: var(--color-zinc-100);
+  --accent-foreground: var(--color-zinc-900);
+  --border: var(--color-zinc-200);
+  --input: var(--color-zinc-200);
 }
 
 html.dark[data-color-neutral='zinc'],
 html[data-theme='dark'][data-color-neutral='zinc'] {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
+  --background: var(--color-zinc-950);
+  --foreground: var(--color-zinc-50);
+  --card: var(--color-zinc-950);
+  --card-foreground: var(--color-zinc-50);
+  --popover: var(--color-zinc-950);
+  --popover-foreground: var(--color-zinc-50);
+  --secondary: var(--color-zinc-800);
+  --secondary-foreground: var(--color-zinc-50);
+  --muted: var(--color-zinc-800);
+  --muted-foreground: var(--color-zinc-400);
+  --accent: var(--color-zinc-800);
+  --accent-foreground: var(--color-zinc-50);
+  --border: var(--color-zinc-800);
+  --input: var(--color-zinc-800);
 }
 
 html[data-color-neutral='neutral'] {
@@ -634,38 +634,38 @@ html[data-color-neutral='neutral'] {
 }
 
 html[data-color-neutral='neutral'] {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
+  --background: var(--color-white);
+  --foreground: var(--color-neutral-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-neutral-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-neutral-950);
+  --secondary: var(--color-neutral-100);
+  --secondary-foreground: var(--color-neutral-900);
+  --muted: var(--color-neutral-100);
+  --muted-foreground: var(--color-neutral-500);
+  --accent: var(--color-neutral-100);
+  --accent-foreground: var(--color-neutral-900);
+  --border: var(--color-neutral-200);
+  --input: var(--color-neutral-200);
 }
 
 html.dark[data-color-neutral='neutral'],
 html[data-theme='dark'][data-color-neutral='neutral'] {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
+  --background: var(--color-neutral-950);
+  --foreground: var(--color-neutral-50);
+  --card: var(--color-neutral-950);
+  --card-foreground: var(--color-neutral-50);
+  --popover: var(--color-neutral-950);
+  --popover-foreground: var(--color-neutral-50);
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-neutral-50);
+  --muted: var(--color-neutral-800);
+  --muted-foreground: var(--color-neutral-400);
+  --accent: var(--color-neutral-800);
+  --accent-foreground: var(--color-neutral-50);
+  --border: var(--color-neutral-800);
+  --input: var(--color-neutral-800);
 }
 
 html[data-color-neutral='stone'] {
@@ -683,220 +683,234 @@ html[data-color-neutral='stone'] {
 }
 
 html[data-color-neutral='stone'] {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
+  --background: var(--color-white);
+  --foreground: var(--color-stone-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-stone-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-stone-950);
+  --secondary: var(--color-stone-100);
+  --secondary-foreground: var(--color-stone-900);
+  --muted: var(--color-stone-100);
+  --muted-foreground: var(--color-stone-500);
+  --accent: var(--color-stone-100);
+  --accent-foreground: var(--color-stone-900);
+  --border: var(--color-stone-200);
+  --input: var(--color-stone-200);
 }
 
 html.dark[data-color-neutral='stone'],
 html[data-theme='dark'][data-color-neutral='stone'] {
-  --background: 20 14.3% 4.1%;
-  --foreground: 60 9.1% 97.8%;
-  --card: 20 14.3% 4.1%;
-  --card-foreground: 60 9.1% 97.8%;
-  --popover: 20 14.3% 4.1%;
-  --popover-foreground: 60 9.1% 97.8%;
-  --secondary: 12 6.5% 15.1%;
-  --secondary-foreground: 60 9.1% 97.8%;
-  --muted: 12 6.5% 15.1%;
-  --muted-foreground: 24 5.4% 63.9%;
-  --accent: 12 6.5% 15.1%;
-  --accent-foreground: 60 9.1% 97.8%;
-  --border: 12 6.5% 15.1%;
-  --input: 12 6.5% 15.1%;
+  --background: var(--color-stone-950);
+  --foreground: var(--color-stone-50);
+  --card: var(--color-stone-950);
+  --card-foreground: var(--color-stone-50);
+  --popover: var(--color-stone-950);
+  --popover-foreground: var(--color-stone-50);
+  --secondary: var(--color-stone-800);
+  --secondary-foreground: var(--color-stone-50);
+  --muted: var(--color-stone-800);
+  --muted-foreground: var(--color-stone-400);
+  --accent: var(--color-stone-800);
+  --accent-foreground: var(--color-stone-50);
+  --border: var(--color-stone-800);
+  --input: var(--color-stone-800);
 }
 
 html[data-color-neutral='taupe'] {
-  --color-gray-50: var(--color-stone-50);
-  --color-gray-100: var(--color-stone-100);
-  --color-gray-200: var(--color-stone-200);
-  --color-gray-300: var(--color-stone-300);
-  --color-gray-400: var(--color-stone-400);
-  --color-gray-500: var(--color-stone-500);
-  --color-gray-600: var(--color-stone-600);
-  --color-gray-700: var(--color-stone-700);
-  --color-gray-800: var(--color-stone-800);
-  --color-gray-900: var(--color-stone-900);
-  --color-gray-950: var(--color-stone-950);
+  --color-gray-50: var(--color-taupe-50);
+  --color-gray-100: var(--color-taupe-100);
+  --color-gray-200: var(--color-taupe-200);
+  --color-gray-300: var(--color-taupe-300);
+  --color-gray-400: var(--color-taupe-400);
+  --color-gray-500: var(--color-taupe-500);
+  --color-gray-600: var(--color-taupe-600);
+  --color-gray-700: var(--color-taupe-700);
+  --color-gray-800: var(--color-taupe-800);
+  --color-gray-900: var(--color-taupe-900);
+  --color-gray-950: var(--color-taupe-950);
 }
 
 html[data-color-neutral='taupe'] {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
+  --background: var(--color-white);
+  --foreground: var(--color-taupe-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-taupe-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-taupe-950);
+  --secondary: var(--color-taupe-100);
+  --secondary-foreground: var(--color-taupe-900);
+  --muted: var(--color-taupe-100);
+  --muted-foreground: var(--color-taupe-500);
+  --accent: var(--color-taupe-100);
+  --accent-foreground: var(--color-taupe-900);
+  --border: var(--color-taupe-200);
+  --input: var(--color-taupe-200);
 }
 
 html.dark[data-color-neutral='taupe'],
 html[data-theme='dark'][data-color-neutral='taupe'] {
-  --background: 20 14.3% 4.1%;
-  --foreground: 60 9.1% 97.8%;
-  --card: 20 14.3% 4.1%;
-  --card-foreground: 60 9.1% 97.8%;
-  --popover: 20 14.3% 4.1%;
-  --popover-foreground: 60 9.1% 97.8%;
-  --secondary: 12 6.5% 15.1%;
-  --secondary-foreground: 60 9.1% 97.8%;
-  --muted: 12 6.5% 15.1%;
-  --muted-foreground: 24 5.4% 63.9%;
-  --accent: 12 6.5% 15.1%;
-  --accent-foreground: 60 9.1% 97.8%;
-  --border: 12 6.5% 15.1%;
-  --input: 12 6.5% 15.1%;
+  --background: var(--color-taupe-950);
+  --foreground: var(--color-taupe-50);
+  --card: var(--color-taupe-950);
+  --card-foreground: var(--color-taupe-50);
+  --popover: var(--color-taupe-950);
+  --popover-foreground: var(--color-taupe-50);
+  --secondary: var(--color-taupe-800);
+  --secondary-foreground: var(--color-taupe-50);
+  --muted: var(--color-taupe-800);
+  --muted-foreground: var(--color-taupe-400);
+  --accent: var(--color-taupe-800);
+  --accent-foreground: var(--color-taupe-50);
+  --border: var(--color-taupe-800);
+  --input: var(--color-taupe-800);
 }
 
 html[data-color-neutral='mauve'] {
-  --background: 0 0% 100%;
-  --foreground: 224 71.4% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 224 71.4% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 224 71.4% 4.1%;
-  --secondary: 220 14.3% 95.9%;
-  --secondary-foreground: 220.9 39.3% 11%;
-  --muted: 220 14.3% 95.9%;
-  --muted-foreground: 220 8.9% 46.1%;
-  --accent: 220 14.3% 95.9%;
-  --accent-foreground: 220.9 39.3% 11%;
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
+  --color-gray-50: var(--color-mauve-50);
+  --color-gray-100: var(--color-mauve-100);
+  --color-gray-200: var(--color-mauve-200);
+  --color-gray-300: var(--color-mauve-300);
+  --color-gray-400: var(--color-mauve-400);
+  --color-gray-500: var(--color-mauve-500);
+  --color-gray-600: var(--color-mauve-600);
+  --color-gray-700: var(--color-mauve-700);
+  --color-gray-800: var(--color-mauve-800);
+  --color-gray-900: var(--color-mauve-900);
+  --color-gray-950: var(--color-mauve-950);
+}
+
+html[data-color-neutral='mauve'] {
+  --background: var(--color-white);
+  --foreground: var(--color-mauve-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-mauve-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-mauve-950);
+  --secondary: var(--color-mauve-100);
+  --secondary-foreground: var(--color-mauve-900);
+  --muted: var(--color-mauve-100);
+  --muted-foreground: var(--color-mauve-500);
+  --accent: var(--color-mauve-100);
+  --accent-foreground: var(--color-mauve-900);
+  --border: var(--color-mauve-200);
+  --input: var(--color-mauve-200);
 }
 
 html.dark[data-color-neutral='mauve'],
 html[data-theme='dark'][data-color-neutral='mauve'] {
-  --background: 224 71.4% 4.1%;
-  --foreground: 210 20% 98%;
-  --card: 224 71.4% 4.1%;
-  --card-foreground: 210 20% 98%;
-  --popover: 224 71.4% 4.1%;
-  --popover-foreground: 210 20% 98%;
-  --secondary: 215 27.9% 16.9%;
-  --secondary-foreground: 210 20% 98%;
-  --muted: 215 27.9% 16.9%;
-  --muted-foreground: 217.9 10.6% 64.9%;
-  --accent: 215 27.9% 16.9%;
-  --accent-foreground: 210 20% 98%;
-  --border: 215 27.9% 16.9%;
-  --input: 215 27.9% 16.9%;
+  --background: var(--color-mauve-950);
+  --foreground: var(--color-mauve-50);
+  --card: var(--color-mauve-950);
+  --card-foreground: var(--color-mauve-50);
+  --popover: var(--color-mauve-950);
+  --popover-foreground: var(--color-mauve-50);
+  --secondary: var(--color-mauve-800);
+  --secondary-foreground: var(--color-mauve-50);
+  --muted: var(--color-mauve-800);
+  --muted-foreground: var(--color-mauve-400);
+  --accent: var(--color-mauve-800);
+  --accent-foreground: var(--color-mauve-50);
+  --border: var(--color-mauve-800);
+  --input: var(--color-mauve-800);
 }
 
 html[data-color-neutral='mist'] {
-  --color-gray-50: var(--color-slate-50);
-  --color-gray-100: var(--color-slate-100);
-  --color-gray-200: var(--color-slate-200);
-  --color-gray-300: var(--color-slate-300);
-  --color-gray-400: var(--color-slate-400);
-  --color-gray-500: var(--color-slate-500);
-  --color-gray-600: var(--color-slate-600);
-  --color-gray-700: var(--color-slate-700);
-  --color-gray-800: var(--color-slate-800);
-  --color-gray-900: var(--color-slate-900);
-  --color-gray-950: var(--color-slate-950);
+  --color-gray-50: var(--color-mist-50);
+  --color-gray-100: var(--color-mist-100);
+  --color-gray-200: var(--color-mist-200);
+  --color-gray-300: var(--color-mist-300);
+  --color-gray-400: var(--color-mist-400);
+  --color-gray-500: var(--color-mist-500);
+  --color-gray-600: var(--color-mist-600);
+  --color-gray-700: var(--color-mist-700);
+  --color-gray-800: var(--color-mist-800);
+  --color-gray-900: var(--color-mist-900);
+  --color-gray-950: var(--color-mist-950);
 }
 
 html[data-color-neutral='mist'] {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  --background: var(--color-white);
+  --foreground: var(--color-mist-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-mist-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-mist-950);
+  --secondary: var(--color-mist-100);
+  --secondary-foreground: var(--color-mist-900);
+  --muted: var(--color-mist-100);
+  --muted-foreground: var(--color-mist-500);
+  --accent: var(--color-mist-100);
+  --accent-foreground: var(--color-mist-900);
+  --border: var(--color-mist-200);
+  --input: var(--color-mist-200);
 }
 
 html.dark[data-color-neutral='mist'],
 html[data-theme='dark'][data-color-neutral='mist'] {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
+  --background: var(--color-mist-950);
+  --foreground: var(--color-mist-50);
+  --card: var(--color-mist-950);
+  --card-foreground: var(--color-mist-50);
+  --popover: var(--color-mist-950);
+  --popover-foreground: var(--color-mist-50);
+  --secondary: var(--color-mist-800);
+  --secondary-foreground: var(--color-mist-50);
+  --muted: var(--color-mist-800);
+  --muted-foreground: var(--color-mist-400);
+  --accent: var(--color-mist-800);
+  --accent-foreground: var(--color-mist-50);
+  --border: var(--color-mist-800);
+  --input: var(--color-mist-800);
 }
 
 html[data-color-neutral='olive'] {
-  --color-gray-50: var(--color-neutral-50);
-  --color-gray-100: var(--color-neutral-100);
-  --color-gray-200: var(--color-neutral-200);
-  --color-gray-300: var(--color-neutral-300);
-  --color-gray-400: var(--color-neutral-400);
-  --color-gray-500: var(--color-neutral-500);
-  --color-gray-600: var(--color-neutral-600);
-  --color-gray-700: var(--color-neutral-700);
-  --color-gray-800: var(--color-neutral-800);
-  --color-gray-900: var(--color-neutral-900);
-  --color-gray-950: var(--color-neutral-950);
+  --color-gray-50: var(--color-olive-50);
+  --color-gray-100: var(--color-olive-100);
+  --color-gray-200: var(--color-olive-200);
+  --color-gray-300: var(--color-olive-300);
+  --color-gray-400: var(--color-olive-400);
+  --color-gray-500: var(--color-olive-500);
+  --color-gray-600: var(--color-olive-600);
+  --color-gray-700: var(--color-olive-700);
+  --color-gray-800: var(--color-olive-800);
+  --color-gray-900: var(--color-olive-900);
+  --color-gray-950: var(--color-olive-950);
 }
 
 html[data-color-neutral='olive'] {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
+  --background: var(--color-white);
+  --foreground: var(--color-olive-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-olive-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-olive-950);
+  --secondary: var(--color-olive-100);
+  --secondary-foreground: var(--color-olive-900);
+  --muted: var(--color-olive-100);
+  --muted-foreground: var(--color-olive-500);
+  --accent: var(--color-olive-100);
+  --accent-foreground: var(--color-olive-900);
+  --border: var(--color-olive-200);
+  --input: var(--color-olive-200);
 }
 
 html.dark[data-color-neutral='olive'],
 html[data-theme='dark'][data-color-neutral='olive'] {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
+  --background: var(--color-olive-950);
+  --foreground: var(--color-olive-50);
+  --card: var(--color-olive-950);
+  --card-foreground: var(--color-olive-50);
+  --popover: var(--color-olive-950);
+  --popover-foreground: var(--color-olive-50);
+  --secondary: var(--color-olive-800);
+  --secondary-foreground: var(--color-olive-50);
+  --muted: var(--color-olive-800);
+  --muted-foreground: var(--color-olive-400);
+  --accent: var(--color-olive-800);
+  --accent-foreground: var(--color-olive-50);
+  --border: var(--color-olive-800);
+  --input: var(--color-olive-800);
 }
 
 html[data-radius='0'] {

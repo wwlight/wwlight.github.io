@@ -126,7 +126,7 @@ export function startAstroDev({ openPaths = [], labels = {} } = {}) {
       const url = `${base}${openPath.startsWith('/') ? openPath : `/${openPath}`}`
       const label = labels[openPath] ?? url
       console.log(`\n${label}\n`)
-      openBrowser(url)
+      openBrowser(url, { skipIfOpen: true })
     }
   })
 
