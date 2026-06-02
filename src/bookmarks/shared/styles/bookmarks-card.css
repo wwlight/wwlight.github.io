@@ -1,0 +1,29 @@
+/* 书签卡片：bg/border 读 theme --card / --border，随 Primary / Neutral 切换 */
+
+@layer components {
+  .bookmark-card {
+    @apply rounded-md border text-card-foreground shadow-sm;
+    border-color: var(--border);
+    background-color: var(--card);
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  .bookmark-card:hover {
+    border-color: color-mix(in oklab, var(--foreground) 10%, var(--border));
+    background-color: color-mix(in oklab, var(--accent) 25%, var(--card));
+    @apply shadow-md;
+  }
+
+  :is(.dark, html[data-theme='dark']) .bookmark-card {
+    @apply shadow-none;
+  }
+
+  :is(.dark, html[data-theme='dark']) .bookmark-card:hover {
+    border-color: color-mix(in oklab, var(--foreground) 14%, var(--border));
+    background-color: color-mix(in oklab, var(--muted) 35%, var(--card));
+    @apply shadow-none;
+  }
+}

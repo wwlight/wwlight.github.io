@@ -9,6 +9,6 @@ export const bookmarkGroupTitleClass =
 /** 卡片工具栏图标按钮 */
 export const cardIconClass = "text-muted-foreground hover:text-foreground hover:bg-accent";
 
-/** 导航页书签卡片外壳 */
+/** 导航页书签卡片外壳（见 shared/styles/bookmarks-card.css） */
 export const navBookmarkCardShellClass =
-  "group relative flex flex-col overflow-visible rounded-md border border-border/75 bg-card text-card-foreground shadow-sm transition-[background-color,border-color,box-shadow] duration-200 hover:border-foreground/10 hover:bg-accent/25 hover:shadow-md dark:border-border/50 dark:shadow-none dark:hover:border-foreground/12 dark:hover:bg-muted/35 dark:hover:shadow-none";
+  "bookmark-card group relative flex flex-col overflow-visible";

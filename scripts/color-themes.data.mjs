@@ -42,7 +42,7 @@ const CUSTOM_NEUTRAL_SCALE_CONFIG = {
   taupe: { base: 'stone', hue: 42, chromaScale: 1.35, chromaMin: 0.005 },
   mauve: { base: 'zinc', hue: 300, chromaScale: 1.45, chromaMin: 0.007 },
   mist: { base: 'slate', hue: 215, chromaScale: 0.55, chromaMin: 0.003 },
-  olive: { base: 'neutral', hue: 118, chromaScale: 1, chromaMin: 0.006 },
+  olive: { base: 'neutral', hue: 136, chromaScale: 0.72, chromaMin: 0.004 },
 }
 
 const ACCENT_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
@@ -216,7 +216,7 @@ function tailwindNeutralSurfaceTokens(scale, mode) {
   return {
     background: `var(--color-${scale}-950)`,
     foreground: `var(--color-${scale}-50)`,
-    card: `var(--color-${scale}-950)`,
+    card: `var(--color-${scale}-900)`,
     cardForeground: `var(--color-${scale}-50)`,
     popover: `var(--color-${scale}-950)`,
     popoverForeground: `var(--color-${scale}-50)`,
@@ -226,8 +226,8 @@ function tailwindNeutralSurfaceTokens(scale, mode) {
     mutedForeground: `var(--color-${scale}-400)`,
     accent: `var(--color-${scale}-800)`,
     accentForeground: `var(--color-${scale}-50)`,
-    border: `var(--color-${scale}-800)`,
-    input: `var(--color-${scale}-800)`,
+    border: `var(--color-${scale}-700)`,
+    input: `var(--color-${scale}-700)`,
   }
 }
 

@@ -521,7 +521,7 @@ html.dark[data-color-neutral='slate'],
 html[data-theme='dark'][data-color-neutral='slate'] {
   --background: var(--color-slate-950);
   --foreground: var(--color-slate-50);
-  --card: var(--color-slate-950);
+  --card: var(--color-slate-900);
   --card-foreground: var(--color-slate-50);
   --popover: var(--color-slate-950);
   --popover-foreground: var(--color-slate-50);
@@ -531,8 +531,8 @@ html[data-theme='dark'][data-color-neutral='slate'] {
   --muted-foreground: var(--color-slate-400);
   --accent: var(--color-slate-800);
   --accent-foreground: var(--color-slate-50);
-  --border: var(--color-slate-800);
-  --input: var(--color-slate-800);
+  --border: var(--color-slate-700);
+  --input: var(--color-slate-700);
 }
 
 html[data-color-neutral='gray'] {
@@ -556,7 +556,7 @@ html.dark[data-color-neutral='gray'],
 html[data-theme='dark'][data-color-neutral='gray'] {
   --background: var(--color-gray-950);
   --foreground: var(--color-gray-50);
-  --card: var(--color-gray-950);
+  --card: var(--color-gray-900);
   --card-foreground: var(--color-gray-50);
   --popover: var(--color-gray-950);
   --popover-foreground: var(--color-gray-50);
@@ -566,8 +566,8 @@ html[data-theme='dark'][data-color-neutral='gray'] {
   --muted-foreground: var(--color-gray-400);
   --accent: var(--color-gray-800);
   --accent-foreground: var(--color-gray-50);
-  --border: var(--color-gray-800);
-  --input: var(--color-gray-800);
+  --border: var(--color-gray-700);
+  --input: var(--color-gray-700);
 }
 
 html[data-color-neutral='zinc'] {
@@ -605,7 +605,7 @@ html.dark[data-color-neutral='zinc'],
 html[data-theme='dark'][data-color-neutral='zinc'] {
   --background: var(--color-zinc-950);
   --foreground: var(--color-zinc-50);
-  --card: var(--color-zinc-950);
+  --card: var(--color-zinc-900);
   --card-foreground: var(--color-zinc-50);
   --popover: var(--color-zinc-950);
   --popover-foreground: var(--color-zinc-50);
@@ -615,8 +615,8 @@ html[data-theme='dark'][data-color-neutral='zinc'] {
   --muted-foreground: var(--color-zinc-400);
   --accent: var(--color-zinc-800);
   --accent-foreground: var(--color-zinc-50);
-  --border: var(--color-zinc-800);
-  --input: var(--color-zinc-800);
+  --border: var(--color-zinc-700);
+  --input: var(--color-zinc-700);
 }
 
 html[data-color-neutral='neutral'] {
@@ -654,7 +654,7 @@ html.dark[data-color-neutral='neutral'],
 html[data-theme='dark'][data-color-neutral='neutral'] {
   --background: var(--color-neutral-950);
   --foreground: var(--color-neutral-50);
-  --card: var(--color-neutral-950);
+  --card: var(--color-neutral-900);
   --card-foreground: var(--color-neutral-50);
   --popover: var(--color-neutral-950);
   --popover-foreground: var(--color-neutral-50);
@@ -664,8 +664,8 @@ html[data-theme='dark'][data-color-neutral='neutral'] {
   --muted-foreground: var(--color-neutral-400);
   --accent: var(--color-neutral-800);
   --accent-foreground: var(--color-neutral-50);
-  --border: var(--color-neutral-800);
-  --input: var(--color-neutral-800);
+  --border: var(--color-neutral-700);
+  --input: var(--color-neutral-700);
 }
 
 html[data-color-neutral='stone'] {
@@ -703,7 +703,7 @@ html.dark[data-color-neutral='stone'],
 html[data-theme='dark'][data-color-neutral='stone'] {
   --background: var(--color-stone-950);
   --foreground: var(--color-stone-50);
-  --card: var(--color-stone-950);
+  --card: var(--color-stone-900);
   --card-foreground: var(--color-stone-50);
   --popover: var(--color-stone-950);
   --popover-foreground: var(--color-stone-50);
@@ -713,8 +713,8 @@ html[data-theme='dark'][data-color-neutral='stone'] {
   --muted-foreground: var(--color-stone-400);
   --accent: var(--color-stone-800);
   --accent-foreground: var(--color-stone-50);
-  --border: var(--color-stone-800);
-  --input: var(--color-stone-800);
+  --border: var(--color-stone-700);
+  --input: var(--color-stone-700);
 }
 
 html[data-color-neutral='taupe'] {
@@ -752,7 +752,7 @@ html.dark[data-color-neutral='taupe'],
 html[data-theme='dark'][data-color-neutral='taupe'] {
   --background: var(--color-taupe-950);
   --foreground: var(--color-taupe-50);
-  --card: var(--color-taupe-950);
+  --card: var(--color-taupe-900);
   --card-foreground: var(--color-taupe-50);
   --popover: var(--color-taupe-950);
   --popover-foreground: var(--color-taupe-50);
@@ -762,8 +762,8 @@ html[data-theme='dark'][data-color-neutral='taupe'] {
   --muted-foreground: var(--color-taupe-400);
   --accent: var(--color-taupe-800);
   --accent-foreground: var(--color-taupe-50);
-  --border: var(--color-taupe-800);
-  --input: var(--color-taupe-800);
+  --border: var(--color-taupe-700);
+  --input: var(--color-taupe-700);
 }
 
 html[data-color-neutral='mauve'] {
@@ -801,7 +801,7 @@ html.dark[data-color-neutral='mauve'],
 html[data-theme='dark'][data-color-neutral='mauve'] {
   --background: var(--color-mauve-950);
   --foreground: var(--color-mauve-50);
-  --card: var(--color-mauve-950);
+  --card: var(--color-mauve-900);
   --card-foreground: var(--color-mauve-50);
   --popover: var(--color-mauve-950);
   --popover-foreground: var(--color-mauve-50);
@@ -811,8 +811,8 @@ html[data-theme='dark'][data-color-neutral='mauve'] {
   --muted-foreground: var(--color-mauve-400);
   --accent: var(--color-mauve-800);
   --accent-foreground: var(--color-mauve-50);
-  --border: var(--color-mauve-800);
-  --input: var(--color-mauve-800);
+  --border: var(--color-mauve-700);
+  --input: var(--color-mauve-700);
 }
 
 html[data-color-neutral='mist'] {
@@ -850,7 +850,7 @@ html.dark[data-color-neutral='mist'],
 html[data-theme='dark'][data-color-neutral='mist'] {
   --background: var(--color-mist-950);
   --foreground: var(--color-mist-50);
-  --card: var(--color-mist-950);
+  --card: var(--color-mist-900);
   --card-foreground: var(--color-mist-50);
   --popover: var(--color-mist-950);
   --popover-foreground: var(--color-mist-50);
@@ -860,8 +860,8 @@ html[data-theme='dark'][data-color-neutral='mist'] {
   --muted-foreground: var(--color-mist-400);
   --accent: var(--color-mist-800);
   --accent-foreground: var(--color-mist-50);
-  --border: var(--color-mist-800);
-  --input: var(--color-mist-800);
+  --border: var(--color-mist-700);
+  --input: var(--color-mist-700);
 }
 
 html[data-color-neutral='olive'] {
@@ -899,7 +899,7 @@ html.dark[data-color-neutral='olive'],
 html[data-theme='dark'][data-color-neutral='olive'] {
   --background: var(--color-olive-950);
   --foreground: var(--color-olive-50);
-  --card: var(--color-olive-950);
+  --card: var(--color-olive-900);
   --card-foreground: var(--color-olive-50);
   --popover: var(--color-olive-950);
   --popover-foreground: var(--color-olive-50);
@@ -909,8 +909,8 @@ html[data-theme='dark'][data-color-neutral='olive'] {
   --muted-foreground: var(--color-olive-400);
   --accent: var(--color-olive-800);
   --accent-foreground: var(--color-olive-50);
-  --border: var(--color-olive-800);
-  --input: var(--color-olive-800);
+  --border: var(--color-olive-700);
+  --input: var(--color-olive-700);
 }
 
 html[data-radius='0'] {

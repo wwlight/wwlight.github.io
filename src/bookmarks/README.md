@@ -26,7 +26,7 @@
 | `shared/data/` | `queries`、`page-data`、`serialize` |
 | `shared/lib/` | `search`、`stats`、`section-helpers`、`toolbar-ui`、`badge-variants`、`favicon` |
 | `shared/components/` | `BookmarkFavicon`、`BookmarkPageHeader`、`BookmarkSettingsIcon`、`BookmarkStatsCards`、`UserAvatar` |
-| `shared/styles/` | `bookmarks-theme-shared.css` |
+| `shared/styles/` | `bookmarks-theme-shared.css`、`bookmarks-card.css`（卡片 `--card` / `--border`） |
 | `nav/` | 导航 `/bookmarks/nav/`：React 组件与页面样式 |
 | `admin/` | 管理端 `/bookmarks/admin/`：鉴权、API、编辑 UI、admin 样式 |
 | `admin/lib/` | `admin-auth`、`admin-api`、`admin-helpers`、`admin-api.server` 等 |

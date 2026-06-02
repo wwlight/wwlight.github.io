@@ -21,9 +21,10 @@ export function BookmarkAddTile({ onClick, className }: BookmarkAddTileProps) {
         }
       }}
       className={cn(
+        "bookmark-card",
         bookmarkCardShellClass,
         adminBookmarkCardHeightClass,
-        "h-full cursor-pointer items-center justify-center gap-1 border-dashed border-border/80 bg-muted/15 text-muted-foreground shadow-none transition-colors hover:border-primary/35 hover:bg-accent/35 hover:text-foreground",
+        "h-full cursor-pointer items-center justify-center gap-1 border-dashed bg-muted/15 text-muted-foreground shadow-none hover:border-primary/35 hover:bg-accent/35 hover:text-foreground",
         className,
       )}
     >

@@ -5,3 +5,4 @@
 @import '@/styles/overlay-panel.css';
 @import '@/styles/shadcn-theme.css';
 @import '@/theme/styles/index.css';
+@import '@/bookmarks/shared/styles/bookmarks-card.css';

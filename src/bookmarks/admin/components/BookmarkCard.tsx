@@ -52,7 +52,7 @@ export function BookmarkCard({
       onDragEnd={dragEnabled ? onDragEnd : undefined}
       aria-label={dragEnabled ? `拖拽：${bookmark.title}` : undefined}
       className={cn(
-        "admin-bookmark-card",
+        "bookmark-card admin-bookmark-card",
         bookmarkCardShellClass,
         adminBookmarkCardHeightClass,
         "h-full",

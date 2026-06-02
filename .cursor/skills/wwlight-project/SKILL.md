@@ -84,7 +84,9 @@ Node.js **24**（`.node-version`）。`vp` / `vpr` 约定见 [dev-foundation/vit
 | 生成 | `vpr generate:color-themes`、`vpr generate:theme-init`（改 `scripts/color-themes.data.mjs` 后必跑） |
 | API | `import { … } from '@/theme'` |
 
-默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。色值均引用 Tailwind `--color-*`：Primary 亮 `500` / 暗 `400`；Neutral 9 项（五档 + 扩展 taupe/mauve/mist/olive 独立 oklch 色阶）。View Transition 长页已滚动时会 `lockDocumentScroll`（`color-mode.ts`），并加 `html.theme-transitioning` 暂停子元素 transition。
+默认：Primary `green`、Neutral `slate`、Radius `0.25`、Color Mode `system`（对齐 [Nuxt UI](https://ui.nuxt.com/docs/getting-started/theme/design-system)）。色值均引用 Tailwind `--color-*`：Primary 亮 `500` / 暗 `400`；Neutral 9 项（五档 + 扩展 `taupe`/`mauve`/`mist`/`olive`，oklch 见 `neutral-scales.css`，规则在 `color-themes.data.mjs` 的 `CUSTOM_NEUTRAL_SCALE_CONFIG`）。暗色 Neutral 表面：`--background` 950、`--card` 900、`--border`/`--input` 700（卡片与背景分层）。View Transition 长页已滚动时会 `lockDocumentScroll`（`color-mode.ts`），并加 `html.theme-transitioning` 暂停子元素 transition。
+
+定制器 chrome：`customizer-ui.css`（`data-theme-surface` + `--theme-ui-*`）；Panel 选项 hover/选中仍见 `customizer/surface.ts`。Black 色块用 `--theme-primary-swatch-black`（`customizer-trigger.css`）。
 
 ## 书签模块要点
 
@@ -103,6 +105,7 @@ Node.js **24**（`.node-version`）。`vp` / `vpr` 约定见 [dev-foundation/vit
 - 数据流：`db/data/bookmarks.ts` → `db/seed.ts` → Astro DB → 导航页/管理端
 - 管理端 API 仅 dev 可用
 - 鉴权：`PUBLIC_BOOKMARKS_ADMIN_HASH`
+- **书签卡片**：共用 `shared/styles/bookmarks-card.css` 的 `.bookmark-card`（`--card` / `--border`，随 Neutral 切换）；nav/admin 卡片壳挂该类，勿再写 `border-border/50` 等硬编码透明度
 
 ## 依赖管理（pnpm catalog）
 
@@ -134,7 +137,7 @@ Node.js **24**（`.node-version`）。`vp` / `vpr` 约定见 [dev-foundation/vit
 | 暗色变体 | `@custom-variant dark`（`.dark` + `[data-theme='dark']`） |
 | 主题圆角工具类 | `theme-r-sm` … `theme-r-xl`（`src/theme/styles/radius.css`） |
 
-Starlight 变量（`--sl-color-*`）无 shadcn 别名时用 `bg-(--sl-color-black)` 等；书签页优先 `bg-card`、`text-foreground`、`border-border`。
+Starlight 变量（`--sl-color-*`）无 shadcn 别名时用 `bg-(--sl-color-black)` 等；书签页优先 `bg-card`、`text-foreground`、`border-border`；书签卡片用 `.bookmark-card`（见上）。
 
 ### 滚动条
 
