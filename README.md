@@ -62,8 +62,8 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | `db/data/bookmarks.ts` | 唯一可提交数据源 |
 | `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
 
-> [!TIP] 本地使用
-> 本地编辑 `/bookmarks/admin/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
+> [!TIP]
+> **本地使用**：编辑 `/bookmarks/admin/`，保存至 `db/data/bookmarks.ts`。首次 `vpr dev:admin` 从 `.env.example` 生成 `.env` 并设置密码。
 
 | 变量 | 说明 |
 | ---- | ---- |
@@ -74,10 +74,11 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | 登录               |  ✅  |  ✅  |
 | 增删改 / 排序 / 版本 |  ✅  |  ❌  |
 
-> [!CAUTION] 注意
-> 哈希打进前端 bundle，仅作门控，非服务端鉴权。
+> [!CAUTION]
+> **注意**：哈希打进前端 bundle，仅作门控，非服务端鉴权。
 
-> [!NOTE] 部署与流程
+> [!NOTE]
+> **部署与流程**
 > - 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
 > - 静态站点不可保存，数据随 `vpr build` 发布
 > - 流程：`vpr dev:admin` → commit `db/data/bookmarks.ts` → push
@@ -126,19 +127,13 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 ## Vibe Coding
 
-本仓库用 [Cursor](https://cursor.com) 做 AI 辅助开发（Vibe Coding）。`.cursor/` 里放了 **Rules** 与 **Skills**，让 Agent 改代码前先对齐项目约定，减少「猜架构、改过头」。
+Cursor 约定见 [CURSOR.md](CURSOR.md)。Rules 自动生效；Agent 每轮先读 `.cursor/skills/wwlight-project/SKILL.md`。
 
 | 路径 | 用途 |
 | ---- | ---- |
-| `.cursor/rules/wwlight-project.mdc` | 每轮任务先读项目 skill；脚本用 `vp` / `vpr`；依赖走 pnpm catalog |
-| `.cursor/rules/karpathy-guidelines.mdc` | 编码行为准则：先想清楚、最小改动、可验证目标 |
-| `.cursor/skills/wwlight-project/SKILL.md` | 目录结构、Starlight / 书签 / Mermaid / 主题等；主题细节以 [`src/theme/README.md`](src/theme/README.md) 为准 |
-| `.cursor/skills/dev-foundation/SKILL.md` | **开发基础** 通用：结构优化、技术说明写法、子文件索引 |
-| `.cursor/skills/dev-foundation/tailwindcss.md` | Tailwind v4：方括号、`(--var)` 简写；本仓库接入见 wwlight skill |
-| `.cursor/skills/dev-foundation/vite-plus.md` | Vite+ `vp` / `vpr` 与 pnpm catalog 约定 |
-| `.cursor/skills/wwlight-project/paths.md` | path alias 与 pages 路由（本书唯一说明处） |
-| `.cursor/skills/karpathy-guidelines/SKILL.md` | 上述准则的完整版 |
+| `.cursor/rules/wwlight-project.mdc` | 项目硬性约定 |
+| `.cursor/rules/karpathy-guidelines.mdc` | 最小改动、可验证目标 |
+| `.cursor/skills/wwlight-project/` | 入口 skill（含路径/路由） |
+| `.cursor/skills/dev-foundation/` | 重构、Tailwind、vp/vpr、文档写法 |
 
-**本地使用：** 用 Cursor 打开仓库即可；Rules 会自动生效，Skills 在相关任务时由 Agent 按需读取。
-
-**协作提示：** 大改前可在对话里 `@` 引用 skill 或说明范围；只有明确要求时才提交 commit。博客 [`src/content/docs/blog/`](/src/content/docs/blog/) 含 [书签系列](/src/content/docs/blog/bookmarks/) 与 [Astro 使用](/src/content/docs/blog/astro/) 等目录，可与 Agent 对照使用。
+模块细节：`src/theme/README.md`、`src/bookmarks/README.md`。

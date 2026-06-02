@@ -5,7 +5,7 @@
 - 仓库总览：[README.md](../../README.md#书签管理端)
 - Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「书签模块要点」
 - 结构优化：`.cursor/skills/dev-foundation/SKILL.md`
-- **路由与 path alias（唯一说明）**：`.cursor/skills/wwlight-project/paths.md`
+- **路由与 path alias**：`.cursor/skills/wwlight-project/SKILL.md` → **路径/路由**
 
 ## 模块范围（模块外）
 
@@ -13,7 +13,7 @@
 | --- | --- |
 | `db/data/bookmarks.ts` | 唯一可提交数据源 |
 | `db/config.ts` / `db/seed.ts` | Astro DB 表与 seed |
-| `src/pages/bookmarks/nav.astro` | 导航页 Astro 薄入口 → `/bookmarks/nav/`（旧 `/bookmarks/` 已 301，见 paths.md） |
+| `src/pages/bookmarks/nav.astro` | 导航页 Astro 薄入口 → `/bookmarks/nav/`（旧 `/bookmarks/` 已 301） |
 | `src/pages/bookmarks/admin.astro` | 管理端 Astro 薄入口 → `/bookmarks/admin/` |
 | `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
 | `src/components/HeaderBookmarksLink.astro` | Starlight 顶栏入口 |
