@@ -13,6 +13,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 ## 范围
 
 - Astro 静态站中的 React 岛屿与 Starlight 并存
+- 与 `@/theme` 全站 Primary / Neutral / Radius、明暗同步
 - Astro DB + `db/data/bookmarks.ts` 数据源与 seed
 - 静态部署下 dev 中间件写回 TS、线上只读
 
@@ -52,7 +53,7 @@ flowchart TB
 | --- | --- | --- |
 | 框架 | Astro 6 + Starlight | 文档站 SSG、页面路由 |
 | 交互 | React 19 | 书签导航页与管理端 UI |
-| 样式 | Tailwind CSS 4 + shadcn 风格组件 | 统一主题、表单与对话框 |
+| 样式 | Tailwind CSS 4 + shadcn + `@/theme` token | `bookmarks-theme-shared.css`、`.bookmark-card` |
 | 数据 | Astro DB + `db/data/bookmarks.ts` | 构建时 seed，运行时查询 |
 | 管理端 API | Vite dev middleware | 开发态写回 TS 文件 |
 
@@ -67,4 +68,4 @@ flowchart TB
   <LinkCard title="06 · 开发 API 与部署流程" href="/blog/bookmarks/06-dev-api-and-deploy/" description="Vite 中间件、版本历史、本地编辑到上线" />
 </CardGrid>
 
-局部文档见 [`src/bookmarks/README.md`](https://github.com/wwlight/wwlight.github.io/blob/main/src/bookmarks/README.md)。Astro / Starlight 见 [Astro 使用](/blog/astro/)。
+局部文档见 [`src/bookmarks/README.md`](https://github.com/wwlight/wwlight.github.io/blob/main/src/bookmarks/README.md)。主题定制见 [主题系列](/blog/theme/)；Astro / Starlight 见 [Astro 使用](/blog/astro/)。

@@ -78,7 +78,12 @@ Starlight 文档页不包 Provider；明暗完全靠 init + Panel 的 Color Mode
 
 触发器、Popover、Panel 选项共用 `--theme-ui-*` 语义变量；Starlight / 书签差异写在 `[data-theme-surface='starlight'|'bookmarks']`，由触发器与 Popover 根节点挂载 `data-theme-surface={variant}`。
 
-`trigger-classes.ts`、`surface.ts` 只引用 token（如 `bg-(--theme-ui-trigger-bg)`），不再在 TS 里分支 `--sl-color-*` vs shadcn class。
+`trigger-classes.ts` 只引用 `--theme-ui-*` token（如 `bg-(--theme-ui-trigger-bg)`）。Panel 内 Primary / Neutral / Radius 选项的 hover / 选中在 `surface.ts`：
+
+| 表面 | 未选中 hover | 选中 |
+| --- | --- | --- |
+| `starlight` | `hover:bg-[var(--sl-color-gray-6)]` | accent 边框 + `bg-[var(--sl-color-accent-low)]` |
+| `bookmarks` | `hover:bg-accent/50` | `border-primary bg-primary/10` |
 
 扩展新表面：
 
@@ -86,6 +91,10 @@ Starlight 文档页不包 Provider；明暗完全靠 init + Panel 的 Color Mode
 2. 在 `customizer-ui.css` 增加 `[data-theme-surface='…']` token 块
 3. 组件挂 `data-theme-surface`
 4. 选择 Trigger 模式（静态+Astro Popover 或纯 React）
+
+## 书签卡片（`bookmarks-card.css`）
+
+导航 / 管理端卡片挂 `.bookmark-card`（`src/bookmarks/shared/styles/bookmarks-card.css`），`background-color: var(--card)`、`border-color: var(--border)`，由 neutral 块的 surface token 驱动（暗色 `--card` 为 900 step、`--border` 为 700 step）。勿用 `border-border/50` 等 opacity 叠层，否则暗色下边框几乎不可见。
 
 ## 样式加载链
 

@@ -56,7 +56,8 @@
     "eslint-plugin-astro": "catalog:devtools",
     "eslint-plugin-format": "catalog:devtools",
     "lint-staged": "catalog:devtools",
-    "simple-git-hooks": "catalog:devtools"
+    "simple-git-hooks": "catalog:devtools",
+    "vite": "catalog:build"
   },
   "simple-git-hooks": {
     "pre-commit": "node node_modules/lint-staged/bin/lint-staged.js"

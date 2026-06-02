@@ -32,8 +32,8 @@ import { Steps, FileTree } from '@astrojs/starlight/components';
     - types.ts — Section / Card / Bookmark 领域类型
     - data/ — queries、page-data、serialize
     - lib/ — 搜索、统计、Tab、favicon、badge
-    - components/ — BookmarkFavicon、PageHeader、StatsCards
-    - styles/ — bookmarks-theme-shared.css
+    - components/ — BookmarkFavicon、BookmarkPageHeader、BookmarkSettingsIcon、StatsCards
+    - styles/ — bookmarks-theme-shared.css、bookmarks-card.css
   - nav/
     - components/ — NavBookmarksPage、卡片与 Tab
     - styles/ — bookmarks-page.css
@@ -51,7 +51,7 @@ import { Steps, FileTree } from '@astrojs/starlight/components';
 
 </FileTree>
 
-文档站与书签模块 **共享 Header 主题**，但书签页 **不走 Starlight 布局**——独立 Astro 页面挂载 React 根组件，导航页可全宽布局。
+文档站与书签模块 **共用 `@/theme` 全站偏好**（`wwlight:color-*` + `init.inline.js`），但书签页 **不走 Starlight 布局**——独立 Astro 页面挂载 React 根组件，导航页可全宽布局。
 
 ## 数据流
 

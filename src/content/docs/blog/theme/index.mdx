@@ -13,7 +13,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 ## 范围
 
 - `html[data-theme]` / `data-color-*` / `data-radius` 驱动 CSS token
-- `scripts/color-themes.data.mjs` 生成 `color-tokens.css` 与选项清单
+- `scripts/color-themes.data.mjs` 生成 `neutral-scales.css`、`color-tokens.css` 与选项清单
 - Starlight `--sl-color-*` 与书签 shadcn `--primary` / `--background` 双轨消费
 - 首屏内联 `init.inline.js`、运行时 `@/theme` API、定制器 UI
 
@@ -32,7 +32,8 @@ flowchart TB
   end
 
   subgraph css["样式"]
-    Tokens["color-tokens.css<br/>生成"]
+    Scales["neutral-scales.css<br/>扩展 neutral @theme"]
+    Tokens["color-tokens.css<br/>primary / neutral / radius"]
     Shadcn["shadcn-theme.css<br/>@theme inline"]
     SL["Starlight accent<br/>--color-accent-*"]
   end
@@ -46,7 +47,9 @@ flowchart TB
   LS --> Init
   Legacy --> Init
   Init --> DOM
+  DOM --> Scales
   DOM --> Tokens
+  Scales --> Shadcn
   Tokens --> SL
   Tokens --> Shadcn
   Panel --> LS
@@ -61,11 +64,11 @@ flowchart TB
 | 状态落点 | `document.documentElement` 的 `data-*` | CSS 选择器直接驱动 token，SSR/CSR 一致 |
 | 配色清单 | 单文件 `color-themes.data.mjs` + 生成 CSS | 18 primary × 9 neutral × 5 radius 组合不宜手写 |
 | Primary 色阶 | Nuxt UI 约定：亮 `500` / 暗 `400` | 与 Tailwind 色板对齐，Black 特殊反转 |
-| 书签组件色 | shadcn 语义变量（HSL） | Radix + Tailwind `@theme inline` 消费 |
+| 书签组件色 | shadcn 语义变量（Tailwind `--color-*` step） | Radix + `@theme inline` 消费 |
 | Starlight 强调色 | `--color-accent-*` 映射 primary | 侧栏、链接、搜索框跟随 primary |
 | 明暗动画 | View Transition API + 圆形 clip-path | 点击位置揭示；`prefers-reduced-motion` 降级 |
 | 首屏脚本 | 内联 IIFE（生成） | 避免 FOUC；书签页无 Starlight head 需单独注入 |
-| 跨表面 UI | `ThemeSurface` 硬编码两套 Tailwind | 未抽共享 token（见 04 篇） |
+| 跨表面 UI | `customizer-ui.css` + `surface.ts` | 触发器 chrome 用 `--theme-ui-*`；Panel 选项 hover 分表面 |
 
 ## 文章列表
 

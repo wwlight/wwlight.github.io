@@ -12,8 +12,9 @@ sidebar:
 ```text
 BookmarksAdmin（ThemeProvider 根）
 └── BookmarksAdminApp（登录门控）
+    ├── AdminGateShell + ColorThemePicker（未登录）
     └── AdminApp（主编辑界面）
-        ├── AdminHeaderActions（保存 / 导出 / 版本 / 退出）
+        ├── AdminHeaderActions（ColorThemePicker + 保存 / 导出 / 版本 / 退出）
         ├── AdminStats
         ├── SectionTabsNav + TabsContent
         │   └── BookmarkSectionPanel
@@ -54,7 +55,7 @@ BookmarksAdmin（ThemeProvider 根）
 
 删除前 `sectionCanDelete` / `cardCanDelete` 检查是否至少保留一个 bookmark，防止存空数据。
 
-新增书签通过 `BookmarkAddTile` 占位卡片触发，`insertBookmark` 工具函数插入并 `normalizeSortOrders`。
+新增书签通过 `BookmarkAddTile` 占位卡片触发（`.bookmark-card`），`insertBookmark` 工具函数插入并 `normalizeSortOrders`。编辑态 `BookmarkCard` 同样挂 `bookmark-card`，与导航页共用 theme 的 `--card` / `--border`。
 
 ## 拖拽排序
 
@@ -94,10 +95,11 @@ downloadTextFile("bookmarks.ts", serializeBookmarkSections(sections));
 
 - **Radix UI**：Dialog、Tabs、Select、Tooltip
 - **sonner**：操作 toast
-- **lucide-react**：图标
+- **lucide-react**：操作区图标；管理端入口用 `BookmarkSettingsIcon`
+- **`ColorThemePicker`**：顶栏与登录页，与文档站同一 theme 状态
 - **Tailwind + cn()**：与导航页一致的语义样式
 
-样式入口 `src/bookmarks/admin/styles/admin.css`，根节点 `.admin-root` 隔离于 Starlight。
+样式入口 `src/bookmarks/admin/styles/admin.css`（经 `bookmarks-app.css` → `bookmarks-theme-shared.css`），根节点 `.admin-root` 隔离于 Starlight。拖拽态额外用 `.admin-bookmark-card--dragging`。
 
 ## 练习：只读预览模式
 

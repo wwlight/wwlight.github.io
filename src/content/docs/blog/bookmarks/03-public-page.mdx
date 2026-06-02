@@ -15,8 +15,10 @@ import { Steps } from '@astrojs/starlight/components';
 ---
 // src/pages/bookmarks/nav.astro
 import { NavBookmarksPage } from '@/bookmarks/nav/components/NavBookmarksPage.tsx'
-import { getBookmarkSections } from '@/bookmarks/shared/data/queries'
 import { serializeBookmarkSectionsForPage } from '@/bookmarks/shared/data/page-data'
+import { getBookmarkSections } from '@/bookmarks/shared/data/queries'
+import themeInitScript from '@/theme/scripts/init.inline.js?raw'
+import '@/bookmarks/nav/styles/bookmarks-page.css'
 
 const sections = await getBookmarkSections()
 const sectionsJson = serializeBookmarkSectionsForPage(sections)
@@ -25,7 +27,9 @@ const sectionsJson = serializeBookmarkSectionsForPage(sections)
 <!doctype html>
 <html lang="zh-CN">
   <head>
+    <meta charset="UTF-8" />
     <title>书签导航 · wwlight</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" data-wwlight-favicon />
     <script is:inline set:html={themeInitScript} />
   </head>
   <body>
@@ -63,14 +67,16 @@ export function readBookmarkSectionsFromPage(): BookmarkSectionData[] {
 
 ```text
 NavBookmarksPage
-└── ThemeProvider（与 Starlight 共用 localStorage key）
+└── ThemeProvider（@/theme，与文档站同一 storage 键）
     └── NavBookmarks
-        ├── 标题 + 统计 + NavPageActions（返回文档 / 管理端链接）
-        ├── 搜索框
+        ├── BookmarkPageHeader + NavPageActions
+        │   └── ColorThemePicker / 返回博客 / 管理端（BookmarkSettingsIcon）
+        ├── BookmarkStatsCards + 搜索框
         └── Tabs（按 Section 切换）
             └── NavSectionPanel
                 └── NavBookmarkCardGroup
-                    └── NavBookmarkCard
+                    └── NavBookmarkCard（.bookmark-card）
+    └── BackToTop
 ```
 
 ## 搜索与过滤
@@ -79,9 +85,20 @@ NavBookmarksPage
 
 ## 主题一致
 
-`ThemeProvider` 使用 `storageKey="starlight-theme"`，与文档站读写同一 localStorage。页面 head 内联 `theme-init.inline.js`，在 CSS 加载前设置 `data-theme`，避免闪白。
+head 内联 `@/theme/scripts/init.inline.js?raw`，在 CSS 前写入 `data-theme` / `data-color-*`，避免 FOUC。`ThemeProvider`（`@/theme/components/Provider`）mount 时 `syncSiteThemeFromStorage()`，并订阅 `subscribeSiteThemeStorage`——与 Starlight 顶栏定制器读写同一套 `wwlight:color-mode` 等键（见 [主题系列](/blog/theme/03-color-mode-and-sync/)）。
 
-样式在 `src/bookmarks/nav/styles/bookmarks-page.css`，复用 shadcn 语义色变量（`--background`、`--muted-foreground` 等）。
+顶栏 `NavPageActions` 挂 `ColorThemePicker`（`variant=bookmarks`），管理端入口用 `BookmarkSettingsIcon` 而非通用 Cog 图标。
+
+样式链：
+
+```text
+bookmarks-page.css
+  → bookmarks-nav-app.css
+  → bookmarks-theme-shared.css（Tailwind + shadcn-theme + @/theme/styles/index.css）
+  → bookmarks-card.css（.bookmark-card 读 --card / --border）
+```
+
+卡片勿用 `border-border/50` 等 opacity 叠层，暗色下边框会几乎不可见。
 
 ## 搭一个最小导航页
 
@@ -112,6 +129,7 @@ NavBookmarksPage
 
 - `BookmarkSectionData` 类型
 - `filterBookmarkSections` / `clampSelectedSection` 等工具
+- `.bookmark-card`（`shared/styles/bookmarks-card.css`）
 - shadcn 风格 `Input`、`Tabs`、`Card`
 
 管理端在此基础上叠加编辑、拖拽、对话框——见 [05 · 管理端 UI](/blog/bookmarks/05-admin-ui/)。

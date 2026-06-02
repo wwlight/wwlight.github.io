@@ -4,9 +4,3 @@ command = "pnpm build"
 
 [build.environment]
 NODE_VERSION = "24"
-
-[[redirects]]
-from = "/blog/starlight/*"
-to = "/blog/astro/:splat"
-status = 301
-force = true
