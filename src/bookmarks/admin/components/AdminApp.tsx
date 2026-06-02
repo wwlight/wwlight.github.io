@@ -49,17 +49,24 @@ import {
   persistTransferStationDock,
   persistTransferStationItems,
   clearTransferStationStorage,
+  computeDragPointerToCardCenterOffset,
+  followTransferStationDockToCard,
+  isSameTransferStationDock,
   readDragPayloadData,
   restoreTransferBookmark,
   resolveTransferInsertIndex,
-  resolveTransferStationSide,
+  resolveTransferStationEdgeFlipSide,
+  resolveTransferStationSideFromPanel,
+  TRANSFER_STATION_MAX_ITEMS,
   sectionCanDelete,
   sectionsEqual,
   STORAGE_KEY,
   swapBookmarks,
   takeBookmarkForTransfer,
   transferStationHasBookmark,
+  transferStationIsFull,
   type StationDragPayload,
+  type TransferStationDockState,
   type TransferStationItem,
   type TransferStationSide,
   writeDragPayloadData,
@@ -70,6 +77,9 @@ import type { BookmarkData, BookmarkSectionData } from "@/bookmarks/shared/types
 import { migrateAllLegacyStorageKeys } from "@/lib/site-storage";
 import { cn } from "@/lib/utils";
 import { useAdminDragEnabled } from "@/lib/use-admin-drag-enabled";
+
+const STATION_IDLE_HIDE_MS = 10_000;
+const STATION_DISMISS_MS = 320;
 
 interface AdminAppProps {
   initialSections: BookmarkSectionData[];
@@ -171,33 +181,98 @@ export function AdminApp({
   });
   const [hadTransferDraft] = useState(() => loadTransferStationItems().length > 0);
   const [transferDropActive, setTransferDropActive] = useState(false);
-  const [stationReveal, setStationReveal] = useState(false);
-  const [stationSide, setStationSide] = useState<TransferStationSide>(
-    () => loadTransferStationDock().side,
+  const [dock, setDock] = useState<TransferStationDockState>(() => loadTransferStationDock());
+  const [stationVisible, setStationVisible] = useState(() => loadTransferStationItems().length > 0);
+  const [stationDismissing, setStationDismissing] = useState(false);
+  const [stationSideFlipping, setStationSideFlipping] = useState(false);
+  const [stationEntering, setStationEntering] = useState(false);
+  const [stationPanelExpanded, setStationPanelExpanded] = useState(
+    () => loadTransferStationItems().length > 0,
   );
+  const stationDismissTimerRef = useRef<number | null>(null);
+  const stationSideFlipTimerRef = useRef<number | null>(null);
+  const stationSideFlippingRef = useRef(false);
+  const stationVisibleRef = useRef(stationVisible);
+  const stationDismissingRef = useRef(stationDismissing);
   const [dragApproachSide, setDragApproachSide] = useState<TransferStationSide | null>(null);
   const dragPayloadRef = useRef<DragPayload | null>(null);
   const dragSessionPayloadRef = useRef<DragPayload | null>(null);
   const dragOriginXRef = useRef<number | null>(null);
   const dragOriginYRef = useRef<number | null>(null);
+  const dragCardPointerToCenterYRef = useRef<number | null>(null);
   const stationPanelRef = useRef<HTMLElement | null>(null);
+  const modulePanelRef = useRef<HTMLDivElement | null>(null);
   const transferItemsRef = useRef(transferItems);
   const sectionsRef = useRef(sections);
+  const dockRef = useRef(dock);
+  const transferDropDepthRef = useRef(0);
+  const transferFullToastShownRef = useRef(false);
+  const pendingDragPayloadFrameRef = useRef<number | null>(null);
   const dragEnabled = useAdminDragEnabled();
 
   transferItemsRef.current = transferItems;
   sectionsRef.current = sections;
+  dockRef.current = dock;
+  stationVisibleRef.current = stationVisible;
+  stationDismissingRef.current = stationDismissing;
+
+  function setDockPosition(next: TransferStationDockState) {
+    if (isSameTransferStationDock(next, dockRef.current)) return;
+    dockRef.current = next;
+    setDock(next);
+  }
+
+  function commitDockPosition(next?: TransferStationDockState) {
+    if (next && !isSameTransferStationDock(next, dockRef.current)) {
+      dockRef.current = next;
+      setDock(next);
+    }
+    persistTransferStationDock(dockRef.current);
+  }
+
+  function handleDockChange(next: TransferStationDockState) {
+    setDockPosition(next);
+  }
+
+  function handleDockCommit() {
+    commitDockPosition();
+  }
+
+  function flipTransferStationToSide(nextSide: TransferStationSide) {
+    if (dockRef.current.side === nextSide) return;
+    if (stationSideFlippingRef.current) return;
+
+    cancelStationDismiss();
+    setStationEntering(false);
+    if (!stationVisibleRef.current) {
+      setStationVisible(true);
+    }
+
+    stationSideFlippingRef.current = true;
+    setStationSideFlipping(true);
+
+    stationSideFlipTimerRef.current = window.setTimeout(() => {
+      stationSideFlipTimerRef.current = null;
+      commitDockPosition({ ...dockRef.current, side: nextSide });
+      setStationSideFlipping(false);
+      setStationEntering(true);
+      stationSideFlippingRef.current = false;
+    }, STATION_DISMISS_MS);
+  }
 
   function replaceTransferItems(next: TransferStationItem[]) {
     persistTransferStationItems(next);
     setTransferItems(next);
   }
 
-  function appendTransferItem(item: TransferStationItem) {
+  function prependTransferItem(item: TransferStationItem) {
     if (transferStationHasBookmark(transferItemsRef.current, item.bookmark.url)) {
       return false;
     }
-    replaceTransferItems([...transferItemsRef.current, item]);
+    if (transferStationIsFull(transferItemsRef.current)) {
+      return false;
+    }
+    replaceTransferItems([item, ...transferItemsRef.current]);
     return true;
   }
 
@@ -209,19 +284,129 @@ export function AdminApp({
     return transferItemsRef.current.find((entry) => entry.id === id) ?? null;
   }
 
-  function handleStationSideChange(next: TransferStationSide) {
-    setStationSide(next);
-    const dock = loadTransferStationDock();
-    persistTransferStationDock({ ...dock, side: next });
+  function cancelStationSideFlip() {
+    if (stationSideFlipTimerRef.current != null) {
+      window.clearTimeout(stationSideFlipTimerRef.current);
+      stationSideFlipTimerRef.current = null;
+    }
+    stationSideFlippingRef.current = false;
+    setStationSideFlipping(false);
+    setStationEntering(false);
   }
 
-  const forceStationExpanded =
-    transferItems.length > 0 ||
-    transferDropActive ||
-    stationReveal ||
-    (Boolean(dragPayload && isGridDragPayload(dragPayload)) && dragApproachSide === stationSide);
+  function cancelStationDismiss() {
+    if (stationDismissTimerRef.current != null) {
+      window.clearTimeout(stationDismissTimerRef.current);
+      stationDismissTimerRef.current = null;
+    }
+    setStationDismissing(false);
+  }
+
+  function wakeStationForApproach() {
+    cancelStationDismiss();
+    setStationEntering(false);
+    setStationVisible(true);
+  }
+
+  function showStation() {
+    cancelStationDismiss();
+    if (!stationVisible) {
+      setStationEntering(true);
+    }
+    setStationVisible(true);
+  }
+
+  function beginStationDismiss() {
+    if (!stationVisible || stationDismissing) return;
+    setStationDismissing(true);
+    stationDismissTimerRef.current = window.setTimeout(() => {
+      stationDismissTimerRef.current = null;
+      setStationVisible(false);
+      setStationDismissing(false);
+    }, STATION_DISMISS_MS);
+  }
+
+  function handleStationPanelExpandedChange(expanded: boolean) {
+    setStationPanelExpanded(expanded);
+    if (expanded) showStation();
+  }
+
+  function syncDragCardCenterOffset(event: React.DragEvent<HTMLElement>) {
+    const card =
+      event.currentTarget.closest<HTMLElement>("[data-bookmark-card]") ?? event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    dragCardPointerToCenterYRef.current = computeDragPointerToCardCenterOffset(
+      event.clientY,
+      rect,
+    );
+  }
+
+  function applyDragApproach(
+    side: TransferStationSide,
+    clientY: number,
+  ) {
+    setDragApproachSide(side);
+    wakeStationForApproach();
+    setDockPosition(
+      followTransferStationDockToCard(
+        dockRef.current,
+        side,
+        clientY,
+        dragCardPointerToCenterYRef.current,
+        window.innerHeight,
+        { snap: false },
+      ),
+    );
+  }
+
+  const applyDragApproachRef = useRef(applyDragApproach);
+  const beginStationDismissRef = useRef(beginStationDismiss);
+  applyDragApproachRef.current = applyDragApproach;
+  beginStationDismissRef.current = beginStationDismiss;
+
+  function maybeToastTransferStationFull() {
+    if (!transferStationIsFull(transferItemsRef.current)) return;
+    if (transferFullToastShownRef.current) return;
+    transferFullToastShownRef.current = true;
+    toast.message(`中转站最多 ${TRANSFER_STATION_MAX_ITEMS} 个书签`);
+  }
+
+  function syncTransferStationDockToCard(clientY: number) {
+    setDockPosition(
+      followTransferStationDockToCard(
+        dockRef.current,
+        dockRef.current.side,
+        clientY,
+        dragCardPointerToCenterYRef.current,
+        window.innerHeight,
+        { snap: false },
+      ),
+    );
+  }
+
+  const gridDragPayload =
+    parseDragPayload(dragSessionPayloadRef.current) ??
+    (dragPayload && isGridDragPayload(dragPayload) ? dragPayload : null);
+  const gridDragging = Boolean(dragEnabled && gridDragPayload && isGridDragPayload(gridDragPayload));
+  const dragApproaching = Boolean(gridDragging && dragApproachSide != null);
+  const forceStationExpanded = transferDropActive || dragApproaching;
   const draggingStationItemId =
     dragPayload && isStationDragPayload(dragPayload) ? dragPayload.itemId : null;
+
+  function cancelPendingDragPayloadFrame() {
+    if (pendingDragPayloadFrameRef.current == null) return;
+    cancelAnimationFrame(pendingDragPayloadFrameRef.current);
+    pendingDragPayloadFrameRef.current = null;
+  }
+
+  function scheduleDragPayloadSync(payload: DragPayload) {
+    cancelPendingDragPayloadFrame();
+    pendingDragPayloadFrameRef.current = requestAnimationFrame(() => {
+      pendingDragPayloadFrameRef.current = null;
+      if (dragSessionPayloadRef.current !== payload) return;
+      setDragPayload(payload);
+    });
+  }
 
   function setActiveDragPayload(payload: DragPayload | null) {
     dragSessionPayloadRef.current = payload;
@@ -230,32 +415,43 @@ export function AdminApp({
   }
 
   function clearActiveDragPayload() {
+    cancelPendingDragPayloadFrame();
     disableStationDropPassthrough();
     dragSessionPayloadRef.current = null;
     dragPayloadRef.current = null;
     dragOriginXRef.current = null;
     dragOriginYRef.current = null;
+    dragCardPointerToCenterYRef.current = null;
     setDragPayload(null);
     setDropTarget(null);
     setSwapHover(null);
     setInsertHover(null);
     setTransferDropActive(false);
     setDragApproachSide(null);
+    transferDropDepthRef.current = 0;
+    transferFullToastShownRef.current = false;
+    commitDockPosition();
   }
 
   function clearDragUiState() {
+    cancelPendingDragPayloadFrame();
+    dragSessionPayloadRef.current = null;
     dragPayloadRef.current = null;
+    dragCardPointerToCenterYRef.current = null;
     setDragPayload(null);
     setDropTarget(null);
     setSwapHover(null);
     setInsertHover(null);
     setTransferDropActive(false);
     setDragApproachSide(null);
+    transferDropDepthRef.current = 0;
+    transferFullToastShownRef.current = false;
   }
 
   function scheduleClearActiveDragPayload() {
+    cancelPendingDragPayloadFrame();
     requestAnimationFrame(() => {
-      clearDragUiState();
+      clearActiveDragPayload();
     });
   }
 
@@ -277,64 +473,108 @@ export function AdminApp({
   }, [dragPayload]);
 
   useEffect(() => {
-    if (!dragEnabled || !dragPayload) {
-      setDragApproachSide(null);
+    if (transferItems.length > 0) {
+      showStation();
       return;
     }
-    if (!isGridDragPayload(dragPayload) && !isStationDragPayload(dragPayload)) {
-      setDragApproachSide(null);
+
+    if (transferDropActive || draggingStationItemId || dragApproaching) {
+      wakeStationForApproach();
       return;
     }
+
+    if (!stationVisible || stationDismissing) return;
+
+    const timer = window.setTimeout(() => beginStationDismiss(), STATION_IDLE_HIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [
+    transferItems.length,
+    transferDropActive,
+    draggingStationItemId,
+    dragApproaching,
+    stationVisible,
+    stationDismissing,
+  ]);
+
+  useEffect(() => {
+    if (!stationEntering) return;
+    const frame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setStationEntering(false));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [stationEntering]);
+
+  useEffect(() => {
+    return () => {
+      cancelStationDismiss();
+      cancelStationSideFlip();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!dragEnabled) return;
+
+    function onDoubleClick(event: MouseEvent) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest("input, textarea, select, button, a, [contenteditable='true']")) return;
+
+      const nextSide = resolveTransferStationEdgeFlipSide(
+        dockRef.current.side,
+        event.clientX,
+        window.innerWidth,
+      );
+      if (!nextSide) return;
+
+      event.preventDefault();
+      flipTransferStationToSide(nextSide);
+    }
+
+    document.addEventListener("dblclick", onDoubleClick, true);
+    return () => {
+      document.removeEventListener("dblclick", onDoubleClick, true);
+    };
+  }, [dragEnabled]);
+
+  useEffect(() => {
+    if (!dragEnabled) return;
 
     function onDragOver(event: DragEvent) {
+      const payload = parseDragPayload(dragSessionPayloadRef.current);
+      if (!payload || !isGridDragPayload(payload)) return;
+
       event.preventDefault();
 
-      const originX = dragOriginXRef.current;
-      const originY = dragOriginYRef.current;
-      if (originX == null || originY == null) return;
+      const target = event.target;
+      if (target instanceof Node && stationPanelRef.current?.contains(target)) return;
 
-      const resolvedSide = resolveTransferStationSide(
-        event.clientX,
-        event.clientY,
-        originX,
-        originY,
-        window.innerWidth,
-        window.innerHeight,
-      );
+      const panel = modulePanelRef.current?.getBoundingClientRect();
+      if (!panel) return;
 
+      const resolvedSide = resolveTransferStationSideFromPanel(event.clientX, panel);
       if (resolvedSide) {
-        handleStationSideChange(resolvedSide);
-        if (isGridDragPayload(dragPayloadRef.current ?? dragPayload)) {
-          setStationReveal(true);
-        }
-        setDragApproachSide(resolvedSide);
+        applyDragApproachRef.current(resolvedSide, event.clientY);
         return;
       }
 
-      const deltaX = event.clientX - originX;
-      const deltaY = event.clientY - originY;
-      if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-        if (deltaX <= -20) setDragApproachSide("left");
-        else if (deltaX >= 20) setDragApproachSide("right");
-        else setDragApproachSide(null);
-      } else {
-        if (deltaY <= -20) setDragApproachSide("top");
-        else if (deltaY >= 20) setDragApproachSide("bottom");
-        else setDragApproachSide(null);
-      }
+      setDragApproachSide((prev) => {
+        if (prev == null) return null;
+        if (
+          transferItemsRef.current.length === 0 &&
+          stationVisibleRef.current &&
+          !stationDismissingRef.current
+        ) {
+          beginStationDismissRef.current();
+        }
+        return null;
+      });
     }
 
-    document.addEventListener("dragover", onDragOver);
+    document.addEventListener("dragover", onDragOver, true);
     return () => {
-      document.removeEventListener("dragover", onDragOver);
-      setDragApproachSide(null);
+      document.removeEventListener("dragover", onDragOver, true);
     };
-  }, [dragPayload, dragEnabled]);
-
-  useEffect(() => {
-    if (dragPayload) return;
-    setStationReveal(false);
-  }, [dragPayload]);
+  }, [dragEnabled]);
 
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
@@ -718,50 +958,62 @@ export function AdminApp({
   function handleTransferStationDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     event.stopPropagation();
+    transferDropDepthRef.current = 0;
     setTransferDropActive(false);
 
-    const payload = readDragPayload(event);
-    if (!payload || !isGridDragPayload(payload)) return;
+    try {
+      const payload = readDragPayload(event);
+      if (!payload || !isGridDragPayload(payload)) return;
 
-    const sourceBookmark =
-      sectionsRef.current[payload.sectionIndex]?.cards[payload.cardIndex]?.bookmarks[
-        payload.bookmarkIndex
-      ];
-    if (!sourceBookmark) return;
+      const sourceBookmark =
+        sectionsRef.current[payload.sectionIndex]?.cards[payload.cardIndex]?.bookmarks[
+          payload.bookmarkIndex
+        ];
+      if (!sourceBookmark) return;
 
-    if (transferStationHasBookmark(transferItemsRef.current, sourceBookmark.url)) {
-      toast.message("该书签已在中转站中");
-      clearActiveDragPayload();
-      return;
-    }
+      if (transferStationIsFull(transferItemsRef.current)) {
+        toast.message(`中转站最多 ${TRANSFER_STATION_MAX_ITEMS} 个书签`);
+        return;
+      }
 
-    const next = cloneSections(sectionsRef.current);
-    const bookmark = takeBookmarkForTransfer(next, payload);
-    if (!bookmark) return;
+      if (transferStationHasBookmark(transferItemsRef.current, sourceBookmark.url)) {
+        toast.message("该书签已在中转站中");
+        return;
+      }
 
-    const item: TransferStationItem = {
-      id: crypto.randomUUID(),
-      bookmark,
-      from: payload,
-    };
+      const next = cloneSections(sectionsRef.current);
+      const bookmark = takeBookmarkForTransfer(next, payload);
+      if (!bookmark) return;
 
-    normalizeSortOrders(next);
-    persistDraft(next);
-    setSections(next);
+      const item: TransferStationItem = {
+        id: crypto.randomUUID(),
+        bookmark,
+        from: payload,
+      };
 
-    if (!appendTransferItem(item)) {
-      restoreTransferBookmark(next, bookmark, payload);
       normalizeSortOrders(next);
       persistDraft(next);
       setSections(next);
-      toast.message("该书签已在中转站中");
-      clearActiveDragPayload();
-      return;
-    }
 
-    setStationReveal(true);
-    toast.success("已加入中转站");
-    clearActiveDragPayload();
+      if (!prependTransferItem(item)) {
+        restoreTransferBookmark(next, bookmark, payload);
+        normalizeSortOrders(next);
+        persistDraft(next);
+        setSections(next);
+        toast.message(
+          transferStationIsFull(transferItemsRef.current)
+            ? `中转站最多 ${TRANSFER_STATION_MAX_ITEMS} 个书签`
+            : "该书签已在中转站中",
+        );
+        return;
+      }
+
+      showStation();
+      setStationPanelExpanded(true);
+      toast.success("已加入中转站");
+    } finally {
+      clearActiveDragPayload();
+    }
   }
 
   function removeTransferItem(id: string) {
@@ -779,6 +1031,7 @@ export function AdminApp({
   function clearAllTransferItems() {
     if (transferItemsRef.current.length === 0) return;
     restoreAllTransferItemsToSections();
+    setStationPanelExpanded(false);
     toast.message("已清空中转站");
   }
 
@@ -830,20 +1083,21 @@ export function AdminApp({
 
     dragOriginXRef.current = event.clientX;
     dragOriginYRef.current = event.clientY;
+    syncDragCardCenterOffset(event);
     const payload: StationDragPayload = { source: "station", itemId };
     dragSessionPayloadRef.current = payload;
     dragPayloadRef.current = payload;
     event.dataTransfer.effectAllowed = "move";
     writeDragPayloadData(event.dataTransfer, payload);
-    // 延迟更新 UI，避免 dragStart 同步 re-render / pointer-events 变化取消拖拽
+    scheduleDragPayloadSync(payload);
     requestAnimationFrame(() => {
-      setDragPayload(payload);
       enableStationDropPassthrough();
     });
   }
 
   function handleStationDragEnd() {
     disableStationDropPassthrough();
+    cancelPendingDragPayloadFrame();
     requestAnimationFrame(() => {
       // drop 先于 dragend；session 仍在表示未成功放入分组
       if (dragSessionPayloadRef.current && isStationDragPayload(dragSessionPayloadRef.current)) {
@@ -854,6 +1108,17 @@ export function AdminApp({
     });
   }
 
+  function handleTransferStationDragEnter(event: React.DragEvent<HTMLDivElement>) {
+    const payload = parseDragPayload(dragSessionPayloadRef.current);
+    if (payload && isStationDragPayload(payload)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    transferDropDepthRef.current += 1;
+    setTransferDropActive(true);
+    showStation();
+  }
+
   function handleTransferStationDragOver(event: React.DragEvent<HTMLDivElement>) {
     const payload = parseDragPayload(dragSessionPayloadRef.current);
     if (payload && isStationDragPayload(payload)) {
@@ -861,16 +1126,32 @@ export function AdminApp({
       return;
     }
 
+    if (transferStationIsFull(transferItemsRef.current)) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = "none";
+      maybeToastTransferStationFull();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = "move";
+    syncTransferStationDockToCard(event.clientY);
+    if (transferDropDepthRef.current === 0) {
+      transferDropDepthRef.current = 1;
+    }
     setTransferDropActive(true);
-    setStationReveal(true);
+    showStation();
   }
 
   function handleTransferStationDragLeave(event: React.DragEvent<HTMLDivElement>) {
+    const related = event.relatedTarget;
+    if (related instanceof Node && event.currentTarget.contains(related)) return;
+
     event.stopPropagation();
-    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+    transferDropDepthRef.current = Math.max(0, transferDropDepthRef.current - 1);
+    if (transferDropDepthRef.current === 0) {
       setTransferDropActive(false);
     }
   }
@@ -978,7 +1259,7 @@ export function AdminApp({
     <AdminDialogProvider>
     <TooltipProvider delayDuration={300}>
     <div className="bookmarks-app min-h-screen p-4 md:p-6">
-      <div className="mx-auto max-w-6xl space-y-4">
+      <div ref={modulePanelRef} className="mx-auto max-w-6xl space-y-4">
       <BookmarkPageHeader
         title="书签管理后台"
         description={
@@ -1044,18 +1325,20 @@ export function AdminApp({
               className="mt-4"
             >
               <BookmarkSectionPanel section={section}>
-                  {visibleCards.length === 0 ? (
+                  {section.cards.length === 0 ? (
                     <p className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-                      {normalizedSearch
-                        ? "没有匹配的书签"
-                        : "暂无分组，请在「结构管理」中新增分组"}
+                      暂无分组，请在「结构管理」中新增分组
+                    </p>
+                  ) : visibleCards.length === 0 ? (
+                    <p className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
+                      没有匹配的书签
                     </p>
                   ) : (
                     visibleCards.map(({ card, cardIndex: cIndex, bookmarks: visibleBookmarks }) => (
                       <BookmarkCardGroup
                         key={card.title + cIndex}
                         title={card.title}
-                        showTitle={visibleCards.length > 1}
+                        showTitle={visibleCards.length > 1 || visibleBookmarks.length === 0}
                         dropZoneClassName={cn(
                           dragEnabled &&
                             dragPayload &&
@@ -1130,7 +1413,7 @@ export function AdminApp({
                         onDrop={dragEnabled ? (e) => handleDrop(e, sIndex, cIndex) : undefined}
                       >
                         {visibleBookmarks.map(({ bookmark, bookmarkIndex: bIndex }) => {
-                            const activePayload = parseDragPayload(dragPayloadRef.current ?? dragPayload);
+                            const activePayload = parseDragPayload(dragPayload);
                             const isDraggingHost =
                               activePayload != null &&
                               isGridDragPayload(activePayload) &&
@@ -1197,11 +1480,11 @@ export function AdminApp({
                                           dragPayloadRef.current = payload;
                                           dragOriginXRef.current = e.clientX;
                                           dragOriginYRef.current = e.clientY;
+                                          transferFullToastShownRef.current = false;
+                                          syncDragCardCenterOffset(e);
                                           e.dataTransfer.effectAllowed = "move";
                                           writeDragPayloadData(e.dataTransfer, payload);
-                                          requestAnimationFrame(() => {
-                                            setDragPayload(payload);
-                                          });
+                                          scheduleDragPayloadSync(payload);
                                         }
                                       : () => {}
                                   }
@@ -1295,18 +1578,26 @@ export function AdminApp({
       />
       </div>
 
-      {dragEnabled ? (
+      {dragEnabled && (stationVisible || dragApproaching) ? (
         <DragTransferStation
           items={transferItems}
-          side={stationSide}
+          dock={dock}
           dragEnabled={dragEnabled}
           gripEnabled={dragEnabled}
           dropActive={transferDropActive}
-          gridDragging={Boolean(dragEnabled && dragPayload && isGridDragPayload(dragPayload))}
+          gridDragging={gridDragging}
+          dragApproaching={dragApproaching}
           forceExpanded={forceStationExpanded}
+          panelExpanded={stationPanelExpanded}
+          onPanelExpandedChange={handleStationPanelExpandedChange}
+          entering={stationEntering}
+          dismissing={stationDismissing}
+          sideFlipping={stationSideFlipping}
           draggingItemId={draggingStationItemId}
           panelRef={stationPanelRef}
-          onSideChange={handleStationSideChange}
+          onDockChange={handleDockChange}
+          onDockCommit={handleDockCommit}
+          onDragEnter={handleTransferStationDragEnter}
           onDragOver={handleTransferStationDragOver}
           onDragLeave={handleTransferStationDragLeave}
           onDrop={handleTransferStationDrop}
@@ -1314,42 +1605,6 @@ export function AdminApp({
           onClearAll={clearAllTransferItems}
           onItemDragStart={handleStationDragStart}
           onItemDragEnd={handleStationDragEnd}
-        />
-      ) : null}
-      {dragEnabled &&
-      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
-      !forceStationExpanded &&
-      dragApproachSide === "left" ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-y-0 left-0 z-10 hidden w-2 bg-linear-to-r from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
-        />
-      ) : null}
-      {dragEnabled &&
-      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
-      !forceStationExpanded &&
-      dragApproachSide === "right" ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-y-0 right-0 z-10 hidden w-2 bg-linear-to-l from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
-        />
-      ) : null}
-      {dragEnabled &&
-      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
-      !forceStationExpanded &&
-      dragApproachSide === "top" ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-x-0 top-0 z-10 hidden h-2 bg-linear-to-b from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
-        />
-      ) : null}
-      {dragEnabled &&
-      Boolean(dragPayload && isGridDragPayload(dragPayload)) &&
-      !forceStationExpanded &&
-      dragApproachSide === "bottom" ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-10 hidden h-2 bg-linear-to-t from-[color-mix(in_oklab,var(--ring)_28%,transparent)] to-transparent md:block"
         />
       ) : null}
     </div>

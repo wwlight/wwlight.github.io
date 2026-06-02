@@ -18,12 +18,6 @@ export default defineConfig({
   },
   redirects: {
     '/bookmarks': '/bookmarks/nav/',
-    '/blog/starlight': '/blog/astro/',
-    '/blog/starlight/': '/blog/astro/',
-    '/blog/starlight/01-site-navigation': '/blog/astro/01-site-navigation/',
-    '/blog/starlight/01-site-navigation/': '/blog/astro/01-site-navigation/',
-    '/blog/starlight/02-hero': '/blog/astro/02-hero/',
-    '/blog/starlight/02-hero/': '/blog/astro/02-hero/',
   },
   markdown: {
     syntaxHighlight: {

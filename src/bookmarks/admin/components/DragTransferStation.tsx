@@ -1,41 +1,49 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeftRight, X } from "lucide-react";
+import { X } from "lucide-react";
 import { BookmarkFavicon } from "@/bookmarks/shared/components/BookmarkFavicon";
 import { TransferStationHeader } from "@/bookmarks/admin/components/TransferStationHeader";
+import { useTransferStationPanelMotion } from "@/bookmarks/admin/hooks/useTransferStationPanelMotion";
 import {
-  adminDropZoneHoverClass,
   setAdminDragImage,
 } from "@/bookmarks/admin/components/ui-helpers";
-import type { TransferStationItem, TransferStationSide } from "@/bookmarks/admin/lib/admin-helpers";
+import type {
+  TransferStationDockState,
+  TransferStationItem,
+  TransferStationSide,
+} from "@/bookmarks/admin/lib/admin-helpers";
 import {
-  getTransferStationDockMorphTargetStyle,
   getTransferStationDockPositionStyle,
-  isTransferStationVerticalSide,
-  loadTransferStationDock,
-  persistTransferStationDock,
-  resolveTransferStationDockSideFromAngle,
+  estimateTransferStationPanelHeight,
+  estimateTransferStationPanelWidth,
   snapTransferStationDockPoint,
+  TRANSFER_STATION_VIEWPORT_INSET_PX,
 } from "@/bookmarks/admin/lib/admin-helpers";
 import { cn } from "@/lib/utils";
 
 const ITEM_ENTER_MS = 300;
 const ITEM_LEAVE_MS = 260;
-const HOVER_COLLAPSE_DELAY_MS = 30_000;
-const EDGE_MORPH_MS = 400;
-const DOCK_SIDE_CONFIRM_FRAMES = 2;
+const DOCK_POINTER_DRAG_THRESHOLD_PX = 5;
 
 interface DragTransferStationProps {
   items: TransferStationItem[];
-  side: TransferStationSide;
+  dock: TransferStationDockState;
   dragEnabled: boolean;
   gripEnabled: boolean;
   dropActive: boolean;
   gridDragging: boolean;
+  dragApproaching: boolean;
   forceExpanded: boolean;
+  panelExpanded: boolean;
+  onPanelExpandedChange: (expanded: boolean) => void;
+  entering?: boolean;
+  dismissing?: boolean;
+  sideFlipping?: boolean;
   draggingItemId: string | null;
   panelRef?: RefObject<HTMLElement | null>;
-  onSideChange: (side: TransferStationSide) => void;
+  onDockChange: (next: TransferStationDockState) => void;
+  onDockCommit?: () => void;
+  onDragEnter: (event: React.DragEvent<HTMLDivElement>) => void;
   onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
   onDragLeave: (event: React.DragEvent<HTMLDivElement>) => void;
   onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
@@ -52,37 +60,9 @@ interface AnimatedRow {
   phase: ItemPhase;
 }
 
-const tabEmphasis = {
-  border: "border-primary/35",
-  panel: "from-primary/28 via-primary/14 to-primary/6",
-  watermark: "text-primary/22",
-} as const;
-
 function transferDropHint(side: TransferStationSide, gridDragging: boolean) {
   if (gridDragging) return "拖入此处";
-  switch (side) {
-    case "left":
-      return "向左拖入书签";
-    case "right":
-      return "向右拖入书签";
-    case "top":
-      return "向上拖入书签";
-    case "bottom":
-      return "向下拖入书签";
-  }
-}
-
-function measureDockNaturalSize(element: HTMLElement) {
-  const prevWidth = element.style.width;
-  const prevHeight = element.style.height;
-  element.style.removeProperty("width");
-  element.style.removeProperty("height");
-  const size = { width: element.offsetWidth, height: element.offsetHeight };
-  if (prevWidth) element.style.width = prevWidth;
-  else element.style.removeProperty("width");
-  if (prevHeight) element.style.height = prevHeight;
-  else element.style.removeProperty("height");
-  return size;
+  return side === "left" ? "向左拖入书签" : "向右拖入书签";
 }
 
 function useAnimatedTransferItems(items: TransferStationItem[]) {
@@ -92,8 +72,6 @@ function useAnimatedTransferItems(items: TransferStationItem[]) {
   const leaveTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
-    const nextIds = new Set(items.map((item) => item.id));
-
     setRows((prev) => {
       const seen = new Set<string>();
       const next: AnimatedRow[] = [];
@@ -210,6 +188,7 @@ function TransferStationItemRow({
         aria-label={gripEnabled ? `拖出：${item.bookmark.title}` : undefined}
         className={cn(
           "transfer-station-item-card group flex select-none items-center gap-2 rounded-md border bg-card px-2 py-1.5 text-card-foreground shadow",
+          side === "left" && "flex-row-reverse",
           gripEnabled && [
             "cursor-grab hover:cursor-grab active:cursor-grabbing",
             "[&_*:not(button)]:cursor-[inherit]",
@@ -219,7 +198,14 @@ function TransferStationItemRow({
         )}
       >
         <BookmarkFavicon url={item.bookmark.url} className="size-7 shrink-0 rounded-md" />
-        <p className="min-w-0 flex-1 truncate text-sm font-medium leading-snug">{item.bookmark.title}</p>
+        <p
+          className={cn(
+            "min-w-0 flex-1 truncate text-sm font-medium leading-snug",
+            side === "left" && "text-right",
+          )}
+        >
+          {item.bookmark.title}
+        </p>
         <button
           type="button"
           aria-label="移出中转站"
@@ -235,15 +221,23 @@ function TransferStationItemRow({
 
 export function DragTransferStation({
   items,
-  side,
+  dock,
   dragEnabled,
   gripEnabled,
   dropActive,
   gridDragging,
+  dragApproaching,
   forceExpanded,
+  panelExpanded,
+  onPanelExpandedChange,
+  entering = false,
+  dismissing = false,
+  sideFlipping = false,
   draggingItemId,
   panelRef,
-  onSideChange,
+  onDockChange,
+  onDockCommit,
+  onDragEnter,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -252,115 +246,84 @@ export function DragTransferStation({
   onItemDragStart,
   onItemDragEnd,
 }: DragTransferStationProps) {
+  const { side } = dock;
   const animatedRows = useAnimatedTransferItems(items);
-  const vertical = isTransferStationVerticalSide(side);
-  const showDropHint = dragEnabled && gridDragging && dropActive;
   const emptyDropTarget = dragEnabled && gridDragging && items.length === 0;
   const showEmpty = animatedRows.length === 0;
 
   const asideRef = useRef<HTMLElement>(null);
-  const dockRef = useRef(loadTransferStationDock());
-  const draggingOffsetRef = useRef({ x: 0, y: 0 });
-  const sideRef = useRef(side);
-  const onSideChangeRef = useRef(onSideChange);
-  const edgeMorphLockRef = useRef(false);
-  const edgeMorphTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const morphFromRectRef = useRef<DOMRect | null>(null);
-  const pendingSideRef = useRef<TransferStationSide | null>(null);
-  const pendingSideFramesRef = useRef(0);
-  const prevSideRef = useRef(side);
-  const [dockPoint, setDockPoint] = useState(() => ({
-    left: dockRef.current.left,
-    top: dockRef.current.top,
-  }));
+  const dockRef = useRef(dock);
+  const onDockChangeRef = useRef(onDockChange);
+  const onDockCommitRef = useRef(onDockCommit);
   const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
-  const [hovered, setHovered] = useState(false);
   const [dockDragging, setDockDragging] = useState(false);
-  const [edgeMorph, setEdgeMorph] = useState(false);
-  const hoverLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [dockPointerActive, setDockPointerActive] = useState(false);
+  const [approachSnap, setApproachSnap] = useState(false);
+  const [approachFollowReady, setApproachFollowReady] = useState(false);
+  const dockPointerSessionRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    dragging: boolean;
+  } | null>(null);
 
-  const hasItems = items.length > 0;
-  const expanded = hovered || dockDragging || forceExpanded || hasItems;
-  const tabStyle = tabEmphasis;
+  const panelOpen = panelExpanded || forceExpanded;
+  const panelLocked = forceExpanded;
+  const dockFollowing = dragApproaching && panelOpen && !dockDragging && approachFollowReady;
+  const panelOpenRef = useRef(panelOpen);
+  const itemsLengthRef = useRef(items.length);
 
-  sideRef.current = side;
-  onSideChangeRef.current = onSideChange;
+  const { bodyWrapRef, bodyWrapHeight, panelInstant } = useTransferStationPanelMotion({
+    panelOpen,
+    forceExpanded,
+    dragApproaching,
+    contentRevision: showEmpty ? items.length : items.length + 1000,
+  });
+
+  dockRef.current = dock;
+  onDockChangeRef.current = onDockChange;
+  onDockCommitRef.current = onDockCommit;
+  panelOpenRef.current = panelOpen;
+  itemsLengthRef.current = items.length;
+
+  useLayoutEffect(() => {
+    if (!dragApproaching) {
+      setApproachSnap(false);
+      setApproachFollowReady(false);
+      return;
+    }
+
+    setApproachSnap(true);
+    setApproachFollowReady(false);
+
+    const frame = window.requestAnimationFrame(() => {
+      setApproachSnap(false);
+      setApproachFollowReady(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [dragApproaching, dock.side]);
 
   const refreshDockPosition = useCallback(() => {
-    if (edgeMorphLockRef.current) return;
-    const element = asideRef.current;
-    if (!element) return;
+    const panelHeight = estimateTransferStationPanelHeight(items.length, panelOpen);
+    const panelWidth = estimateTransferStationPanelWidth(panelOpen);
+    const anchor = gridDragging && (dropActive || dragApproaching) ? "panel-center" : "icon-row";
+
     setPositionStyle({
       ...getTransferStationDockPositionStyle(
-        side,
-        dockPoint.left,
-        dockPoint.top,
-        element.offsetWidth,
-        element.offsetHeight,
+        dock.side,
+        dock.top,
+        panelWidth,
+        panelHeight,
         window.innerWidth,
         window.innerHeight,
+        TRANSFER_STATION_VIEWPORT_INSET_PX,
+        anchor,
       ),
       width: undefined,
       height: undefined,
     });
-  }, [side, dockPoint.left, dockPoint.top]);
-
-  const finishEdgeMorph = useCallback(() => {
-    edgeMorphLockRef.current = false;
-    setEdgeMorph(false);
-    refreshDockPosition();
-  }, [refreshDockPosition]);
-
-  const startEdgeMorph = useCallback(
-    (fromRect: DOMRect) => {
-      edgeMorphLockRef.current = true;
-      setEdgeMorph(true);
-      if (edgeMorphTimerRef.current) clearTimeout(edgeMorphTimerRef.current);
-
-      setPositionStyle({
-        left: fromRect.left,
-        top: fromRect.top,
-        width: fromRect.width,
-        height: fromRect.height,
-        right: "auto",
-        bottom: "auto",
-      });
-
-      requestAnimationFrame(() => {
-        const element = asideRef.current;
-        if (!element) return;
-        const { width, height } = measureDockNaturalSize(element);
-        setPositionStyle(
-          getTransferStationDockMorphTargetStyle(
-            side,
-            dockPoint.left,
-            dockPoint.top,
-            width,
-            height,
-            window.innerWidth,
-            window.innerHeight,
-          ),
-        );
-      });
-
-      edgeMorphTimerRef.current = setTimeout(() => {
-        edgeMorphTimerRef.current = null;
-        finishEdgeMorph();
-      }, EDGE_MORPH_MS);
-    },
-    [side, dockPoint.left, dockPoint.top, finishEdgeMorph],
-  );
-
-  const commitDockSideChange = useCallback((nextSide: TransferStationSide) => {
-    if (nextSide === sideRef.current) return;
-    const element = asideRef.current;
-    if (element) {
-      morphFromRectRef.current = element.getBoundingClientRect();
-    }
-    sideRef.current = nextSide;
-    dockRef.current = { ...dockRef.current, side: nextSide };
-    onSideChangeRef.current(nextSide);
-  }, []);
+  }, [dock.side, dock.top, items.length, panelOpen, gridDragging, dropActive, dragApproaching]);
 
   const assignAsideRef = useCallback(
     (node: HTMLElement | null) => {
@@ -371,31 +334,9 @@ export function DragTransferStation({
   );
 
   useLayoutEffect(() => {
-    dockRef.current = { ...dockRef.current, side };
-  }, [side]);
-
-  useLayoutEffect(() => {
-    if (prevSideRef.current === side) return;
-
-    const fromRect = morphFromRectRef.current;
-    morphFromRectRef.current = null;
-    if (fromRect) {
-      startEdgeMorph(fromRect);
-    }
-
-    prevSideRef.current = side;
-  }, [side, startEdgeMorph]);
-
-  useLayoutEffect(() => {
+    if (dockPointerActive) return;
     refreshDockPosition();
-  }, [side, dockPoint.left, dockPoint.top, expanded, items.length, refreshDockPosition]);
-
-  useEffect(() => {
-    return () => {
-      if (hoverLeaveTimerRef.current) clearTimeout(hoverLeaveTimerRef.current);
-      if (edgeMorphTimerRef.current) clearTimeout(edgeMorphTimerRef.current);
-    };
-  }, []);
+  }, [dock.side, dock.top, panelOpen, items.length, dragApproaching, dockPointerActive, refreshDockPosition]);
 
   useEffect(() => {
     function handleResize() {
@@ -407,120 +348,88 @@ export function DragTransferStation({
   }, [refreshDockPosition]);
 
   useEffect(() => {
-    if (!dockDragging) return;
+    if (!dockPointerActive) return;
 
     function handlePointerMove(event: PointerEvent) {
-      if (edgeMorphLockRef.current) return;
+      const session = dockPointerSessionRef.current;
+      if (!session || event.pointerId !== session.pointerId) return;
 
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const anchorX = event.clientX - draggingOffsetRef.current.x;
-      const anchorY = event.clientY - draggingOffsetRef.current.y;
-      const nextSide = resolveTransferStationDockSideFromAngle(
-        anchorX,
-        anchorY,
-        viewportWidth,
-        viewportHeight,
-        sideRef.current,
-      );
-      const nextLeft = snapTransferStationDockPoint((anchorX / viewportWidth) * 100);
-      const nextTop = snapTransferStationDockPoint((anchorY / viewportHeight) * 100);
-
-      if (nextSide !== sideRef.current) {
-        if (pendingSideRef.current === nextSide) {
-          pendingSideFramesRef.current += 1;
-        } else {
-          pendingSideRef.current = nextSide;
-          pendingSideFramesRef.current = 1;
-        }
-        if (pendingSideFramesRef.current >= DOCK_SIDE_CONFIRM_FRAMES) {
-          commitDockSideChange(nextSide);
-          pendingSideRef.current = null;
-          pendingSideFramesRef.current = 0;
-          dockRef.current = { side: nextSide, left: nextLeft, top: nextTop };
-          setDockPoint({ left: nextLeft, top: nextTop });
-          return;
-        }
-      } else {
-        pendingSideRef.current = null;
-        pendingSideFramesRef.current = 0;
+      if (!session.dragging) {
+        const deltaX = event.clientX - session.startX;
+        const deltaY = event.clientY - session.startY;
+        if (Math.hypot(deltaX, deltaY) < DOCK_POINTER_DRAG_THRESHOLD_PX) return;
+        session.dragging = true;
+        setDockDragging(true);
       }
 
-      dockRef.current = { side: sideRef.current, left: nextLeft, top: nextTop };
-      setDockPoint({ left: nextLeft, top: nextTop });
+      const viewportHeight = window.innerHeight;
+      const nextTop = snapTransferStationDockPoint((event.clientY / viewportHeight) * 100);
+      const next = { ...dockRef.current, top: nextTop };
+      onDockChangeRef.current(next);
 
-      const element = asideRef.current;
-      if (!element) return;
+      const panelHeight = estimateTransferStationPanelHeight(
+        itemsLengthRef.current,
+        panelOpenRef.current,
+      );
+      const panelWidth = estimateTransferStationPanelWidth(panelOpenRef.current);
 
       setPositionStyle({
         ...getTransferStationDockPositionStyle(
-          sideRef.current,
-          nextLeft,
-          nextTop,
-          element.offsetWidth,
-          element.offsetHeight,
-          viewportWidth,
+          next.side,
+          next.top,
+          panelWidth,
+          panelHeight,
+          window.innerWidth,
           viewportHeight,
+          TRANSFER_STATION_VIEWPORT_INSET_PX,
+          "icon-row",
         ),
         width: undefined,
         height: undefined,
       });
     }
 
-    function finishDockDrag() {
+    function finishDockPointer(event: PointerEvent) {
+      const session = dockPointerSessionRef.current;
+      if (!session || event.pointerId !== session.pointerId) return;
+      const wasDragging = session.dragging;
+      dockPointerSessionRef.current = null;
       setDockDragging(false);
-      pendingSideRef.current = null;
-      pendingSideFramesRef.current = 0;
-      persistTransferStationDock(dockRef.current);
+      setDockPointerActive(false);
+      if (wasDragging) {
+        onDockCommitRef.current?.();
+      }
     }
 
     window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", finishDockDrag);
-    window.addEventListener("pointercancel", finishDockDrag);
+    window.addEventListener("pointerup", finishDockPointer);
+    window.addEventListener("pointercancel", finishDockPointer);
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", finishDockDrag);
-      window.removeEventListener("pointercancel", finishDockDrag);
+      window.removeEventListener("pointerup", finishDockPointer);
+      window.removeEventListener("pointercancel", finishDockPointer);
     };
-  }, [dockDragging, commitDockSideChange]);
-
-  function handleAsideMouseEnter() {
-    if (hoverLeaveTimerRef.current) {
-      clearTimeout(hoverLeaveTimerRef.current);
-      hoverLeaveTimerRef.current = null;
-    }
-    setHovered(true);
-  }
-
-  function handleAsideMouseLeave() {
-    if (hasItems) return;
-    if (hoverLeaveTimerRef.current) clearTimeout(hoverLeaveTimerRef.current);
-    hoverLeaveTimerRef.current = setTimeout(() => {
-      hoverLeaveTimerRef.current = null;
-      setHovered(false);
-    }, HOVER_COLLAPSE_DELAY_MS);
-  }
+  }, [dockPointerActive]);
 
   function handleDockPointerDown(event: React.PointerEvent<HTMLElement>) {
     if (!dragEnabled) return;
-    if ((event.target as HTMLElement).closest("button")) return;
 
-    const element = asideRef.current;
-    if (!element) return;
-
-    const rect = element.getBoundingClientRect();
-    draggingOffsetRef.current = {
-      x: event.clientX - rect.left - rect.width / 2,
-      y: event.clientY - rect.top - rect.height / 2,
+    dockPointerSessionRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      dragging: false,
     };
-    setDockDragging(true);
+    setDockPointerActive(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function handleDockPointerUp(event: React.PointerEvent<HTMLElement>) {
-    if (!dockDragging) return;
+    const session = dockPointerSessionRef.current;
+    if (!session || event.pointerId !== session.pointerId) return;
+    dockPointerSessionRef.current = null;
     setDockDragging(false);
-    persistTransferStationDock(dockRef.current);
+    setDockPointerActive(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -531,88 +440,60 @@ export function DragTransferStation({
       ref={assignAsideRef}
       className={cn(
         "admin-transfer-station select-none",
-        expanded ? "admin-transfer-station--expanded" : "admin-transfer-station--collapsed",
+        panelOpen
+          ? "admin-transfer-station--shell-expanded"
+          : "admin-transfer-station--shell-collapsed",
+        panelOpen ? "admin-transfer-station--panel-open" : "admin-transfer-station--panel-closed",
+        entering && "admin-transfer-station--entering",
+        dismissing && "admin-transfer-station--dismissing",
+        sideFlipping && "admin-transfer-station--side-flipping",
+        dragApproaching && panelOpen && "admin-transfer-station--drag-approach",
       )}
       data-edge={side}
+      data-approach-snap={approachSnap || undefined}
+      data-panel-instant={panelInstant || undefined}
       data-dock-dragging={dockDragging || undefined}
-      data-edge-morph={edgeMorph || undefined}
+      data-dock-follow={dockFollowing || undefined}
       style={positionStyle}
-      onMouseEnter={handleAsideMouseEnter}
-      onMouseLeave={handleAsideMouseLeave}
+      onDragEnter={dragEnabled ? onDragEnter : undefined}
       onDragOver={dragEnabled ? onDragOver : undefined}
       onDragLeave={dragEnabled ? onDragLeave : undefined}
       onDrop={dragEnabled ? onDrop : undefined}
     >
-      <div
-        className={cn(
-          "admin-transfer-station-tab relative touch-none overflow-hidden border bg-gradient-to-br",
-          tabStyle.border,
-          tabStyle.panel,
-          dragEnabled && "cursor-grab",
-          dockDragging && "cursor-grabbing",
-        )}
-        aria-label="中转站"
-        onPointerDown={handleDockPointerDown}
-        onPointerUp={handleDockPointerUp}
-        onPointerCancel={handleDockPointerUp}
-      >
-        <ArrowLeftRight
-          className={cn("pointer-events-none absolute -right-2 size-14 -rotate-12", tabStyle.watermark)}
-          strokeWidth={1.25}
-          aria-hidden
+      <div className={cn("admin-transfer-station-shell", !panelOpen && "admin-transfer-station-shell--icon-only")}>
+        <TransferStationHeader
+          side={side}
+          itemCount={items.length}
+          panelOpen={panelOpen}
+          panelLocked={panelLocked}
+          dragEnabled={dragEnabled}
+          dockDragging={dockDragging}
+          onClearAll={onClearAll}
+          onToggleExpanded={onPanelExpandedChange}
+          onDockPointerDown={handleDockPointerDown}
+          onDockPointerUp={handleDockPointerUp}
         />
-        <ArrowLeftRight className="relative size-4 text-primary drop-shadow-sm" strokeWidth={1.75} />
-        {items.length > 0 ? (
-          <span className="admin-transfer-station-tab-badge" aria-hidden>
-            {items.length}
-          </span>
-        ) : null}
-      </div>
 
-      <div className="admin-transfer-station-panel-wrap">
         <div
-          className={cn(
-            "admin-transfer-station-panel",
-            (showDropHint || emptyDropTarget) && adminDropZoneHoverClass,
-          )}
+          ref={bodyWrapRef}
+          className="admin-transfer-station-body-wrap"
+          style={{ height: bodyWrapHeight, boxSizing: "border-box" }}
         >
-          <TransferStationHeader
-            itemCount={items.length}
-            dragEnabled={dragEnabled}
-            dockDragging={dockDragging}
-            onClearAll={onClearAll}
-            onDockPointerDown={handleDockPointerDown}
-            onDockPointerUp={handleDockPointerUp}
-          />
-
           <div className="admin-transfer-station-body">
-            <div
-              className={cn(
-                "app-scrollbar",
-                vertical
-                  ? "admin-transfer-station-scroll--vertical"
-                  : "admin-transfer-station-scroll--horizontal",
-              )}
-            >
+            <div className="app-scrollbar admin-transfer-station-scroll--vertical">
               {showEmpty ? (
                 <div
                   className={cn(
                     "transfer-station-empty admin-transfer-station-empty",
-                    emptyDropTarget && "admin-transfer-station-empty--active",
+                    emptyDropTarget && dropActive && "admin-transfer-station-empty--active",
                   )}
                 >
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-primary/50">
                     {transferDropHint(side, gridDragging)}
                   </p>
                 </div>
               ) : (
-                <ul
-                  className={
-                    vertical
-                      ? "admin-transfer-station-list--vertical"
-                      : "admin-transfer-station-list--grid"
-                  }
-                >
+                <ul className="admin-transfer-station-list--vertical">
                   {animatedRows.map(({ item, phase }) => (
                     <TransferStationItemRow
                       key={item.id}

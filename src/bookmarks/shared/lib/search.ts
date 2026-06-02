@@ -88,7 +88,14 @@ export function getVisibleCardsInSection(
       }
       return [{ bookmark, bookmarkIndex }];
     });
-    if (bookmarks.length === 0) return [];
+
+    if (normalized && bookmarks.length === 0) {
+      if (card.title.toLowerCase().includes(normalized)) {
+        return [{ card, cardIndex, bookmarks: [] }];
+      }
+      return [];
+    }
+
     return [{ card, cardIndex, bookmarks }];
   });
 }

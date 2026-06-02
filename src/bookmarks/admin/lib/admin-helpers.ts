@@ -37,58 +37,32 @@ export interface TransferStationItem {
   from: GridDragPayload;
 }
 
-export type TransferStationSide = "left" | "right" | "top" | "bottom";
+export type TransferStationSide = "left" | "right";
 
-const STATION_EDGE_THRESHOLD = 80;
-const STATION_DIRECTION_DELTA = 40;
-
-/** 根据拖拽起点与当前指针位置，决定中转站应吸在哪条边 */
-export function resolveTransferStationSide(
+/** 当前 dock 在左/右时，双击对侧贴边窄条则返回应对侧；否则 null */
+export function resolveTransferStationEdgeFlipSide(
+  currentSide: TransferStationSide,
   clientX: number,
-  clientY: number,
-  dragOriginX: number,
-  dragOriginY: number,
   viewportWidth: number,
-  viewportHeight: number,
 ): TransferStationSide | null {
-  const deltaX = clientX - dragOriginX;
-  const deltaY = clientY - dragOriginY;
-  const nearLeft = clientX <= STATION_EDGE_THRESHOLD;
-  const nearRight = clientX >= viewportWidth - STATION_EDGE_THRESHOLD;
-  const nearTop = clientY <= STATION_EDGE_THRESHOLD;
-  const nearBottom = clientY >= viewportHeight - STATION_EDGE_THRESHOLD;
-
-  if (nearLeft || nearRight || nearTop || nearBottom) {
-    const candidates: { edge: TransferStationSide; distance: number }[] = [
-      { edge: "left", distance: clientX },
-      { edge: "right", distance: viewportWidth - clientX },
-      { edge: "top", distance: clientY },
-      { edge: "bottom", distance: viewportHeight - clientY },
-    ];
-    candidates.sort((a, b) => a.distance - b.distance);
-    return candidates[0]?.edge ?? null;
+  const zone = TRANSFER_STATION_EDGE_FLIP_ZONE_PX;
+  if (currentSide === "left" && clientX >= viewportWidth - zone) {
+    return "right";
   }
-
-  const absX = Math.abs(deltaX);
-  const absY = Math.abs(deltaY);
-
-  if (absX >= STATION_DIRECTION_DELTA || absY >= STATION_DIRECTION_DELTA) {
-    if (absX >= absY) {
-      if (deltaX <= -STATION_DIRECTION_DELTA && clientX < viewportWidth * 0.45) return "left";
-      if (deltaX >= STATION_DIRECTION_DELTA && clientX > viewportWidth * 0.55) return "right";
-    } else {
-      if (deltaY <= -STATION_DIRECTION_DELTA && clientY < viewportHeight * 0.45) return "top";
-      if (deltaY >= STATION_DIRECTION_DELTA && clientY > viewportHeight * 0.55) return "bottom";
-    }
+  if (currentSide === "right" && clientX <= zone) {
+    return "left";
   }
-
   return null;
 }
 
-export function isTransferStationVerticalSide(
-  side: TransferStationSide,
-): side is "left" | "right" {
-  return side === "left" || side === "right";
+/** 指针超出模块面板左右外缘时，决定中转站贴在哪一侧 */
+export function resolveTransferStationSideFromPanel(
+  clientX: number,
+  panel: Pick<DOMRect, "left" | "right">,
+): TransferStationSide | null {
+  if (clientX < panel.left) return "left";
+  if (clientX > panel.right) return "right";
+  return null;
 }
 
 export function isGridDragPayload(payload: DragPayload): payload is GridDragPayload {
@@ -143,6 +117,9 @@ export function readDragPayloadData(dataTransfer: DataTransfer): DragPayload | n
 export const STORAGE_KEY = SITE_STORAGE_KEYS.bookmarksAdminDraft;
 export const TRANSFER_STATION_STORAGE_KEY = SITE_STORAGE_KEYS.bookmarksAdminTransfer;
 
+/** 中转站最多暂存的书签数量 */
+export const TRANSFER_STATION_MAX_ITEMS = 9;
+
 export function loadTransferStationItems(): TransferStationItem[] {
   if (typeof localStorage === "undefined") return [];
 
@@ -188,6 +165,10 @@ export function transferStationHasBookmark(items: TransferStationItem[], url: st
   return items.some((entry) => entry.bookmark.url === url);
 }
 
+export function transferStationIsFull(items: TransferStationItem[]) {
+  return items.length >= TRANSFER_STATION_MAX_ITEMS;
+}
+
 export const TRANSFER_STATION_DOCK_STORAGE_KEY = SITE_STORAGE_KEYS.bookmarksAdminTransferDock;
 
 /** 沿边位置，0–100 视口百分比（对齐 Nuxt DevTools frame state） */
@@ -208,8 +189,10 @@ const DEFAULT_TRANSFER_STATION_DOCK: TransferStationDockState = {
   top: 50,
 };
 
-function isTransferStationSide(value: unknown): value is TransferStationSide {
-  return value === "left" || value === "right" || value === "top" || value === "bottom";
+function normalizeTransferStationSide(value: unknown): TransferStationSide {
+  if (value === "left") return "left";
+  if (value === "right" || value === "top" || value === "bottom") return "right";
+  return DEFAULT_TRANSFER_STATION_DOCK.side;
 }
 
 function normalizeDockPoint(value: unknown, fallback: number) {
@@ -229,7 +212,7 @@ export function loadTransferStationDock(): TransferStationDockState {
 
     const parsed = JSON.parse(raw) as Partial<TransferStationDockState> & { slides?: unknown };
     return {
-      side: isTransferStationSide(parsed.side) ? parsed.side : DEFAULT_TRANSFER_STATION_DOCK.side,
+      side: normalizeTransferStationSide(parsed.side),
       left: normalizeDockPoint(parsed.left, DEFAULT_TRANSFER_STATION_DOCK.left),
       top: normalizeDockPoint(parsed.top, DEFAULT_TRANSFER_STATION_DOCK.top),
     };
@@ -246,11 +229,29 @@ export function persistTransferStationDock(state: TransferStationDockState) {
 
 export const TRANSFER_STATION_VIEWPORT_INSET_PX = 16;
 
+/** 与 admin.css `--admin-transfer-station-tab-size`（2.75rem @ 16px）对齐 */
+export const TRANSFER_STATION_TAB_SIZE_PX = 44;
+
+/** 双击屏幕贴边区域（2× tab 宽）切换到对侧 dock */
+export const TRANSFER_STATION_EDGE_FLIP_ZONE_PX = TRANSFER_STATION_TAB_SIZE_PX * 2;
+
+/** shell 上下 border 各 1px，与 admin.css `--admin-transfer-station-collapsed-outer-size` 对齐 */
+export const TRANSFER_STATION_SHELL_BORDER_PX = 1;
+
+/** 与 admin.css `--admin-transfer-station-motion` 对齐 */
+export const TRANSFER_STATION_MOTION_MS = 320;
+
+/** icon 连点防抖，略短于 motion 以免与动画拖尾叠加 */
+export const TRANSFER_STATION_ICON_TOGGLE_DEBOUNCE_MS = 280;
+
+/** 与 admin.css item / gap / scroll-padding scale 对齐（1rem = 16px） */
+const TRANSFER_STATION_ITEM_HEIGHT_PX = 42;
+const TRANSFER_STATION_ITEM_GAP_PX = 8;
+const TRANSFER_STATION_SCROLL_PADDING_PX = 16;
+const TRANSFER_STATION_VISIBLE_ITEMS = 6;
+
 /** Nuxt DevTools NuxtDevtoolsFrame.vue — SNAP_THRESHOLD */
 const TRANSFER_STATION_DOCK_SNAP_THRESHOLD = 2;
-
-/** Nuxt DevTools NuxtDevtoolsFrame.vue — HORIZONTAL_MARGIN */
-const TRANSFER_STATION_DOCK_ANGLE_MARGIN = 70;
 
 function clampDockValue(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -264,43 +265,56 @@ export function snapTransferStationDockPoint(value: number) {
   return value;
 }
 
-/** Nuxt DevTools pointermove — atan2 四象限换边 */
-export function resolveTransferStationDockSideFromAngle(
-  anchorX: number,
-  anchorY: number,
-  viewportWidth: number,
+/** 网格拖拽离开模块面板时，沿左右边把锚点移到指针附近 */
+export function projectTransferStationDockPoint(
+  side: TransferStationSide,
+  anchorClientY: number,
   viewportHeight: number,
-  currentSide?: TransferStationSide,
-): TransferStationSide {
-  const centerX = viewportWidth / 2;
-  const centerY = viewportHeight / 2;
-  const margin = TRANSFER_STATION_DOCK_ANGLE_MARGIN;
-  const deg = Math.atan2(anchorY - centerY, anchorX - centerX);
-  const tl = Math.atan2(0 - centerY + margin, 0 - centerX);
-  const tr = Math.atan2(0 - centerY + margin, viewportWidth - centerX);
-  const bl = Math.atan2(viewportHeight - margin - centerY, 0 - centerX);
-  const br = Math.atan2(viewportHeight - margin - centerY, viewportWidth - centerX);
-
-  const hysteresis = 0.12;
-  const inSector = (side: TransferStationSide) => {
-    switch (side) {
-      case "top":
-        return deg >= tl - hysteresis && deg <= tr + hysteresis;
-      case "right":
-        return deg >= tr - hysteresis && deg <= br + hysteresis;
-      case "bottom":
-        return deg >= br - hysteresis && deg <= bl + hysteresis;
-      case "left":
-        return deg >= bl - hysteresis || deg <= tl + hysteresis;
-    }
+  current: TransferStationDockState,
+  options?: { snap?: boolean },
+): TransferStationDockState {
+  const rawTop = (anchorClientY / viewportHeight) * 100;
+  return {
+    ...current,
+    side,
+    top: options?.snap === false ? rawTop : snapTransferStationDockPoint(rawTop),
   };
+}
 
-  if (currentSide && inSector(currentSide)) return currentSide;
+export function isSameTransferStationDock(
+  a: TransferStationDockState,
+  b: TransferStationDockState,
+): boolean {
+  return a.side === b.side && a.top === b.top;
+}
 
-  if (deg >= tl && deg <= tr) return "top";
-  if (deg >= tr && deg <= br) return "right";
-  if (deg >= br && deg <= bl) return "bottom";
-  return "left";
+/** 拖拽起点：指针相对卡片垂直中心的偏移（拖拽过程中恒定） */
+export function computeDragPointerToCardCenterOffset(
+  clientY: number,
+  elementRect: Pick<DOMRect, "top" | "height">,
+) {
+  return elementRect.height / 2 - (clientY - elementRect.top);
+}
+
+export function resolveDragCardCenterClientY(
+  clientY: number,
+  pointerToCenterOffset: number | null | undefined,
+) {
+  if (pointerToCenterOffset == null) return clientY;
+  return clientY + pointerToCenterOffset;
+}
+
+/** 拖拽过程中让 dock 垂直锚点跟随卡片中心 */
+export function followTransferStationDockToCard(
+  current: TransferStationDockState,
+  side: TransferStationSide,
+  clientY: number,
+  pointerToCenterOffset: number | null | undefined,
+  viewportHeight: number,
+  options?: { snap?: boolean },
+): TransferStationDockState {
+  const anchorClientY = resolveDragCardCenterClientY(clientY, pointerToCenterOffset);
+  return projectTransferStationDockPoint(side, anchorClientY, viewportHeight, current, options);
 }
 
 /** Nuxt DevTools anchorPos — 由 side + 百分比锚点换算像素中心 */
@@ -316,105 +330,121 @@ export function computeTransferStationAnchorPos(
 ): TransferStationDockPoint {
   const halfWidth = panelWidth / 2;
   const halfHeight = panelHeight / 2;
-  const leftPx = (leftPercent / 100) * viewportWidth;
   const topPx = (topPercent / 100) * viewportHeight;
 
-  switch (side) {
-    case "top":
-      return {
-        left: clampDockValue(
-          leftPx,
-          halfWidth + margin,
-          viewportWidth - halfWidth - margin,
-        ),
-        top: margin + halfHeight,
-      };
-    case "right":
-      return {
-        left: viewportWidth - margin - halfWidth,
-        top: clampDockValue(
-          topPx,
-          halfHeight + margin,
-          viewportHeight - halfHeight - margin,
-        ),
-      };
-    case "left":
-      return {
-        left: margin + halfWidth,
-        top: clampDockValue(
-          topPx,
-          halfHeight + margin,
-          viewportHeight - halfHeight - margin,
-        ),
-      };
-    case "bottom":
-      return {
-        left: clampDockValue(
-          leftPx,
-          halfWidth + margin,
-          viewportWidth - halfWidth - margin,
-        ),
-        top: viewportHeight - margin - halfHeight,
-      };
+  if (side === "right") {
+    return {
+      left: viewportWidth - margin - halfWidth,
+      top: clampDockValue(
+        topPx,
+        halfHeight + margin,
+        viewportHeight - halfHeight - margin,
+      ),
+    };
   }
+
+  return {
+    left: margin + halfWidth,
+    top: clampDockValue(
+      topPx,
+      halfHeight + margin,
+      viewportHeight - halfHeight - margin,
+    ),
+  };
 }
 
 export type TransferStationDockPosition = {
-  left: number;
+  left: number | "auto";
   top: number;
-  right: "auto";
+  right: number | "auto";
   bottom: "auto";
 };
 
+/** icon-row：icon 行锚定 topPercent；panel-center：拖拽跟随时面板垂直居中 */
+export type TransferStationDockAnchor = "icon-row" | "panel-center";
+
 export function getTransferStationDockPositionStyle(
   side: TransferStationSide,
-  leftPercent: number,
   topPercent: number,
   panelWidth: number,
   panelHeight: number,
   viewportWidth: number,
   viewportHeight: number,
+  margin = TRANSFER_STATION_VIEWPORT_INSET_PX,
+  anchor: TransferStationDockAnchor = "icon-row",
 ): TransferStationDockPosition {
-  const anchor = computeTransferStationAnchorPos(
-    side,
-    leftPercent,
-    topPercent,
-    panelWidth,
-    panelHeight,
-    viewportWidth,
-    viewportHeight,
-  );
+  const anchorY = (topPercent / 100) * viewportHeight;
+  const panelTop =
+    anchor === "panel-center"
+      ? anchorY - panelHeight / 2
+      : anchorY - TRANSFER_STATION_TAB_SIZE_PX / 2;
+  // icon-row：展开/收起时用最大面板高度做 clamp，避免收缩瞬间 top 下沉打断高度过渡
+  const clampHeight =
+    anchor === "icon-row" ? estimateTransferStationPanelMaxHeight() : panelHeight;
+  const top = clampDockValue(panelTop, margin, viewportHeight - clampHeight - margin);
+
+  if (side === "right") {
+    return {
+      left: "auto",
+      top,
+      right: margin,
+      bottom: "auto",
+    };
+  }
 
   return {
-    left: anchor.left - panelWidth / 2,
-    top: anchor.top - panelHeight / 2,
+    left: margin,
+    top,
     right: "auto",
     bottom: "auto",
   };
 }
 
-export function getTransferStationDockMorphTargetStyle(
-  side: TransferStationSide,
-  leftPercent: number,
-  topPercent: number,
-  panelWidth: number,
-  panelHeight: number,
-  viewportWidth: number,
-  viewportHeight: number,
-): TransferStationDockPosition & { width: number; height: number } {
-  return {
-    ...getTransferStationDockPositionStyle(
-      side,
-      leftPercent,
-      topPercent,
-      panelWidth,
-      panelHeight,
-      viewportWidth,
-      viewportHeight,
-    ),
-    width: panelWidth,
-    height: panelHeight,
-  };
+/** 与 admin.css `--admin-transfer-station-panel-max-height` 对齐（1rem = 16px） */
+export function estimateTransferStationPanelMaxHeight() {
+  const tabSizePx = TRANSFER_STATION_TAB_SIZE_PX;
+
+  return (
+    tabSizePx * 2 +
+    TRANSFER_STATION_VISIBLE_ITEMS * TRANSFER_STATION_ITEM_HEIGHT_PX +
+    (TRANSFER_STATION_VISIBLE_ITEMS - 1) * TRANSFER_STATION_ITEM_GAP_PX +
+    TRANSFER_STATION_SCROLL_PADDING_PX +
+    2 * TRANSFER_STATION_SHELL_BORDER_PX
+  );
+}
+
+/** 展开态列表区固定高度，与 `--admin-transfer-station-body-scroll-height` 对齐 */
+export function estimateTransferStationBodyScrollHeightPx() {
+  return (
+    TRANSFER_STATION_VISIBLE_ITEMS * TRANSFER_STATION_ITEM_HEIGHT_PX +
+    (TRANSFER_STATION_VISIBLE_ITEMS - 1) * TRANSFER_STATION_ITEM_GAP_PX +
+    TRANSFER_STATION_SCROLL_PADDING_PX
+  );
+}
+
+/** 与 admin.css `--admin-transfer-station-*` 默认 scale 对齐（1rem = 16px） */
+export function estimateTransferStationPanelHeight(itemCount: number, panelOpen: boolean) {
+  const tabSizePx = TRANSFER_STATION_TAB_SIZE_PX;
+
+  if (!panelOpen) {
+    return tabSizePx + TRANSFER_STATION_SHELL_BORDER_PX * 2;
+  }
+
+  if (itemCount === 0) {
+    return tabSizePx + tabSizePx + estimateTransferStationBodyScrollHeightPx();
+  }
+
+  const visibleItems = Math.min(itemCount, TRANSFER_STATION_VISIBLE_ITEMS);
+  return (
+    tabSizePx +
+    visibleItems * TRANSFER_STATION_ITEM_HEIGHT_PX +
+    Math.max(0, visibleItems - 1) * TRANSFER_STATION_ITEM_GAP_PX +
+    TRANSFER_STATION_SCROLL_PADDING_PX
+  );
+}
+
+export function estimateTransferStationPanelWidth(panelOpen: boolean) {
+  return panelOpen ? 224 : TRANSFER_STATION_TAB_SIZE_PX + TRANSFER_STATION_SHELL_BORDER_PX * 2;
 }
 
 /** 管理端装饰性图标（列表、面板内非按钮） */

@@ -143,33 +143,124 @@
   animation: admin-dialog-content-in 150ms ease-out;
 }
 
-/* 中转站：四边停靠 + 沿边滑动，圆角跟随 --radius */
+/* 中转站：左右贴边 + 沿边滑动，圆角跟随 --radius */
 .admin-transfer-station {
   position: fixed;
   z-index: 100;
   pointer-events: auto;
-  display: flex;
-  align-items: flex-start;
   width: 14rem;
-  max-width: calc(100vw - 2rem);
+  max-width: calc(100vw - 2 * var(--admin-transfer-station-edge-inset));
+  --admin-transfer-station-edge-inset: 1rem;
   --admin-transfer-station-item-height: 2.625rem;
   --admin-transfer-station-item-gap: 0.5rem;
   --admin-transfer-station-scroll-padding: 1rem;
   --admin-transfer-station-tab-size: 2.75rem;
+  --admin-transfer-station-shell-border-width: 1px;
+  --admin-transfer-station-collapsed-outer-size: calc(
+    var(--admin-transfer-station-tab-size) + 2 * var(--admin-transfer-station-shell-border-width)
+  );
   --admin-transfer-station-panel-width-side: 14rem;
   --admin-transfer-station-panel-width-bar: min(24rem, calc(100vw - 2rem));
   --admin-transfer-station-motion: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-transfer-station-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --admin-transfer-station-morph: 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  --admin-transfer-station-follow: 180ms;
+  --admin-transfer-station-follow-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --admin-transfer-station-dock-drag: 90ms cubic-bezier(0.22, 1, 0.36, 1);
+  --admin-transfer-station-dismiss: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-transfer-station-badge-fade: 160ms;
+  --admin-transfer-station-surface-top: color-mix(in oklab, var(--primary) 5%, var(--card));
+  --admin-transfer-station-surface-mid: color-mix(in oklab, var(--primary) 2%, var(--card));
+  --admin-transfer-station-surface-bottom: color-mix(in oklab, var(--muted) 22%, var(--card));
+  --admin-transfer-station-body-scroll-height: calc(
+    6 * var(--admin-transfer-station-item-height) + 5 * var(--admin-transfer-station-item-gap) +
+      var(--admin-transfer-station-scroll-padding)
+  );
+  --admin-transfer-station-panel-max-height: calc(
+    var(--admin-transfer-station-tab-size) * 2 + var(--admin-transfer-station-body-scroll-height) + 2 *
+      var(--admin-transfer-station-shell-border-width)
+  );
+  opacity: 1;
+  overflow: hidden;
   transition:
+    top var(--admin-transfer-station-motion),
+    left var(--admin-transfer-station-motion),
+    right var(--admin-transfer-station-motion),
     width var(--admin-transfer-station-motion),
-    height var(--admin-transfer-station-motion);
+    opacity var(--admin-transfer-station-dismiss);
 }
 
-.admin-transfer-station[data-dock-dragging]:not([data-edge-morph]) {
+.admin-transfer-station--entering,
+.admin-transfer-station--dismissing,
+.admin-transfer-station--side-flipping {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-transfer-station[data-approach-snap] {
+  transition:
+    width var(--admin-transfer-station-motion),
+    opacity var(--admin-transfer-station-dismiss);
+}
+
+.admin-transfer-station[data-panel-instant] {
+  transition: opacity var(--admin-transfer-station-dismiss);
+}
+
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-shell {
+  transition:
+    box-shadow 180ms var(--admin-transfer-station-motion-ease),
+    transform 180ms var(--admin-transfer-station-motion-ease);
+}
+
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-body-wrap,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-header-meta,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-glyph,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-watermark,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-count-badge--tab,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-badge-inline {
   transition: none;
 }
 
-.admin-transfer-station[data-dock-dragging] .admin-transfer-station-panel-wrap {
+.admin-transfer-station[data-dock-follow][data-edge='left'] {
+  transition:
+    top var(--admin-transfer-station-follow) var(--admin-transfer-station-follow-ease),
+    left var(--admin-transfer-station-follow) var(--admin-transfer-station-follow-ease),
+    width var(--admin-transfer-station-motion),
+    opacity var(--admin-transfer-station-dismiss);
+}
+
+.admin-transfer-station[data-dock-follow][data-edge='right'] {
+  transition:
+    top var(--admin-transfer-station-follow) var(--admin-transfer-station-follow-ease),
+    right var(--admin-transfer-station-follow) var(--admin-transfer-station-follow-ease),
+    width var(--admin-transfer-station-motion),
+    opacity var(--admin-transfer-station-dismiss);
+}
+
+.admin-transfer-station[data-approach-snap][data-dock-follow][data-edge='left'],
+.admin-transfer-station[data-approach-snap][data-dock-follow][data-edge='right'] {
+  transition:
+    width var(--admin-transfer-station-motion),
+    opacity var(--admin-transfer-station-dismiss);
+}
+
+.admin-transfer-station[data-dock-dragging] {
+  overflow: visible;
+  transition:
+    top var(--admin-transfer-station-dock-drag),
+    left var(--admin-transfer-station-dock-drag),
+    right var(--admin-transfer-station-dock-drag);
+}
+
+.admin-transfer-station[data-dock-dragging] .admin-transfer-station-shell {
+  box-shadow:
+    0 14px 36px -14px color-mix(in oklab, var(--foreground) 22%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
+  transition: box-shadow 180ms var(--admin-transfer-station-motion-ease);
+}
+
+.admin-transfer-station[data-dock-dragging] .admin-transfer-station-body-wrap {
   transition: none;
 }
 
@@ -183,147 +274,332 @@
     height var(--admin-transfer-station-morph);
 }
 
+.admin-transfer-station--shell-collapsed {
+  width: var(--admin-transfer-station-collapsed-outer-size);
+  overflow: hidden;
+}
+
 .admin-transfer-station[data-edge='left'] {
-  flex-direction: row;
+  transform-origin: left top;
 }
 
 .admin-transfer-station[data-edge='right'] {
-  flex-direction: row-reverse;
+  transform-origin: right top;
 }
 
-.admin-transfer-station[data-edge='top'] {
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.admin-transfer-station[data-edge='bottom'] {
-  flex-direction: column-reverse;
-  align-items: flex-start;
-}
-
-.admin-transfer-station--collapsed {
-  width: var(--admin-transfer-station-tab-size);
-  height: var(--admin-transfer-station-tab-size);
-}
-
-.admin-transfer-station--expanded[data-edge='left'],
-.admin-transfer-station--expanded[data-edge='right'] {
+.admin-transfer-station--shell-expanded[data-edge='left'],
+.admin-transfer-station--shell-expanded[data-edge='right'] {
   width: var(--admin-transfer-station-panel-width-side);
-  height: auto;
 }
 
-.admin-transfer-station--expanded[data-edge='top'],
-.admin-transfer-station--expanded[data-edge='bottom'] {
-  width: var(--admin-transfer-station-panel-width-bar);
-  height: auto;
+.admin-transfer-station-shell {
+  position: relative;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+  max-height: var(--admin-transfer-station-panel-max-height);
+  border: var(--admin-transfer-station-shell-border-width) solid color-mix(in oklab, var(--primary) 28%, transparent);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  background-image:
+    radial-gradient(
+      ellipse 130% 90% at 50% -28%,
+      color-mix(in oklab, var(--primary) 14%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      165deg,
+      var(--admin-transfer-station-surface-top) 0%,
+      var(--admin-transfer-station-surface-mid) 42%,
+      var(--admin-transfer-station-surface-bottom) 100%
+    );
+  color: var(--card-foreground);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 8%, transparent),
+    0 12px 32px -14px color-mix(in oklab, var(--foreground) 18%, transparent),
+    0 4px 16px -8px color-mix(in oklab, var(--primary) 12%, transparent);
+  transition:
+    width var(--admin-transfer-station-motion),
+    border-radius var(--admin-transfer-station-motion),
+    border-color var(--admin-transfer-station-motion),
+    box-shadow 180ms var(--admin-transfer-station-motion-ease),
+    transform var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease);
 }
 
-.admin-transfer-station-tab {
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-shell {
+  transform-origin: left top;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-shell {
+  transform-origin: right top;
+}
+
+.admin-transfer-station-shell--icon-only {
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 8%, transparent),
+    0 8px 24px -12px color-mix(in oklab, var(--foreground) 14%, transparent),
+    0 2px 10px -6px color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+.admin-transfer-station--drag-approach.admin-transfer-station--panel-open .admin-transfer-station-body-wrap {
+  pointer-events: auto;
+}
+
+.admin-transfer-station-icon-slot {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  width: var(--admin-transfer-station-tab-size);
+  min-width: var(--admin-transfer-station-tab-size);
+  height: var(--admin-transfer-station-tab-size);
+  overflow: visible;
+}
+
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-icon-slot {
+  left: 0;
+  right: auto;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-icon-slot {
+  right: 0;
+  left: auto;
+}
+
+.admin-transfer-station-icon-cell {
   position: relative;
   z-index: 1;
-  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.admin-transfer-station-header {
+  position: relative;
   flex-shrink: 0;
+  height: var(--admin-transfer-station-tab-size);
+  overflow: visible;
+  transition: border-color var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease);
+}
+
+.admin-transfer-station-header::before {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--primary) 3%, transparent) 0%, transparent 72%),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--primary) 2%, transparent) 0%,
+      transparent 55%,
+      color-mix(in oklab, var(--primary) 2%, transparent) 100%
+    );
+  content: '';
+}
+
+.admin-transfer-station--panel-open .admin-transfer-station-header {
+  border-bottom: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+.admin-transfer-station--panel-closed .admin-transfer-station-header {
+  transition: none;
+}
+
+.admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-icon-cell {
+  border-right: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+.admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-icon-cell {
+  border-left: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+.admin-transfer-station-icon-watermark {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
   width: var(--admin-transfer-station-tab-size);
   height: var(--admin-transfer-station-tab-size);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius);
-  box-shadow:
-    0 10px 30px -12px color-mix(in oklab, hsl(var(--foreground)) 16%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--primary) 12%, transparent);
-  transition: opacity 240ms ease;
+  color: color-mix(in oklab, var(--primary) 16%, transparent);
+  transform: rotate(-12deg);
+  transform-origin: center;
 }
 
-.admin-transfer-station--expanded .admin-transfer-station-tab {
-  position: absolute;
-  overflow: hidden;
-  width: 0;
-  min-width: 0;
-  height: 0;
-  opacity: 0;
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-icon-watermark {
+  left: 0;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-icon-watermark {
+  right: 0;
+}
+
+.admin-transfer-station-icon-glyph {
   pointer-events: none;
-  border-width: 0;
-  box-shadow: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 1px 1px color-mix(in oklab, var(--foreground) 12%, transparent));
+  opacity: 1;
+  transition: opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
 }
 
-.admin-transfer-station-tab-badge {
+.admin-transfer-station--panel-closed .admin-transfer-station-icon-cell--has-count .admin-transfer-station-icon-glyph {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.admin-transfer-station--panel-open .admin-transfer-station-icon-glyph {
+  opacity: 1;
+  transition-delay: var(--admin-transfer-station-badge-fade);
+}
+
+.admin-transfer-station-icon-tab {
   position: absolute;
-  top: 0.1875rem;
-  right: 0.1875rem;
+  inset: 0;
+  z-index: 2;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  transition: opacity 200ms var(--admin-transfer-station-motion-ease);
+}
+
+.admin-transfer-station-icon-tab:focus-visible {
+  outline: none;
+}
+
+.admin-transfer-station-count-badge--tab {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
   display: inline-flex;
-  min-width: 1rem;
-  height: 1rem;
+  min-width: 0;
+  height: auto;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  background-color: var(--primary);
-  padding: 0 0.25rem;
-  font-size: 0.625rem;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.875rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  color: var(--primary-foreground);
+  color: var(--primary);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
 }
 
-.admin-transfer-station-panel-wrap {
-  min-width: 0;
-  flex: 0 1 auto;
-  max-width: 0;
+.admin-transfer-station--panel-open .admin-transfer-station-count-badge--tab {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.admin-transfer-station--panel-closed
+  .admin-transfer-station-icon-cell--has-count
+  .admin-transfer-station-count-badge--tab {
+  opacity: 1;
+  transition-delay: var(--admin-transfer-station-badge-fade);
+}
+
+.admin-transfer-station-body-wrap {
+  min-height: 0;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
   transition:
-    max-width var(--admin-transfer-station-motion),
-    opacity 240ms ease;
+    height var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease),
+    opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
 }
 
-.admin-transfer-station--expanded[data-edge='left'] .admin-transfer-station-panel-wrap,
-.admin-transfer-station--expanded[data-edge='right'] .admin-transfer-station-panel-wrap {
-  max-width: var(--admin-transfer-station-panel-width-side);
-  width: 100%;
+.admin-transfer-station--panel-open .admin-transfer-station-body-wrap {
   opacity: 1;
   pointer-events: auto;
+  transition-delay: 0ms, var(--admin-transfer-station-badge-fade);
 }
 
-.admin-transfer-station--expanded[data-edge='top'] .admin-transfer-station-panel-wrap,
-.admin-transfer-station--expanded[data-edge='bottom'] .admin-transfer-station-panel-wrap {
-  max-width: var(--admin-transfer-station-panel-width-bar);
+.admin-transfer-station--panel-closed .admin-transfer-station-body-wrap {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0ms, 0ms;
+}
+
+.admin-transfer-station-header-meta {
+  transition: opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
+  box-sizing: border-box;
   width: 100%;
+}
+
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-header-meta {
+  padding-left: var(--admin-transfer-station-tab-size);
+  justify-content: flex-end;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-header-meta {
+  padding-right: var(--admin-transfer-station-tab-size);
+}
+
+.admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-header-meta,
+.admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-header-meta {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: auto;
+}
+
+.admin-transfer-station-header-meta--hidden {
+  flex: 0 0 auto;
+  padding-inline: 0;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.admin-transfer-station--panel-closed .admin-transfer-station-header-meta {
+  position: absolute;
+  inset-block: 0;
+  flex: 0 0 auto;
+  padding-inline: 0;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: none;
+}
+
+.admin-transfer-station--panel-closed[data-edge='left'] .admin-transfer-station-header-meta {
+  left: var(--admin-transfer-station-tab-size);
+  right: 0;
+}
+
+.admin-transfer-station--panel-closed[data-edge='right'] .admin-transfer-station-header-meta {
+  left: 0;
+  right: var(--admin-transfer-station-tab-size);
+}
+
+.admin-transfer-station--panel-open .admin-transfer-station-header-meta {
   opacity: 1;
-  pointer-events: auto;
-}
-
-.admin-transfer-station-panel {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-  border-radius: var(--radius);
-  background-image: linear-gradient(
-    to bottom right,
-    color-mix(in oklab, var(--primary) 14%, transparent),
-    color-mix(in oklab, var(--primary) 6%, transparent) 45%,
-    color-mix(in oklab, var(--primary) 10%, transparent)
-  );
-  color: hsl(var(--card-foreground));
-  box-shadow:
-    0 10px 30px -12px color-mix(in oklab, hsl(var(--foreground)) 16%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--primary) 12%, transparent);
-}
-
-.admin-transfer-station-header {
-  flex-shrink: 0;
+  visibility: visible;
+  transition-delay: var(--admin-transfer-station-badge-fade);
 }
 
 .admin-transfer-station-body {
   position: relative;
-  flex-shrink: 0;
   min-height: 0;
+  overflow: hidden;
   background-image: linear-gradient(
-    to bottom right,
-    color-mix(in oklab, var(--primary) 10%, transparent),
-    color-mix(in oklab, var(--primary) 4%, transparent) 50%,
-    color-mix(in oklab, var(--primary) 8%, transparent)
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, var(--muted) 10%, transparent) 55%,
+    color-mix(in oklab, var(--primary) 3%, var(--card)) 100%
   );
 }
 
@@ -336,20 +612,11 @@
   box-sizing: border-box;
 }
 
-.admin-transfer-station[data-edge='left'] .admin-transfer-station-scroll--vertical,
-.admin-transfer-station[data-edge='right'] .admin-transfer-station-scroll--vertical {
-  height: calc(
-    6 * var(--admin-transfer-station-item-height) + 5 * var(--admin-transfer-station-item-gap) +
-      var(--admin-transfer-station-scroll-padding)
-  );
-  min-height: calc(
-    6 * var(--admin-transfer-station-item-height) + 5 * var(--admin-transfer-station-item-gap) +
-      var(--admin-transfer-station-scroll-padding)
-  );
-  max-height: calc(
-    6 * var(--admin-transfer-station-item-height) + 5 * var(--admin-transfer-station-item-gap) +
-      var(--admin-transfer-station-scroll-padding)
-  );
+.admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-scroll--vertical,
+.admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-scroll--vertical {
+  height: var(--admin-transfer-station-body-scroll-height);
+  min-height: var(--admin-transfer-station-body-scroll-height);
+  max-height: var(--admin-transfer-station-body-scroll-height);
 }
 
 .admin-transfer-station[data-edge='top'] .admin-transfer-station-scroll--horizontal,
@@ -421,24 +688,21 @@
   font-variant-numeric: tabular-nums;
   line-height: 1;
   color: var(--primary-foreground);
+  opacity: 1;
+  transition: opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
 }
 
-.admin-transfer-station-header-clear {
-  cursor: pointer;
+.admin-transfer-station--panel-closed .admin-transfer-station-badge-inline {
+  opacity: 0;
+  transition-delay: 0ms;
 }
 
-.admin-transfer-station-header-clear:hover .admin-transfer-station-header-clear-icon,
-.admin-transfer-station-header-clear:focus-visible .admin-transfer-station-header-clear-icon {
-  color: hsl(var(--destructive));
-}
-
-.admin-transfer-station-header-clear:focus-visible {
-  outline: none;
-  box-shadow: none;
+.admin-transfer-station--panel-open .admin-transfer-station-badge-inline {
+  transition-delay: var(--admin-transfer-station-badge-fade);
 }
 
 .admin-transfer-station-item-remove {
-  color: color-mix(in oklab, hsl(var(--foreground)) 78%, transparent);
+  color: color-mix(in oklab, var(--foreground) 78%, transparent);
   background-color: transparent;
 }
 
@@ -607,8 +871,8 @@
   }
 
   .admin-transfer-station,
-  .admin-transfer-station-panel-wrap,
-  .admin-transfer-station-tab {
+  .admin-transfer-station-body-wrap,
+  .admin-transfer-station-shell {
     transition: none;
   }
 
