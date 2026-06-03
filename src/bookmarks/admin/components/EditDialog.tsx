@@ -98,6 +98,7 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
 
   if (!context) return null;
 
+  const isCompactForm = context.type === "section" || context.type === "card";
   const section = sections[context.sectionIndex];
 
   function updateField(name: string, value: string) {
@@ -140,21 +141,29 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
       <DialogContent
         showOverlay={false}
-        className="flex max-h-[min(85vh,720px)] min-h-[min(24rem,70vh)] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg"
+        className="flex max-h-[min(85vh,720px)] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg"
       >
-        <DialogHeader className="shrink-0 space-y-1.5 px-6 pb-4 pt-6">
+        <DialogHeader className="shrink-0 space-y-1.5 px-6 pb-3 pt-5">
           <DialogTitle>{getTitle(context, sections)}</DialogTitle>
           <DialogDescription className="sr-only">
             编辑书签、分组或模块的表单。
           </DialogDescription>
         </DialogHeader>
         <form
-          className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          className={cn(
+            "flex flex-col overflow-hidden",
+            !isCompactForm && "min-h-0 flex-1",
+          )}
           noValidate
           onSubmit={handleSubmit}
         >
-          <div className="app-scrollbar min-h-0 flex-1 overflow-y-auto px-6">
-            <div className="grid gap-4 pb-4">
+          <div
+            className={cn(
+              "app-scrollbar px-6",
+              isCompactForm ? "pb-1" : "min-h-0 flex-1 overflow-y-auto",
+            )}
+          >
+            <div className={cn("grid gap-4", isCompactForm ? "pb-3" : "pb-4")}>
           {context.type === "bookmark" && (
             <div className="grid gap-2">
               <Label htmlFor="cardTitle">所属分组</Label>
@@ -294,7 +303,7 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
             </div>
           </div>
 
-          <DialogFooter className="shrink-0 gap-2 border-t px-6 py-4 sm:gap-0">
+          <DialogFooter className="shrink-0 gap-2 border-t px-6 py-3.5 sm:gap-0">
             <Button type="button" variant="outline" onClick={onClose}>
               取消
             </Button>

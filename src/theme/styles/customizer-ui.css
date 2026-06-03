@@ -4,9 +4,9 @@
   --theme-ui-trigger-bg: var(--card);
   --theme-ui-trigger-border: var(--border);
   --theme-ui-trigger-text: var(--foreground);
-  --theme-ui-popover-bg: var(--popover);
+  --theme-ui-popover-bg: var(--card);
   --theme-ui-popover-border: var(--border);
-  --theme-ui-popover-text: var(--popover-foreground);
+  --theme-ui-popover-text: var(--card-foreground);
 }
 
 [data-theme-surface='starlight'] {

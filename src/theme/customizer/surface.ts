@@ -1,19 +1,15 @@
 /**
- * 功能：定制器面板内选项按钮的选中/默认样式（按 Starlight / 书签表面区分）。
+ * 功能：定制器面板 section 标题 / 页脚与选项小块样式（双表面共用选项块 token）。
  */
 import { cn } from '@/lib/utils'
 import type { ThemeSurface } from '@/theme/customizer/trigger-classes'
 
-export function optionButtonClass(surface: ThemeSurface, selected: boolean) {
-  if (surface === 'starlight') {
-    return selected
-      ? 'border-[var(--sl-color-accent)] bg-[var(--sl-color-accent-low)] text-[var(--sl-color-text)]'
-      : 'border-[var(--sl-color-gray-5)] bg-[var(--sl-color-black)] text-[var(--sl-color-text)] hover:bg-[var(--sl-color-gray-6)]'
+export function optionButtonClass(selected: boolean) {
+  if (selected) {
+    return 'border-primary bg-primary/10 text-foreground'
   }
 
-  return selected
-    ? 'border-primary bg-primary/10 text-foreground'
-    : 'border-border bg-background text-foreground hover:bg-accent/50'
+  return 'border-border bg-background text-foreground hover:bg-accent/50'
 }
 
 export function sectionTitleClass(surface: ThemeSurface) {

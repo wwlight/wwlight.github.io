@@ -11,4 +11,4 @@ export const cardIconClass = "text-muted-foreground hover:text-foreground hover:
 
 /** 导航页书签卡片外壳（见 shared/styles/bookmarks-card.css） */
 export const navBookmarkCardShellClass =
-  "bookmark-card group relative flex flex-col overflow-visible";
+  "bookmark-card group relative flex min-w-0 h-16 shrink-0 items-center gap-3 overflow-visible px-3 py-3";

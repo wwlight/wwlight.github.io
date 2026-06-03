@@ -239,7 +239,7 @@ export const TRANSFER_STATION_EDGE_FLIP_ZONE_PX = TRANSFER_STATION_TAB_SIZE_PX *
 export const TRANSFER_STATION_SHELL_BORDER_PX = 1;
 
 /** 与 admin.css `--admin-transfer-station-motion` 对齐 */
-export const TRANSFER_STATION_MOTION_MS = 320;
+export const TRANSFER_STATION_MOTION_MS = 240;
 
 /** icon 连点防抖，略短于 motion 以免与动画拖尾叠加 */
 export const TRANSFER_STATION_ICON_TOGGLE_DEBOUNCE_MS = 280;
@@ -304,7 +304,7 @@ export function resolveDragCardCenterClientY(
   return clientY + pointerToCenterOffset;
 }
 
-/** 拖拽过程中让 dock 垂直锚点跟随卡片中心 */
+/** 拖拽过程中让 dock 跟随卡片：展开态拖入区底边对齐卡片，锚点始终是 icon 行 */
 export function followTransferStationDockToCard(
   current: TransferStationDockState,
   side: TransferStationSide,
@@ -313,8 +313,16 @@ export function followTransferStationDockToCard(
   viewportHeight: number,
   options?: { snap?: boolean },
 ): TransferStationDockState {
-  const anchorClientY = resolveDragCardCenterClientY(clientY, pointerToCenterOffset);
-  return projectTransferStationDockPoint(side, anchorClientY, viewportHeight, current, options);
+  const cardCenterY = resolveDragCardCenterClientY(clientY, pointerToCenterOffset);
+  const expandedPanelHeight = estimateTransferStationPanelHeight(true);
+  const iconCenterY = cardCenterY - expandedPanelHeight + TRANSFER_STATION_TAB_SIZE_PX / 2;
+  const rawTop = (iconCenterY / viewportHeight) * 100;
+
+  return {
+    ...current,
+    side,
+    top: options?.snap === false ? rawTop : snapTransferStationDockPoint(rawTop),
+  };
 }
 
 /** Nuxt DevTools anchorPos — 由 side + 百分比锚点换算像素中心 */
@@ -360,27 +368,19 @@ export type TransferStationDockPosition = {
   bottom: "auto";
 };
 
-/** icon-row：icon 行锚定 topPercent；panel-center：拖拽跟随时面板垂直居中 */
-export type TransferStationDockAnchor = "icon-row" | "panel-center";
-
+/** icon 行锚定 topPercent；展开/收起共用，避免切换锚点导致整体位移 */
 export function getTransferStationDockPositionStyle(
   side: TransferStationSide,
   topPercent: number,
   panelWidth: number,
-  panelHeight: number,
+  _panelHeight: number,
   viewportWidth: number,
   viewportHeight: number,
   margin = TRANSFER_STATION_VIEWPORT_INSET_PX,
-  anchor: TransferStationDockAnchor = "icon-row",
 ): TransferStationDockPosition {
   const anchorY = (topPercent / 100) * viewportHeight;
-  const panelTop =
-    anchor === "panel-center"
-      ? anchorY - panelHeight / 2
-      : anchorY - TRANSFER_STATION_TAB_SIZE_PX / 2;
-  // icon-row：展开/收起时用最大面板高度做 clamp，避免收缩瞬间 top 下沉打断高度过渡
-  const clampHeight =
-    anchor === "icon-row" ? estimateTransferStationPanelMaxHeight() : panelHeight;
+  const panelTop = anchorY - TRANSFER_STATION_TAB_SIZE_PX / 2;
+  const clampHeight = estimateTransferStationPanelMaxHeight();
   const top = clampDockValue(panelTop, margin, viewportHeight - clampHeight - margin);
 
   if (side === "right") {
@@ -400,15 +400,11 @@ export function getTransferStationDockPositionStyle(
   };
 }
 
-/** 与 admin.css `--admin-transfer-station-panel-max-height` 对齐（1rem = 16px） */
+/** 与 admin.css `--admin-transfer-station-expanded-outer-height` 对齐（1rem = 16px） */
 export function estimateTransferStationPanelMaxHeight() {
-  const tabSizePx = TRANSFER_STATION_TAB_SIZE_PX;
-
   return (
-    tabSizePx * 2 +
-    TRANSFER_STATION_VISIBLE_ITEMS * TRANSFER_STATION_ITEM_HEIGHT_PX +
-    (TRANSFER_STATION_VISIBLE_ITEMS - 1) * TRANSFER_STATION_ITEM_GAP_PX +
-    TRANSFER_STATION_SCROLL_PADDING_PX +
+    TRANSFER_STATION_TAB_SIZE_PX +
+    estimateTransferStationBodyScrollHeightPx() +
     2 * TRANSFER_STATION_SHELL_BORDER_PX
   );
 }
@@ -423,24 +419,14 @@ export function estimateTransferStationBodyScrollHeightPx() {
 }
 
 /** 与 admin.css `--admin-transfer-station-*` 默认 scale 对齐（1rem = 16px） */
-export function estimateTransferStationPanelHeight(itemCount: number, panelOpen: boolean) {
+export function estimateTransferStationPanelHeight(panelOpen: boolean) {
   const tabSizePx = TRANSFER_STATION_TAB_SIZE_PX;
 
   if (!panelOpen) {
     return tabSizePx + TRANSFER_STATION_SHELL_BORDER_PX * 2;
   }
 
-  if (itemCount === 0) {
-    return tabSizePx + tabSizePx + estimateTransferStationBodyScrollHeightPx();
-  }
-
-  const visibleItems = Math.min(itemCount, TRANSFER_STATION_VISIBLE_ITEMS);
-  return (
-    tabSizePx +
-    visibleItems * TRANSFER_STATION_ITEM_HEIGHT_PX +
-    Math.max(0, visibleItems - 1) * TRANSFER_STATION_ITEM_GAP_PX +
-    TRANSFER_STATION_SCROLL_PADDING_PX
-  );
+  return estimateTransferStationPanelMaxHeight();
 }
 
 export function estimateTransferStationPanelWidth(panelOpen: boolean) {
@@ -630,6 +616,20 @@ export function resolveTransferInsertIndex(
     if (clientY < rect.top + rect.height / 2) return bookmarkIndex;
   }
   return cards.length;
+}
+
+/** 分组内 Shift 插入：目标位与源位相同则不会改变顺序 */
+export function isNoOpGridInsert(
+  from: GridDragPayload,
+  to: { sectionIndex: number; cardIndex: number; bookmarkIndex: number },
+  targetBookmarkCount: number,
+): boolean {
+  let insertIndex = Math.max(0, Math.min(to.bookmarkIndex, targetBookmarkCount));
+  if (from.sectionIndex === to.sectionIndex && from.cardIndex === to.cardIndex) {
+    if (from.bookmarkIndex < insertIndex) insertIndex--;
+    if (from.bookmarkIndex === insertIndex) return true;
+  }
+  return false;
 }
 
 export { clampSelectedSection, sectionBookmarkCount } from "@/bookmarks/shared/lib/section-helpers";

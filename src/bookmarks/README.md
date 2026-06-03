@@ -27,10 +27,10 @@
 | `shared/lib/` | `search`、`stats`、`section-helpers`、`toolbar-ui`、`badge-variants`、`favicon` |
 | `shared/components/` | `BookmarkFavicon`、`BookmarkPageHeader`、`BookmarkSettingsIcon`、`BookmarkStatsCards`、`UserAvatar` |
 | `shared/styles/` | `bookmarks-theme-shared.css`、`bookmarks-card.css`（卡片 `--card` / `--border`） |
-| `nav/` | 导航 `/bookmarks/nav/`：React 组件与页面样式 |
+| `nav/` | 导航 `/bookmarks/nav/`：`NavBookmarkOverflowText` 等 React 组件与页面样式 |
 | `admin/` | 管理端 `/bookmarks/admin/`：鉴权、API、编辑 UI、admin 样式 |
 | `admin/lib/` | `admin-auth`、`admin-api`、`admin-helpers`、`admin-api.server` 等 |
-| `admin/components/` | `AdminApp`、对话框、卡片网格、中转站等 |
+| `admin/components/` | `BookmarkOverflowText`、`AdminApp`、对话框、卡片网格、中转站等 |
 | `admin/styles/` | `admin.css`、`bookmarks-app.css`、`bookmarks-tokens.css` |
 
 ## 数据流

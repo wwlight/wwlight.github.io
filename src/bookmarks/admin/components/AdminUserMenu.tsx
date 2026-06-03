@@ -1,3 +1,4 @@
+/** 功能：管理端顶栏用户下拉菜单；桌面 hover 展开，触屏点击展开。 */
 import { BookOpen, Bookmark, ChevronDown, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/bookmarks/shared/components/UserAvatar";
 import { cardIconClass } from "@/bookmarks/admin/lib/admin-helpers";
+import { useHoverCapable } from "@/lib/use-hover-capable";
 import { cn } from "@/lib/utils";
 
 interface AdminUserMenuProps {
@@ -27,6 +29,7 @@ function deferMenuAction(action: () => void) {
 const HOVER_CLOSE_DELAY_MS = 120;
 
 export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogout }: AdminUserMenuProps) {
+  const hoverCapable = useHoverCapable();
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const pointerInsideRef = useRef(false);
   const openedByPointerRef = useRef(false);
@@ -80,8 +83,8 @@ export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogo
           )}
           aria-label={`${name}，管理员菜单`}
           aria-expanded={open}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
+          onPointerEnter={hoverCapable ? handlePointerEnter : undefined}
+          onPointerLeave={hoverCapable ? handlePointerLeave : undefined}
         >
           <UserAvatar name={name} size="sm" />
           <span className="min-w-0 flex-1 truncate text-xs font-medium leading-none">{name}</span>
@@ -92,8 +95,8 @@ export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogo
         align="end"
         sideOffset={4}
         className="min-w-36 p-1"
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
+        onPointerEnter={hoverCapable ? handlePointerEnter : undefined}
+        onPointerLeave={hoverCapable ? handlePointerLeave : undefined}
         {...({
           onOpenAutoFocus: (event: Event) => {
             if (openedByPointerRef.current) event.preventDefault();

@@ -11,7 +11,7 @@ interface BookmarkPageHeaderProps {
 export function BookmarkPageHeader({ title, description, actions }: BookmarkPageHeaderProps) {
   return (
     <header>
-      <div className="grid gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto] md:grid-rows-[auto_auto]">
+      <div className="grid gap-x-4 gap-y-2 transition-[gap,grid-template-columns] duration-300 ease-out motion-reduce:transition-none md:grid-cols-[minmax(0,1fr)_auto] md:grid-rows-[auto_auto]">
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {description ? (
           <p className="text-sm text-muted-foreground md:col-start-1 md:row-start-2">{description}</p>

@@ -28,23 +28,19 @@ export function NavBookmarkCard({ bookmark }: NavBookmarkCardProps) {
           {bookmark.badgeText}
         </Badge>
       ) : null}
-      <div className="flex h-16 shrink-0 items-center overflow-hidden rounded-[inherit] px-3 py-3">
-        <div className="flex w-full items-center gap-3">
-          <BookmarkFavicon url={bookmark.url} />
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-            <NavBookmarkOverflowText
-              as="span"
-              text={bookmark.title}
-              className="text-sm font-medium leading-snug"
-            />
-            {hasDescription ? (
-              <NavBookmarkOverflowText
-                text={bookmark.description!}
-                className="text-xs leading-5 text-muted-foreground"
-              />
-            ) : null}
-          </div>
-        </div>
+      <BookmarkFavicon url={bookmark.url} />
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
+        <NavBookmarkOverflowText
+          as="span"
+          text={bookmark.title}
+          className="text-sm font-medium leading-snug"
+        />
+        {hasDescription ? (
+          <NavBookmarkOverflowText
+            text={bookmark.description!}
+            className="text-xs leading-5 text-muted-foreground"
+          />
+        ) : null}
       </div>
     </a>
   );

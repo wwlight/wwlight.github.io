@@ -30,10 +30,17 @@ export function themeCustomizerTriggerLabelClass() {
   return 'w-[7ch] shrink-0 truncate text-center'
 }
 
+export function themeOverlaySurfaceClass(className?: string) {
+  return cn(
+    'border-(--theme-ui-popover-border) bg-(--theme-ui-popover-bg) text-(--theme-ui-popover-text)',
+    className,
+  )
+}
+
 export function themeCustomizerPopoverClass(className?: string) {
   return cn(
-    'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] border p-3 shadow-lg',
-    'border-(--theme-ui-popover-border) bg-(--theme-ui-popover-bg) text-(--theme-ui-popover-text)',
+    'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] select-none border p-3 shadow-lg',
+    themeOverlaySurfaceClass(),
     className,
   )
 }

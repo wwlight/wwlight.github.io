@@ -1,3 +1,4 @@
+/** 功能：管理端顶栏操作区（导入导出、保存、主题、用户菜单）。 */
 import {
   Download,
   FileDown,
@@ -86,14 +87,21 @@ export function AdminHeaderActions({
     : "下载文件后手动替换并提交";
 
   return (
-    <div className={cn("flex flex-wrap items-center justify-end gap-2", className)}>
-      <div className="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 shadow-sm">
-        <AdminHeaderAction label="导入 JSON" onClick={onImportJson}>
-          <Upload className="size-4" />
-        </AdminHeaderAction>
-        <AdminHeaderAction label="导出 JSON" onClick={onExportJson}>
-          <Download className="size-4" />
-        </AdminHeaderAction>
+    <div
+      className={cn(
+        "admin-viewport-layout-transition flex flex-wrap items-center justify-end gap-2 motion-reduce:transition-none",
+        className,
+      )}
+    >
+      <div className="admin-viewport-layout-transition flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 shadow-sm motion-reduce:transition-none">
+        <div className="admin-md-reveal admin-md-reveal--toolbar-import-export items-center gap-0.5">
+          <AdminHeaderAction label="导入 JSON" onClick={onImportJson}>
+            <Upload className="size-4" />
+          </AdminHeaderAction>
+          <AdminHeaderAction label="导出 JSON" onClick={onExportJson}>
+            <Download className="size-4" />
+          </AdminHeaderAction>
+        </div>
         {isDev ? (
           <AdminHeaderAction label="版本记录" onClick={onOpenVersionHistory}>
             <History className="size-4" />

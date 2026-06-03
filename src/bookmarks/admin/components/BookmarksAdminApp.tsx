@@ -167,8 +167,8 @@ export function BookmarksAdminApp({
             <p className="mt-2 text-sm text-muted-foreground">登录以管理本地书签数据</p>
           </div>
           <form noValidate onSubmit={handleLogin}>
-            <CardContent className="space-y-4 px-6 pb-2 pt-6">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <CardContent className="space-y-4 px-6 pb-5 pt-5">
+              <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <LockKeyhole className="size-4 shrink-0 opacity-70" aria-hidden />
                 <span>请输入管理员密码</span>
               </div>
@@ -196,13 +196,11 @@ export function BookmarksAdminApp({
                   密码错误或为空，请重试
                 </p>
               )}
+              <Button type="submit" className="h-10 w-full">
+                登录
+              </Button>
             </CardContent>
             <CardFooter className="flex-col gap-0 p-0">
-              <div className="w-full px-6 pb-5 pt-0">
-                <Button type="submit" className="h-10 w-full">
-                  登录
-                </Button>
-              </div>
               <div className="flex w-full items-center justify-center gap-6 border-t border-border/60 bg-muted/20 px-6 py-3.5 text-sm">
                 <LoginNavLink href="/blog/" icon={BookOpen}>
                   返回博客

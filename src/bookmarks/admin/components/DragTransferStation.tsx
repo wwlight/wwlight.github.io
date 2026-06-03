@@ -1,3 +1,4 @@
+/** 功能：中转站浮层（portal 到 body）：dock、展开/收起、拖入拖出列表。 */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
@@ -21,8 +22,8 @@ import {
 } from "@/bookmarks/admin/lib/admin-helpers";
 import { cn } from "@/lib/utils";
 
-const ITEM_ENTER_MS = 300;
-const ITEM_LEAVE_MS = 260;
+const ITEM_ENTER_MS = 220;
+const ITEM_LEAVE_MS = 200;
 const DOCK_POINTER_DRAG_THRESHOLD_PX = 5;
 
 interface DragTransferStationProps {
@@ -51,6 +52,7 @@ interface DragTransferStationProps {
   onClearAll: () => void;
   onItemDragStart: (event: React.DragEvent<HTMLDivElement>, itemId: string) => void;
   onItemDragEnd: () => void;
+  onUserActivity?: () => void;
 }
 
 type ItemPhase = "enter" | "stable" | "leave";
@@ -200,7 +202,7 @@ function TransferStationItemRow({
         <BookmarkFavicon url={item.bookmark.url} className="size-7 shrink-0 rounded-md" />
         <p
           className={cn(
-            "min-w-0 flex-1 truncate text-sm font-medium leading-snug",
+            "min-w-0 flex-1 truncate text-sm font-medium leading-none",
             side === "left" && "text-right",
           )}
         >
@@ -245,6 +247,7 @@ export function DragTransferStation({
   onClearAll,
   onItemDragStart,
   onItemDragEnd,
+  onUserActivity,
 }: DragTransferStationProps) {
   const { side } = dock;
   const animatedRows = useAnimatedTransferItems(items);
@@ -271,20 +274,17 @@ export function DragTransferStation({
   const panelLocked = forceExpanded;
   const dockFollowing = dragApproaching && panelOpen && !dockDragging && approachFollowReady;
   const panelOpenRef = useRef(panelOpen);
-  const itemsLengthRef = useRef(items.length);
 
-  const { bodyWrapRef, bodyWrapHeight, panelInstant } = useTransferStationPanelMotion({
+  const { panelInstant } = useTransferStationPanelMotion({
     panelOpen,
     forceExpanded,
     dragApproaching,
-    contentRevision: showEmpty ? items.length : items.length + 1000,
   });
 
   dockRef.current = dock;
   onDockChangeRef.current = onDockChange;
   onDockCommitRef.current = onDockCommit;
   panelOpenRef.current = panelOpen;
-  itemsLengthRef.current = items.length;
 
   useLayoutEffect(() => {
     if (!dragApproaching) {
@@ -305,9 +305,8 @@ export function DragTransferStation({
   }, [dragApproaching, dock.side]);
 
   const refreshDockPosition = useCallback(() => {
-    const panelHeight = estimateTransferStationPanelHeight(items.length, panelOpen);
+    const panelHeight = estimateTransferStationPanelHeight(panelOpen);
     const panelWidth = estimateTransferStationPanelWidth(panelOpen);
-    const anchor = gridDragging && (dropActive || dragApproaching) ? "panel-center" : "icon-row";
 
     setPositionStyle({
       ...getTransferStationDockPositionStyle(
@@ -318,12 +317,11 @@ export function DragTransferStation({
         window.innerWidth,
         window.innerHeight,
         TRANSFER_STATION_VIEWPORT_INSET_PX,
-        anchor,
       ),
       width: undefined,
       height: undefined,
     });
-  }, [dock.side, dock.top, items.length, panelOpen, gridDragging, dropActive, dragApproaching]);
+  }, [dock.side, dock.top, panelOpen]);
 
   const assignAsideRef = useCallback(
     (node: HTMLElement | null) => {
@@ -336,7 +334,7 @@ export function DragTransferStation({
   useLayoutEffect(() => {
     if (dockPointerActive) return;
     refreshDockPosition();
-  }, [dock.side, dock.top, panelOpen, items.length, dragApproaching, dockPointerActive, refreshDockPosition]);
+  }, [dock.side, dock.top, panelOpen, dragApproaching, dockPointerActive, refreshDockPosition]);
 
   useEffect(() => {
     function handleResize() {
@@ -367,10 +365,7 @@ export function DragTransferStation({
       const next = { ...dockRef.current, top: nextTop };
       onDockChangeRef.current(next);
 
-      const panelHeight = estimateTransferStationPanelHeight(
-        itemsLengthRef.current,
-        panelOpenRef.current,
-      );
+      const panelHeight = estimateTransferStationPanelHeight(panelOpenRef.current);
       const panelWidth = estimateTransferStationPanelWidth(panelOpenRef.current);
 
       setPositionStyle({
@@ -382,7 +377,6 @@ export function DragTransferStation({
           window.innerWidth,
           viewportHeight,
           TRANSFER_STATION_VIEWPORT_INSET_PX,
-          "icon-row",
         ),
         width: undefined,
         height: undefined,
@@ -455,6 +449,8 @@ export function DragTransferStation({
       data-dock-dragging={dockDragging || undefined}
       data-dock-follow={dockFollowing || undefined}
       style={positionStyle}
+      onPointerEnter={onUserActivity}
+      onPointerDown={onUserActivity}
       onDragEnter={dragEnabled ? onDragEnter : undefined}
       onDragOver={dragEnabled ? onDragOver : undefined}
       onDragLeave={dragEnabled ? onDragLeave : undefined}
@@ -474,11 +470,7 @@ export function DragTransferStation({
           onDockPointerUp={handleDockPointerUp}
         />
 
-        <div
-          ref={bodyWrapRef}
-          className="admin-transfer-station-body-wrap"
-          style={{ height: bodyWrapHeight, boxSizing: "border-box" }}
-        >
+        <div className="admin-transfer-station-body-wrap">
           <div className="admin-transfer-station-body">
             <div className="app-scrollbar admin-transfer-station-scroll--vertical">
               {showEmpty ? (

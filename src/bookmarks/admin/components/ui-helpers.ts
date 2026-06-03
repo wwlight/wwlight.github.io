@@ -10,7 +10,7 @@ export const adminBookmarkCardHeightClass = "min-h-[calc(4rem+2.5rem+1px)]";
 
 /** 书签卡片预览区 */
 export const adminBookmarkCardPreviewClass =
-  "flex h-16 shrink-0 items-center overflow-hidden rounded-[inherit] px-3 py-3";
+  "flex h-16 w-full shrink-0 items-center gap-3 overflow-hidden rounded-[inherit] px-3 py-3";
 
 /** 书签卡片底部工具栏 */
 export const bookmarkCardFooterClass =

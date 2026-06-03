@@ -54,19 +54,19 @@ export function NavBookmarks({ sections, actions }: NavBookmarksProps) {
       />
 
       <div className="relative max-w-md">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <Input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={bookmarkSearchPlaceholder}
-            autoComplete="off"
-            className={toolbarSearchInputClass}
-          />
-        </div>
+        <Search
+          className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
+        />
+        <Input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={bookmarkSearchPlaceholder}
+          autoComplete="off"
+          className={toolbarSearchInputClass}
+        />
+      </div>
 
       {hasResults ? (
         <Tabs

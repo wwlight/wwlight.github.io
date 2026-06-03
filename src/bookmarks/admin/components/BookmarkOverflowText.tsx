@@ -1,3 +1,4 @@
+/** 功能：管理端卡片标题/描述截断；溢出时 hover/focus 浮层提示。 */
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
@@ -30,8 +31,11 @@ export function BookmarkOverflowText({
     }
 
     measure();
+    requestAnimationFrame(measure);
+
     const observer = new ResizeObserver(measure);
     observer.observe(el);
+    if (el.parentElement) observer.observe(el.parentElement);
     return () => observer.disconnect();
   }, [text, Tag]);
 
@@ -65,7 +69,7 @@ export function BookmarkOverflowText({
     textRef.current = node;
   }
 
-  const textClassName = cn("block truncate", overflow && "cursor-default", className);
+  const textClassName = cn("block min-w-0 w-full truncate", overflow && "cursor-default", className);
   const overflowHandlers = overflow
     ? {
         onMouseEnter: handleOpen,
@@ -94,7 +98,7 @@ export function BookmarkOverflowText({
         createPortal(
           <div
             role="tooltip"
-            className="pointer-events-auto fixed z-100 max-w-sm rounded-md border border-border bg-popover px-3 py-2 text-xs leading-5 text-popover-foreground shadow-md"
+            className="pointer-events-auto fixed z-50 max-w-sm rounded-md border border-border bg-popover px-3 py-2 text-xs leading-5 text-popover-foreground shadow-md"
             style={{
               top: position.top,
               left: position.left,

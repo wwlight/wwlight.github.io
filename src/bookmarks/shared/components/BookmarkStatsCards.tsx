@@ -1,5 +1,7 @@
+/** 功能：导航 / 管理端统计卡片网格与单卡（含数字滚动动画）。 */
 import { Bookmark, FolderKanban, Layers } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -8,16 +10,20 @@ interface BookmarkStatsCardsProps {
   sections: number;
   cards: number;
   bookmarks: number;
+  gridClassName?: string;
+  children?: ReactNode;
 }
 
 interface StatItem {
-  key: keyof BookmarkStatsCardsProps;
+  key: keyof Pick<BookmarkStatsCardsProps, "sections" | "cards" | "bookmarks">;
   label: string;
   unit: string;
   hint: string;
   icon: LucideIcon;
-  emphasis: "soft" | "base" | "strong";
+  emphasis: BookmarkStatEmphasis;
 }
+
+export type BookmarkStatEmphasis = "soft" | "base" | "strong";
 
 const statItems: StatItem[] = [
   { key: "sections", label: "模块", unit: "个", hint: "顶层分类", icon: Layers, emphasis: "soft" },
@@ -25,7 +31,7 @@ const statItems: StatItem[] = [
   { key: "bookmarks", label: "书签", unit: "条", hint: "全部链接", icon: Bookmark, emphasis: "strong" },
 ];
 
-const emphasisStyles = {
+export const bookmarkStatEmphasisStyles = {
   soft: {
     border: "border-primary/30",
     bg: "from-primary/12 via-primary/5 to-primary/8",
@@ -110,66 +116,106 @@ function AnimatedStatNumber({ value }: { value: number }) {
   );
 }
 
-export function BookmarkStatsCards({ sections, cards, bookmarks }: BookmarkStatsCardsProps) {
+export interface BookmarkStatCardProps {
+  label: string;
+  unit: string;
+  hint: string;
+  value: number;
+  icon: LucideIcon;
+  emphasis: BookmarkStatEmphasis;
+  headerAction?: ReactNode;
+  valueSuffix?: ReactNode;
+}
+
+export function BookmarkStatCard({
+  label,
+  unit,
+  hint,
+  value,
+  icon: Icon,
+  emphasis,
+  headerAction,
+  valueSuffix,
+}: BookmarkStatCardProps) {
+  const style = bookmarkStatEmphasisStyles[emphasis];
+
+  return (
+    <Card className={cn("relative h-full overflow-hidden border p-0 shadow-sm", style.border)}>
+      <div className={cn("absolute inset-0 bg-linear-to-br", style.bg)} aria-hidden />
+
+      <Icon
+        className={cn(
+          "pointer-events-none absolute -right-5 -bottom-8 size-36 rotate-12",
+          style.watermark,
+        )}
+        strokeWidth={1}
+        aria-hidden
+      />
+
+      <div className="relative flex min-h-28">
+        <div
+          className={cn(
+            "relative flex w-24 shrink-0 items-center justify-center overflow-hidden border-r bg-linear-to-br",
+            style.border,
+            style.panel,
+          )}
+          aria-hidden
+        >
+          <Icon
+            className={cn("absolute -left-2 size-24 -rotate-12", style.watermark)}
+            strokeWidth={1.25}
+          />
+          <Icon className="relative size-8 text-primary drop-shadow-sm" strokeWidth={1.75} />
+        </div>
+
+        <div className="relative flex min-w-0 flex-1 flex-col justify-between p-4 pl-4">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-medium tracking-wide text-primary">{label}</p>
+            <div className="flex shrink-0 items-center gap-1.5">
+              {headerAction}
+              <p className={cn("text-xs font-medium tracking-wide", style.hint)}>{hint}</p>
+            </div>
+          </div>
+
+          <p className="text-[2rem] font-semibold leading-none tracking-tight">
+            <AnimatedStatNumber value={value} />
+            {valueSuffix}
+            <span className={cn("ml-1.5 text-base font-normal", style.hint)}>{unit}</span>
+          </p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export function BookmarkStatsCards({
+  sections,
+  cards,
+  bookmarks,
+  gridClassName,
+  children,
+}: BookmarkStatsCardsProps) {
   const values = { sections, cards, bookmarks };
 
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
-      {statItems.map(({ key, label, unit, hint, icon: Icon, emphasis }) => {
-        const style = emphasisStyles[emphasis];
-
-        return (
-          <Card
-            key={key}
-            className={cn("relative h-full overflow-hidden border p-0 shadow-sm", style.border)}
-          >
-            <div
-              className={cn("absolute inset-0 bg-gradient-to-br", style.bg)}
-              aria-hidden
-            />
-
-            <Icon
-              className={cn(
-                "pointer-events-none absolute -right-5 -bottom-8 size-36 rotate-12",
-                style.watermark,
-              )}
-              strokeWidth={1}
-              aria-hidden
-            />
-
-            <div className="relative flex min-h-28">
-              <div
-                className={cn(
-                  "relative flex w-24 shrink-0 items-center justify-center overflow-hidden border-r bg-gradient-to-br",
-                  style.border,
-                  style.panel,
-                )}
-                aria-hidden
-              >
-                <Icon
-                  className={cn("absolute -left-2 size-24 -rotate-12", style.watermark)}
-                  strokeWidth={1.25}
-                />
-                <Icon className="relative size-8 text-primary drop-shadow-sm" strokeWidth={1.75} />
-              </div>
-
-              <div className="relative flex min-w-0 flex-1 flex-col justify-between p-4 pl-4">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="text-sm font-medium tracking-wide text-primary">{label}</p>
-                  <p className={cn("shrink-0 text-xs font-medium tracking-wide", style.hint)}>
-                    {hint}
-                  </p>
-                </div>
-
-                <p className="text-[2rem] font-semibold leading-none tracking-tight">
-                  <AnimatedStatNumber value={values[key]} />
-                  <span className={cn("ml-1.5 text-base font-normal", style.hint)}>{unit}</span>
-                </p>
-              </div>
-            </div>
-          </Card>
-        );
-      })}
+    <div
+      className={cn(
+        "grid gap-3 transition-[gap,grid-template-columns] duration-300 ease-out motion-reduce:transition-none sm:grid-cols-3",
+        gridClassName,
+      )}
+    >
+      {statItems.map(({ key, label, unit, hint, icon, emphasis }) => (
+        <BookmarkStatCard
+          key={key}
+          label={label}
+          unit={unit}
+          hint={hint}
+          value={values[key]}
+          icon={icon}
+          emphasis={emphasis}
+        />
+      ))}
+      {children}
     </div>
   );
 }

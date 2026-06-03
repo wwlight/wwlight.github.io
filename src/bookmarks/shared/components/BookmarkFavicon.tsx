@@ -1,78 +1,79 @@
+/** 功能：书签卡片站点图标；无 favicon 或加载失败时显示 Lucide Globe。 */
 import { Globe } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
-import { useEffect, useRef, useState } from "react";
-import { faviconUrl } from "@/bookmarks/shared/lib/favicon";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { faviconCandidates, resolveFaviconFromCandidates } from "@/bookmarks/shared/lib/favicon";
 import { cn } from "@/lib/utils";
-
-type FaviconStatus = "idle" | "loaded" | "failed";
 
 interface BookmarkFaviconProps extends ComponentPropsWithoutRef<"div"> {
   url: string;
 }
 
 export function BookmarkFavicon({ url, className, ...props }: BookmarkFaviconProps) {
-  const iconRef = useRef<HTMLImageElement>(null);
-  const icon = faviconUrl(url);
-  const [status, setStatus] = useState<FaviconStatus>(() => (icon ? "idle" : "failed"));
+  const containerRef = useRef<HTMLDivElement>(null);
+  const candidates = useMemo(() => faviconCandidates(url), [url]);
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    setStatus(icon ? "idle" : "failed");
-  }, [url, icon]);
+    let cancelled = false;
+    setLoadedSrc(null);
 
-  useEffect(() => {
-    const img = iconRef.current;
-    if (!img || !icon || status === "failed") return;
+    if (candidates.length === 0) return;
 
-    if (typeof IntersectionObserver === "undefined") {
-      img.src = icon;
-      return;
+    function startLoad() {
+      void resolveFaviconFromCandidates(candidates).then((src) => {
+        if (!cancelled) setLoadedSrc(src);
+      });
+    }
+
+    const node = containerRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") {
+      startLoad();
+      return () => {
+        cancelled = true;
+      };
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          img.src = icon;
+        if (entries.some((entry) => entry.isIntersecting)) {
           observer.disconnect();
+          startLoad();
         }
       },
       { rootMargin: "120px" },
     );
 
-    observer.observe(img);
-    return () => observer.disconnect();
-  }, [icon, status]);
-
-  const showFallback = status !== "loaded";
+    observer.observe(node);
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, [url, candidates]);
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         "relative size-10 shrink-0 overflow-hidden rounded-[0.35rem] bg-muted",
         className,
       )}
       {...props}
     >
-      {showFallback ? (
-        <div className="flex size-full items-center justify-center text-muted-foreground/80">
-          <Globe aria-hidden className="size-5" strokeWidth={1.75} />
-        </div>
-      ) : null}
-      {icon && status !== "failed" ? (
+      {loadedSrc ? (
         <img
-          ref={iconRef}
+          src={loadedSrc}
           alt=""
           decoding="async"
           draggable={false}
           onDragStart={(event) => event.preventDefault()}
-          className={cn(
-            "size-full object-cover transition-opacity",
-            status === "loaded" ? "opacity-100" : "absolute inset-0 opacity-0",
-          )}
-          onLoad={() => setStatus("loaded")}
-          onError={() => setStatus("failed")}
+          className="size-full object-cover"
         />
-      ) : null}
+      ) : (
+        <div className="flex size-full items-center justify-center text-muted-foreground/80">
+          <Globe aria-hidden className="size-5" strokeWidth={1.75} />
+        </div>
+      )}
     </div>
   );
 }

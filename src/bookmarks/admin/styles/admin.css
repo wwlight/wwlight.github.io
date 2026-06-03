@@ -35,6 +35,49 @@
     @apply select-text;
   }
 
+  .admin-root [role='tabpanel'] {
+    @apply outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0;
+  }
+
+  /* md 断点显隐：max-width + opacity，随视口拉宽/收窄平滑过渡 */
+  .admin-md-reveal {
+    display: flex;
+    overflow: hidden;
+    max-width: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 220ms ease;
+  }
+
+  @media (min-width: 768px) {
+    .admin-md-reveal--toolbar-import-export {
+      max-width: 4.125rem;
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-md-reveal {
+      transition: none;
+    }
+  }
+
+  .admin-viewport-layout-transition {
+    transition:
+      gap 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      padding 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      grid-template-columns 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-viewport-layout-transition {
+      transition: none;
+    }
+  }
+
   .admin-transfer-station,
   .admin-transfer-station * {
     @apply select-none;
@@ -61,6 +104,7 @@
     border-color: color-mix(in oklab, var(--ring) 32%, transparent);
     background-color: color-mix(in oklab, var(--muted) 45%, transparent);
     box-shadow: none;
+    outline: none;
   }
 
   :is(.dark, html[data-theme='dark']) .admin-bookmark-card--dragging {
@@ -69,19 +113,39 @@
   }
 
   .admin-drop-zone-hover {
+    position: relative;
     border-radius: var(--radius);
-    background-color: color-mix(in oklab, var(--ring) 12%, transparent);
-    outline: 2px dashed color-mix(in oklab, var(--ring) 50%, transparent);
-    outline-offset: 6px;
+    background-color: color-mix(in oklab, var(--ring) 8%, transparent);
+    outline: none;
     transition: background-color 150ms ease-out;
   }
 
+  .admin-drop-zone-hover::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    box-sizing: border-box;
+    border: 2px dashed color-mix(in oklab, var(--ring) 48%, transparent);
+    border-radius: calc(var(--radius) + 4px);
+    pointer-events: none;
+  }
+
   .admin-drag-swap-target-hover {
-    border-radius: inherit;
+    position: relative;
+    border-radius: var(--radius);
     background-color: color-mix(in oklab, var(--ring) 12%, transparent);
-    outline: 2px dashed color-mix(in oklab, var(--ring) 55%, transparent);
-    outline-offset: 4px;
+    outline: none;
     transition: background-color 150ms ease-out;
+  }
+
+  .admin-drag-swap-target-hover::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    box-sizing: border-box;
+    border: 2px dashed color-mix(in oklab, var(--ring) 55%, transparent);
+    border-radius: inherit;
+    pointer-events: none;
   }
 }
 
@@ -146,14 +210,14 @@
 /* 中转站：左右贴边 + 沿边滑动，圆角跟随 --radius */
 .admin-transfer-station {
   position: fixed;
-  z-index: 100;
+  z-index: 30;
   pointer-events: auto;
   width: 14rem;
   max-width: calc(100vw - 2 * var(--admin-transfer-station-edge-inset));
   --admin-transfer-station-edge-inset: 1rem;
   --admin-transfer-station-item-height: 2.625rem;
   --admin-transfer-station-item-gap: 0.5rem;
-  --admin-transfer-station-scroll-padding: 1rem;
+  --admin-transfer-station-scroll-padding: calc(2 * var(--admin-transfer-station-item-gap));
   --admin-transfer-station-tab-size: 2.75rem;
   --admin-transfer-station-shell-border-width: 1px;
   --admin-transfer-station-collapsed-outer-size: calc(
@@ -161,14 +225,18 @@
   );
   --admin-transfer-station-panel-width-side: 14rem;
   --admin-transfer-station-panel-width-bar: min(24rem, calc(100vw - 2rem));
-  --admin-transfer-station-motion: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-transfer-station-motion: 240ms cubic-bezier(0.4, 0, 0.2, 1);
   --admin-transfer-station-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --admin-transfer-station-morph: 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  --admin-transfer-station-follow: 180ms;
+  --admin-transfer-station-morph: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  --admin-transfer-station-follow: 140ms;
   --admin-transfer-station-follow-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --admin-transfer-station-dock-drag: 90ms cubic-bezier(0.22, 1, 0.36, 1);
-  --admin-transfer-station-dismiss: 320ms cubic-bezier(0.4, 0, 0.2, 1);
-  --admin-transfer-station-badge-fade: 160ms;
+  --admin-transfer-station-dock-drag: 70ms cubic-bezier(0.22, 1, 0.36, 1);
+  --admin-transfer-station-dismiss: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-transfer-station-badge-fade: 120ms;
+  --admin-transfer-station-shell-lift: 140ms;
+  --admin-transfer-station-item-motion: 220ms;
+  --admin-transfer-station-expand-scale-from: 0.94;
+  --admin-transfer-station-expand-scale-ease: cubic-bezier(0.34, 1.12, 0.64, 1);
   --admin-transfer-station-surface-top: color-mix(in oklab, var(--primary) 5%, var(--card));
   --admin-transfer-station-surface-mid: color-mix(in oklab, var(--primary) 2%, var(--card));
   --admin-transfer-station-surface-bottom: color-mix(in oklab, var(--muted) 22%, var(--card));
@@ -176,17 +244,18 @@
     6 * var(--admin-transfer-station-item-height) + 5 * var(--admin-transfer-station-item-gap) +
       var(--admin-transfer-station-scroll-padding)
   );
-  --admin-transfer-station-panel-max-height: calc(
-    var(--admin-transfer-station-tab-size) * 2 + var(--admin-transfer-station-body-scroll-height) + 2 *
+  --admin-transfer-station-expanded-outer-height: calc(
+    var(--admin-transfer-station-tab-size) + var(--admin-transfer-station-body-scroll-height) + 2 *
       var(--admin-transfer-station-shell-border-width)
   );
+  --admin-transfer-station-panel-max-height: var(--admin-transfer-station-expanded-outer-height);
   opacity: 1;
   overflow: hidden;
   transition:
-    top var(--admin-transfer-station-motion),
     left var(--admin-transfer-station-motion),
     right var(--admin-transfer-station-motion),
     width var(--admin-transfer-station-motion),
+    height var(--admin-transfer-station-motion),
     opacity var(--admin-transfer-station-dismiss);
 }
 
@@ -209,12 +278,14 @@
 
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-shell {
   transition:
-    box-shadow 180ms var(--admin-transfer-station-motion-ease),
-    transform 180ms var(--admin-transfer-station-motion-ease);
+    box-shadow var(--admin-transfer-station-shell-lift) var(--admin-transfer-station-motion-ease),
+    transform var(--admin-transfer-station-shell-lift) var(--admin-transfer-station-motion-ease);
 }
 
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-body-wrap,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-header-meta,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-header::after,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-cell::after,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-glyph,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-watermark,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-count-badge--tab,
@@ -257,7 +328,7 @@
   box-shadow:
     0 14px 36px -14px color-mix(in oklab, var(--foreground) 22%, transparent),
     0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
-  transition: box-shadow 180ms var(--admin-transfer-station-motion-ease);
+  transition: box-shadow var(--admin-transfer-station-shell-lift) var(--admin-transfer-station-motion-ease);
 }
 
 .admin-transfer-station[data-dock-dragging] .admin-transfer-station-body-wrap {
@@ -276,6 +347,7 @@
 
 .admin-transfer-station--shell-collapsed {
   width: var(--admin-transfer-station-collapsed-outer-size);
+  height: var(--admin-transfer-station-collapsed-outer-size);
   overflow: hidden;
 }
 
@@ -290,17 +362,18 @@
 .admin-transfer-station--shell-expanded[data-edge='left'],
 .admin-transfer-station--shell-expanded[data-edge='right'] {
   width: var(--admin-transfer-station-panel-width-side);
+  height: var(--admin-transfer-station-expanded-outer-height);
 }
 
 .admin-transfer-station-shell {
   position: relative;
   display: flex;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
   flex-direction: column;
   overflow: hidden;
   isolation: isolate;
-  max-height: var(--admin-transfer-station-panel-max-height);
   border: var(--admin-transfer-station-shell-border-width) solid color-mix(in oklab, var(--primary) 28%, transparent);
   border-radius: var(--radius);
   background-color: var(--card);
@@ -325,7 +398,7 @@
     width var(--admin-transfer-station-motion),
     border-radius var(--admin-transfer-station-motion),
     border-color var(--admin-transfer-station-motion),
-    box-shadow 180ms var(--admin-transfer-station-motion-ease),
+    box-shadow var(--admin-transfer-station-shell-lift) var(--admin-transfer-station-motion-ease),
     transform var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease);
 }
 
@@ -382,7 +455,6 @@
   flex-shrink: 0;
   height: var(--admin-transfer-station-tab-size);
   overflow: visible;
-  transition: border-color var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease);
 }
 
 .admin-transfer-station-header::before {
@@ -401,20 +473,59 @@
   content: '';
 }
 
-.admin-transfer-station--panel-open .admin-transfer-station-header {
-  border-bottom: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+.admin-transfer-station-header::after {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 1px;
+  background: color-mix(in oklab, var(--primary) 22%, transparent);
+  content: '';
+  opacity: 0;
+  transition: opacity var(--admin-transfer-station-motion);
 }
 
-.admin-transfer-station--panel-closed .admin-transfer-station-header {
-  transition: none;
+.admin-transfer-station--panel-open .admin-transfer-station-header::after {
+  opacity: 1;
+  transition-delay: var(--admin-transfer-station-motion);
 }
 
-.admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-icon-cell {
-  border-right: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+.admin-transfer-station--panel-closed .admin-transfer-station-header::after {
+  opacity: 0;
+  transition-delay: 0ms;
 }
 
-.admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-icon-cell {
-  border-left: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+.admin-transfer-station-icon-cell::after {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 1px;
+  background: color-mix(in oklab, var(--primary) 22%, transparent);
+  content: '';
+  opacity: 0;
+  transition: opacity var(--admin-transfer-station-motion);
+}
+
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-icon-cell::after {
+  right: 0;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-icon-cell::after {
+  left: 0;
+}
+
+.admin-transfer-station--panel-open .admin-transfer-station-icon-cell::after {
+  opacity: 1;
+  transition-delay: var(--admin-transfer-station-motion);
+}
+
+.admin-transfer-station--panel-closed .admin-transfer-station-icon-cell::after {
+  opacity: 0;
+  transition-delay: 0ms;
 }
 
 .admin-transfer-station-icon-watermark {
@@ -469,7 +580,7 @@
   border: 0;
   padding: 0;
   background: transparent;
-  transition: opacity 200ms var(--admin-transfer-station-motion-ease);
+  transition: opacity 150ms var(--admin-transfer-station-motion-ease);
 }
 
 .admin-transfer-station-icon-tab:focus-visible {
@@ -513,29 +624,46 @@
 }
 
 .admin-transfer-station-body-wrap {
+  display: flex;
+  flex: 1 1 0%;
   min-height: 0;
+  flex-direction: column;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
+  transform: scale(var(--admin-transfer-station-expand-scale-from));
   transition:
-    height var(--admin-transfer-station-motion) var(--admin-transfer-station-motion-ease),
-    opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
+    opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease),
+    transform var(--admin-transfer-station-motion) var(--admin-transfer-station-expand-scale-ease);
+}
+
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-body-wrap {
+  transform-origin: left top;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-body-wrap {
+  transform-origin: right top;
 }
 
 .admin-transfer-station--panel-open .admin-transfer-station-body-wrap {
   opacity: 1;
   pointer-events: auto;
-  transition-delay: 0ms, var(--admin-transfer-station-badge-fade);
+  transform: scale(1);
+  transition-delay: var(--admin-transfer-station-badge-fade), 0ms;
 }
 
 .admin-transfer-station--panel-closed .admin-transfer-station-body-wrap {
+  flex: 0 0 0;
   opacity: 0;
   pointer-events: none;
-  transition-delay: 0ms, 0ms;
+  transition-delay: 0ms;
 }
 
 .admin-transfer-station-header-meta {
-  transition: opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease);
+  transform: scale(var(--admin-transfer-station-expand-scale-from));
+  transition:
+    opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease),
+    transform var(--admin-transfer-station-motion) var(--admin-transfer-station-expand-scale-ease);
   box-sizing: border-box;
   width: 100%;
 }
@@ -543,10 +671,12 @@
 .admin-transfer-station[data-edge='left'] .admin-transfer-station-header-meta {
   padding-left: var(--admin-transfer-station-tab-size);
   justify-content: flex-end;
+  transform-origin: left top;
 }
 
 .admin-transfer-station[data-edge='right'] .admin-transfer-station-header-meta {
   padding-right: var(--admin-transfer-station-tab-size);
+  transform-origin: right top;
 }
 
 .admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-header-meta,
@@ -572,7 +702,7 @@
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transition: none;
+  transform: scale(var(--admin-transfer-station-expand-scale-from));
 }
 
 .admin-transfer-station--panel-closed[data-edge='left'] .admin-transfer-station-header-meta {
@@ -588,12 +718,16 @@
 .admin-transfer-station--panel-open .admin-transfer-station-header-meta {
   opacity: 1;
   visibility: visible;
-  transition-delay: var(--admin-transfer-station-badge-fade);
+  transform: scale(1);
+  transition-delay: var(--admin-transfer-station-badge-fade), 0ms;
 }
 
 .admin-transfer-station-body {
   position: relative;
+  display: flex;
   min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
   overflow: hidden;
   background-image: linear-gradient(
     180deg,
@@ -608,15 +742,19 @@
   flex-shrink: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 0.5rem;
+  padding: var(--admin-transfer-station-item-gap);
   box-sizing: border-box;
+  scrollbar-gutter: auto;
 }
 
 .admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-scroll--vertical,
 .admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-scroll--vertical {
-  height: var(--admin-transfer-station-body-scroll-height);
-  min-height: var(--admin-transfer-station-body-scroll-height);
-  max-height: var(--admin-transfer-station-body-scroll-height);
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  height: auto;
+  max-height: none;
 }
 
 .admin-transfer-station[data-edge='top'] .admin-transfer-station-scroll--horizontal,
@@ -640,6 +778,9 @@
   min-height: 0;
   flex-direction: column;
   gap: var(--admin-transfer-station-item-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .admin-transfer-station-list--grid {
@@ -659,7 +800,8 @@
 
 .admin-transfer-station-empty {
   display: flex;
-  min-height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -719,45 +861,53 @@
 /* 中转站列表项进出场 */
 .transfer-station-item {
   overflow: hidden;
+  min-height: var(--admin-transfer-station-item-height);
   max-height: var(--admin-transfer-station-item-height);
   opacity: 1;
   transform: translateX(0);
   transition:
-    max-height 260ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 260ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    max-height var(--admin-transfer-station-item-motion) cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--admin-transfer-station-item-motion) cubic-bezier(0.4, 0, 0.2, 1),
+    transform var(--admin-transfer-station-item-motion) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .transfer-station-item[data-side='right'].transfer-station-item--enter {
-  animation: transfer-station-item-in-from-right 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: transfer-station-item-in-from-right var(--admin-transfer-station-item-motion)
+    cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .transfer-station-item[data-side='left'].transfer-station-item--enter {
-  animation: transfer-station-item-in-from-left 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: transfer-station-item-in-from-left var(--admin-transfer-station-item-motion) cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .transfer-station-item[data-side='right'].transfer-station-item--enter > .transfer-station-item-card {
   transform-origin: 100% 50%;
-  animation: transfer-station-item-card-shrink-in 300ms cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  animation: transfer-station-item-card-shrink-in var(--admin-transfer-station-item-motion)
+    cubic-bezier(0.34, 1.2, 0.64, 1) both;
 }
 
 .transfer-station-item[data-side='left'].transfer-station-item--enter > .transfer-station-item-card {
   transform-origin: 0% 50%;
-  animation: transfer-station-item-card-shrink-in 300ms cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  animation: transfer-station-item-card-shrink-in var(--admin-transfer-station-item-motion)
+    cubic-bezier(0.34, 1.2, 0.64, 1) both;
 }
 
 .transfer-station-item[data-side='top'].transfer-station-item--enter {
-  animation: transfer-station-item-in-from-top 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: transfer-station-item-in-from-top var(--admin-transfer-station-item-motion) cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .transfer-station-item[data-side='bottom'].transfer-station-item--enter {
-  animation: transfer-station-item-in-from-bottom 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: transfer-station-item-in-from-bottom var(--admin-transfer-station-item-motion)
+    cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .transfer-station-item[data-side='top'].transfer-station-item--enter > .transfer-station-item-card,
 .transfer-station-item[data-side='bottom'].transfer-station-item--enter > .transfer-station-item-card {
   transform-origin: 50% 0%;
-  animation: transfer-station-item-card-shrink-in 300ms cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  animation: transfer-station-item-card-shrink-in var(--admin-transfer-station-item-motion)
+    cubic-bezier(0.34, 1.2, 0.64, 1) both;
 }
 
 .transfer-station-item[data-side='bottom'].transfer-station-item--enter > .transfer-station-item-card {
@@ -848,7 +998,7 @@
 }
 
 .transfer-station-empty {
-  animation: transfer-station-empty-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: transfer-station-empty-in var(--admin-transfer-station-item-motion) cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes transfer-station-empty-in {
@@ -872,8 +1022,12 @@
 
   .admin-transfer-station,
   .admin-transfer-station-body-wrap,
+  .admin-transfer-station-header-meta,
+  .admin-transfer-station-header::after,
+  .admin-transfer-station-icon-cell::after,
   .admin-transfer-station-shell {
     transition: none;
+    transform: none;
   }
 
   .admin-bookmark-card {

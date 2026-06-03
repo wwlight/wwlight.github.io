@@ -82,7 +82,7 @@ function SwatchOption({
       onClick={onClick}
       className={cn(
         'flex cursor-pointer items-center gap-1.5 theme-r-md border px-2 py-1.5 text-left text-xs',
-        optionButtonClass(surface, selected),
+        optionButtonClass(selected),
       )}
     >
       <span
@@ -112,7 +112,7 @@ function RadiusOptionButton({
       onClick={onClick}
       className={cn(
         'flex-1 cursor-pointer theme-r-lg border px-2 py-1.5 text-center text-xs',
-        optionButtonClass(surface, selected),
+        optionButtonClass(selected),
       )}
     >
       {label}
@@ -139,7 +139,7 @@ function ColorModeButton({
       onClick={onClick}
       className={cn(
         'flex cursor-pointer flex-col items-center gap-1 theme-r-md border px-2 py-2 text-xs',
-        optionButtonClass(surface, selected),
+        optionButtonClass(selected),
       )}
     >
       <Icon className="size-4" aria-hidden />
@@ -284,7 +284,7 @@ export function ThemeCustomizerPanel({ variant = 'bookmarks', open = true, onUpd
           onClick={handleRandom}
           className={cn(
             'flex flex-1 cursor-pointer items-center justify-center gap-1.5 theme-r-md border px-2 py-2 text-xs',
-            optionButtonClass(variant, false),
+            optionButtonClass(false),
           )}
           aria-label="随机主题"
         >
@@ -297,7 +297,7 @@ export function ThemeCustomizerPanel({ variant = 'bookmarks', open = true, onUpd
           disabled={isDefault}
           className={cn(
             'flex flex-1 cursor-pointer items-center justify-center gap-1.5 theme-r-md border px-2 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-45',
-            optionButtonClass(variant, false),
+            optionButtonClass(false),
           )}
           aria-label="重置主题为默认"
         >

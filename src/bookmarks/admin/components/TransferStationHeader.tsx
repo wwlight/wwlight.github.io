@@ -1,3 +1,4 @@
+/** 功能：中转站顶栏（icon 槽、标题、计数、dock 拖拽手柄）。 */
 import { useEffect, useRef } from "react";
 import { ArrowLeftRight } from "lucide-react";
 import {
@@ -92,6 +93,10 @@ function TransferStationIconCell({
     event.stopPropagation();
     if (!dragEnabled) return;
 
+    if (event.shiftKey) {
+      event.preventDefault();
+    }
+
     iconSessionRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -133,7 +138,10 @@ function TransferStationIconCell({
     }
 
     if (itemCount > 0 && (session.shiftKey || event.shiftKey)) {
+      event.preventDefault();
+      event.stopPropagation();
       onClearAll();
+      event.currentTarget.blur();
       return;
     }
 
