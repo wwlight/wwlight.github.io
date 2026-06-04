@@ -71,7 +71,7 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 ## 书签（速查）
 
-`bookmarks.ts` → seed → DB → 页面注水。API 仅 dev。鉴权 `PUBLIC_BOOKMARKS_ADMIN_HASH`。
+`bookmarks.ts` → seed → DB → 页面注水。API 仅 dev。鉴权 `PUBLIC_BOOKMARKS_ADMIN_HASH`。站点图标 → `blog/bookmarks/06-bookmark-logo-design/`、`PUBLIC_LOGO_DEV_TOKEN`、`generate:bookmark-logos`。
 
 ## Tailwind（本仓库）
 

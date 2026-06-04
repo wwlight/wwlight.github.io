@@ -1,16 +1,11 @@
 /** 卡片右上角浮动标签 */
-export const floatingBadgeClass =
-  "absolute -right-1.5 -top-1.5 z-10 shrink-0 shadow-md ring-1 ring-background";
+export { floatingBadgeClass, bookmarkCardPreviewRowClass as adminBookmarkCardPreviewClass } from "@/bookmarks/shared/lib/card-ui";
 
 /** 书签卡片外壳 */
 export const bookmarkCardShellClass = "relative flex flex-col overflow-visible";
 
 /** 管理端书签卡片高度：预览区 h-16 + 底栏 */
 export const adminBookmarkCardHeightClass = "min-h-[calc(4rem+2.5rem+1px)]";
-
-/** 书签卡片预览区 */
-export const adminBookmarkCardPreviewClass =
-  "flex h-16 w-full shrink-0 items-center gap-3 overflow-hidden rounded-inherit px-3 py-3";
 
 /** 书签卡片底部工具栏 */
 export const bookmarkCardFooterClass =

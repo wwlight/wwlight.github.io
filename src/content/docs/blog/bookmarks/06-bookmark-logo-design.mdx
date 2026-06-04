@@ -1,0 +1,101 @@
+---
+title: 06 · 书签站点图标
+description: 导航页与管理端共用的站点 Logo 来源、缓存与配置
+sidebar:
+  order: 6
+---
+
+导航页与管理端的书签卡片、中转站、预览区均使用同一套**站点图标**组件 `BookmarkFavicon`，不单独维护「管理端 Logo」资源。
+
+## 设计目标
+
+| 目标 | 实现 |
+| --- | --- |
+| 视觉统一 | 同一 URL 在 nav / admin 显示相同域名 Logo |
+| 减少探测 | 不再轮询 `favicon.ico`、第三方 icon 服务 |
+| 控制配额 | 构建期映射 + 浏览器缓存，避免重复无效请求 |
+| 降级可读 | 无 token 或加载失败时显示 Lucide `Globe` |
+
+图标尺寸：容器 `size-10`、圆角 `rounded-[0.35rem]`，与 `.bookmark-card` 网格对齐。
+
+## 数据流
+
+```text
+db/data/bookmarks.ts
+  → vpr generate:bookmark-logos（指纹未变则跳过）
+  → bookmark-logos.json（URL → domain）
+  → 运行时 logoDevImageUrl(domain) + PUBLIC_LOGO_DEV_TOKEN
+  → <img src="https://img.logo.dev/…" />
+```
+
+- **构建脚本不下载图片**，只更新 JSON；图片仍由 [Logo.dev CDN](https://www.logo.dev/) 在访问页面时提供。
+- **指纹**：全部书签 URL 排序后的 SHA-256；`bookmarks.ts` 未变则整文件不重写。
+- **增量**：仅新增或 URL 变更的条目写入；未变的 URL 复用已有 `domain` 映射。
+
+管理端 **保存 / 恢复** 写回 `bookmarks.ts` 后会自动执行 `generate-bookmark-logos`（与 `vpr build` 前相同）。
+
+## 配置
+
+| 项 | 说明 |
+| --- | --- |
+| `PUBLIC_LOGO_DEV_TOKEN` | Logo.dev Dashboard 的 **Publishable key**（写入 `.env`，勿提交 Git） |
+| `.env.example` | 变量名模板 |
+| GitHub Actions | Secret `PUBLIC_LOGO_DEV_TOKEN`（见 `deploy.yml`） |
+
+本地示例：
+
+```bash
+PUBLIC_LOGO_DEV_TOKEN=pk_…
+```
+
+无 token 时 `resolveBookmarkLogoImageUrl` 返回 `null`，卡片显示 Globe 占位。
+
+## Logo.dev 请求参数
+
+在 `src/bookmarks/shared/lib/logo-dev.ts` 中固定：
+
+| 参数 | 值 | 说明 |
+| --- | --- | --- |
+| `size` | 80 | 与卡片逻辑尺寸匹配 |
+| `format` | webp | 体积与透明度 |
+| `retina` | true | 高分屏 |
+| `fallback` | monogram | 无品牌图时用域名首字母 |
+
+域名会去掉 `www.` 前缀再请求 API。
+
+## 管理端中的展示位置
+
+| 位置 | 组件 |
+| --- | --- |
+| 书签卡片网格 | `grid/BookmarkCardPreview` → `BookmarkFavicon` |
+| 中转站列表项 | `transfer/DragTransferStation` |
+| 导航页卡片 | `nav/.../NavBookmarkCard` |
+
+编辑弹窗内**不**单独上传图标；图标由书签 **URL** 推导，改链接后保存并重新生成映射即可。
+
+## 常用命令
+
+```bash
+vpr generate:bookmark-logos   # 手动刷新 bookmark-logos.json
+vpr build                     # 构建前会自动执行上述脚本
+```
+
+## 免费档与归因
+
+Logo.dev Community 档约 **50 万次/月** CDN 请求；个人书签站通常足够。商业用途在生产环境需按 [Logo.dev 归因要求](https://www.logo.dev/docs/platform/attribution) 展示指向 Logo.dev 的可见链接。
+
+:::note[与全站 favicon 区分]
+书签站点图标 ≠ 浏览器标签页 favicon。标签页仍用 `generated-logo` / `data-wwlight-favicon`；本节仅指卡片上的**外链站点 Logo**。
+:::
+
+## 源码索引
+
+| 路径 | 职责 |
+| --- | --- |
+| `shared/components/BookmarkFavicon.tsx` | 懒加载、失败降级 |
+| `shared/lib/bookmark-logos.ts` | 读 JSON、解析 URL |
+| `shared/lib/logo-dev.ts` | 拼 Logo.dev 图片 URL |
+| `shared/data/bookmark-logos.json` | 构建期生成（可提交） |
+| `scripts/generate-bookmark-logos.mjs` | 指纹与增量逻辑 |
+
+相关界面说明见 [05 · 管理端编辑界面](/blog/bookmarks/05-admin-ui/)；部署见 [07 · 持久化与部署](/blog/bookmarks/07-dev-api-and-deploy/)。

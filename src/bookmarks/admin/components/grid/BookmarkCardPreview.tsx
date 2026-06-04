@@ -30,7 +30,6 @@ export function BookmarkCardPreview({ bookmark }: BookmarkCardPreviewProps) {
           className="flex min-w-0 flex-1 flex-col justify-center gap-0.5"
         >
           <BookmarkOverflowText
-            as="span"
             enableFocus
             text={bookmark.title}
             className="text-sm font-medium leading-snug"

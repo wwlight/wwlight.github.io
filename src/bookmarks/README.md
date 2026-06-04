@@ -3,7 +3,7 @@
 `/bookmarks/nav/` 导航页与 `/bookmarks/admin/` 管理端。页面 React 根在模块根目录；其余 UI 在 `components/` 下按功能分子目录。
 
 - 仓库总览：[README.md](../../README.md#书签管理端)
-- 技术文档：博客 [书签系列](/blog/bookmarks/)（04 认证 · 05 编辑界面 · 06 持久化与部署）
+- 技术文档：博客 [书签系列](/blog/bookmarks/)（04 认证 · 05 编辑界面 · [06 站点图标](/blog/bookmarks/06-bookmark-logo-design/) · 07 部署）
 - Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「书签模块要点」
 - **路由与 path alias**：`.cursor/skills/wwlight-project/SKILL.md` → **路径/路由**
 
@@ -56,7 +56,19 @@
 
 跨 nav/admin 的类型、数据、`shared/components/` 展示组件、`shared/styles/`。
 
-书签卡片图标：`BookmarkFavicon` → `shared/lib/bookmark-logos.ts` + `shared/data/bookmark-logos.json`（仅 Logo.dev；`vpr generate:bookmark-logos` 按书签 URL 指纹增量更新）。需 `PUBLIC_LOGO_DEV_TOKEN`（`.env.example`）。`vpr build` 与 admin 保存后会自动生成。
+### 书签站点图标（Logo.dev）
+
+导航页与管理端共用 `BookmarkFavicon`（网格、中转站、预览）。设计说明见博客 [06 · 书签站点图标](/blog/bookmarks/06-bookmark-logo-design/)。
+
+| 路径 | 职责 |
+| --- | --- |
+| `shared/components/BookmarkFavicon.tsx` | 懒加载与 Globe 降级 |
+| `shared/lib/logo-dev.ts` | Logo.dev URL 参数 |
+| `shared/lib/bookmark-logos.ts` | 读 `bookmark-logos.json` |
+| `shared/data/bookmark-logos.json` | 构建期 URL→domain 映射 |
+| `scripts/generate-bookmark-logos.mjs` | 指纹未变则跳过 |
+
+`PUBLIC_LOGO_DEV_TOKEN`（`.env.example`）；`vpr generate:bookmark-logos` / `vpr build` / admin 保存后更新 JSON。
 
 ## 数据流
 

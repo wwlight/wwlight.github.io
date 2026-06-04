@@ -1,7 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { BookmarkFavicon } from "@/bookmarks/shared/components/BookmarkFavicon";
 import { BookmarkOverflowText } from "@/bookmarks/shared/components/BookmarkOverflowText";
-import { floatingBadgeClass, navBookmarkCardShellClass } from "@/bookmarks/nav/components/chrome/ui-helpers";
+import {
+  bookmarkCardPreviewRowClass,
+  floatingBadgeClass,
+  navBookmarkCardShellClass,
+} from "@/bookmarks/shared/lib/card-ui";
 import { resolveBookmarkBadgeVariant } from "@/bookmarks/shared/lib/badge-variants";
 import type { BookmarkData } from "@/bookmarks/shared/types";
 import { cn } from "@/lib/utils";
@@ -11,15 +15,16 @@ interface NavBookmarkCardProps {
 }
 
 export function NavBookmarkCard({ bookmark }: NavBookmarkCardProps) {
-  const hasDescription = Boolean(bookmark.description);
-
   return (
-    <a
-      href={bookmark.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(navBookmarkCardShellClass)}
-    >
+    <div className={navBookmarkCardShellClass}>
+      <a
+        href={bookmark.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute inset-0 z-0 rounded-[inherit]"
+        aria-hidden
+        tabIndex={-1}
+      />
       {bookmark.badgeText ? (
         <Badge
           variant={resolveBookmarkBadgeVariant(bookmark.badgeVariant)}
@@ -28,20 +33,23 @@ export function NavBookmarkCard({ bookmark }: NavBookmarkCardProps) {
           {bookmark.badgeText}
         </Badge>
       ) : null}
-      <BookmarkFavicon url={bookmark.url} />
-      <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-        <BookmarkOverflowText
-          as="span"
-          text={bookmark.title}
-          className="text-sm font-medium leading-snug"
-        />
-        {hasDescription ? (
+      <div className={bookmarkCardPreviewRowClass}>
+        <BookmarkFavicon url={bookmark.url} className="pointer-events-none shrink-0" />
+        <div className="min-w-0 flex-1 space-y-0.5">
           <BookmarkOverflowText
-            text={bookmark.description!}
-            className="text-xs leading-5 text-muted-foreground"
+            href={bookmark.url}
+            text={bookmark.title}
+            className="text-sm font-medium leading-snug"
           />
-        ) : null}
+          {bookmark.description ? (
+            <BookmarkOverflowText
+              href={bookmark.url}
+              text={bookmark.description}
+              className="text-xs leading-5 text-muted-foreground"
+            />
+          ) : null}
+        </div>
       </div>
-    </a>
+    </div>
   );
 }

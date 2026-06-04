@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceFingerprint": "414b7395d34f830d7b09412f14e7e975d0c21860de58523b0aaf1edcca1092f4",
+  "sourceFingerprint": "adc0b27e833d427d9a484254e37c927ccdcca88efc755f154d3ec35d48f0e642",
   "byUrl": {
     "https://tldr.inbrowser.app/": {
       "domain": "tldr.inbrowser.app"
@@ -436,9 +436,6 @@
     },
     "https://qr.io/": {
       "domain": "qr.io"
-    },
-    "https://bilibili.iiilab.com/": {
-      "domain": "bilibili.iiilab.com"
     },
     "https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/#features": {
       "domain": "azure.microsoft.com"

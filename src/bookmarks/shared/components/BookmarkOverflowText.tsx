@@ -1,118 +1,87 @@
-/** 书签卡片标题/描述截断；溢出时 hover/focus 浮层提示（nav / admin 共用） */
-import { useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+/** 书签卡片标题/描述截断；溢出时 Tooltip（参考 web-flow EPTooltip：mouseenter 测宽） */
+import { useRef, useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface BookmarkOverflowTextProps {
   text: string;
   className?: string;
-  as?: "p" | "span";
-  /** 链接内文本应关闭，避免嵌套可聚焦节点 */
+  /** 导航页：文本本身为外链，避免 Tooltip 嵌套在整卡 `<a>` 内 */
+  href?: string;
+  /** 管理端预览等可聚焦触发 */
   enableFocus?: boolean;
+}
+
+function isTruncated(el: HTMLElement) {
+  return el.scrollWidth > el.offsetWidth;
 }
 
 export function BookmarkOverflowText({
   text,
   className,
-  as: Tag = "p",
+  href,
   enableFocus = false,
 }: BookmarkOverflowTextProps) {
-  const textRef = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLAnchorElement | HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
-  const [overflow, setOverflow] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
-  useLayoutEffect(() => {
-    const el = textRef.current;
-    if (!el) return;
-
-    function measure() {
-      if (!textRef.current) return;
-      setOverflow(textRef.current.scrollWidth > textRef.current.clientWidth);
+  function updateOpen(next: boolean) {
+    const el = ref.current;
+    if (!el) {
+      setOpen(false);
+      return;
     }
-
-    measure();
-    requestAnimationFrame(measure);
-
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    if (el.parentElement) observer.observe(el.parentElement);
-    return () => observer.disconnect();
-  }, [text, Tag]);
-
-  function updatePosition() {
-    const el = textRef.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    setPosition({
-      top: rect.bottom + 6,
-      left: rect.left,
-      width: rect.width,
-    });
+    setOpen(next && isTruncated(el));
   }
 
-  function handleOpen() {
-    if (!overflow) return;
-    updatePosition();
-    setOpen(true);
+  function handleMouseEnter() {
+    updateOpen(true);
   }
 
-  function handleClose() {
+  function handleMouseLeave() {
     setOpen(false);
   }
 
-  useLayoutEffect(() => {
-    if (!overflow) setOpen(false);
-  }, [overflow]);
-
-  function setTextRef(node: HTMLParagraphElement | HTMLSpanElement | null) {
-    textRef.current = node;
+  function handleFocus() {
+    if (enableFocus) updateOpen(true);
   }
 
-  const textClassName = cn("block min-w-0 w-full truncate", overflow && "cursor-default", className);
-  const overflowHandlers = overflow
-    ? {
-        onMouseEnter: handleOpen,
-        onMouseLeave: handleClose,
-        ...(enableFocus
-          ? { onFocus: handleOpen, onBlur: handleClose, tabIndex: 0 as const }
-          : {}),
-      }
-    : undefined;
-  const textElement =
-    Tag === "span" ? (
-      <span ref={setTextRef} className={textClassName} {...overflowHandlers}>
-        {text}
-      </span>
-    ) : (
-      <p ref={setTextRef} className={textClassName} {...overflowHandlers}>
-        {text}
-      </p>
-    );
+  function handleBlur() {
+    setOpen(false);
+  }
+
+  const sharedClass = cn("block min-w-0 w-full truncate", className);
+  const interactionProps = {
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
+    ...(enableFocus ? { tabIndex: 0 as const } : {}),
+  };
+
+  const trigger = href ? (
+    <a
+      ref={ref}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={sharedClass}
+      {...interactionProps}
+    >
+      {text}
+    </a>
+  ) : (
+    <span ref={ref} className={sharedClass} {...interactionProps}>
+      {text}
+    </span>
+  );
 
   return (
-    <>
-      {textElement}
-      {open &&
-        overflow &&
-        createPortal(
-          <div
-            role="tooltip"
-            className="pointer-events-auto fixed z-62 max-w-sm rounded-md border border-border bg-popover px-3 py-2 text-xs leading-5 text-popover-foreground shadow-md"
-            style={{
-              top: position.top,
-              left: position.left,
-              minWidth: Math.min(Math.max(position.width, 12 * 16), 320),
-              maxWidth: 320,
-            }}
-            onMouseEnter={handleOpen}
-            onMouseLeave={handleClose}
-          >
-            {text}
-          </div>,
-          document.body,
-        )}
-    </>
+    <Tooltip open={open} onOpenChange={updateOpen} delayDuration={300}>
+      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+      <TooltipContent side="bottom" sideOffset={6} className="max-w-xs text-xs leading-5">
+        {text}
+      </TooltipContent>
+    </Tooltip>
   );
 }

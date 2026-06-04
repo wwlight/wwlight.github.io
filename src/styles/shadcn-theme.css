@@ -1,4 +1,6 @@
 @custom-variant dark (&:is(.dark *, [data-theme='dark'] *));
+/* Radix Tabs 等为 data-state="active"，勿用默认 [data-state-active] 布尔属性选择器 */
+@custom-variant data-state-active (&[data-state='active']);
 
 @theme inline {
   --color-background: var(--background);

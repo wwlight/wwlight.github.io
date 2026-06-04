@@ -60,6 +60,7 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | 入口 | 说明 |
 | ---- | ---- |
 | [`src/bookmarks/README.md`](src/bookmarks/README.md) | shared / nav / admin 目录职责 |
+| [书签站点图标](/blog/bookmarks/06-bookmark-logo-design/) | 站点 Logo、缓存与管理端展示（博客） |
 | `db/data/bookmarks.ts` | 唯一可提交数据源 |
 | `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
 

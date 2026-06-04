@@ -1,8 +1,8 @@
 ---
-title: 06 · 持久化与部署
+title: 07 · 持久化与部署
 description: Dev API、构建流水线与生产发布
 sidebar:
-  order: 6
+  order: 7
 ---
 
 ## 数据流概览
@@ -35,6 +35,10 @@ vpr build
 ```
 
 通过即表示 seed 与 injectRoute 正常。书签路由由 integration 注册，不经过 `src/pages/`。
+
+## 站点图标与构建
+
+`vpr build` 前会执行 `generate:bookmark-logos` 更新 `bookmark-logos.json`；线上需配置 `PUBLIC_LOGO_DEV_TOKEN`。见 [06 · 书签站点图标](/blog/bookmarks/06-bookmark-logo-design/)。
 
 ## 主题子系统
 
