@@ -28,6 +28,7 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 | `vpr build` / `preview` / `lint` | |
 | `vpr generate:color-themes` | `neutral-scales.css` + `color-tokens.css` + `options.json` |
 | `vpr generate:theme-init` | `init.inline.js` |
+| `vpr generate:bookmark-logos` | `shared/data/bookmark-logos.json`（指纹未变则跳过） |
 
 `vp i` 装依赖。版本只改 `pnpm-workspace.yaml` → `catalogs`；`package.json` 用 `catalog:<组>`。
 

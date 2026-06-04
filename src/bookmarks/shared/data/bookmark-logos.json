@@ -1,0 +1,1212 @@
+{
+  "version": 1,
+  "sourceFingerprint": "414b7395d34f830d7b09412f14e7e975d0c21860de58523b0aaf1edcca1092f4",
+  "byUrl": {
+    "https://tldr.inbrowser.app/": {
+      "domain": "tldr.inbrowser.app"
+    },
+    "https://www.jsont.run/": {
+      "domain": "jsont.run"
+    },
+    "https://tinypng.com/": {
+      "domain": "tinypng.com"
+    },
+    "https://screego.net/": {
+      "domain": "screego.net"
+    },
+    "https://cobalt.tools/": {
+      "domain": "cobalt.tools"
+    },
+    "https://dub.co/": {
+      "domain": "dub.co"
+    },
+    "https://ray.so/": {
+      "domain": "ray.so"
+    },
+    "https://cheatsheets.zip/": {
+      "domain": "cheatsheets.zip"
+    },
+    "https://roadmap.sh/": {
+      "domain": "roadmap.sh"
+    },
+    "https://www.patterns.dev/": {
+      "domain": "patterns.dev"
+    },
+    "https://component-party.dev/": {
+      "domain": "component-party.dev"
+    },
+    "https://objtube.github.io/front-end-roadmap": {
+      "domain": "objtube.github.io"
+    },
+    "https://github.com/tonsky/FiraCode": {
+      "domain": "github.com"
+    },
+    "https://monaspace.githubnext.com/": {
+      "domain": "monaspace.githubnext.com"
+    },
+    "https://font.subf.dev/": {
+      "domain": "font.subf.dev"
+    },
+    "https://github.com/lxgw/LxgwWenKai": {
+      "domain": "github.com"
+    },
+    "https://fonts.google.com/": {
+      "domain": "fonts.google.com"
+    },
+    "https://www.nerdfonts.com/": {
+      "domain": "nerdfonts.com"
+    },
+    "https://fonts.bunny.net/": {
+      "domain": "fonts.bunny.net"
+    },
+    "https://www.fontshare.com/": {
+      "domain": "fontshare.com"
+    },
+    "https://www.100font.com/": {
+      "domain": "100font.com"
+    },
+    "https://www.fontspace.com/": {
+      "domain": "fontspace.com"
+    },
+    "https://www.dafont.com/": {
+      "domain": "dafont.com"
+    },
+    "https://jamstack.org/generators/": {
+      "domain": "jamstack.org"
+    },
+    "https://starlight.astro.build/": {
+      "domain": "starlight.astro.build"
+    },
+    "https://content.nuxtjs.org/": {
+      "domain": "content.nuxtjs.org"
+    },
+    "https://docus.dev/": {
+      "domain": "docus.dev"
+    },
+    "https://docusaurus.io/": {
+      "domain": "docusaurus.io"
+    },
+    "https://fumadocs.vercel.app/": {
+      "domain": "fumadocs.vercel.app"
+    },
+    "https://vitepress.vuejs.org/": {
+      "domain": "vitepress.vuejs.org"
+    },
+    "https://d.umijs.org/": {
+      "domain": "d.umijs.org"
+    },
+    "https://www.docz.site/": {
+      "domain": "docz.site"
+    },
+    "https://www.gitbook.com/": {
+      "domain": "gitbook.com"
+    },
+    "https://squidfunk.github.io/mkdocs-material/": {
+      "domain": "squidfunk.github.io"
+    },
+    "https://histoire.dev/": {
+      "domain": "histoire.dev"
+    },
+    "https://mintlify.com/": {
+      "domain": "mintlify.com"
+    },
+    "https://wordpress.com/": {
+      "domain": "wordpress.com"
+    },
+    "https://pages.github.com/": {
+      "domain": "pages.github.com"
+    },
+    "https://www.netlify.com/": {
+      "domain": "netlify.com"
+    },
+    "https://vercel.com/": {
+      "domain": "vercel.com"
+    },
+    "https://firebase.google.com/": {
+      "domain": "firebase.google.com"
+    },
+    "https://pages.cloudflare.com/": {
+      "domain": "pages.cloudflare.com"
+    },
+    "https://coolify.io/": {
+      "domain": "coolify.io"
+    },
+    "https://railway.com/": {
+      "domain": "railway.com"
+    },
+    "https://dokploy.com/": {
+      "domain": "dokploy.com"
+    },
+    "https://www.heroku.com/": {
+      "domain": "heroku.com"
+    },
+    "https://dokku.com/": {
+      "domain": "dokku.com"
+    },
+    "https://oneclick.sh/": {
+      "domain": "oneclick.sh"
+    },
+    "https://cn.sli.dev/": {
+      "domain": "cn.sli.dev"
+    },
+    "https://webcontainers.io/": {
+      "domain": "webcontainers.io"
+    },
+    "https://mermaid.js.org/": {
+      "domain": "mermaid.js.org"
+    },
+    "https://jsonplaceholder.typicode.com/": {
+      "domain": "jsonplaceholder.typicode.com"
+    },
+    "https://unpkg.com/": {
+      "domain": "unpkg.com"
+    },
+    "https://esm.sh/": {
+      "domain": "esm.sh"
+    },
+    "https://www.jsdelivr.com/": {
+      "domain": "jsdelivr.com"
+    },
+    "https://cdnjs.com/": {
+      "domain": "cdnjs.com"
+    },
+    "https://www.bootcdn.cn/": {
+      "domain": "bootcdn.cn"
+    },
+    "https://help.mirrors.cernet.edu.cn/": {
+      "domain": "help.mirrors.cernet.edu.cn"
+    },
+    "https://npmmirror.com/": {
+      "domain": "npmmirror.com"
+    },
+    "https://developer.aliyun.com/mirror/": {
+      "domain": "developer.aliyun.com"
+    },
+    "https://mirrors.ustc.edu.cn/": {
+      "domain": "mirrors.ustc.edu.cn"
+    },
+    "https://tuna.moe/": {
+      "domain": "tuna.moe"
+    },
+    "https://app.follow.is/": {
+      "domain": "app.follow.is"
+    },
+    "https://feedly.com/": {
+      "domain": "feedly.com"
+    },
+    "https://docs.rsshub.app/": {
+      "domain": "docs.rsshub.app"
+    },
+    "https://excalidraw.com/": {
+      "domain": "excalidraw.com"
+    },
+    "https://www.tldraw.com/": {
+      "domain": "tldraw.com"
+    },
+    "https://plantuml.com/zh/": {
+      "domain": "plantuml.com"
+    },
+    "https://app.diagrams.net/": {
+      "domain": "app.diagrams.net"
+    },
+    "https://codepen.io/": {
+      "domain": "codepen.io"
+    },
+    "https://stackblitz.com/": {
+      "domain": "stackblitz.com"
+    },
+    "https://codesandbox.io/": {
+      "domain": "codesandbox.io"
+    },
+    "https://code.juejin.cn/": {
+      "domain": "code.juejin.cn"
+    },
+    "https://www.gitpod.io/": {
+      "domain": "gitpod.io"
+    },
+    "https://replit.com/": {
+      "domain": "replit.com"
+    },
+    "https://sourcegraph.com/": {
+      "domain": "sourcegraph.com"
+    },
+    "https://github.dev/github/dev": {
+      "domain": "github.dev"
+    },
+    "https://github1s.com/": {
+      "domain": "github1s.com"
+    },
+    "https://glitch.com/": {
+      "domain": "glitch.com"
+    },
+    "https://astexplorer.net/": {
+      "domain": "astexplorer.net"
+    },
+    "https://jsfiddle.net/": {
+      "domain": "jsfiddle.net"
+    },
+    "https://github.com/type-challenges/type-challenges/blob/main/README.zh-CN.md": {
+      "domain": "github.com"
+    },
+    "https://typehero.dev/": {
+      "domain": "typehero.dev"
+    },
+    "https://cn-vuejs-challenges.netlify.app/": {
+      "domain": "cn-vuejs-challenges.netlify.app"
+    },
+    "https://learngitbranching.js.org/?locale=zh_CN": {
+      "domain": "learngitbranching.js.org"
+    },
+    "https://cssgridgarden.com/#zh-cn": {
+      "domain": "cssgridgarden.com"
+    },
+    "http://www.flexboxdefense.com/": {
+      "domain": "flexboxdefense.com"
+    },
+    "https://svg-tutorial.com/": {
+      "domain": "svg-tutorial.com"
+    },
+    "https://codingfantasy.com/": {
+      "domain": "codingfantasy.com"
+    },
+    "https://zh.learnlayout.com/": {
+      "domain": "zh.learnlayout.com"
+    },
+    "http://layout.imweb.io/": {
+      "domain": "layout.imweb.io"
+    },
+    "https://www.yikm.net/": {
+      "domain": "yikm.net"
+    },
+    "https://playgama.com/": {
+      "domain": "playgama.com"
+    },
+    "https://www.pacogames.com/": {
+      "domain": "pacogames.com"
+    },
+    "https://pdfcandy.com/cn/": {
+      "domain": "pdfcandy.com"
+    },
+    "https://stirlingpdf.io/": {
+      "domain": "stirlingpdf.io"
+    },
+    "https://tinywow.com/": {
+      "domain": "tinywow.com"
+    },
+    "https://cn.office-converter.com/": {
+      "domain": "cn.office-converter.com"
+    },
+    "https://www.alltoall.net/": {
+      "domain": "alltoall.net"
+    },
+    "https://vimawesome.com/": {
+      "domain": "vimawesome.com"
+    },
+    "https://vscodethemes.com/": {
+      "domain": "vscodethemes.com"
+    },
+    "https://www.pstips.net/": {
+      "domain": "pstips.net"
+    },
+    "https://navnav.co/": {
+      "domain": "navnav.co"
+    },
+    "https://omatsuri.app/": {
+      "domain": "omatsuri.app"
+    },
+    "https://css-generators.com/": {
+      "domain": "css-generators.com"
+    },
+    "https://coupon.codelabo.cn/": {
+      "domain": "coupon.codelabo.cn"
+    },
+    "https://neumorphism.io/": {
+      "domain": "neumorphism.io"
+    },
+    "https://9elements.github.io/fancy-border-radius/": {
+      "domain": "9elements.github.io"
+    },
+    "https://getcssscan.com/css-box-shadow-examples": {
+      "domain": "getcssscan.com"
+    },
+    "https://smoothshadows.com/": {
+      "domain": "smoothshadows.com"
+    },
+    "https://getwaves.io/": {
+      "domain": "getwaves.io"
+    },
+    "https://www.shapedivider.app/": {
+      "domain": "shapedivider.app"
+    },
+    "https://easings.net/": {
+      "domain": "easings.net"
+    },
+    "https://easingwizard.com/": {
+      "domain": "easingwizard.com"
+    },
+    "https://cubic-bezier.com/": {
+      "domain": "cubic-bezier.com"
+    },
+    "https://webgradients.com/": {
+      "domain": "webgradients.com"
+    },
+    "https://mycolor.space/": {
+      "domain": "mycolor.space"
+    },
+    "https://gradient.shapefactory.co/": {
+      "domain": "gradient.shapefactory.co"
+    },
+    "https://cssgenerator.org/gradient-css-generator.html": {
+      "domain": "cssgenerator.org"
+    },
+    "https://duotones.co/": {
+      "domain": "duotones.co"
+    },
+    "https://coolors.co/": {
+      "domain": "coolors.co"
+    },
+    "https://bennettfeely.com/clippy/": {
+      "domain": "bennettfeely.com"
+    },
+    "https://www.magicpattern.design/tools/css-backgrounds": {
+      "domain": "magicpattern.design"
+    },
+    "https://cn.pattern.monster/": {
+      "domain": "cn.pattern.monster"
+    },
+    "https://enjoycss.com/": {
+      "domain": "enjoycss.com"
+    },
+    "https://cssgrid-generator.netlify.app/": {
+      "domain": "cssgrid-generator.netlify.app"
+    },
+    "https://grid.layoutit.com/": {
+      "domain": "grid.layoutit.com"
+    },
+    "https://glassgenerator.netlify.app/": {
+      "domain": "glassgenerator.netlify.app"
+    },
+    "https://uiverse.io/": {
+      "domain": "uiverse.io"
+    },
+    "https://angrytools.com/css/animation/": {
+      "domain": "angrytools.com"
+    },
+    "https://readme-typing-svg.demolab.com/": {
+      "domain": "readme-typing-svg.demolab.com"
+    },
+    "https://smalldev.tools/": {
+      "domain": "smalldev.tools"
+    },
+    "https://github.com/moonlight-stream/moonlight-qt": {
+      "domain": "github.com"
+    },
+    "https://pin.gl/": {
+      "domain": "pin.gl"
+    },
+    "https://meet.jit.si/": {
+      "domain": "meet.jit.si"
+    },
+    "https://codeshare.io/": {
+      "domain": "codeshare.io"
+    },
+    "https://rgbacolorpicker.com/": {
+      "domain": "rgbacolorpicker.com"
+    },
+    "https://it-tools.tech/": {
+      "domain": "it-tools.tech"
+    },
+    "https://tableconvert.com/": {
+      "domain": "tableconvert.com"
+    },
+    "https://jakearchibald.github.io/svgomg/": {
+      "domain": "jakearchibald.github.io"
+    },
+    "https://jsonhero.io/": {
+      "domain": "jsonhero.io"
+    },
+    "https://www.json.cn/": {
+      "domain": "json.cn"
+    },
+    "https://cli.im/": {
+      "domain": "cli.im"
+    },
+    "https://www.online-qrcode-generator.com/": {
+      "domain": "online-qrcode-generator.com"
+    },
+    "https://qr.io/": {
+      "domain": "qr.io"
+    },
+    "https://bilibili.iiilab.com/": {
+      "domain": "bilibili.iiilab.com"
+    },
+    "https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/#features": {
+      "domain": "azure.microsoft.com"
+    },
+    "https://wakatime.com/": {
+      "domain": "wakatime.com"
+    },
+    "https://www.ipaddress.com/": {
+      "domain": "ipaddress.com"
+    },
+    "https://sms-activate.guru/cn": {
+      "domain": "sms-activate.guru"
+    },
+    "https://7sim.cc/en": {
+      "domain": "7sim.cc"
+    },
+    "https://developer.mozilla.org/": {
+      "domain": "developer.mozilla.org"
+    },
+    "https://www.w3.org/": {
+      "domain": "w3.org"
+    },
+    "https://tc39.es/": {
+      "domain": "tc39.es"
+    },
+    "https://github.com/whatwg": {
+      "domain": "github.com"
+    },
+    "https://www.javascripttutorial.net/": {
+      "domain": "javascripttutorial.net"
+    },
+    "https://v8.dev/": {
+      "domain": "v8.dev"
+    },
+    "https://docs.github.com/": {
+      "domain": "docs.github.com"
+    },
+    "https://developers.google.com/": {
+      "domain": "developers.google.com"
+    },
+    "https://developer.chrome.com/": {
+      "domain": "developer.chrome.com"
+    },
+    "https://about.google/intl/zh-CN/products/#all-products": {
+      "domain": "about.google"
+    },
+    "https://developer.microsoft.com/": {
+      "domain": "developer.microsoft.com"
+    },
+    "https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md": {
+      "domain": "github.com"
+    },
+    "https://github.com/yifeikong/reverse-interview-zh": {
+      "domain": "github.com"
+    },
+    "https://interview2.poetries.top/": {
+      "domain": "interview2.poetries.top"
+    },
+    "https://www.yuque.com/cuggz/interview": {
+      "domain": "yuque.com"
+    },
+    "https://bytedance.feishu.cn/base/app8Ok6k9qafpMkgyRbfgxeEnet?table=tblzZHf2Ix3YtxPM&view=vew9iquA45": {
+      "domain": "bytedance.feishu.cn"
+    },
+    "https://vue3js.cn/interview/": {
+      "domain": "vue3js.cn"
+    },
+    "https://www.mianshipai.com/": {
+      "domain": "mianshipai.com"
+    },
+    "https://h5bp.org/Front-end-Developer-Interview-Questions/translations/chinese/": {
+      "domain": "h5bp.org"
+    },
+    "https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#The_browsers_we_will_talk_about": {
+      "domain": "html5rocks.com"
+    },
+    "https://www.yuque.com/cuggz/interview/lph6i8": {
+      "domain": "yuque.com"
+    },
+    "https://stateofjs.com/en-US": {
+      "domain": "stateofjs.com"
+    },
+    "https://stateofcss.com/en-US": {
+      "domain": "stateofcss.com"
+    },
+    "https://bestofjs.org/": {
+      "domain": "bestofjs.org"
+    },
+    "https://ossinsight.io/": {
+      "domain": "ossinsight.io"
+    },
+    "https://www.producthunt.com/": {
+      "domain": "producthunt.com"
+    },
+    "https://www.indiehackers.site/": {
+      "domain": "indiehackers.site"
+    },
+    "https://www.runpkg.com/": {
+      "domain": "runpkg.com"
+    },
+    "https://bundlephobia.com/": {
+      "domain": "bundlephobia.com"
+    },
+    "https://github.com/renovatebot/renovate": {
+      "domain": "github.com"
+    },
+    "https://www.semanticscholar.org/": {
+      "domain": "semanticscholar.org"
+    },
+    "https://tgideas.qq.com/doc/index.html": {
+      "domain": "tgideas.qq.com"
+    },
+    "https://github.com/ecomfe/spec/blob/master/javascript-style-guide.md": {
+      "domain": "github.com"
+    },
+    "https://lin-123.github.io/javascript/": {
+      "domain": "lin-123.github.io"
+    },
+    "https://github.com/standard/standard/blob/master/docs/README-zhcn.md": {
+      "domain": "github.com"
+    },
+    "https://guide.aotu.io/index.html": {
+      "domain": "guide.aotu.io"
+    },
+    "https://codeguide.bootcss.com/": {
+      "domain": "codeguide.bootcss.com"
+    },
+    "https://www.explainthis.io/zh-hans": {
+      "domain": "explainthis.io"
+    },
+    "https://freetool.vercel.app/": {
+      "domain": "freetool.vercel.app"
+    },
+    "https://osssoftware.org/": {
+      "domain": "osssoftware.org"
+    },
+    "https://awehunt.com/": {
+      "domain": "awehunt.com"
+    },
+    "https://overapi.com/": {
+      "domain": "overapi.com"
+    },
+    "https://www.bootcss.com/": {
+      "domain": "bootcss.com"
+    },
+    "https://www.github-zh.com/": {
+      "domain": "github-zh.com"
+    },
+    "https://docschina.org/": {
+      "domain": "docschina.org"
+    },
+    "http://www.alloyteam.com/nav/": {
+      "domain": "alloyteam.com"
+    },
+    "https://www.fly63.com/": {
+      "domain": "fly63.com"
+    },
+    "https://www.duolingo.cn/": {
+      "domain": "duolingo.cn"
+    },
+    "https://www.lingohut.com/zh/l1/%E5%AD%A6%E4%B9%A0%E8%8B%B1%E8%AF%AD": {
+      "domain": "lingohut.com"
+    },
+    "https://www.tingclass.net/": {
+      "domain": "tingclass.net"
+    },
+    "https://relingo.net/": {
+      "domain": "relingo.net"
+    },
+    "https://www.trancy.org/": {
+      "domain": "trancy.org"
+    },
+    "http://www.newconceptenglish.com/": {
+      "domain": "newconceptenglish.com"
+    },
+    "https://words.aihub.ren/": {
+      "domain": "words.aihub.ren"
+    },
+    "https://www.typelit.io/": {
+      "domain": "typelit.io"
+    },
+    "https://www.typingclub.com/sportal/": {
+      "domain": "typingclub.com"
+    },
+    "https://2study.top/": {
+      "domain": "2study.top"
+    },
+    "https://qwerty.kaiyi.cool/": {
+      "domain": "qwerty.kaiyi.cool"
+    },
+    "https://a-programmers-guide-to-english.harryyu.me/": {
+      "domain": "a-programmers-guide-to-english.harryyu.me"
+    },
+    "https://byoungd.gitbook.io/english-level-up-tips/": {
+      "domain": "byoungd.gitbook.io"
+    },
+    "https://zhenti.burningvocabulary.com/": {
+      "domain": "zhenti.burningvocabulary.com"
+    },
+    "https://www.newconceptenglish.com/": {
+      "domain": "newconceptenglish.com"
+    },
+    "https://dify.ai/": {
+      "domain": "dify.ai"
+    },
+    "https://n8n.io/": {
+      "domain": "n8n.io"
+    },
+    "https://webflow.com/": {
+      "domain": "webflow.com"
+    },
+    "https://www.automa.site/": {
+      "domain": "automa.site"
+    },
+    "https://www.todesktop.com/": {
+      "domain": "todesktop.com"
+    },
+    "https://storybook.js.org/": {
+      "domain": "storybook.js.org"
+    },
+    "https://svgl.app/": {
+      "domain": "svgl.app"
+    },
+    "https://icons.lobehub.com/": {
+      "domain": "icons.lobehub.com"
+    },
+    "https://app.uiboy.com/": {
+      "domain": "app.uiboy.com"
+    },
+    "https://macosicons.com/": {
+      "domain": "macosicons.com"
+    },
+    "https://xandemon.github.io/developer-icons/icons/All/": {
+      "domain": "xandemon.github.io"
+    },
+    "https://brandfetch.com/": {
+      "domain": "brandfetch.com"
+    },
+    "https://pagespeed.web.dev/": {
+      "domain": "pagespeed.web.dev"
+    },
+    "https://www.webshare.io/": {
+      "domain": "webshare.io"
+    },
+    "https://www.doyoudo.com/": {
+      "domain": "doyoudo.com"
+    },
+    "https://zh.wikihow.com/": {
+      "domain": "zh.wikihow.com"
+    },
+    "https://www.freecodecamp.org/chinese/": {
+      "domain": "freecodecamp.org"
+    },
+    "https://www.quanzhanketang.com/": {
+      "domain": "quanzhanketang.com"
+    },
+    "https://newsela.com/": {
+      "domain": "newsela.com"
+    },
+    "https://codegym.cc/zh/": {
+      "domain": "codegym.cc"
+    },
+    "https://exercism.org/": {
+      "domain": "exercism.org"
+    },
+    "https://www.shejidaren.com/": {
+      "domain": "shejidaren.com"
+    },
+    "http://es6.ruanyifeng.com/": {
+      "domain": "es6.ruanyifeng.com"
+    },
+    "https://zh.javascript.info/": {
+      "domain": "zh.javascript.info"
+    },
+    "https://cn.history.js.org/": {
+      "domain": "cn.history.js.org"
+    },
+    "https://coffe1891.gitbook.io/frontend-hard-mode-interview/": {
+      "domain": "coffe1891.gitbook.io"
+    },
+    "http://liubin.org/promises-book/": {
+      "domain": "liubin.org"
+    },
+    "https://www.30secondsofcode.org/": {
+      "domain": "30secondsofcode.org"
+    },
+    "https://discoverthreejs.com/": {
+      "domain": "discoverthreejs.com"
+    },
+    "https://www.techinterviewhandbook.org/": {
+      "domain": "techinterviewhandbook.org"
+    },
+    "https://ebookfoundation.github.io/free-programming-books/books/free-programming-books-zh.html": {
+      "domain": "ebookfoundation.github.io"
+    },
+    "https://csdiy.wiki/": {
+      "domain": "csdiy.wiki"
+    },
+    "https://wizardforcel.gitbooks.io/vbird-linux-basic-4e/content/index.html": {
+      "domain": "wizardforcel.gitbooks.io"
+    },
+    "https://www.bookstack.cn/": {
+      "domain": "bookstack.cn"
+    },
+    "https://wangdoc.com/": {
+      "domain": "wangdoc.com"
+    },
+    "https://opensource.guide/zh-hans/": {
+      "domain": "opensource.guide"
+    },
+    "https://gitee.com/opensource-guide/": {
+      "domain": "gitee.com"
+    },
+    "https://github.com/xitu/gold-miner": {
+      "domain": "github.com"
+    },
+    "https://github.com/bradtraversy/50projects50days": {
+      "domain": "github.com"
+    },
+    "https://liiked.github.io/VS-Code-Extension-Doc-ZH": {
+      "domain": "liiked.github.io"
+    },
+    "https://github.com/vuejs/awesome-vue": {
+      "domain": "github.com"
+    },
+    "https://github.com/opendigg/awesome-github-vue": {
+      "domain": "github.com"
+    },
+    "https://github.com/Aufree/awesome-wechat-weapp": {
+      "domain": "github.com"
+    },
+    "https://github.com/jobbole/awesome-design-cn": {
+      "domain": "github.com"
+    },
+    "https://github.com/GorvGoyl/Clone-Wars": {
+      "domain": "github.com"
+    },
+    "https://github.com/anuraghazra/github-readme-stats/blob/master/docs/readme_cn.md": {
+      "domain": "github.com"
+    },
+    "https://github.com/ryo-ma/github-profile-trophy": {
+      "domain": "github.com"
+    },
+    "https://ashutosh00710.github.io/github-readme-activity-graph/": {
+      "domain": "ashutosh00710.github.io"
+    },
+    "https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md": {
+      "domain": "github.com"
+    },
+    "https://the-algorithms.com/": {
+      "domain": "the-algorithms.com"
+    },
+    "https://www.hello-algo.com/": {
+      "domain": "hello-algo.com"
+    },
+    "https://leetcode-solution-leetcode-pp.gitbook.io/leetcode-solution/": {
+      "domain": "leetcode-solution-leetcode-pp.gitbook.io"
+    },
+    "https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md": {
+      "domain": "github.com"
+    },
+    "https://visualgo.net/zh": {
+      "domain": "visualgo.net"
+    },
+    "https://www.jsv9000.app/": {
+      "domain": "jsv9000.app"
+    },
+    "https://howto-make-more-money-easychen.vercel.app/": {
+      "domain": "howto-make-more-money-easychen.vercel.app"
+    },
+    "http://www.inode.club/": {
+      "domain": "inode.club"
+    },
+    "https://www.easywpbook.com/": {
+      "domain": "easywpbook.com"
+    },
+    "https://picsum.photos/": {
+      "domain": "picsum.photos"
+    },
+    "https://imageconverter.dev/": {
+      "domain": "imageconverter.dev"
+    },
+    "https://pluspng.com/": {
+      "domain": "pluspng.com"
+    },
+    "https://undraw.co/illustrations": {
+      "domain": "undraw.co"
+    },
+    "https://carbon.now.sh/": {
+      "domain": "carbon.now.sh"
+    },
+    "https://codetoimg.com/": {
+      "domain": "codetoimg.com"
+    },
+    "https://shields.io/": {
+      "domain": "shields.io"
+    },
+    "https://badgen.net/": {
+      "domain": "badgen.net"
+    },
+    "https://www.dicebear.com/": {
+      "domain": "dicebear.com"
+    },
+    "https://favicon.io/": {
+      "domain": "favicon.io"
+    },
+    "https://realfavicongenerator.net/": {
+      "domain": "realfavicongenerator.net"
+    },
+    "https://www.logoly.pro/": {
+      "domain": "logoly.pro"
+    },
+    "https://bluemoji.io/": {
+      "domain": "bluemoji.io"
+    },
+    "https://github.com/ikatyang/emoji-cheat-sheet#smileys--emotion": {
+      "domain": "github.com"
+    },
+    "https://emojipedia.org/": {
+      "domain": "emojipedia.org"
+    },
+    "https://unsplash.com/": {
+      "domain": "unsplash.com"
+    },
+    "https://wallpaperhub.app/": {
+      "domain": "wallpaperhub.app"
+    },
+    "https://www.logosc.cn/so/": {
+      "domain": "logosc.cn"
+    },
+    "https://www.pexels.com/zh-cn/": {
+      "domain": "pexels.com"
+    },
+    "https://wallpaperscraft.com/": {
+      "domain": "wallpaperscraft.com"
+    },
+    "https://wallpapersden.com/": {
+      "domain": "wallpapersden.com"
+    },
+    "https://www.newcger.com/": {
+      "domain": "newcger.com"
+    },
+    "https://compressor.io/": {
+      "domain": "compressor.io"
+    },
+    "https://squoosh.app/": {
+      "domain": "squoosh.app"
+    },
+    "http://optimizilla.com/": {
+      "domain": "optimizilla.com"
+    },
+    "https://picdiet.eula.club/": {
+      "domain": "picdiet.eula.club"
+    },
+    "https://www.base64-image.de/": {
+      "domain": "base64-image.de"
+    },
+    "https://picwish.cn/": {
+      "domain": "picwish.cn"
+    },
+    "https://www.remove.bg/zh": {
+      "domain": "remove.bg"
+    },
+    "https://annotely.com/": {
+      "domain": "annotely.com"
+    },
+    "https://edit.photo/": {
+      "domain": "edit.photo"
+    },
+    "https://shots.so/": {
+      "domain": "shots.so"
+    },
+    "https://pixabay.com/": {
+      "domain": "pixabay.com"
+    },
+    "https://pngimg.com/": {
+      "domain": "pngimg.com"
+    },
+    "https://moshpro.app/": {
+      "domain": "moshpro.app"
+    },
+    "https://www.uugai.com/": {
+      "domain": "uugai.com"
+    },
+    "https://smms.app/": {
+      "domain": "smms.app"
+    },
+    "https://preview.iconify.design/": {
+      "domain": "preview.iconify.design"
+    },
+    "https://icones.js.org/": {
+      "domain": "icones.js.org"
+    },
+    "https://lucide.dev/": {
+      "domain": "lucide.dev"
+    },
+    "https://remixicon.com/": {
+      "domain": "remixicon.com"
+    },
+    "https://www.isocons.app/": {
+      "domain": "isocons.app"
+    },
+    "https://iconpark.oceanengine.com/official": {
+      "domain": "iconpark.oceanengine.com"
+    },
+    "https://www.iconfont.cn/": {
+      "domain": "iconfont.cn"
+    },
+    "https://icons.bootcss.com/": {
+      "domain": "icons.bootcss.com"
+    },
+    "https://fontawesome.com/": {
+      "domain": "fontawesome.com"
+    },
+    "https://lordicon.com/": {
+      "domain": "lordicon.com"
+    },
+    "https://akveo.github.io/eva-icons/": {
+      "domain": "akveo.github.io"
+    },
+    "https://www.xicons.org/": {
+      "domain": "xicons.org"
+    },
+    "https://www.mingcute.com/": {
+      "domain": "mingcute.com"
+    },
+    "https://free-icon-rainbow.com/": {
+      "domain": "free-icon-rainbow.com"
+    },
+    "https://icons8.com/": {
+      "domain": "icons8.com"
+    },
+    "https://boxicons.com/": {
+      "domain": "boxicons.com"
+    },
+    "https://iconarchive.com/": {
+      "domain": "iconarchive.com"
+    },
+    "https://www.flaticon.com/": {
+      "domain": "flaticon.com"
+    },
+    "https://chat.deepseek.com/": {
+      "domain": "chat.deepseek.com"
+    },
+    "https://chatgpt.com/": {
+      "domain": "chatgpt.com"
+    },
+    "https://claude.ai/": {
+      "domain": "claude.ai"
+    },
+    "https://copilot.microsoft.com/": {
+      "domain": "copilot.microsoft.com"
+    },
+    "https://grok.com/": {
+      "domain": "grok.com"
+    },
+    "https://gemini.google.com/": {
+      "domain": "gemini.google.com"
+    },
+    "https://agent.minimax.io/": {
+      "domain": "agent.minimax.io"
+    },
+    "https://ai.meta.com/": {
+      "domain": "ai.meta.com"
+    },
+    "https://chat.qwen.ai/": {
+      "domain": "chat.qwen.ai"
+    },
+    "http://ai-sdk.dev/": {
+      "domain": "ai-sdk.dev"
+    },
+    "https://agpt.co/": {
+      "domain": "agpt.co"
+    },
+    "https://poe.com/": {
+      "domain": "poe.com"
+    },
+    "https://openrouter.ai/": {
+      "domain": "openrouter.ai"
+    },
+    "https://lobechat.com/": {
+      "domain": "lobechat.com"
+    },
+    "https://nextchat.club/": {
+      "domain": "nextchat.club"
+    },
+    "https://www.napkin.ai/": {
+      "domain": "napkin.ai"
+    },
+    "https://www.hume.ai/": {
+      "domain": "hume.ai"
+    },
+    "https://suno.com/": {
+      "domain": "suno.com"
+    },
+    "https://modelcontextprotocol.io/": {
+      "domain": "modelcontextprotocol.io"
+    },
+    "https://artificialanalysis.ai/": {
+      "domain": "artificialanalysis.ai"
+    },
+    "https://huggingface.co/": {
+      "domain": "huggingface.co"
+    },
+    "https://www.gptshunter.com/": {
+      "domain": "gptshunter.com"
+    },
+    "https://aitools.inc/": {
+      "domain": "aitools.inc"
+    },
+    "https://www.toolai.io/": {
+      "domain": "toolai.io"
+    },
+    "https://www.humanornot.co/": {
+      "domain": "humanornot.co"
+    },
+    "https://deepwiki.com/": {
+      "domain": "deepwiki.com"
+    },
+    "https://www.comfy.org/": {
+      "domain": "comfy.org"
+    },
+    "https://sitesnapper.app/": {
+      "domain": "sitesnapper.app"
+    },
+    "https://prompts.chat/": {
+      "domain": "prompts.chat"
+    },
+    "https://bolt.new/": {
+      "domain": "bolt.new"
+    },
+    "https://v0.app/": {
+      "domain": "v0.app"
+    },
+    "https://aistudio.google.com/": {
+      "domain": "aistudio.google.com"
+    },
+    "https://www.tinte.dev/": {
+      "domain": "tinte.dev"
+    },
+    "https://www.reweb.so/": {
+      "domain": "reweb.so"
+    },
+    "https://dribbble.com/": {
+      "domain": "dribbble.com"
+    },
+    "https://designsystems.surf/": {
+      "domain": "designsystems.surf"
+    },
+    "https://fountn.design/": {
+      "domain": "fountn.design"
+    },
+    "https://www.gooddesign.tools/": {
+      "domain": "gooddesign.tools"
+    },
+    "https://rive.app/": {
+      "domain": "rive.app"
+    },
+    "https://www.dark.design/": {
+      "domain": "dark.design"
+    },
+    "https://www.footer.design/": {
+      "domain": "footer.design"
+    },
+    "https://www.landingly.co/": {
+      "domain": "landingly.co"
+    },
+    "https://godly.website/": {
+      "domain": "godly.website"
+    },
+    "https://www.awwwards.com/": {
+      "domain": "awwwards.com"
+    },
+    "https://www.curated.design/": {
+      "domain": "curated.design"
+    },
+    "https://www.landing.gallery/": {
+      "domain": "landing.gallery"
+    },
+    "https://www.supahero.io/": {
+      "domain": "supahero.io"
+    },
+    "https://mobbin.com/": {
+      "domain": "mobbin.com"
+    },
+    "https://saaslandingpage.com/": {
+      "domain": "saaslandingpage.com"
+    },
+    "https://www.canva.com/": {
+      "domain": "canva.com"
+    },
+    "https://www.affinity.studio/": {
+      "domain": "affinity.studio"
+    },
+    "https://mastergo.com/": {
+      "domain": "mastergo.com"
+    },
+    "https://www.figma.com/": {
+      "domain": "figma.com"
+    },
+    "https://www.framer.com/": {
+      "domain": "framer.com"
+    },
+    "https://rime.im/": {
+      "domain": "rime.im"
+    },
+    "https://www.shidianguji.com/": {
+      "domain": "shidianguji.com"
+    },
+    "https://www.hanyuguoxue.com/": {
+      "domain": "hanyuguoxue.com"
+    },
+    "https://zi.tools/": {
+      "domain": "zi.tools"
+    },
+    "https://fmhy.net/": {
+      "domain": "fmhy.net"
+    },
+    "https://www.pickfree.cn/": {
+      "domain": "pickfree.cn"
+    },
+    "https://www.jokerps.com/": {
+      "domain": "jokerps.com"
+    },
+    "https://www.hereitis.cn/": {
+      "domain": "hereitis.cn"
+    },
+    "https://toolfolio.io/": {
+      "domain": "toolfolio.io"
+    },
+    "https://trustmrr.com/": {
+      "domain": "trustmrr.com"
+    },
+    "https://web.archive.org/": {
+      "domain": "web.archive.org"
+    },
+    "https://clipdrop.co/": {
+      "domain": "clipdrop.co"
+    },
+    "https://layoutit.com/": {
+      "domain": "layoutit.com"
+    },
+    "https://www.hackreels.com/": {
+      "domain": "hackreels.com"
+    },
+    "https://pathfinding-visualizer-nu.vercel.app/": {
+      "domain": "pathfinding-visualizer-nu.vercel.app"
+    },
+    "https://www.tree.fm/": {
+      "domain": "tree.fm"
+    },
+    "https://web-check.xyz/": {
+      "domain": "web-check.xyz"
+    },
+    "https://workout.cool/": {
+      "domain": "workout.cool"
+    },
+    "https://www.cp.com.cn/digital/app.html": {
+      "domain": "cp.com.cn"
+    },
+    "https://weread.qq.com/": {
+      "domain": "weread.qq.com"
+    },
+    "https://www.perfectlingo.com/": {
+      "domain": "perfectlingo.com"
+    },
+    "https://www.ourplay.net/": {
+      "domain": "ourplay.net"
+    }
+  }
+}

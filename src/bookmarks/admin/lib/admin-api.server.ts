@@ -2,6 +2,7 @@
  * 功能：dev 中间件 save / restore / versions 的业务 handler。
  * 关联：integrations/bookmarks-admin.ts
  */
+import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,12 +48,24 @@ function validateSections(sections: unknown) {
   return { ok: true as const, bookmarkCount };
 }
 
+function refreshBookmarkLogoCache() {
+  try {
+    execSync("node scripts/generate-bookmark-logos.mjs", {
+      cwd: projectRoot,
+      stdio: "pipe",
+    });
+  } catch {
+    // 生成失败不阻断保存
+  }
+}
+
 function writeBookmarksFile(sections: BookmarkSectionData[]) {
   const content = serializeBookmarkSections(sections);
   const filePath = path.resolve(projectRoot, "db/data/bookmarks.ts");
   if (fs.existsSync(filePath)) fs.copyFileSync(filePath, `${filePath}.bak`);
   fs.writeFileSync(filePath, content, "utf-8");
   touchSeed(projectRoot);
+  refreshBookmarkLogoCache();
 }
 
 export function handleListVersions() {

@@ -20,6 +20,7 @@
 | [`src/theme/README.md`](src/theme/README.md) | 目录职责、生成物路径、对外 import |
 | `vpr generate:color-themes` | 生成 `color-tokens.css`、`customizer/options.json` |
 | `vpr generate:theme-init` | 生成首屏 `scripts/init.inline.js` |
+| `vpr generate:bookmark-logos` | 按 `bookmarks.ts` 增量更新 `bookmark-logos.json` |
 | `import { … } from '@/theme'` | 公共 API |
 
 ## 技术栈
@@ -68,6 +69,7 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 | 变量 | 说明 |
 | ---- | ---- |
 | `PUBLIC_BOOKMARKS_ADMIN_HASH` | 登录密码 SHA-256 哈希（必填，首次启动自动写入） |
+| `PUBLIC_LOGO_DEV_TOKEN` | [Logo.dev](https://www.logo.dev/) publishable key（书签图标；配合 `vpr generate:bookmark-logos`） |
 
 | 能力               | 本地 | 线上 |
 | ----------------- | :--: | :--: |
@@ -79,7 +81,7 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 > [!NOTE]
 > **部署与流程**
-> - 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
+> - 线上配置 `PUBLIC_BOOKMARKS_ADMIN_HASH`、`PUBLIC_LOGO_DEV_TOKEN`（同本地 `.env`）：GitHub Secrets、Vercel / Netlify Environment Variables
 > - 静态站点不可保存，数据随 `vpr build` 发布
 > - 流程：`vpr dev:admin` → commit `db/data/bookmarks.ts` → push
 

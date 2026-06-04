@@ -1,8 +1,8 @@
-/** 功能：书签卡片站点图标；无 favicon 或加载失败时显示 Lucide Globe。 */
+/** 功能：书签卡片站点图标（仅 Logo.dev，URL 来自构建期 bookmark-logos.json）。 */
 import { Globe } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { faviconCandidates, resolveFaviconFromCandidates } from "@/bookmarks/shared/lib/favicon";
+import { resolveBookmarkLogoImageUrl } from "@/bookmarks/shared/lib/bookmark-logos";
 import { cn } from "@/lib/utils";
 
 interface BookmarkFaviconProps extends ComponentPropsWithoutRef<"div"> {
@@ -11,19 +11,29 @@ interface BookmarkFaviconProps extends ComponentPropsWithoutRef<"div"> {
 
 export function BookmarkFavicon({ url, className, ...props }: BookmarkFaviconProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const candidates = useMemo(() => faviconCandidates(url), [url]);
+  const logoSrc = useMemo(() => resolveBookmarkLogoImageUrl(url), [url]);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setLoadedSrc(null);
+    setFailed(false);
 
-    if (candidates.length === 0) return;
+    if (!logoSrc) return;
+
+    const src = logoSrc;
 
     function startLoad() {
-      void resolveFaviconFromCandidates(candidates).then((src) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => {
         if (!cancelled) setLoadedSrc(src);
-      });
+      };
+      img.onerror = () => {
+        if (!cancelled) setFailed(true);
+      };
+      img.src = src;
     }
 
     const node = containerRef.current;
@@ -49,7 +59,9 @@ export function BookmarkFavicon({ url, className, ...props }: BookmarkFaviconPro
       cancelled = true;
       observer.disconnect();
     };
-  }, [url, candidates]);
+  }, [url, logoSrc]);
+
+  const showImage = loadedSrc && !failed;
 
   return (
     <div
@@ -60,7 +72,7 @@ export function BookmarkFavicon({ url, className, ...props }: BookmarkFaviconPro
       )}
       {...props}
     >
-      {loadedSrc ? (
+      {showImage ? (
         <img
           src={loadedSrc}
           alt=""

@@ -56,6 +56,8 @@
 
 跨 nav/admin 的类型、数据、`shared/components/` 展示组件、`shared/styles/`。
 
+书签卡片图标：`BookmarkFavicon` → `shared/lib/bookmark-logos.ts` + `shared/data/bookmark-logos.json`（仅 Logo.dev；`vpr generate:bookmark-logos` 按书签 URL 指纹增量更新）。需 `PUBLIC_LOGO_DEV_TOKEN`（`.env.example`）。`vpr build` 与 admin 保存后会自动生成。
+
 ## 数据流
 
 ```text

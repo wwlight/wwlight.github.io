@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PUBLIC_BOOKMARKS_ADMIN_HASH: ${{ secrets.PUBLIC_BOOKMARKS_ADMIN_HASH }}
+      PUBLIC_LOGO_DEV_TOKEN: ${{ secrets.PUBLIC_LOGO_DEV_TOKEN }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
