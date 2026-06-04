@@ -2,8 +2,8 @@
  * 功能：从 localStorage 一次性同步明暗 + 配色到 DOM；跨标签 storage 订阅。
  * 存储键定义仍在 @/lib/site-storage（全站前缀与迁移）。
  */
-import { syncStoredThemeCustomizerState } from '@/theme/customizer/state'
-import { syncStoredTheme } from '@/theme/color-mode/color-mode'
+import { syncStoredThemeCustomizerState } from '../customizer/state'
+import { syncStoredTheme } from '../color-mode/color-mode'
 import { isSiteThemeStorageKey } from '@/lib/site-storage'
 import { syncSiteFavicon } from '@/lib/generated-logo'
 
@@ -21,7 +21,7 @@ export {
   siteThemeStorageKey,
 } from '@/lib/site-storage'
 
-export { SITE_THEME_DATA_ATTRIBUTES } from '@/theme/site/data-attributes'
+export { SITE_THEME_DATA_ATTRIBUTES } from './data-attributes'
 
 export function syncSiteThemeFromStorage() {
   syncStoredTheme()

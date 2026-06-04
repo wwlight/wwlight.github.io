@@ -5,16 +5,17 @@ import { Settings2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ThemeCustomizerPanel } from '@/theme/components/customizer/Panel'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { getDocumentPrimaryThemeId } from '@/theme/customizer/state'
 import {
+  getDocumentPrimaryThemeId,
+  PRIMARY_THEMES,
+  subscribeSiteThemeStorage,
+  syncSiteThemeFromStorage,
   themeCustomizerPopoverClass,
   themeCustomizerSwatchClass,
   themeCustomizerTriggerButtonClass,
   themeCustomizerTriggerLabelClass,
   type ThemeSurface,
-} from '@/theme/customizer/trigger-classes'
-import { PRIMARY_THEMES } from '@/theme/customizer/options'
-import { subscribeSiteThemeStorage, syncSiteThemeFromStorage } from '@/theme/site/sync'
+} from '@/theme'
 
 interface ThemeCustomizerTriggerProps {
   variant?: ThemeSurface

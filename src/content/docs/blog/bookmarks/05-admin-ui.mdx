@@ -1,114 +1,44 @@
 ---
-title: 05 · 管理端 UI
-description: AdminApp 状态管理、CRUD、拖拽排序与对话框
+title: 05 · 管理端编辑界面
+description: 布局分区、网格编辑、弹窗表单与草稿模型
 sidebar:
   order: 5
 ---
 
-管理端 UI 是系列中代码量最大的部分：`AdminApp.tsx` 统筹分区 Tab、书签卡片网格、搜索、脏数据检测，以及一整套对话框。
+认证通过后进入 `BookmarksAdminApp`：顶栏、左侧分区列表、右侧书签网格。
 
-## 组件分层
+## 布局与功能
 
-```text
-BookmarksAdmin（ThemeProvider 根）
-└── BookmarksAdminApp（登录门控）
-    ├── AdminGateShell + ColorThemePicker（未登录）
-    └── AdminApp（主编辑界面）
-        ├── AdminHeaderActions（ColorThemePicker + 保存 / 导出 / 版本 / 退出）
-        ├── AdminStats
-        ├── SectionTabsNav + TabsContent
-        │   └── BookmarkSectionPanel
-        │       └── BookmarkCardGroup → BookmarkCard / BookmarkAddTile
-        └── Dialogs
-            ├── EditDialog
-            ├── DeleteConfirmDialog
-            ├── SaveConfirmDialog
-            ├── LeaveUnsavedDialog
-            ├── RestoreConfirmDialog
-            ├── VersionHistoryDialog
-            └── SectionManageDialog
-```
-
-## 状态模型
-
-`AdminApp` 用 React `useState` 持有：
-
-| 状态 | 用途 |
+| 区域 | 能力 |
 | --- | --- |
-| `sections` | 当前编辑中的完整树（深拷贝自 initial） |
-| `savedSections` | 上次保存或初始快照，用于 `sectionsEqual` 判脏 |
-| `selectedSection` | 当前 Tab 索引 |
-| `query` | 搜索词（与管理端过滤逻辑共用 lib） |
-| `editContext` | 正在编辑的书签 / 卡片 / 分区 |
-| `deleteTarget` | 待删除项 |
-| `dragging` | 拖拽中的书签 payload |
+| 顶栏 | 返回导航、主题定制器、保存/放弃、统计摘要 |
+| 左侧 Sections | 分区 CRUD、拖拽排序 |
+| 右侧 Grid | 当前分区内书签 CRUD、拖拽排序 |
+| Edit 弹窗 | 标题、URL、描述、图标等；描述字段显示剩余字数 |
 
-脏检测：`sectionsEqual(sections, savedSections)`。离开页面、切换 Tab 前若脏，弹出 `LeaveUnsavedDialog`。
+## 草稿模型
 
-## CRUD 操作
+页面内变更先写入**内存草稿**，不立即落盘。
 
-编辑入口统一走 `EditDialog`，根据 `EditContext` 类型渲染不同字段：
+- **保存** — 校验通过后写入 `db/data/bookmarks.ts`（仅本地 dev）。
+- **放弃 / 刷新** — 未持久化的草稿丢弃，恢复至上次保存状态。
 
-- **Bookmark**：title、url、description、badge
-- **Card**：title
-- **Section**：title、stagger 开关
+## 拖拽
 
-删除前 `sectionCanDelete` / `cardCanDelete` 检查是否至少保留一个 bookmark，防止存空数据。
+- 分区列表：调整分区顺序。
+- 网格：跨分区或分区内调整卡片顺序。
+- 拖拽与「编辑模式」开关联动；关闭编辑模式可降低误操作。
 
-新增书签通过 `BookmarkAddTile` 占位卡片触发（`.bookmark-card`），`insertBookmark` 工具函数插入并 `normalizeSortOrders`。编辑态 `BookmarkCard` 同样挂 `bookmark-card`，与导航页共用 theme 的 `--card` / `--border`。
+## 与导航页对比
 
-## 拖拽排序
+| | `/bookmarks/nav/` | `/bookmarks/admin/` |
+| --- | --- | --- |
+| 模式 | 只读浏览、搜索 | 数据编辑 |
+| 数据源 | 构建期 JSON + DB | 草稿 + Dev 持久化 API |
 
-原生 HTML5 DnD，不用第三方库：
+## 源码索引
 
-1. `dragstart` 记录 `DragPayload`（sectionIndex、cardIndex、bookmarkIndex）
-2. `dragover` 计算插入位置 `getInsertIndex`（按鼠标 Y 与卡片中线比较）
-3. `drop` 调用 `swapBookmarks` 或跨 card 移动
-4. `dragend` 清理高亮 class（`adminDropZoneActiveClass`）
+- 页面根：`src/bookmarks/admin/BookmarksAdmin.tsx`、`BookmarksAdminApp.tsx`
+- UI：`admin/components/{editor,gate,dialogs,grid,sections,chrome,stats,transfer}/`
 
-排序后 `normalizeSortOrders` 重算各层 `sortOrder`，与保存序列化逻辑一致。
-
-## 保存与导出
-
-**保存到项目**（仅 dev）：
-
-```ts
-await saveSectionsToProject(authorization, sections);
-// → POST /admin/api/save { sections }
-```
-
-成功后更新 `savedSections`，toast 提示。
-
-**导出 TS 文件**（任意环境）：
-
-```ts
-downloadTextFile("bookmarks.ts", serializeBookmarkSections(sections));
-```
-
-适合线上管理端无法写盘时，手动复制到本地。
-
-## 版本历史
-
-`VersionHistoryDialog` 列出 `db/data/versions/manifest.json` 中的快照（最多 40 条）。每次 save 前 `archiveVersion` 写入 `{id}.json`。Restore 走 `/admin/api/restore`，同样只在 dev 生效。
-
-## UI 技术栈
-
-- **Radix UI**：Dialog、Tabs、Select、Tooltip
-- **sonner**：操作 toast
-- **lucide-react**：操作区图标；管理端入口用 `BookmarkSettingsIcon`
-- **`ColorThemePicker`**：顶栏与登录页，与文档站同一 theme 状态
-- **Tailwind + cn()**：与导航页一致的语义样式
-
-样式入口 `src/bookmarks/admin/styles/admin.css`（经 `bookmarks-app.css` → `bookmarks-theme-shared.css`），根节点 `.admin-root` 隔离于 Starlight。拖拽态额外用 `.admin-bookmark-card--dragging`。
-
-## 练习：只读预览模式
-
-1. 在 `AdminApp` 增加 `readOnly` prop
-
-2. 当 `readOnly` 为 true 时：
-   - 隐藏保存按钮与 Add 图块
-   - `BookmarkCard` 不绑定 drag 事件
-
-3. 在 `BookmarksAdminApp` 里：`readOnly={!isDev}`，使线上 build 自动只读
-
-这与现有 `isDev` 保存限制理念一致，可进一步改善 UX（目前线上仍可编辑 UI，只是保存失败）。
+结构说明见 `src/bookmarks/README.md`。

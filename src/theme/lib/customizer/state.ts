@@ -15,7 +15,7 @@ import {
   isNeutralThemeId,
   isPrimaryThemeId,
   isRadiusOptionId,
-} from '@/theme/customizer/options'
+} from './options'
 import {
   migrateAllLegacyStorageKeys,
   SITE_STORAGE_KEYS,
@@ -30,7 +30,7 @@ export {
   DEFAULT_NEUTRAL,
   DEFAULT_PRIMARY,
   DEFAULT_RADIUS,
-} from '@/theme/customizer/options'
+} from './options'
 
 export interface ThemeCustomizerState {
   primary: PrimaryThemeId

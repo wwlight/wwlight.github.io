@@ -9,11 +9,12 @@ import {
   resolveTheme,
   setThemeWithTransition,
   storeThemePreference,
+  subscribeSiteThemeStorage,
+  syncSiteThemeFromStorage,
   syncStoredTheme,
   type ResolvedTheme,
   type ThemePreference,
-} from '@/theme/color-mode/color-mode'
-import { syncSiteThemeFromStorage, subscribeSiteThemeStorage } from '@/theme/site/sync'
+} from '@/theme'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 type ThemeProviderProps = {

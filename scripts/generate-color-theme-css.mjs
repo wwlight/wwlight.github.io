@@ -10,6 +10,6 @@ validateColorThemesCss(css)
 
 writeFileSync(join(root, 'src/theme/styles/color-tokens.css'), css)
 writeFileSync(join(root, 'src/theme/styles/neutral-scales.css'), buildNeutralScalesCss())
-writeFileSync(join(root, 'src/theme/customizer/options.json'), buildColorThemesJson())
+writeFileSync(join(root, 'src/theme/lib/customizer/options.json'), buildColorThemesJson())
 
-console.log('Generated src/theme/styles/color-tokens.css, neutral-scales.css, and customizer/options.json')
+console.log('Generated src/theme/styles/color-tokens.css, neutral-scales.css, and lib/customizer/options.json')

@@ -4,7 +4,7 @@
 import { Shuffle } from 'lucide-react'
 import { flushSync } from 'react-dom'
 import { Button } from '@/components/ui/button'
-import { getDocumentThemeCustomizerState, randomThemeCustomizerState } from '@/theme/customizer/state'
+import { getDocumentThemeCustomizerState, randomThemeCustomizerState } from '@/theme'
 import { cn } from '@/lib/utils'
 
 interface HeroRandomThemeButtonProps {

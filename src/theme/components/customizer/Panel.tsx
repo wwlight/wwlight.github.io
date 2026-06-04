@@ -5,36 +5,31 @@ import { Laptop, Moon, RotateCcw, Shuffle, Sun } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type MouseEvent } from 'react'
 import { flushSync } from 'react-dom'
 import {
+  DEFAULT_COLOR_MODE,
   getDocumentThemeCustomizerState,
   getServerThemeCustomizerStateSnapshot,
+  getStoredThemePreference,
   isDefaultThemeCustomizerState,
-  randomThemeCustomizerState,
-  resetThemeCustomizerToDefaults,
-  setThemeCustomizerState,
-  subscribeThemeCustomizerState,
-} from '@/theme/customizer/state'
-import {
-  DEFAULT_COLOR_MODE,
   NEUTRAL_THEMES,
+  optionButtonClass,
+  panelFooterBorderClass,
   PRIMARY_THEMES,
+  randomThemeCustomizerState,
   RADIUS_OPTIONS,
+  resetThemeCustomizerToDefaults,
+  sectionTitleClass,
+  setThemeCustomizerState,
+  setThemePreference,
+  setThemePreferenceWithTransition,
+  subscribeSiteThemeStorage,
+  subscribeThemeCustomizerState,
+  themeCustomizerSwatchClass,
   type NeutralThemeId,
   type PrimaryThemeId,
   type RadiusOptionId,
-} from '@/theme/customizer/options'
-import {
-  getStoredThemePreference,
-  setThemePreference,
-  setThemePreferenceWithTransition,
   type ThemePreference,
-} from '@/theme/color-mode/color-mode'
-import { subscribeSiteThemeStorage } from '@/theme/site/sync'
-import { themeCustomizerSwatchClass, type ThemeSurface } from '@/theme/customizer/trigger-classes'
-import {
-  optionButtonClass,
-  panelFooterBorderClass,
-  sectionTitleClass,
-} from '@/theme/customizer/surface'
+  type ThemeSurface,
+} from '@/theme'
 import { cn } from '@/lib/utils'
 
 const THEME_ACTION_DEBOUNCE_MS = 400

@@ -2,7 +2,7 @@
  * 功能：定制器面板 section 标题 / 页脚与选项小块样式（双表面共用选项块 token）。
  */
 import { cn } from '@/lib/utils'
-import type { ThemeSurface } from '@/theme/customizer/trigger-classes'
+import type { ThemeSurface } from './trigger-classes'
 
 export function optionButtonClass(selected: boolean) {
   if (selected) {

@@ -1,6 +1,6 @@
 ---
-title: 书签导航与管理端搭建系列
-description: 基于 Astro + React 实现书签导航与本地管理端
+title: 书签模块
+description: 数据源、导航页与管理端的架构与运维
 sidebar:
   order: 0
   hidden: true
@@ -8,64 +8,23 @@ sidebar:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-`/bookmarks/nav/` 导航页与 `/bookmarks/admin/` 管理端的实现说明，按仓库内代码路径组织。
+书签为独立应用模块：导航页 `/bookmarks/nav/`，管理端 `/bookmarks/admin/`。与 Starlight 文档分路由部署，共用全站主题子系统。
 
-## 范围
+## 使用流程
 
-- Astro 静态站中的 React 岛屿与 Starlight 并存
-- 与 `@/theme` 全站 Primary / Neutral / Radius、明暗同步
-- Astro DB + `db/data/bookmarks.ts` 数据源与 seed
-- 静态部署下 dev 中间件写回 TS、线上只读
+1. **浏览** — 访问 `/bookmarks/nav/`，数据来自构建期 Astro DB seed。
+2. **编辑** — 本地开发环境打开 `/bookmarks/admin/`，认证后可 CRUD、拖拽排序；持久化写入 `db/data/bookmarks.ts`。
+3. **发布** — 提交 `bookmarks.ts` 并部署；生产环境管理端默认无写权限（见 [04 管理端认证](/blog/bookmarks/04-admin-auth/)）。
 
-## 架构
-
-```mermaid
-flowchart TB
-  subgraph docs["Starlight 文档站"]
-    Header["Header.astro<br/>模块导航 + 书签入口"]
-    Sidebar["sidebar 配置<br/>blog / memorandum / tools …"]
-  end
-
-  subgraph bookmarks["书签模块"]
-    Data["db/data/bookmarks.ts<br/>数据源"]
-    Seed["db/seed.ts → Astro DB"]
-    Nav["/bookmarks/nav/<br/>导航页 React"]
-    Admin["/bookmarks/admin/<br/>管理端 React"]
-  end
-
-  subgraph devOnly["仅开发环境"]
-    API["Vite middleware<br/>/admin/api/*"]
-    Versions["db/data/versions/<br/>版本快照"]
-  end
-
-  Data --> Seed
-  Seed --> Nav
-  Seed --> Admin
-  Admin -->|"POST save/restore"| API
-  API --> Data
-  API --> Versions
-  Header --> Nav
-```
-
-## 技术选型
-
-| 层级 | 选型 | 在本项目中的角色 |
-| --- | --- | --- |
-| 框架 | Astro 6 + Starlight | 文档站 SSG、页面路由 |
-| 交互 | React 19 | 书签导航页与管理端 UI |
-| 样式 | Tailwind CSS 4 + shadcn + `@/theme` token | `bookmarks-theme-shared.css`、`.bookmark-card` |
-| 数据 | Astro DB + `db/data/bookmarks.ts` | 构建时 seed，运行时查询 |
-| 管理端 API | Vite dev middleware | 开发态写回 TS 文件 |
-
-## 文章列表
+## 文档索引
 
 <CardGrid stagger>
-  <LinkCard title="01 · 整体架构与技术选型" href="/blog/bookmarks/01-architecture/" description="模块划分、数据流、静态站约束下的设计取舍" />
-  <LinkCard title="02 · 数据模型与 Astro DB" href="/blog/bookmarks/02-data-layer/" description="三层 schema、seed 流程、查询组装" />
-  <LinkCard title="03 · 书签导航页" href="/blog/bookmarks/03-public-page/" description="Astro 页面 + JSON 注水 + React 岛屿" />
-  <LinkCard title="04 · 管理端鉴权" href="/blog/bookmarks/04-admin-auth/" description="密码哈希、Session Token、登录门控" />
-  <LinkCard title="05 · 管理端 UI" href="/blog/bookmarks/05-admin-ui/" description="增删改、拖拽排序、对话框与未保存提示" />
-  <LinkCard title="06 · 开发 API 与部署流程" href="/blog/bookmarks/06-dev-api-and-deploy/" description="Vite 中间件、版本历史、本地编辑到上线" />
+  <LinkCard title="01 · 架构与技术选型" href="/blog/bookmarks/01-architecture/" description="模块边界、injectRoute 与关键取舍" />
+  <LinkCard title="02 · 数据模型与 Astro DB" href="/blog/bookmarks/02-data-layer/" description="Schema、seed 与查询" />
+  <LinkCard title="03 · 导航页与客户端渲染" href="/blog/bookmarks/03-public-page/" description="entry.astro、JSON 注水与 React 树" />
+  <LinkCard title="04 · 管理端认证" href="/blog/bookmarks/04-admin-auth/" description="凭据配置、会话与写权限" />
+  <LinkCard title="05 · 管理端编辑界面" href="/blog/bookmarks/05-admin-ui/" description="布局、网格编辑与草稿模型" />
+  <LinkCard title="06 · 持久化与部署" href="/blog/bookmarks/06-dev-api-and-deploy/" description="Dev API、构建与发布" />
 </CardGrid>
 
-局部文档见 [`src/bookmarks/README.md`](https://github.com/wwlight/wwlight.github.io/blob/main/src/bookmarks/README.md)。主题定制见 [主题系列](/blog/theme/)；Astro / Starlight 见 [Astro 使用](/blog/astro/)。
+源码结构见 [`src/bookmarks/README.md`](https://github.com/wwlight/wwlight.github.io/blob/main/src/bookmarks/README.md)。

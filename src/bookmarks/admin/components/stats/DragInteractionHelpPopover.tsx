@@ -2,7 +2,7 @@
 import { CircleHelp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { themeOverlaySurfaceClass } from "@/theme/customizer/trigger-classes";
+import { themeOverlaySurfaceClass } from "@/theme";
 import { useHoverCapable } from "@/lib/use-hover-capable";
 import { cn } from "@/lib/utils";
 

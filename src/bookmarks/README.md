@@ -3,6 +3,7 @@
 `/bookmarks/nav/` 导航页与 `/bookmarks/admin/` 管理端。页面 React 根在模块根目录；其余 UI 在 `components/` 下按功能分子目录。
 
 - 仓库总览：[README.md](../../README.md#书签管理端)
+- 技术文档：博客 [书签系列](/blog/bookmarks/)（04 认证 · 05 编辑界面 · 06 持久化与部署）
 - Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「书签模块要点」
 - **路由与 path alias**：`.cursor/skills/wwlight-project/SKILL.md` → **路径/路由**
 

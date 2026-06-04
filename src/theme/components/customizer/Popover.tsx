@@ -4,12 +4,12 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import { ThemeCustomizerPanel } from '@/theme/components/customizer/Panel'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
-import { syncSiteThemeFromStorage } from '@/theme/site/sync'
 import {
+  syncSiteThemeFromStorage,
   THEME_CUSTOMIZER_TRIGGER_SELECTOR,
   themeCustomizerPopoverClass,
   type ThemeSurface,
-} from '@/theme/customizer/trigger-classes'
+} from '@/theme'
 
 interface ThemeCustomizerPopoverProps {
   variant?: ThemeSurface
