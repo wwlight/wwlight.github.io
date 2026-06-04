@@ -1,0 +1,30 @@
+---
+/** 书签管理端 Astro 入口：查 DB、JSON 注水、挂载 BookmarksAdmin */
+import BookmarksAdmin from '@/bookmarks/admin/BookmarksAdmin.tsx'
+import { serializeBookmarkSectionsForPage } from '@/bookmarks/shared/data/page-data'
+import { getBookmarkSections } from '@/bookmarks/shared/data/queries'
+import themeInitScript from '@/theme/scripts/init.inline.js?raw'
+import '@/bookmarks/admin/styles/admin.css'
+
+const sections = await getBookmarkSections()
+const isDev = import.meta.env.DEV
+const adminHash = (import.meta.env.PUBLIC_BOOKMARKS_ADMIN_HASH ?? '').trim()
+const sectionsJson = serializeBookmarkSectionsForPage(sections)
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>书签管理 · wwlight</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" data-wwlight-favicon />
+    <script is:inline set:html={themeInitScript} />
+  </head>
+  <body>
+    <script type="application/json" id="bookmarks-sections-data" set:html={sectionsJson} />
+
+    <BookmarksAdmin client:only="react" isDev={isDev} passwordHash={adminHash} />
+  </body>
+</html>

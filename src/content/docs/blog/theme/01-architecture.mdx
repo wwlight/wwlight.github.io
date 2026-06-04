@@ -85,7 +85,7 @@ Primary 在亮色取 Tailwind `500`、暗色取 `400`；`black` 的 `--primary` 
 | 表面 | 注入位置 |
 | --- | --- |
 | Starlight | `astro.config.mjs` → `starlight.head` |
-| 书签 / 管理端 | `src/pages/bookmarks/nav.astro`、`bookmarks/admin.astro` 内联 `<script>` |
+| 书签 / 管理端 | `src/bookmarks/nav/entry.astro`、`admin/entry.astro` 内联 `<script>` |
 
 Starlight 与书签页不共享 layout，两处都要挂同一份 `init.inline.js?raw`。
 
@@ -102,8 +102,8 @@ import {
 
 组件入口：
 
-- `@/theme/components/ColorThemeSelect.astro` — Starlight 静态触发按钮
-- `@/theme/components/ColorThemePicker` — 书签 / 管理端 React 触发器别名
+- `@/theme/components/customizer/ColorThemeSelect.astro` — Starlight 静态触发按钮
+- `@/theme/components/customizer/ColorThemePicker` — 书签 / 管理端 React 触发器别名
 
 ## 复刻检查清单
 

@@ -20,7 +20,7 @@ export function themeCustomizerTriggerButtonClass(
     'theme-r-lg inline-flex h-9 min-w-[7.25rem] cursor-pointer items-center gap-2 border px-2.5 py-0.5 text-xs shadow-sm transition-colors',
     'border-(--theme-ui-trigger-border) bg-(--theme-ui-trigger-bg) text-(--theme-ui-trigger-text)',
     variant === 'starlight'
-      ? 'hover:bg-[var(--sl-color-gray-6)] hover:text-[var(--sl-color-white)]'
+      ? 'hover:bg-(--sl-color-gray-6) hover:text-(--sl-color-white)'
       : 'hover:bg-accent/50',
     className,
   )
@@ -39,7 +39,7 @@ export function themeOverlaySurfaceClass(className?: string) {
 
 export function themeCustomizerPopoverClass(className?: string) {
   return cn(
-    'theme-customizer-popover app-scrollbar theme-r-lg z-[100] w-[19.5rem] select-none border p-3 shadow-lg',
+    'theme-customizer-popover app-scrollbar theme-r-lg z-100 w-[19.5rem] select-none border p-3 shadow-lg',
     themeOverlaySurfaceClass(),
     className,
   )

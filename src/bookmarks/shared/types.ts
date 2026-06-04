@@ -1,16 +1,10 @@
 /** 书签领域类型：Section → Card → Bookmark 三层模型与版本元数据 */
-export interface BookmarkLink {
-  title: string;
-  url: string;
-}
-
 export interface BookmarkData {
   title: string;
   url: string;
   description?: string;
   badgeText?: string;
   badgeVariant?: string;
-  extraLinks?: BookmarkLink[];
   sortOrder: number;
 }
 

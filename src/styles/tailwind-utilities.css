@@ -1,0 +1,9 @@
+/** 重复 ≥3 次的非 scale 样式，避免 className 里堆方括号 */
+@utility text-badge {
+  font-size: 0.625rem;
+  line-height: 0.875rem;
+}
+
+@utility stroke-icon {
+  stroke-width: 1.85;
+}

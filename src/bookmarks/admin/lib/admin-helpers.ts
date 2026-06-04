@@ -2,11 +2,14 @@
  * 功能：管理端拖拽、CRUD、编辑上下文、中转站 DnD 与 Tailwind 工具类。
  * 关联：AdminApp、DragTransferStation
  */
-import type { BookmarkData, BookmarkLink, BookmarkSectionData } from "@/bookmarks/shared/types";
-import { floatingBadgeClass } from "@/bookmarks/admin/components/ui-helpers";
+import type { BookmarkData, BookmarkSectionData } from "@/bookmarks/shared/types";
+import { floatingBadgeClass } from "@/bookmarks/admin/components/chrome/ui-helpers";
 import { SITE_STORAGE_KEYS } from "@/lib/site-storage";
 
 export { floatingBadgeClass };
+
+/** 书签描述在编辑弹框与保存时的最大字数 */
+export const BOOKMARK_DESCRIPTION_MAX_LENGTH = 20;
 
 export type EntityType = "section" | "card" | "bookmark";
 
@@ -438,11 +441,11 @@ export const adminDecorIconClass = "text-foreground/72";
 
 /** 卡片/顶栏图标按钮 */
 export const cardIconClass =
-  "text-foreground/78 hover:text-foreground hover:bg-accent/90 focus-visible:ring-0 focus-visible:ring-offset-0 [&_svg]:stroke-[1.85]";
+  "text-foreground/78 hover:text-foreground hover:bg-accent/90 focus-visible:ring-0 focus-visible:ring-offset-0 [&_svg]:stroke-icon";
 
 /** 删除类图标按钮：默认可读，悬停时红色强调 */
 export const deleteIconClass =
-  "text-foreground/72 hover:text-red-500 hover:bg-red-500/12 focus-visible:ring-0 focus-visible:ring-offset-0 dark:hover:text-red-400 [&_svg]:stroke-[1.85]";
+  "text-foreground/72 hover:text-red-500 hover:bg-red-500/12 focus-visible:ring-0 focus-visible:ring-offset-0 dark:hover:text-red-400 [&_svg]:stroke-icon";
 
 export function cloneSections(sections: BookmarkSectionData[]) {
   return structuredClone(sections);
@@ -466,20 +469,6 @@ export function normalizeSortOrders(sections: BookmarkSectionData[]) {
       });
     });
   });
-}
-
-export function parseExtraLinksInput(value: string): BookmarkLink[] | undefined {
-  const trimmed = value.trim();
-  if (!trimmed) return undefined;
-  return trimmed.split("\n").flatMap((line) => {
-    const parts = line.split("|").map((part) => part.trim());
-    if (parts.length !== 2 || !parts[0] || !parts[1]) return [];
-    return [{ title: parts[0], url: parts[1] }];
-  });
-}
-
-export function formatExtraLinksInput(links?: BookmarkLink[]) {
-  return links?.map((link) => `${link.title}|${link.url}`).join("\n") ?? "";
 }
 
 export function countBookmarks(sections: BookmarkSectionData[]) {

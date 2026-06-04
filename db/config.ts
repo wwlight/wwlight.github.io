@@ -28,7 +28,6 @@ const Bookmark = defineTable({
     description: column.text({ optional: true }),
     badgeText: column.text({ optional: true }),
     badgeVariant: column.text({ optional: true }),
-    extraLinks: column.text({ optional: true }),
     sortOrder: column.number(),
   },
 });

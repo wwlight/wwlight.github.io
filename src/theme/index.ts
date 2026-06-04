@@ -1,4 +1,5 @@
 /** 主题系统公共 API */
+export { ThemeProvider, useTheme } from '@/theme/components/color-mode/Provider'
 export * from '@/theme/color-mode/color-mode'
 export * from '@/theme/customizer/options'
 export * from '@/theme/customizer/state'

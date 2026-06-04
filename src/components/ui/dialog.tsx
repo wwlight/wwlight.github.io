@@ -18,7 +18,7 @@ function DialogOverlay({
   return (
     <DialogPrimitive.Overlay
       ref={ref}
-      className={cn("admin-dialog-overlay fixed inset-0 z-50 bg-black/80", className)}
+      className={cn("admin-dialog-overlay fixed inset-0 z-60 bg-black/80", className)}
       {...props}
     />
   );
@@ -37,7 +37,7 @@ function DialogContent({
   return (
     <DialogPortal>
       {showOverlay ? <DialogOverlay /> : null}
-      <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="pointer-events-none fixed inset-0 z-61 flex items-center justify-center p-4">
         <DialogPrimitive.Content
           ref={ref}
           className={cn(
@@ -47,7 +47,7 @@ function DialogContent({
           {...props}
         >
           {children}
-          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 outline-none transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 outline-none transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:pointer-events-none data-state-open:bg-accent data-state-open:text-muted-foreground">
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>

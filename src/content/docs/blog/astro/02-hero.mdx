@@ -135,7 +135,7 @@ hero:
   - index.mdx
 - src/components/
   - GeneratedLogo.astro
-- src/theme/components/
+- src/theme/
   - HeroRandomThemeButton.tsx
 
 </FileTree>
@@ -172,7 +172,7 @@ if (href === '#random-theme') {
 }
 ```
 
-`HeroRandomThemeButton` 调用 `randomThemeCustomizerState()`，只随机 Primary / Neutral / Radius，不改 Color Mode（实现见 `src/theme/components/HeroRandomThemeButton.tsx`）。  
+`HeroRandomThemeButton` 调用 `randomThemeCustomizerState()`，只随机 Primary / Neutral / Radius，不改 Color Mode（实现见 `src/theme/HeroRandomThemeButton.tsx`）。  
 `#random-theme` 同样是 **项目内约定 URL**，不会真的跳转。
 
 ### 4. 草稿提示
@@ -230,4 +230,4 @@ if (href === '#random-theme') {
 
 frontmatter 提供 `data.hero`；`Hero.astro` 通过 `Astro.locals.starlightRoute.entry` 读取并渲染。
 
-**相关：** [01 · 站点导航](/blog/astro/01-site-navigation/) · 随机主题见 `src/theme/components/HeroRandomThemeButton.tsx`
+**相关：** [01 · 站点导航](/blog/astro/01-site-navigation/) · 随机主题见 `src/theme/HeroRandomThemeButton.tsx`

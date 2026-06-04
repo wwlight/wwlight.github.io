@@ -13,8 +13,8 @@ import { Steps } from '@astrojs/starlight/components';
 
 ```astro
 ---
-// src/pages/bookmarks/nav.astro
-import { NavBookmarksPage } from '@/bookmarks/nav/components/NavBookmarksPage.tsx'
+// src/bookmarks/nav/entry.astro（integrations/bookmarks-admin injectRoute）
+import { NavBookmarksPage } from '@/bookmarks/nav/NavBookmarksPage.tsx'
 import { serializeBookmarkSectionsForPage } from '@/bookmarks/shared/data/page-data'
 import { getBookmarkSections } from '@/bookmarks/shared/data/queries'
 import themeInitScript from '@/theme/scripts/init.inline.js?raw'
@@ -85,7 +85,7 @@ NavBookmarksPage
 
 ## 主题一致
 
-head 内联 `@/theme/scripts/init.inline.js?raw`，在 CSS 前写入 `data-theme` / `data-color-*`，避免 FOUC。`ThemeProvider`（`@/theme/components/Provider`）mount 时 `syncSiteThemeFromStorage()`，并订阅 `subscribeSiteThemeStorage`——与 Starlight 顶栏定制器读写同一套 `wwlight:color-mode` 等键（见 [主题系列](/blog/theme/03-color-mode-and-sync/)）。
+head 内联 `@/theme/scripts/init.inline.js?raw`，在 CSS 前写入 `data-theme` / `data-color-*`，避免 FOUC。`ThemeProvider`（`@/theme/components/color-mode/Provider`）mount 时 `syncSiteThemeFromStorage()`，并订阅 `subscribeSiteThemeStorage`——与 Starlight 顶栏定制器读写同一套 `wwlight:color-mode` 等键（见 [主题系列](/blog/theme/03-color-mode-and-sync/)）。
 
 顶栏 `NavPageActions` 挂 `ColorThemePicker`（`variant=bookmarks`），管理端入口用 `BookmarkSettingsIcon` 而非通用 Cog 图标。
 
@@ -104,7 +104,7 @@ bookmarks-page.css
 
 <Steps>
 
-1. 新建 `src/pages/demo-nav-bookmarks.astro`，复制 `bookmarks/nav.astro` 内容
+1. 新建 demo 页或复制 `src/bookmarks/nav/entry.astro` 内容
 
 2. 新建极简 React 组件，只渲染 section 数量：
 

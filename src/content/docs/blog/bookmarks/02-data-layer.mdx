@@ -19,7 +19,6 @@ interface BookmarkData {
   description?: string
   badgeText?: string
   badgeVariant?: string
-  extraLinks?: { title: string; url: string }[]
   sortOrder: number
 }
 
@@ -70,13 +69,10 @@ const Bookmark = defineTable({
     description: column.text({ optional: true }),
     badgeText: column.text({ optional: true }),
     badgeVariant: column.text({ optional: true }),
-    extraLinks: column.text({ optional: true }), // JSON 字符串
     sortOrder: column.number(),
   },
 });
 ```
-
-`extraLinks` 存 JSON 字符串——Astro DB 无原生 JSON 列，查询时再 `JSON.parse`。
 
 ## 数据源：TypeScript 文件
 

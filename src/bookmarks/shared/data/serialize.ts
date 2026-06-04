@@ -21,7 +21,6 @@ export function serializeBookmarkSections(sections: BookmarkSectionData[]): stri
         if (bookmark.description) item.description = bookmark.description;
         if (bookmark.badgeText) item.badgeText = bookmark.badgeText;
         if (bookmark.badgeVariant) item.badgeVariant = bookmark.badgeVariant;
-        if (bookmark.extraLinks?.length) item.extraLinks = bookmark.extraLinks;
         return item;
       }),
     })),
@@ -30,18 +29,12 @@ export function serializeBookmarkSections(sections: BookmarkSectionData[]): stri
   return `// 书签数据源 — 在此文件维护书签，保存后 dev 会自动重新 seed
 // 从旧 MDX 批量导入: node scripts/migrate-bookmarks.mjs <path-to.mdx>
 
-export interface BookmarkLink {
-  title: string
-  url: string
-}
-
 export interface BookmarkData {
   title: string
   url: string
   description?: string
   badgeText?: string
   badgeVariant?: string
-  extraLinks?: BookmarkLink[]
   sortOrder: number
 }
 

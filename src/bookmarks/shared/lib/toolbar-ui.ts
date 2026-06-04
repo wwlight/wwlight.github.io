@@ -16,7 +16,7 @@ export const sectionTabsTriggerClass = "h-7 max-w-48 shrink-0 gap-1.5 px-2.5 py-
 
 /** 管理端 Tab：去掉 ring-offset/shadow，悬停与选中用背景色 */
 export const adminSectionTabsTriggerClass =
-  `${sectionTabsTriggerClass} shadow-none hover:bg-background/70 focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=active]:bg-background data-[state=active]:shadow-none`;
+  `${sectionTabsTriggerClass} shadow-none hover:bg-background/70 focus-visible:ring-0 focus-visible:ring-offset-0 data-state-active:bg-background data-state-active:shadow-none`;
 
 /** Tab 内计数 Badge */
-export const sectionTabBadgeClass = "px-1.5 py-0 text-[10px]";
+export const sectionTabBadgeClass = "px-1.5 py-0 text-badge";

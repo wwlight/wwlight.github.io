@@ -15,10 +15,10 @@ export function optionButtonClass(selected: boolean) {
 export function sectionTitleClass(surface: ThemeSurface) {
   return cn(
     'text-sm font-medium',
-    surface === 'starlight' ? 'text-[var(--sl-color-text)]' : 'text-foreground',
+    surface === 'starlight' ? 'text-(--sl-color-text)' : 'text-foreground',
   )
 }
 
 export function panelFooterBorderClass(surface: ThemeSurface) {
-  return surface === 'starlight' ? 'border-[var(--sl-color-gray-5)]' : 'border-border'
+  return surface === 'starlight' ? 'border-(--sl-color-gray-5)' : 'border-border'
 }

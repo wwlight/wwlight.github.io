@@ -9,10 +9,12 @@
 
 | 路径 | 职责 |
 | --- | --- |
-| `color-mode/` | 亮/暗/跟随系统、`data-theme`、View Transition 切换 |
-| `customizer/` | 配色状态、选项清单、`localStorage`、触发器 Tailwind 类 |
+| `color-mode/` | 亮/暗逻辑（`color-mode.ts`，无 JSX） |
+| `customizer/` | 配色状态、`options`、`localStorage`（无 JSX） |
+| `components/color-mode/` | 书签页 `Provider.tsx` |
+| `components/customizer/` | Panel、Trigger、Popover、Starlight 触发器 |
+| `components/hero/` | Starlight Hero 随机主题按钮 |
 | `site/` | 从 storage 同步 DOM、跨标签页 `storage` 事件 |
-| `components/` | React / Astro UI（面板、触发器、Provider） |
 | `styles/` | CSS token 与工具类（含 `vpr generate:color-themes` 产出）；定制器 chrome 见 `customizer-ui.css` |
 | `scripts/` | 首屏内联脚本（`vpr generate:theme-init` 产出） |
 
@@ -41,5 +43,5 @@ vpr generate:theme-init     # scripts/init.inline.js
 ## 对外入口
 
 - `@/theme` — 常用 API 桶导出
-- `@/theme/components/ColorThemePicker` — 书签/管理端触发器别名
-- `@/theme/components/ColorThemeSelect.astro` — Starlight 静态触发器 + Popover 挂载点
+- `@/theme/components/customizer/ColorThemePicker` — 书签/管理端触发器别名
+- `@/theme/components/customizer/ColorThemeSelect.astro` — Starlight 静态触发器 + Popover 挂载点

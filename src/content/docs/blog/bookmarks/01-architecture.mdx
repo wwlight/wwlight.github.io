@@ -41,9 +41,8 @@ import { Steps, FileTree } from '@astrojs/starlight/components';
     - lib/ — 鉴权、API、拖拽 CRUD、api.server
     - components/ — AdminApp、对话框、卡片网格
     - styles/ — admin.css、bookmarks-app.css
-- src/pages/
-  - bookmarks/nav.astro — 导航薄入口 → `/bookmarks/nav/`
-  - bookmarks/admin.astro — 管理端薄入口 → `/bookmarks/admin/`
+  - nav/entry.astro — 导航 Astro 入口（injectRoute）→ `/bookmarks/nav/`
+  - admin/entry.astro — 管理端 Astro 入口（injectRoute）→ `/bookmarks/admin/`
 - db/
   - data/bookmarks.ts — 唯一可提交数据源
   - config.ts / seed.ts — Astro DB

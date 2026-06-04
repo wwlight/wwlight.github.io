@@ -1,58 +1,68 @@
 # 书签模块（`src/bookmarks`）
 
-`/bookmarks/nav/` 导航页与 `/bookmarks/admin/` 管理端。按 **shared / nav / admin** 三表面组织，对齐 `src/theme/` 单模块单根约定。
+`/bookmarks/nav/` 导航页与 `/bookmarks/admin/` 管理端。页面 React 根在模块根目录；其余 UI 在 `components/` 下按功能分子目录。
 
 - 仓库总览：[README.md](../../README.md#书签管理端)
 - Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「书签模块要点」
-- 结构优化：`.cursor/skills/dev-foundation/SKILL.md`
 - **路由与 path alias**：`.cursor/skills/wwlight-project/SKILL.md` → **路径/路由**
 
 ## 模块范围（模块外）
+
+本站 **无 `src/pages/`**：文档由 Starlight + `src/content/` 生成；书签 URL 由 `integrations/bookmarks-admin.ts` 的 `injectRoute` 注册。
 
 | 路径 | 职责 |
 | --- | --- |
 | `db/data/bookmarks.ts` | 唯一可提交数据源 |
 | `db/config.ts` / `db/seed.ts` | Astro DB 表与 seed |
-| `src/pages/bookmarks/nav.astro` | 导航页 Astro 薄入口 → `/bookmarks/nav/`（旧 `/bookmarks/` 已 301） |
-| `src/pages/bookmarks/admin.astro` | 管理端 Astro 薄入口 → `/bookmarks/admin/` |
-| `integrations/bookmarks-admin.ts` | dev 中间件 `/admin/api/*` |
-| `src/components/HeaderBookmarksLink.astro` | Starlight 顶栏入口 |
+| `src/bookmarks/nav/entry.astro` | 导航页 Astro 入口（`injectRoute` → `/bookmarks/nav/`） |
+| `src/bookmarks/admin/entry.astro` | 管理端 Astro 入口（`injectRoute` → `/bookmarks/admin/`） |
+| `integrations/bookmarks-admin.ts` | 注册书签路由 + dev `/admin/api/*` |
 
-## 目录
+## 目录约定
+
+| 层级 | 放什么 |
+| --- | --- |
+| 模块根（如 `admin/BookmarksAdmin.tsx`） | **仅页面级** React 根 / 壳 |
+| `components/<功能>/` | 该表面的 UI 组件（按 editor、dialogs、grid… 分包） |
+| `lib/`、`hooks/`、`styles/` | 无 JSX 的逻辑、样式 |
+
+### `nav/`
 
 | 路径 | 职责 |
 | --- | --- |
-| `shared/` | 两表面共用：类型、数据管线、搜索/统计、favicon、共用组件与 theme CSS |
-| `shared/data/` | `queries`、`page-data`、`serialize` |
-| `shared/lib/` | `search`、`stats`、`section-helpers`、`toolbar-ui`、`badge-variants`、`favicon` |
-| `shared/components/` | `BookmarkFavicon`、`BookmarkPageHeader`、`BookmarkSettingsIcon`、`BookmarkStatsCards`、`UserAvatar` |
-| `shared/styles/` | `bookmarks-theme-shared.css`、`bookmarks-card.css`（卡片 `--card` / `--border`） |
-| `nav/` | 导航 `/bookmarks/nav/`：`NavBookmarkOverflowText` 等 React 组件与页面样式 |
-| `admin/` | 管理端 `/bookmarks/admin/`：鉴权、API、编辑 UI、admin 样式 |
-| `admin/lib/` | `admin-auth`、`admin-api`、`admin-helpers`、`admin-api.server` 等 |
-| `admin/components/` | `BookmarkOverflowText`、`AdminApp`、对话框、卡片网格、中转站等 |
-| `admin/styles/` | `admin.css`、`bookmarks-app.css`、`bookmarks-tokens.css` |
+| `NavBookmarksPage.tsx`、`NavBookmarks.tsx` | 页面根 |
+| `components/chrome/` | 顶栏、`ui-helpers` |
+| `components/cards/` | 书签卡片与分组 |
+| `components/sections/` | 模块 Tab、分组面板 |
+| `styles/` | 导航页 CSS |
+
+### `admin/`
+
+| 路径 | 职责 |
+| --- | --- |
+| `BookmarksAdmin.tsx`、`BookmarksAdminApp.tsx` | 页面根 |
+| `components/editor/` | `AdminApp` 主编辑 |
+| `components/gate/` | 登录门禁 |
+| `components/dialogs/` | 弹层 + `AdminDialogLayer` |
+| `components/grid/` | 卡片网格 |
+| `components/transfer/` | 中转站 |
+| `components/sections/` | 模块 Tab |
+| `components/chrome/` | 顶栏、用户菜单、`ui-helpers` |
+| `components/stats/` | 统计与拖拽说明 |
+| `hooks/`、`lib/`、`styles/` | 草稿 hook、API、样式 |
+
+### `shared/`
+
+跨 nav/admin 的类型、数据、`shared/components/` 展示组件、`shared/styles/`。
 
 ## 数据流
 
 ```text
-db/data/bookmarks.ts → db/seed.ts → Astro DB
-  → getBookmarkSections() → Astro 页面 JSON 注水 → React 岛屿
-管理端 dev：POST /admin/api/save → serialize → 写 bookmarks.ts → touchSeed
+db/data/bookmarks.ts → seed → Astro DB → getBookmarkSections() → JSON 注水 → React
 ```
-
-## 已知限制
-
-- 管理端 API **仅 dev** 可写；静态 build 返回 403，线上用导出 TS 兜底。
-- 鉴权为 `PUBLIC_BOOKMARKS_ADMIN_HASH` + sessionStorage Token，非服务端鉴权。
-- `nav/components/ui-helpers.ts` 与 `admin/components/ui-helpers.ts` 各管卡片 Tailwind，未抽共享。
 
 ## 对外入口
 
-- `@/bookmarks/shared/types` — 领域类型
-- `@/bookmarks/shared/data/queries` — `getBookmarkSections()`
-- `@/bookmarks/shared/data/page-data` — JSON 注水读写
-- `@/bookmarks/nav/components/NavBookmarksPage` — 导航页 React 根
-- `@/bookmarks/admin/lib/admin-auth` — 登录与 Token
-- `@/bookmarks/admin/lib/admin-api` — 客户端 save / versions
-- `@/bookmarks/admin/components/BookmarksAdmin` — 管理端 React 根
+- `@/bookmarks/nav/NavBookmarksPage`
+- `@/bookmarks/admin/BookmarksAdmin`
+- `@/bookmarks/shared/data/queries`、`page-data`

@@ -1,6 +1,6 @@
 /**
- * 功能：Astro Integration，dev 时在 Vite 挂载 `/admin/api/*` 中间件。
- * 关联：src/bookmarks/admin/lib/admin-api.server.ts
+ * 功能：注册 `/bookmarks/nav/`、`/bookmarks/admin/` 页面路由；dev 时挂载 `/admin/api/*`。
+ * 关联：src/bookmarks/nav/entry.astro、admin/entry.astro、admin/lib/admin-api.server.ts
  */
 import type { ServerResponse } from "node:http";
 import type { Connect } from "vite";
@@ -132,7 +132,17 @@ export function bookmarksAdmin(): AstroIntegration {
   return {
     name: "bookmarks-admin",
     hooks: {
-      "astro:config:setup": ({ updateConfig }) => {
+      "astro:config:setup": ({ updateConfig, injectRoute }) => {
+        injectRoute({
+          pattern: "/bookmarks/nav",
+          entrypoint: new URL("../src/bookmarks/nav/entry.astro", import.meta.url),
+          prerender: true,
+        });
+        injectRoute({
+          pattern: "/bookmarks/admin",
+          entrypoint: new URL("../src/bookmarks/admin/entry.astro", import.meta.url),
+          prerender: true,
+        });
         updateConfig({
           vite: {
             plugins: [bookmarksAdminApiPlugin()],

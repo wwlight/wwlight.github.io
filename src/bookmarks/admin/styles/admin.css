@@ -203,6 +203,11 @@
   opacity: 1;
 }
 
+/* 全站 html 已有 scrollbar-gutter: stable，仅锁 overflow 即可，无需 fixed body / padding 补偿 */
+html.admin-dialog-scroll-lock {
+  overflow: hidden;
+}
+
 .admin-dialog-content[data-state='open'] {
   animation: admin-dialog-content-in 150ms ease-out;
 }

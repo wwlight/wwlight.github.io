@@ -49,7 +49,7 @@ function parseLine(line) {
   rest = rest.replace(/^[-–—]\s*/, '').trim()
   rest = rest.replace(/\s*[|｜]\s*$/, '').trim()
 
-  const [primary, ...extras] = links
+  const [primary] = links
 
   return {
     title: primary.title,
@@ -57,7 +57,6 @@ function parseLine(line) {
     description: rest || undefined,
     badgeText,
     badgeVariant,
-    extraLinks: extras.length > 0 ? extras : undefined,
   }
 }
 
@@ -122,7 +121,6 @@ const seedSections = sections.map((section, sectionIndex) => ({
       description: item.description,
       badgeText: item.badgeText,
       badgeVariant: item.badgeVariant,
-      extraLinks: item.extraLinks,
       sortOrder: itemIndex,
     })),
   })),
@@ -131,18 +129,12 @@ const seedSections = sections.map((section, sectionIndex) => ({
 const output = `// 书签数据源 — 在此文件维护书签，保存后 dev 会自动重新 seed
 // 从旧 MDX 批量导入: node scripts/migrate-bookmarks.mjs <path-to.mdx>
 
-export interface BookmarkLink {
-  title: string
-  url: string
-}
-
 export interface BookmarkData {
   title: string
   url: string
   description?: string
   badgeText?: string
   badgeVariant?: string
-  extraLinks?: BookmarkLink[]
   sortOrder: number
 }
 

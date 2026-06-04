@@ -96,14 +96,11 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 │   │   ├── styles/            # color-tokens、圆角、过渡（含生成物）
 │   │   ├── scripts/           # 首屏 init.inline.js（生成）
 │   │   └── index.ts           # 公共 API（@/theme）
-│   ├── pages/
-│   │   ├── bookmarks/nav.astro    # 书签导航 → /bookmarks/nav/
-│   │   └── bookmarks/admin.astro  # 书签管理端 → /bookmarks/admin/
 │   ├── components/            # Astro / React（Starlight 壳、ui）
 │   ├── bookmarks/             # 书签模块 → 见 bookmarks/README.md
 │   │   ├── shared/            # 类型、数据、共用 lib/组件/样式
-│   │   ├── nav/               # 导航 /bookmarks/nav/
-│   │   └── admin/             # 管理端 /bookmarks/admin/
+│   │   ├── nav/entry.astro    # 导航 /bookmarks/nav/
+│   │   └── admin/entry.astro  # 管理端 /bookmarks/admin/
 │   └── styles/                # 全局与页面样式（Starlight global 等）
 ├── db/
 │   ├── config.ts              # Astro DB 配置

@@ -1,18 +1,12 @@
 // 书签数据源 — 在此文件维护书签，保存后 dev 会自动重新 seed
 // 从旧 MDX 批量导入: node scripts/migrate-bookmarks.mjs <path-to.mdx>
 
-export interface BookmarkLink {
-  title: string
-  url: string
-}
-
 export interface BookmarkData {
   title: string
   url: string
   description?: string
   badgeText?: string
   badgeVariant?: string
-  extraLinks?: BookmarkLink[]
   sortOrder: number
 }
 
@@ -61,13 +55,7 @@ export const bookmarkSections: BookmarkSectionData[] = [
             "title": "Screego",
             "url": "https://screego.net/",
             "sortOrder": 3,
-            "description": "屏幕共享",
-            "extraLinks": [
-              {
-                "title": "在线地址",
-                "url": "https://app.screego.net/"
-              }
-            ]
+            "description": "屏幕共享"
           },
           {
             "title": "Cobalt",
@@ -383,13 +371,7 @@ export const bookmarkSections: BookmarkSectionData[] = [
           {
             "title": "JSDeliver",
             "url": "https://www.jsdelivr.com/",
-            "sortOrder": 2,
-            "extraLinks": [
-              {
-                "title": "esm.run",
-                "url": "https://esm.run/"
-              }
-            ]
+            "sortOrder": 2
           },
           {
             "title": "cdnjs",
@@ -875,13 +857,7 @@ export const bookmarkSections: BookmarkSectionData[] = [
             "title": "Moonlight",
             "url": "https://github.com/moonlight-stream/moonlight-qt",
             "sortOrder": 1,
-            "description": "游戏串流工具组合",
-            "extraLinks": [
-              {
-                "title": "Sunshine",
-                "url": "https://github.com/LizardByte/Sunshine"
-              }
-            ]
+            "description": "游戏串流工具组合"
           },
           {
             "title": "pin.gl",

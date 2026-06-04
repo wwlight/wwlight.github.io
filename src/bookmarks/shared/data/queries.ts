@@ -1,16 +1,7 @@
 /** 功能：Astro DB 三次查询 + 内存组装 Section / Card / Bookmark 树 */
 import { asc } from "astro:db";
 import { Bookmark, BookmarkCard, BookmarkSection, db } from "astro:db";
-import type { BookmarkData, BookmarkLink, BookmarkSectionData } from "@/bookmarks/shared/types";
-
-function parseExtraLinks(value?: string | null): BookmarkLink[] | undefined {
-  if (!value) return undefined;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return undefined;
-  }
-}
+import type { BookmarkData, BookmarkSectionData } from "@/bookmarks/shared/types";
 
 export async function getBookmarkSections(): Promise<BookmarkSectionData[]> {
   const sections = await db.select().from(BookmarkSection).orderBy(asc(BookmarkSection.sortOrder));
@@ -35,7 +26,6 @@ export async function getBookmarkSections(): Promise<BookmarkSectionData[]> {
       description: bookmark.description ?? undefined,
       badgeText: bookmark.badgeText ?? undefined,
       badgeVariant: bookmark.badgeVariant ?? undefined,
-      extraLinks: parseExtraLinks(bookmark.extraLinks),
       sortOrder: bookmark.sortOrder,
     });
     bookmarksByCard.set(bookmark.cardId, group);

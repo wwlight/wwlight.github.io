@@ -1,4 +1,5 @@
 import db from '@astrojs/db'
+import { unified } from '@astrojs/markdown-remark'
 import react from '@astrojs/react'
 import starlight from '@astrojs/starlight'
 import inspectUrls from '@jsdevtools/rehype-url-inspector'
@@ -31,20 +32,22 @@ export default defineConfig({
       },
       wrap: true,
     },
-    rehypePlugins: [
-      [
-        inspectUrls,
-        {
-          selectors: ['a[href]'],
-          inspectEach(url) {
-            if (url.node.properties.href?.startsWith('http')) {
-              url.node.properties.target = '_blank'
-              url.node.properties.rel = 'noopener noreferrer'
-            }
+    processor: unified({
+      rehypePlugins: [
+        [
+          inspectUrls,
+          {
+            selectors: ['a[href]'],
+            inspectEach(url) {
+              if (url.node.properties.href?.startsWith('http')) {
+                url.node.properties.target = '_blank'
+                url.node.properties.rel = 'noopener noreferrer'
+              }
+            },
           },
-        },
+        ],
       ],
-    ],
+    }),
   },
   integrations: [
     mermaid({ autoTheme: true, enableLog: false }),

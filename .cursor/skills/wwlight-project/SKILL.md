@@ -35,10 +35,12 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 **Alias**：`tsconfig` `@/*`→`src/*`；`astro.config.mjs` `tsconfigPaths: true`。跨目录 `@/`、同目录 `./`。例外：integrations 相对进 `src/`；`db/`、`scripts/` 根路径无 `@/`。
 
-| URL | pages | 实现 |
+| URL | 路由注册 | 实现 |
 | --- | --- | --- |
-| `/bookmarks/nav/` | `src/pages/bookmarks/nav.astro` | `src/bookmarks/nav/` |
-| `/bookmarks/admin/` | `src/pages/bookmarks/admin.astro` | `src/bookmarks/admin/` |
+| `/bookmarks/nav/` | `injectRoute` → `src/bookmarks/nav/entry.astro` | `src/bookmarks/nav/` |
+| `/bookmarks/admin/` | `injectRoute` → `src/bookmarks/admin/entry.astro` | `src/bookmarks/admin/` |
+
+本站 **无 `src/pages/`**（文档 Starlight + `src/content/`；书签见 `integrations/bookmarks-admin.ts`）。
 
 301：`/bookmarks`、`/bookmarks/`→`/bookmarks/nav/`（`astro.config.mjs`）。非 pages：`/admin/api/*`（dev）；`/blog/bookmarks/*`（文档）。改路由同步 `site-nav.ts`、`index.mdx`、NavPageActions、BookmarksAdminApp。
 
@@ -78,7 +80,7 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 | `src/bookmarks/shared/styles/bookmarks-theme-shared.css` | 书签 |
 | `src/styles/shadcn-theme.css` | `--primary` 等 |
 
-滚动：`app-scrollbar` + `min-h-0`（`scrollbars.css`）。`p-1` 非 `p-[1]`；`bg-(--x)` 非 `bg-[var(...)]`。
+滚动：`app-scrollbar` + `min-h-0`（`scrollbars.css`）；`html` 有 `scrollbar-gutter: stable`。蒙层锁滚动见 dev-foundation **反模式**（`AdminDialogLayer` / Radix Dialog）。className 按 **v4 现行写法**（见 dev-foundation [tailwindcss.md](../dev-foundation/tailwindcss.md)）：`p-1` 非 `p-[1]`；`bg-(--x)` 非 `bg-[var(...)]`；`bg-linear-to-*` 非 `bg-gradient-to-*`。
 
 ## 博客
 
@@ -99,5 +101,6 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 ## 约定
 
-- 行为准则：`.cursor/rules/karpathy-guidelines.mdc`（alwaysApply）
+- 行为准则：`.cursor/rules/karpathy-guidelines.mdc`（alwaysApply，**勿改** — 见 dev-foundation **勿改**）
+- `frontend-design` skill **勿改**（同上）
 - React 岛：`client:only="react"`；BackToTop → `document.body`

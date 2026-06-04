@@ -33,7 +33,6 @@ export default async function seed() {
             description: bookmark.description,
             badgeText: bookmark.badgeText,
             badgeVariant: bookmark.badgeVariant,
-            extraLinks: bookmark.extraLinks ? JSON.stringify(bookmark.extraLinks) : undefined,
             sortOrder: bookmark.sortOrder,
           })),
         );
