@@ -45,14 +45,19 @@ function writeManifest(root: string, entries: VersionEntry[]) {
   fs.writeFileSync(manifestPath(root), JSON.stringify(entries, null, 2), "utf-8");
 }
 
+/** manifest 条目无对应快照或快照无有效 sections 时剔除并回写 */
+function pruneManifest(root: string, entries: VersionEntry[]): VersionEntry[] {
+  const valid = entries.filter((entry) => getVersionSections(root, entry.id) !== null);
+  if (valid.length !== entries.length) {
+    writeManifest(root, valid);
+  }
+  return valid;
+}
+
 function makeVersionId() {
   const now = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-}
-
-export function listVersions(root: string): VersionEntry[] {
-  return readManifest(root);
 }
 
 export function getVersionSections(root: string, id: string) {
@@ -64,6 +69,10 @@ export function getVersionSections(root: string, id: string) {
   } catch {
     return null;
   }
+}
+
+export function listVersions(root: string): VersionEntry[] {
+  return pruneManifest(root, readManifest(root));
 }
 
 export function archiveVersion(root: string, sections: unknown[]) {
@@ -84,7 +93,7 @@ export function archiveVersion(root: string, sections: unknown[]) {
     ...stats,
   };
 
-  const previous = readManifest(root);
+  const previous = pruneManifest(root, readManifest(root));
   const merged = [entry, ...previous];
   const manifest = merged.slice(0, MAX_VERSIONS);
   writeManifest(root, manifest);

@@ -289,6 +289,7 @@ html.admin-dialog-scroll-lock {
 
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-body-wrap,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-header-meta,
+.admin-transfer-station[data-panel-instant] .admin-transfer-station-header-meta-content,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-header::after,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-cell::after,
 .admin-transfer-station[data-panel-instant] .admin-transfer-station-icon-glyph,
@@ -665,66 +666,71 @@ html.admin-dialog-scroll-lock {
 }
 
 .admin-transfer-station-header-meta {
+  position: absolute;
+  inset-block: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-inline: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-header-meta {
+  left: var(--admin-transfer-station-tab-size);
+  right: 0;
+  justify-content: flex-end;
+}
+
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-header-meta {
+  left: 0;
+  right: var(--admin-transfer-station-tab-size);
+  justify-content: flex-start;
+}
+
+.admin-transfer-station-header-meta-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
   transform: scale(var(--admin-transfer-station-expand-scale-from));
   transition:
     opacity var(--admin-transfer-station-badge-fade) var(--admin-transfer-station-motion-ease),
     transform var(--admin-transfer-station-motion) var(--admin-transfer-station-expand-scale-ease);
-  box-sizing: border-box;
-  width: 100%;
 }
 
-.admin-transfer-station[data-edge='left'] .admin-transfer-station-header-meta {
-  padding-left: var(--admin-transfer-station-tab-size);
-  justify-content: flex-end;
-  transform-origin: left top;
+.admin-transfer-station[data-edge='left'] .admin-transfer-station-header-meta-content {
+  transform-origin: right center;
 }
 
-.admin-transfer-station[data-edge='right'] .admin-transfer-station-header-meta {
-  padding-right: var(--admin-transfer-station-tab-size);
-  transform-origin: right top;
-}
-
-.admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-header-meta,
-.admin-transfer-station--panel-open[data-edge='right'] .admin-transfer-station-header-meta {
-  flex: 1 1 0%;
-  min-width: 0;
-  width: auto;
+.admin-transfer-station[data-edge='right'] .admin-transfer-station-header-meta-content {
+  transform-origin: left center;
 }
 
 .admin-transfer-station-header-meta--hidden {
-  flex: 0 0 auto;
-  padding-inline: 0;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
 }
 
-.admin-transfer-station--panel-closed .admin-transfer-station-header-meta {
-  position: absolute;
-  inset-block: 0;
-  flex: 0 0 auto;
-  padding-inline: 0;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transform: scale(var(--admin-transfer-station-expand-scale-from));
-}
-
-.admin-transfer-station--panel-closed[data-edge='left'] .admin-transfer-station-header-meta {
-  left: var(--admin-transfer-station-tab-size);
-  right: 0;
-}
-
-.admin-transfer-station--panel-closed[data-edge='right'] .admin-transfer-station-header-meta {
-  left: 0;
-  right: var(--admin-transfer-station-tab-size);
-}
-
-.admin-transfer-station--panel-open .admin-transfer-station-header-meta {
+.admin-transfer-station--panel-open:not([data-panel-size-motion]) .admin-transfer-station-header-meta {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+}
+
+.admin-transfer-station--panel-open:not([data-panel-size-motion]) .admin-transfer-station-header-meta-content {
   transform: scale(1);
   transition-delay: var(--admin-transfer-station-badge-fade), 0ms;
+}
+
+.admin-transfer-station[data-panel-size-motion] .admin-transfer-station-header-meta,
+.admin-transfer-station[data-panel-size-motion] .admin-transfer-station-header-meta-content {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition-delay: 0ms;
 }
 
 .admin-transfer-station-body {
@@ -749,7 +755,11 @@ html.admin-dialog-scroll-lock {
   overflow-y: auto;
   padding: var(--admin-transfer-station-item-gap);
   box-sizing: border-box;
-  scrollbar-gutter: auto;
+  scrollbar-gutter: stable;
+}
+
+.admin-transfer-station[data-anchor-top][data-panel-size-motion] {
+  overflow: clip;
 }
 
 .admin-transfer-station--panel-open[data-edge='left'] .admin-transfer-station-scroll--vertical,
@@ -1028,6 +1038,7 @@ html.admin-dialog-scroll-lock {
   .admin-transfer-station,
   .admin-transfer-station-body-wrap,
   .admin-transfer-station-header-meta,
+  .admin-transfer-station-header-meta-content,
   .admin-transfer-station-header::after,
   .admin-transfer-station-icon-cell::after,
   .admin-transfer-station-shell {

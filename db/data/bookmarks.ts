@@ -74,6 +74,12 @@ export const bookmarkSections: BookmarkSectionData[] = [
             "url": "https://ray.so/",
             "sortOrder": 6,
             "description": "生成代码片段图"
+          },
+          {
+            "title": "Logo API",
+            "url": "https://www.logo.dev/",
+            "sortOrder": 7,
+            "description": "百万认证品牌 Logo，免费额度足"
           }
         ]
       },
@@ -1246,7 +1252,7 @@ export const bookmarkSections: BookmarkSectionData[] = [
           },
           {
             "title": "GitHub中文社区",
-            "url": "https://www.github-zh.com/",
+            "url": "https://gitcn.org/",
             "sortOrder": 6
           },
           {

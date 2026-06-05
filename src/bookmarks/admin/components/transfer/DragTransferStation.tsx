@@ -18,13 +18,52 @@ import {
   estimateTransferStationPanelHeight,
   estimateTransferStationPanelWidth,
   snapTransferStationDockPoint,
+  TRANSFER_STATION_MOTION_MS,
   TRANSFER_STATION_VIEWPORT_INSET_PX,
+  type TransferStationDockPosition,
 } from "@/bookmarks/admin/lib/admin-helpers";
 import { cn } from "@/lib/utils";
 
 const ITEM_ENTER_MS = 220;
 const ITEM_LEAVE_MS = 200;
 const DOCK_POINTER_DRAG_THRESHOLD_PX = 5;
+
+function buildDockPositionStyle(
+  dock: TransferStationDockState,
+): { style: React.CSSProperties; anchorTop: boolean } {
+  const pos = getTransferStationDockPositionStyle(
+    dock.side,
+    dock.top,
+    estimateTransferStationPanelWidth(true),
+    estimateTransferStationPanelHeight(true),
+    window.innerWidth,
+    window.innerHeight,
+    TRANSFER_STATION_VIEWPORT_INSET_PX,
+  );
+
+  return {
+    style: { ...pos, width: undefined, height: undefined },
+    anchorTop: pos.top === TRANSFER_STATION_VIEWPORT_INSET_PX,
+  };
+}
+
+function dockPositionEqual(a: TransferStationDockPosition, b: TransferStationDockPosition) {
+  return a.top === b.top && a.left === b.left && a.right === b.right && a.bottom === b.bottom;
+}
+
+type DockLayoutState = ReturnType<typeof buildDockPositionStyle>;
+
+function initialDockLayout(dock: TransferStationDockState): DockLayoutState {
+  if (typeof window === "undefined") return { style: {}, anchorTop: false };
+  return buildDockPositionStyle(dock);
+}
+
+function dockLayoutEqual(a: DockLayoutState, b: DockLayoutState) {
+  return a.anchorTop === b.anchorTop && dockPositionEqual(
+    a.style as TransferStationDockPosition,
+    b.style as TransferStationDockPosition,
+  );
+}
 
 interface DragTransferStationProps {
   items: TransferStationItem[];
@@ -258,7 +297,9 @@ export function DragTransferStation({
   const dockRef = useRef(dock);
   const onDockChangeRef = useRef(onDockChange);
   const onDockCommitRef = useRef(onDockCommit);
-  const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
+  const [dockLayout, setDockLayout] = useState<DockLayoutState>(() => initialDockLayout(dock));
+  const { style: positionStyle, anchorTop } = dockLayout;
+  const [panelSizeMotionActive, setPanelSizeMotionActive] = useState(false);
   const [dockDragging, setDockDragging] = useState(false);
   const [dockPointerActive, setDockPointerActive] = useState(false);
   const [approachSnap, setApproachSnap] = useState(false);
@@ -272,8 +313,10 @@ export function DragTransferStation({
 
   const panelOpen = panelExpanded || forceExpanded;
   const panelLocked = forceExpanded;
-  const dockFollowing = dragApproaching && panelOpen && !dockDragging && approachFollowReady;
+  const dockFollowing =
+    dragApproaching && panelOpen && !dockDragging && approachFollowReady && !panelSizeMotionActive;
   const panelOpenRef = useRef(panelOpen);
+  const prevPanelOpenRef = useRef(panelOpen);
 
   const { panelInstant } = useTransferStationPanelMotion({
     panelOpen,
@@ -305,23 +348,9 @@ export function DragTransferStation({
   }, [dragApproaching, dock.side]);
 
   const refreshDockPosition = useCallback(() => {
-    const panelHeight = estimateTransferStationPanelHeight(panelOpen);
-    const panelWidth = estimateTransferStationPanelWidth(panelOpen);
-
-    setPositionStyle({
-      ...getTransferStationDockPositionStyle(
-        dock.side,
-        dock.top,
-        panelWidth,
-        panelHeight,
-        window.innerWidth,
-        window.innerHeight,
-        TRANSFER_STATION_VIEWPORT_INSET_PX,
-      ),
-      width: undefined,
-      height: undefined,
-    });
-  }, [dock.side, dock.top, panelOpen]);
+    const next = buildDockPositionStyle(dock);
+    setDockLayout((prev) => (dockLayoutEqual(prev, next) ? prev : next));
+  }, [dock.side, dock.top]);
 
   const assignAsideRef = useCallback(
     (node: HTMLElement | null) => {
@@ -334,7 +363,16 @@ export function DragTransferStation({
   useLayoutEffect(() => {
     if (dockPointerActive) return;
     refreshDockPosition();
-  }, [dock.side, dock.top, panelOpen, dragApproaching, dockPointerActive, refreshDockPosition]);
+  }, [dock.side, dock.top, dragApproaching, dockPointerActive, refreshDockPosition]);
+
+  useLayoutEffect(() => {
+    if (prevPanelOpenRef.current === panelOpen) return;
+    prevPanelOpenRef.current = panelOpen;
+    if (forceExpanded && dragApproaching) return;
+    setPanelSizeMotionActive(true);
+    const timer = window.setTimeout(() => setPanelSizeMotionActive(false), TRANSFER_STATION_MOTION_MS);
+    return () => window.clearTimeout(timer);
+  }, [panelOpen, forceExpanded, dragApproaching]);
 
   useEffect(() => {
     function handleResize() {
@@ -365,22 +403,8 @@ export function DragTransferStation({
       const next = { ...dockRef.current, top: nextTop };
       onDockChangeRef.current(next);
 
-      const panelHeight = estimateTransferStationPanelHeight(panelOpenRef.current);
-      const panelWidth = estimateTransferStationPanelWidth(panelOpenRef.current);
-
-      setPositionStyle({
-        ...getTransferStationDockPositionStyle(
-          next.side,
-          next.top,
-          panelWidth,
-          panelHeight,
-          window.innerWidth,
-          viewportHeight,
-          TRANSFER_STATION_VIEWPORT_INSET_PX,
-        ),
-        width: undefined,
-        height: undefined,
-      });
+      const built = buildDockPositionStyle(next);
+      setDockLayout((prev) => (dockLayoutEqual(prev, built) ? prev : built));
     }
 
     function finishDockPointer(event: PointerEvent) {
@@ -446,6 +470,8 @@ export function DragTransferStation({
       data-edge={side}
       data-approach-snap={approachSnap || undefined}
       data-panel-instant={panelInstant || undefined}
+      data-panel-size-motion={(panelSizeMotionActive && !panelInstant) || undefined}
+      data-anchor-top={anchorTop || undefined}
       data-dock-dragging={dockDragging || undefined}
       data-dock-follow={dockFollowing || undefined}
       style={positionStyle}

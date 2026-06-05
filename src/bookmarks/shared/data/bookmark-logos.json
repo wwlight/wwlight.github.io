@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceFingerprint": "3db0f52bceda3e3bcda2e86075ee77878cb4ad2049e2b771d9aa42c507d934aa",
+  "sourceFingerprint": "05974e425c5932ca948fff7868f4b3e93c90c30e7899b347f7fbf3cff3422883",
   "byUrl": {
     "https://tldr.inbrowser.app/": {
       "domain": "tldr.inbrowser.app"
@@ -22,6 +22,9 @@
     },
     "https://ray.so/": {
       "domain": "ray.so"
+    },
+    "https://www.logo.dev/": {
+      "domain": "logo.dev"
     },
     "https://cheatsheets.zip/": {
       "domain": "cheatsheets.zip"
@@ -584,8 +587,8 @@
     "https://www.bootcss.com/": {
       "domain": "bootcss.com"
     },
-    "https://www.github-zh.com/": {
-      "domain": "github-zh.com"
+    "https://gitcn.org/": {
+      "domain": "gitcn.org"
     },
     "https://docschina.org/": {
       "domain": "docschina.org"

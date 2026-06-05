@@ -288,12 +288,11 @@ export function TransferStationHeader({
 
         <div
           className={cn(
-            "admin-transfer-station-header-meta flex min-w-0 flex-1 items-center gap-2 px-3",
-            side === "left" ? "justify-end" : "justify-start",
+            "admin-transfer-station-header-meta",
             !showMeta && "admin-transfer-station-header-meta--hidden",
           )}
         >
-          {headerMeta}
+          <div className="admin-transfer-station-header-meta-content">{headerMeta}</div>
         </div>
       </div>
     </div>

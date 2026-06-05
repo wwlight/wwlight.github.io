@@ -62,6 +62,10 @@
 | `AdminAppSectionGrid.tsx` | 模块 Tab 下卡片网格 |
 | `AdminAppDialogs.tsx` | 弹层集合 |
 | `admin-app-constants.ts` | 中转站动画常量 |
+| `components/transfer/TransferStationHeader.tsx` | 顶栏 icon + 标题；`header-meta` 对侧对齐，`header-meta-content` scale 展开 |
+| `components/transfer/DragTransferStation.tsx` | 浮层 dock；`data-panel-size-motion` 宽高动画期间隐藏标题；`data-anchor-top` 贴顶 overflow clip |
+
+中转站标题展开：左 dock 标题贴右、右 dock 贴左；面板宽高过渡（240ms）期间隐藏标题，结束后从对侧 scale 淡入。拖拽靠近瞬间展开（`data-panel-instant`）不触发标题延迟。
 
 | `hooks/`、`lib/`、`styles/` | 草稿 hook、API、样式 |
 | `hooks/useBookmarkUrlMetadata.ts` | 链接元数据 debounce 识别 |

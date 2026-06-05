@@ -2,7 +2,7 @@
  * 功能：管理端中转站状态、dock、可见性与拖放处理。
  * 关联：AdminApp.tsx、useAdminGridDrag.ts、admin-app-constants.ts
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   cloneSections,
@@ -71,9 +71,7 @@ export function useAdminTransferStation({
   const [stationDismissing, setStationDismissing] = useState(false);
   const [stationSideFlipping, setStationSideFlipping] = useState(false);
   const [stationEntering, setStationEntering] = useState(false);
-  const [stationPanelExpanded, setStationPanelExpanded] = useState(
-    () => loadTransferStationItems().length > 0,
-  );
+  const [stationPanelExpanded, setStationPanelExpanded] = useState(false);
   const [stationIdleEpoch, setStationIdleEpoch] = useState(0);
 
   const stationDismissTimerRef = useRef<number | null>(null);
@@ -81,18 +79,32 @@ export function useAdminTransferStation({
   const stationSideFlippingRef = useRef(false);
   const stationVisibleRef = useRef(stationVisible);
   const stationDismissingRef = useRef(stationDismissing);
+  const stationPanelExpandedRef = useRef(stationPanelExpanded);
   const transferItemsRef = useRef(transferItems);
   const dockRef = useRef(dock);
   const transferDropDepthRef = useRef(0);
   const transferFullToastShownRef = useRef(false);
+  const initialPanelExpandPendingRef = useRef(hadTransferDraft);
 
   transferItemsRef.current = transferItems;
   dockRef.current = dock;
   stationVisibleRef.current = stationVisible;
   stationDismissingRef.current = stationDismissing;
+  stationPanelExpandedRef.current = stationPanelExpanded;
 
   const bumpStationActivity = useCallback(() => {
     setStationIdleEpoch((epoch) => epoch + 1);
+  }, []);
+
+  const expandStationPanelAnimated = useCallback(() => {
+    if (stationPanelExpandedRef.current) {
+      setStationPanelExpanded(false);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => setStationPanelExpanded(true));
+      });
+      return;
+    }
+    window.requestAnimationFrame(() => setStationPanelExpanded(true));
   }, []);
 
   function setDockPosition(next: TransferStationDockState) {
@@ -144,8 +156,8 @@ export function useAdminTransferStation({
 
   function showStation() {
     cancelStationDismiss();
-    if (!stationVisible) {
-      setStationEntering(true);
+    if (!stationVisibleRef.current) {
+      setStationPanelExpanded(false);
     }
     setStationVisible(true);
   }
@@ -316,7 +328,11 @@ export function useAdminTransferStation({
       }
 
       showStation();
-      setStationPanelExpanded(true);
+      if (stationPanelExpandedRef.current) {
+        setStationPanelExpanded(true);
+      } else {
+        expandStationPanelAnimated();
+      }
       toast.success("已加入中转站");
     } finally {
       gridDragFnsRef.current.clearActiveDragPayload();
@@ -435,6 +451,12 @@ export function useAdminTransferStation({
   useEffect(() => {
     if (hadTransferDraft) toast.message("已恢复中转站暂存");
   }, [hadTransferDraft]);
+
+  useLayoutEffect(() => {
+    if (!initialPanelExpandPendingRef.current || !stationVisible) return;
+    initialPanelExpandPendingRef.current = false;
+    expandStationPanelAnimated();
+  }, [stationVisible, expandStationPanelAnimated]);
 
   useEffect(() => {
     if (transferDropActive || draggingStationItemId || dragApproaching) {
