@@ -6,6 +6,7 @@ import type { ServerResponse } from "node:http";
 import type { Connect } from "vite";
 import type { AstroIntegration } from "astro";
 import {
+  handleFetchMetadata,
   handleGetVersion,
   handleListVersions,
   handleRestore,
@@ -65,6 +66,11 @@ function bookmarksAdminApiPlugin() {
           }
 
           try {
+            if (pathname === "/admin/api/fetch-metadata" && req.method === "GET") {
+              await toNodeResponse(await handleFetchMetadata(webRequest), res);
+              return;
+            }
+
             if (pathname === "/admin/api/versions" && req.method === "GET") {
               const id = new URL(webRequest.url).searchParams.get("id");
               await toNodeResponse(id ? handleGetVersion(id) : handleListVersions(), res);

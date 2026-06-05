@@ -12,7 +12,7 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 | 场景 | Read |
 | --- | --- |
 | 默认 | 本文 |
-| 重构 / `git mv` | [dev-foundation/SKILL.md](../dev-foundation/SKILL.md) → 本文 **路径/路由** |
+| 重构 / `git mv` | [dev-foundation/SKILL.md](../dev-foundation/SKILL.md) → **路径/路由**、**源文件体量**、**Git commit** |
 | className | [tailwindcss.md](../dev-foundation/tailwindcss.md) |
 | `vp` / `vpr` / catalog | [vite-plus.md](../dev-foundation/vite-plus.md) |
 | 主题 | [`src/theme/README.md`](../../src/theme/README.md) |
@@ -43,7 +43,7 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 本站 **无 `src/pages/`**（文档 Starlight + `src/content/`；书签见 `integrations/bookmarks-admin.ts`）。
 
-301：`/bookmarks`、`/bookmarks/`→`/bookmarks/nav/`（`astro.config.mjs`）。非 pages：`/admin/api/*`（dev）；`/blog/bookmarks/*`（文档）。改路由同步 `site-nav.ts`、`index.mdx`、NavPageActions、BookmarksAdminApp。
+非 pages：`/admin/api/*`（dev）；`/blog/bookmarks/*`（文档）。改路由同步 `site-nav.ts`、`index.mdx`、NavPageActions、BookmarksAdminApp。
 
 | 路径 | 用途 |
 | --- | --- |
@@ -55,6 +55,14 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 | `integrations/bookmarks-admin.ts` | dev API |
 
 重构后：grep `/bookmarks/`、`site-nav`、相对 import → 更新模块 README → `vpr build`。
+
+### `redirects`（`astro.config.mjs`）
+
+| from | to | 用途 |
+| --- | --- | --- |
+| `/bookmarks` | `/bookmarks/nav/` | 短链进导航页（`injectRoute` 无 `/bookmarks` 页） |
+
+Astro 6：同一路径**只写一条** redirect（带或不带 `/` 二选一），双写报 `[router]` collision。改后 grep `site-nav`、`/bookmarks` → `vpr build`。
 
 ## 主题（速查）
 
@@ -71,7 +79,26 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 ## 书签（速查）
 
-`bookmarks.ts` → seed → DB → 页面注水。API 仅 dev。鉴权 `PUBLIC_BOOKMARKS_ADMIN_HASH`。站点图标 → `blog/bookmarks/06-bookmark-logo-design/`、`PUBLIC_LOGO_DEV_TOKEN`、`generate:bookmark-logos`。
+`bookmarks.ts` → seed → DB → 页面注水。API 仅 dev。鉴权 `PUBLIC_BOOKMARKS_ADMIN_HASH`。站点图标 → `blog/bookmarks/06-bookmark-logo-design/`、`PUBLIC_LOGO_DEV_TOKEN`、`generate:bookmark-logos`。目录细节 → [`src/bookmarks/README.md`](../../src/bookmarks/README.md)。
+
+### AdminApp（`components/editor/`）
+
+| 文件 | 职责 |
+| --- | --- |
+| `AdminApp.tsx` | 壳：草稿 hook + 三子 hook + 布局 |
+| `useAdminTransferStation.ts` | 中转站状态、dock、拖入/拖出 |
+| `useAdminGridDrag.ts` | 网格 DnD、`handleDrop` |
+| `useAdminEditorActions.ts` | 编辑/保存/离开/删除/导入导出/版本 |
+| `AdminAppSectionGrid.tsx` | 模块 Tab 下卡片网格 UI |
+| `AdminAppDialogs.tsx` | 弹层集合 |
+| `admin-app-constants.ts` | 中转站动画常量 |
+
+### 链接元数据识别
+
+`EditDialog` → `useBookmarkUrlMetadata` → `resolveBookmarkMetadata`（dev API → 直连 → 代理 → 域名回退）。shared：`bookmark-url-metadata.ts`、`parse-page-metadata.ts`。
+
+- **标题**：`titleTouched` 为 true 不自动覆盖；提交空标题用 `titleFallbackForSubmit`
+- **描述**：建议区点「填入」；识别失败 `hook.error` 提示，不阻断提交
 
 ## Tailwind（本仓库）
 
@@ -96,12 +123,12 @@ Starlight 文档 + `/bookmarks/nav/` + `/bookmarks/admin/`。Node **24**。
 
 ## Git commit
 
-- **默认不 commit**；仅用户明确说 commit / 提交时执行
-- 不主动 push、amend、force push（除非用户明确要求）
-- 消息 1–2 句写 why；勿 `--no-verify`；hook 改文件则新 commit，勿擅自 amend
+→ dev-foundation **Git commit**（本仓库：`feat(bookmarks): …` 单行 subject，无 body）
 
 ## 约定
 
 - 行为准则：`.cursor/rules/karpathy-guidelines.mdc`（alwaysApply，**勿改** — 见 dev-foundation **勿改**）
 - `frontend-design` skill **勿改**（同上）
+- **勿擅自新增** `wwlight-project/` 下子 skill 文件；要点并入本文，新增前先向用户确认
+- 源文件体量 / 顶注释 → dev-foundation **源文件体量**
 - React 岛：`client:only="react"`；BackToTop → `document.body`

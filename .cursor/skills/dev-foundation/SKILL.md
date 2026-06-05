@@ -57,6 +57,35 @@ grep 旧路径 → lint/build
 
 原则：功能分包；路由跟 `pages/`；alias/URL 只维护 project skill 一处；lib 无 JSX。
 
+## 源文件体量
+
+单文件过大难读难改；**新建或大改**时遵守：
+
+| 类型 | 建议上限 | 超出则 |
+| --- | --- | --- |
+| 组件 / hook / lib（`.tsx`、`.ts`） | ~**400 行** | 按功能拆到同目录子文件（hook、子组件、constants） |
+| 页面壳 / 组合根 | ~**300 行** | 逻辑下沉 hook，UI 拆子组件 |
+
+**顶注释**（每个源文件）：
+
+```ts
+/**
+ * 功能：…
+ * 关联：…
+ */
+```
+
+Agent 先读顶注释定位职责；拆分后同轮更新 `src/<module>/README.md` 与 project skill 文件表。
+
+**勿**：为拆而拆（单用途 <200 行可保持）；拆出 orphan 垫片 re-export（见反模式）。
+
+## Git commit
+
+- **默认不 commit**；仅用户明确说 commit / 提交时执行
+- **仅一行 subject**，不写 body、备注、空行续段
+- 格式：`type(scope): 简述`（与仓库 `git log` 近期风格一致）；一句说清 why
+- 不主动 push、amend、force push（除非用户明确要求）；勿 `--no-verify`；hook 改文件则新 commit，勿擅自 amend
+
 ## 反模式
 
 - orphan re-export；多处 alias 表；URL≠pages；只改代码不 grep 文档；裸 `pnpm install`；库有 icon 仍手绘/叠拼

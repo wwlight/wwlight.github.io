@@ -7,34 +7,13 @@ import { useHoverCapable } from "@/lib/use-hover-capable";
 import { cn } from "@/lib/utils";
 
 const dragHelpItems = [
-  {
-    title: "交换位置",
-    body: "拖拽卡片到另一张卡片上，松手后两者交换位置。",
-  },
-  {
-    title: "Shift 插入",
-    body: "按住 Shift 再拖拽，将卡片插入目标位置，后续书签依次后移。",
-  },
-  {
-    title: "空白插入",
-    body: "拖到分组内空白区域，按指针位置插入排序。",
-  },
-  {
-    title: "加入中转站",
-    body: "拖向模块面板左右边缘，松手后暂存至中转站。",
-  },
-  {
-    title: "拖出中转站",
-    body: "从中转站拖回分组，按目标位置插入。",
-  },
-  {
-    title: "中转站图标",
-    body: "点击展开/收起；Shift + 点击清空并还原；拖拽图标可移动停靠位置。",
-  },
-  {
-    title: "切换吸附侧",
-    body: "双击屏幕左右边缘，可切换中转站吸附到左侧或右侧。",
-  },
+  { title: "交换位置", body: "拖到另一卡片上松手互换" },
+  { title: "Shift 插入", body: "按住 Shift 拖拽，插入目标位并后移" },
+  { title: "空白插入", body: "拖到分组空白处按指针插入" },
+  { title: "加入中转站", body: "拖向模块左右边缘松手暂存" },
+  { title: "拖出中转站", body: "拖回分组按目标位插入" },
+  { title: "中转站图标", body: "点击展开/收起；Shift+点击清空还原；拖拽移停靠" },
+  { title: "切换吸附侧", body: "双击屏幕左右边缘切换吸附侧" },
 ] as const;
 
 const HOVER_CLOSE_DELAY_MS = 120;

@@ -42,19 +42,40 @@
 | 路径 | 职责 |
 | --- | --- |
 | `BookmarksAdmin.tsx`、`BookmarksAdminApp.tsx` | 页面根 |
-| `components/editor/` | `AdminApp` 主编辑 |
+| `components/editor/` | 主编辑（见下表） |
 | `components/gate/` | 登录门禁 |
-| `components/dialogs/` | 弹层 + `AdminDialogLayer` |
+| `components/dialogs/` | 弹层 + `AdminDialogLayer`（含 `EditDialog`、`BookmarkEditFields`） |
 | `components/grid/` | 卡片网格 |
 | `components/transfer/` | 中转站 |
 | `components/sections/` | 模块 Tab |
 | `components/chrome/` | 顶栏、用户菜单、`ui-helpers` |
 | `components/stats/` | 统计与拖拽说明 |
+
+#### `components/editor/`（AdminApp 拆分）
+
+| 文件 | 职责 |
+| --- | --- |
+| `AdminApp.tsx` | 壳：组合草稿 hook 与子 hook、页面布局 |
+| `useAdminTransferStation.ts` | 中转站状态、dock、拖入/拖出 |
+| `useAdminGridDrag.ts` | 网格 DnD、`handleDrop` |
+| `useAdminEditorActions.ts` | 编辑/保存/离开/删除/导入导出/版本 |
+| `AdminAppSectionGrid.tsx` | 模块 Tab 下卡片网格 |
+| `AdminAppDialogs.tsx` | 弹层集合 |
+| `admin-app-constants.ts` | 中转站动画常量 |
+
 | `hooks/`、`lib/`、`styles/` | 草稿 hook、API、样式 |
+| `hooks/useBookmarkUrlMetadata.ts` | 链接元数据 debounce 识别 |
+| `lib/fetch-bookmark-metadata.client.ts` | 客户端解析链路（dev API → 直连 → 代理 → 域名） |
+| `lib/admin-api.server.ts` | dev `GET /admin/api/fetch-metadata` |
 
 ### `shared/`
 
 跨 nav/admin 的类型、数据、`shared/components/` 展示组件、`shared/styles/`。
+
+| 路径 | 职责 |
+| --- | --- |
+| `shared/lib/bookmark-url-metadata.ts` | URL 规范化、HTML 元数据合并、域名标题回退 |
+| `shared/lib/parse-page-metadata.ts` | 从 HTML 解析 og / twitter / title / description |
 
 ### 书签站点图标（Logo.dev）
 

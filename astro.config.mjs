@@ -19,10 +19,6 @@ export default defineConfig({
   },
   redirects: {
     '/bookmarks': '/bookmarks/nav/',
-    '/blog/bookmarks/06-dev-api-and-deploy': '/blog/bookmarks/07-dev-api-and-deploy/',
-    '/blog/bookmarks/06-dev-api-and-deploy/': '/blog/bookmarks/07-dev-api-and-deploy/',
-    '/blog/bookmarks/07-bookmark-logo-design': '/blog/bookmarks/06-bookmark-logo-design/',
-    '/blog/bookmarks/07-bookmark-logo-design/': '/blog/bookmarks/06-bookmark-logo-design/',
   },
   markdown: {
     syntaxHighlight: {

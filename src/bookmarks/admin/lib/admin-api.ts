@@ -25,6 +25,13 @@ async function authFetch<T>(url: string, authorization: string, init?: RequestIn
   return result;
 }
 
+export async function fetchBookmarkMetadataFromApi(authorization: string, url: string) {
+  return authFetch<{ title?: string; description?: string }>(
+    `/admin/api/fetch-metadata?url=${encodeURIComponent(url)}`,
+    authorization,
+  );
+}
+
 export async function fetchVersions(authorization: string): Promise<VersionEntry[]> {
   const result = await authFetch<{ versions?: VersionEntry[] }>(
     "/admin/api/versions",

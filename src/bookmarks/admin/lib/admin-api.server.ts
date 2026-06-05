@@ -13,6 +13,12 @@ import {
   listVersions,
   touchSeed,
 } from "./admin-versions.server";
+import {
+  BOOKMARK_METADATA_FETCH_TIMEOUT_MS,
+  fallbackMetadataFromUrl,
+  metadataFromHtml,
+  normalizeBookmarkUrl,
+} from "../../shared/lib/bookmark-url-metadata";
 import { serializeBookmarkSections } from "../../shared/data/serialize";
 import type { BookmarkSectionData } from "../../shared/types";
 
@@ -66,6 +72,49 @@ function writeBookmarksFile(sections: BookmarkSectionData[]) {
   fs.writeFileSync(filePath, content, "utf-8");
   touchSeed(projectRoot);
   refreshBookmarkLogoCache();
+}
+
+export async function handleFetchMetadata(request: Request) {
+  const rawUrl = new URL(request.url).searchParams.get("url") ?? "";
+  const normalized = normalizeBookmarkUrl(rawUrl);
+  if (!normalized) return json({ error: "无效的 URL" }, 400);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BOOKMARK_METADATA_FETCH_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(normalized, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        Accept: "text/html,application/xhtml+xml",
+        "User-Agent": "wwlight-bookmarks-admin/1.0",
+      },
+    });
+
+    if (!response.ok) {
+      const fallback = fallbackMetadataFromUrl(normalized);
+      return fallback ? json(fallback) : json({ error: "获取页面失败" }, 502);
+    }
+
+    const html = await response.text();
+    const metadata = metadataFromHtml(html, normalized);
+    const title = metadata.title?.trim();
+    if (!title) {
+      const fallback = fallbackMetadataFromUrl(normalized);
+      return fallback ? json(fallback) : json({ error: "未识别到页面标题" }, 404);
+    }
+
+    return json({
+      title,
+      description: metadata.description?.trim() || undefined,
+    });
+  } catch {
+    const fallback = fallbackMetadataFromUrl(normalized);
+    return fallback ? json(fallback) : json({ error: "获取页面失败" }, 502);
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export function handleListVersions() {

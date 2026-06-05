@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react";
+/**
+ * 功能：编辑弹窗壳——表单状态、校验、书签/模块/分组分支。
+ * 关联：BookmarkEditFields.tsx、useBookmarkUrlMetadata.ts
+ */
+import { useEffect, useRef, useState, type SubmitEvent } from "react";
+import { BookmarkEditFields } from "@/bookmarks/admin/components/dialogs/BookmarkEditFields";
 import { useAdminDialogLayer } from "@/bookmarks/admin/components/dialogs/AdminDialogLayer";
-import { Badge } from "@/components/ui/badge";
+import { ShakeInputField } from "@/bookmarks/admin/components/dialogs/ShakeInputField";
+import { useBookmarkUrlMetadata } from "@/bookmarks/admin/hooks/useBookmarkUrlMetadata";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,24 +16,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  BOOKMARK_BADGE_VARIANTS,
-  resolveBookmarkBadgeVariant,
-} from "@/bookmarks/shared/lib/badge-variants";
 import {
   BOOKMARK_DESCRIPTION_MAX_LENGTH,
   type EditContext,
 } from "@/bookmarks/admin/lib/admin-helpers";
+import { titleFallbackForSubmit } from "@/bookmarks/shared/lib/bookmark-url-metadata";
 import type { BookmarkSectionData } from "@/bookmarks/shared/types";
 import { cn } from "@/lib/utils";
 
@@ -88,21 +81,56 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
   const [form, setForm] = useState<Record<string, string>>({});
   const [fieldErrors, setFieldErrors] = useState<EditFieldErrors>({});
   const [shakeKey, setShakeKey] = useState(0);
+  const [titleTouched, setTitleTouched] = useState(false);
+  const isNewBookmarkRef = useRef(false);
+  const initialUrlRef = useRef("");
 
   useEffect(() => {
     if (open && context) {
-      setForm(getInitialValues(context, sections));
+      const initialValues = getInitialValues(context, sections);
+      setForm(initialValues);
       setFieldErrors({});
       setShakeKey(0);
+      isNewBookmarkRef.current =
+        context.type === "bookmark" && context.bookmarkIndex == null;
+      initialUrlRef.current =
+        context.type === "bookmark" ? (initialValues.url ?? "").trim() : "";
+      setTitleTouched(context.type === "bookmark" && context.bookmarkIndex != null);
     }
-  }, [open, context]);
+  }, [open, context, sections]);
+
+  const isBookmarkForm = context?.type === "bookmark";
+  const isNewBookmark = isBookmarkForm && context.bookmarkIndex == null;
+  const urlChangedFromInitial =
+    isBookmarkForm && (form.url ?? "").trim() !== initialUrlRef.current;
+  const { loading: metadataLoading, error: metadataError, suggestedDescription, fetchMetadata } =
+    useBookmarkUrlMetadata({
+      enabled: open && isBookmarkForm,
+      autoFetch: isNewBookmark || urlChangedFromInitial,
+      url: form.url ?? "",
+      title: form.title ?? "",
+      titleTouched,
+      onApplyTitle: (title) => {
+        setForm((prev) => ({ ...prev, title }));
+      },
+    });
 
   if (!context) return null;
 
   const isCompactForm = context.type === "section" || context.type === "card";
   const section = sections[context.sectionIndex];
 
+  function markTitleEdited() {
+    setTitleTouched(true);
+  }
+
+  function resetTitleForNewUrl() {
+    setTitleTouched(false);
+  }
+
   function updateField(name: string, value: string) {
+    if (name === "title") markTitleEdited();
+    if (name === "url" && value.trim() !== initialUrlRef.current) resetTitleForNewUrl();
     setForm((prev) => ({ ...prev, [name]: value }));
     if (name === "title" || name === "url") {
       setFieldErrors((prev) => {
@@ -120,13 +148,20 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
     setShakeKey((key) => key + 1);
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
+    if (!context) return;
+
+    const payload = { ...form };
+    if (context.type === "bookmark" && !(payload.title ?? "").trim()) {
+      const fallbackTitle = titleFallbackForSubmit(payload.url ?? "");
+      if (fallbackTitle) payload.title = fallbackTitle;
+    }
 
     const errors: EditFieldErrors = {};
-    if (!(form.title ?? "").trim())
+    if (!(payload.title ?? "").trim())
       errors.title = true;
-    if (context.type === "bookmark" && !(form.url ?? "").trim())
+    if (context.type === "bookmark" && !(payload.url ?? "").trim())
       errors.url = true;
 
     if (errors.title || errors.url) {
@@ -135,7 +170,7 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
     }
 
     setFieldErrors({});
-    onSubmit(form);
+    onSubmit(payload);
   }
 
   return (
@@ -165,149 +200,31 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
             )}
           >
             <div className={cn("grid gap-4", isCompactForm ? "pb-3" : "pb-4")}>
-          {context.type === "bookmark" && (
-            <div className="grid gap-2">
-              <Label htmlFor="cardTitle">所属分组</Label>
-              <Select
-                value={form.cardTitle ?? "0"}
-                onValueChange={(value) => updateField("cardTitle", value)}
-              >
-                <SelectTrigger id="cardTitle">
-                  <SelectValue placeholder="选择分组" />
-                </SelectTrigger>
-                <SelectContent>
-                  {section?.cards.map((card, index) => (
-                    <SelectItem key={card.title + index} value={String(index)}>
-                      {card.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          <div className="grid gap-2">
-            <Label htmlFor="title">标题</Label>
-            <div
-              key={fieldErrors.title ? `title-shake-${shakeKey}` : "title"}
-              className={cn(fieldErrors.title && shakeKey > 0 && "animate-input-shake")}
-            >
-              <Input
-                id="title"
-                value={form.title ?? ""}
-                onChange={(e) => updateField("title", e.target.value)}
-                invalid={fieldErrors.title}
-                aria-label="标题"
-              />
-            </div>
-            {fieldErrors.title ? (
-              <p className="text-sm text-destructive" role="alert">
-                请输入标题
-              </p>
-            ) : null}
-          </div>
-
-          {context.type === "bookmark" && (
-            <>
-              <div className="grid gap-2">
-                <Label htmlFor="url">链接 URL</Label>
-                <div
-                  key={fieldErrors.url ? `url-shake-${shakeKey}` : "url"}
-                  className={cn(fieldErrors.url && shakeKey > 0 && "animate-input-shake")}
-                >
-                  <Input
-                    id="url"
-                    type="text"
-                    inputMode="url"
-                    value={form.url ?? ""}
-                    onChange={(e) => updateField("url", e.target.value)}
-                    placeholder="https://example.com"
-                    invalid={fieldErrors.url}
-                    aria-label="链接 URL"
-                  />
-                </div>
-                {fieldErrors.url ? (
-                  <p className="text-sm text-destructive" role="alert">
-                    请输入链接 URL
-                  </p>
-                ) : null}
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center justify-between gap-2">
-                  <Label htmlFor="description">描述</Label>
-                  <span
-                    className="shrink-0 text-xs tabular-nums text-muted-foreground"
-                    aria-live="polite"
-                  >
-                    还可输入{" "}
-                    {BOOKMARK_DESCRIPTION_MAX_LENGTH - (form.description ?? "").length} 字
-                  </span>
-                </div>
-                <Textarea
-                  id="description"
-                  rows={2}
-                  maxLength={BOOKMARK_DESCRIPTION_MAX_LENGTH}
-                  className="resize-none"
-                  value={form.description ?? ""}
-                  onChange={(e) =>
-                    updateField(
-                      "description",
-                      e.target.value.slice(0, BOOKMARK_DESCRIPTION_MAX_LENGTH),
-                    )}
+              {context.type === "bookmark" ? (
+                <BookmarkEditFields
+                  form={form}
+                  fieldErrors={fieldErrors}
+                  shakeKey={shakeKey}
+                  section={section}
+                  isNewBookmark={isNewBookmark}
+                  autoFocusUrl={isNewBookmarkRef.current}
+                  metadataLoading={metadataLoading}
+                  metadataError={metadataError}
+                  suggestedDescription={suggestedDescription}
+                  onFieldChange={updateField}
+                  onFetchMetadata={fetchMetadata}
                 />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="badgeText">标签文字</Label>
-                <Input
-                  id="badgeText"
-                  value={form.badgeText ?? ""}
-                  onChange={(e) => updateField("badgeText", e.target.value)}
-                  placeholder="hot / 推荐 / Github"
+              ) : (
+                <ShakeInputField
+                  id="title"
+                  label="标题"
+                  value={form.title ?? ""}
+                  onChange={(value) => updateField("title", value)}
+                  shakeKey={shakeKey}
+                  invalid={fieldErrors.title}
+                  errorMessage={fieldErrors.title ? "请输入标题" : undefined}
                 />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="badgeVariant">标签样式</Label>
-                <Select
-                  value={form.badgeVariant || "__default__"}
-                  onValueChange={(value) =>
-                    updateField("badgeVariant", value === "__default__" ? "" : value)
-                  }
-                >
-                  <SelectTrigger id="badgeVariant">
-                    <SelectValue placeholder="默认">
-                      {form.badgeVariant ? (
-                        <Badge
-                          variant={resolveBookmarkBadgeVariant(form.badgeVariant)}
-                          className="rounded-full px-1.5 py-0 text-badge"
-                        >
-                          {BOOKMARK_BADGE_VARIANTS.find((item) => item.value === form.badgeVariant)
-                            ?.label ?? form.badgeVariant}
-                        </Badge>
-                      ) : (
-                        "默认"
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BOOKMARK_BADGE_VARIANTS.map(({ value, label, hint }) => (
-                      <SelectItem key={value || "__default__"} value={value || "__default__"}>
-                        <div className="flex items-center gap-2.5">
-                          <Badge
-                            variant={resolveBookmarkBadgeVariant(value || undefined)}
-                            className="rounded-full px-1.5 py-0 text-badge"
-                          >
-                            {label}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">{hint}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </>
-          )}
-
+              )}
             </div>
           </div>
 

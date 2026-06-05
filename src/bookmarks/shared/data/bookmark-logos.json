@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceFingerprint": "adc0b27e833d427d9a484254e37c927ccdcca88efc755f154d3ec35d48f0e642",
+  "sourceFingerprint": "3db0f52bceda3e3bcda2e86075ee77878cb4ad2049e2b771d9aa42c507d934aa",
   "byUrl": {
     "https://tldr.inbrowser.app/": {
       "domain": "tldr.inbrowser.app"
@@ -398,8 +398,11 @@
     "https://smalldev.tools/": {
       "domain": "smalldev.tools"
     },
-    "https://github.com/moonlight-stream/moonlight-qt": {
-      "domain": "github.com"
+    "https://moonlight-stream.org/": {
+      "domain": "moonlight-stream.org"
+    },
+    "https://app.lizardbyte.dev/Sunshine/": {
+      "domain": "app.lizardbyte.dev"
     },
     "https://pin.gl/": {
       "domain": "pin.gl"
@@ -608,7 +611,7 @@
     "https://www.trancy.org/": {
       "domain": "trancy.org"
     },
-    "http://www.newconceptenglish.com/": {
+    "https://www.newconceptenglish.com/": {
       "domain": "newconceptenglish.com"
     },
     "https://words.aihub.ren/": {
@@ -634,9 +637,6 @@
     },
     "https://zhenti.burningvocabulary.com/": {
       "domain": "zhenti.burningvocabulary.com"
-    },
-    "https://www.newconceptenglish.com/": {
-      "domain": "newconceptenglish.com"
     },
     "https://dify.ai/": {
       "domain": "dify.ai"
