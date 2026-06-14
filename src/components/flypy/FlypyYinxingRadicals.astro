@@ -1,0 +1,112 @@
+---
+import {
+  FLYPY_ROW_CLASS,
+  flypyBoardClass,
+  flypyBoardStyle,
+  flypyKeyClass,
+  flypyKeyCornerClass,
+  flypyKeyHeadClass,
+  flypyKeyLetterClass,
+  flypyLegendTextClass,
+  flypyRadicalKindClass,
+  flypyRadicalLineClass,
+  flypyRadicalLinesClass,
+  flypyRadicalSegmentClass,
+  flypySmallCharClass,
+  flypySmallCharsClass,
+  flypySmallHanziClass,
+  flypySmallItemClass,
+  flypySmallKeyClass,
+  flypySmallListClass,
+  flypySmallPinyinClass,
+  flypySmallTitleClass,
+} from './flypy-classes'
+import {
+  FLYPY_PREVIEW_IMAGES,
+  FLYPY_RADICAL_ROWS,
+  FLYPY_SMALL_CHAR_PINYIN,
+  FLYPY_SMALL_CHARS,
+} from './flypy-data'
+import FlypyBrand from './FlypyBrand.astro'
+import FlypyFigure from './FlypyFigure.astro'
+---
+
+<FlypyFigure
+  src={FLYPY_PREVIEW_IMAGES.radicals}
+  alt="小鹤音形部件字根键位图"
+  ariaLabel="小鹤音形部件字根键位图"
+>
+  <div class={flypyBoardClass} style={flypyBoardStyle}>
+    {
+      FLYPY_RADICAL_ROWS.map((row, rowIndex) => (
+        <div class={FLYPY_ROW_CLASS[rowIndex]}>
+          {row.map(item => (
+            <div class={flypyKeyClass('radical')}>
+              <div class={flypyKeyHeadClass}>
+                <span class={flypyKeyLetterClass}>{item.key}</span>
+                {item.corner && (
+                  <span class={flypyKeyCornerClass(item.corner.kind)}>
+                    {item.corner.text}
+                  </span>
+                )}
+              </div>
+              <div class={flypyRadicalLinesClass}>
+                {item.lines.map(line => (
+                  <div class={flypyRadicalLineClass}>
+                    {line.map(segment => (
+                      <span
+                        class={flypyRadicalSegmentClass(
+                          line.length > 1,
+                          segment.kind,
+                        )}
+                      >
+                        {segment.text}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          {rowIndex === 2 && (
+            <FlypyBrand
+              previewSrc={FLYPY_PREVIEW_IMAGES.radicals}
+              previewAlt="小鹤音形部件字根键位原图"
+            />
+          )}
+        </div>
+      ))
+    }
+  </div>
+
+  <p class={flypyLegendTextClass}>
+    基本以音定键，
+    <span class={flypyRadicalKindClass['non-phonetic']}>红色非音托部件</span>，
+    <span class={flypyRadicalKindClass.special}>绿色特别规则部件</span>，
+    <span class={flypyRadicalKindClass.stroke}>蓝色为笔画</span>
+  </p>
+
+  <p class={flypySmallTitleClass}>小字字根</p>
+  <ul class={flypySmallListClass}>
+    {
+      FLYPY_SMALL_CHARS.map(item => (
+        <li class={flypySmallItemClass}>
+          <span class={flypySmallKeyClass}>{item.key}</span>
+          <span class={flypySmallCharsClass}>
+            {[...item.chars].map((char) => {
+              const pinyin = FLYPY_SMALL_CHAR_PINYIN[char]
+              return (
+                <span class={flypySmallCharClass}>
+                  <span class={flypySmallPinyinClass} aria-hidden={!pinyin}>
+                    {pinyin ?? ''}
+                  </span>
+                  <span class={flypySmallHanziClass}>{char}</span>
+                </span>
+              )
+            })}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</FlypyFigure>

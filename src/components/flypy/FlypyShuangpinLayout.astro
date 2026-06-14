@@ -1,0 +1,45 @@
+---
+import {
+  FLYPY_ROW_CLASS,
+  flypyBoardClass,
+  flypyBoardStyle,
+  flypyKeyClass,
+  flypyKeyHeadClass,
+  flypyKeyInitialClass,
+  flypyKeyLetterClass,
+} from './flypy-classes'
+import { FLYPY_PREVIEW_IMAGES, FLYPY_ROWS } from './flypy-data'
+import FlypyBrand from './FlypyBrand.astro'
+import FlypyFigure from './FlypyFigure.astro'
+import FlypyFinals from './FlypyFinals.astro'
+---
+
+<FlypyFigure
+  src={FLYPY_PREVIEW_IMAGES.layout}
+  alt="小鹤双拼键盘布局"
+  ariaLabel="小鹤双拼键盘布局"
+>
+  <div class={flypyBoardClass} style={flypyBoardStyle}>
+    {
+      FLYPY_ROWS.map((row, rowIndex) => (
+        <div class={FLYPY_ROW_CLASS[rowIndex]}>
+          {row.map(item => (
+            <div class={flypyKeyClass('layout')}>
+              <div class={flypyKeyHeadClass}>
+                <span class={flypyKeyLetterClass}>{item.key}</span>
+                <span class={flypyKeyInitialClass}>{item.initial}</span>
+              </div>
+              <FlypyFinals finals={item.finals} />
+            </div>
+          ))}
+          {rowIndex === 2 && (
+            <FlypyBrand
+              previewSrc={FLYPY_PREVIEW_IMAGES.layout}
+              previewAlt="小鹤双拼键盘布局原图"
+            />
+          )}
+        </div>
+      ))
+    }
+  </div>
+</FlypyFigure>

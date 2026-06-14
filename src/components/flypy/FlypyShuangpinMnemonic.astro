@@ -1,0 +1,58 @@
+---
+import {
+  FLYPY_ROW_CLASS,
+  flypyBoardClass,
+  flypyBoardStyle,
+  flypyKeyAltClass,
+  flypyKeyClass,
+  flypyKeyHeadClass,
+  flypyKeyLetterClass,
+  flypyKeyTopRightClass,
+  flypyMnemonicCharClass,
+} from './flypy-classes'
+import { FLYPY_MNEMONIC_ROWS, FLYPY_PREVIEW_IMAGES } from './flypy-data'
+import FlypyBrand from './FlypyBrand.astro'
+import FlypyFigure from './FlypyFigure.astro'
+import FlypyMnemonicFinals from './FlypyMnemonicFinals.astro'
+---
+
+<FlypyFigure
+  src={FLYPY_PREVIEW_IMAGES.mnemonic}
+  alt="小鹤双拼键位口诀"
+  ariaLabel="小鹤双拼键位口诀"
+>
+  <div class={flypyBoardClass} style={flypyBoardStyle}>
+    {
+      FLYPY_MNEMONIC_ROWS.map((row, rowIndex) => (
+        <div class={FLYPY_ROW_CLASS[rowIndex]}>
+          {row.map(item => (
+            <div class={flypyKeyClass('mnemonic')}>
+              <div class={flypyKeyHeadClass}>
+                <span class={flypyKeyLetterClass}>{item.key}</span>
+                {(item.altInitial || item.mnemonicChars) && (
+                  <div class={flypyKeyTopRightClass}>
+                    {item.altInitial && <span class={flypyKeyAltClass}>{item.altInitial}</span>}
+                    {
+                      item.mnemonicChars?.map(char => (
+                        <span class={flypyMnemonicCharClass(char.tone === 'green')}>
+                          {char.char}
+                        </span>
+                      ))
+                    }
+                  </div>
+                )}
+              </div>
+              <FlypyMnemonicFinals finals={item.finals} />
+            </div>
+          ))}
+          {rowIndex === 2 && (
+            <FlypyBrand
+              previewSrc={FLYPY_PREVIEW_IMAGES.mnemonic}
+              previewAlt="小鹤双拼键位口诀原图"
+            />
+          )}
+        </div>
+      ))
+    }
+  </div>
+</FlypyFigure>

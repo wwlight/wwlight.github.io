@@ -1,0 +1,16 @@
+---
+import { flypyFinalLineClass, flypyFinalsClass } from './flypy-classes'
+
+interface Props {
+  finals: string
+}
+
+const { finals } = Astro.props
+const parts = finals.split(' / ')
+---
+
+<div class={flypyFinalsClass()}>
+  {parts.map(part => (
+    <span class={flypyFinalLineClass()}>{part}</span>
+  ))}
+</div>

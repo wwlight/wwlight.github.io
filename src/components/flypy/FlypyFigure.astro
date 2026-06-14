@@ -1,0 +1,19 @@
+---
+import { flypyFallbackImgClass, flypyFigureClass, flypyInteractiveClass } from './flypy-classes'
+
+interface Props {
+  src: string
+  alt: string
+  ariaLabel: string
+  class?: string
+}
+
+const { src, alt, ariaLabel, class: className } = Astro.props
+---
+
+<figure class={flypyFigureClass(className)} aria-label={ariaLabel}>
+  <img class={flypyFallbackImgClass} src={src} alt={alt} loading="lazy" decoding="async" />
+  <div class={flypyInteractiveClass}>
+    <slot />
+  </div>
+</figure>
