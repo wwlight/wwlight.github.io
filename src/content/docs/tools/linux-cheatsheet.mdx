@@ -4,102 +4,215 @@ sidebar:
   order: 5
 ---
 
-```shell
-# --------------------------
-# 1. 用户管理
-# --------------------------
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-# 查看当前用户
-whoami
+## 用户与身份
 
-# 查看用户信息
-id
-id username
-
-# 查看所有用户
-cat /etc/passwd
-
-# 添加用户
-sudo useradd username
-sudo passwd username  # 设置密码
-
-# 删除用户
-sudo userdel username          # 保留主目录
-sudo userdel -r username       # 删除用户及主目录
-
-# 修改用户信息
-sudo usermod -aG groupname username  # 将用户添加到组
-sudo usermod -s /bin/bash username   # 修改默认shell
-sudo usermod -d /new/home username   # 修改主目录
-
-# 切换用户
-su - username      # 完全切换(加载环境变量)
-su username        # 仅切换身份
-
-# --------------------------
-# 2. 组管理
-# --------------------------
-
-# 查看组信息
-groups username    # 查看用户所属组
-getent group       # 查看所有组
-getent group groupname  # 查看特定组
-
-# 添加组
-sudo groupadd groupname
-
-# 删除组
-sudo groupdel groupname
-
-# 管理组成员
-sudo gpasswd -a username groupname  # 添加用户到组
-sudo gpasswd -d username groupname  # 从组移除用户
-
-# --------------------------
-# 3. 密码管理
-# --------------------------
-
-# 修改密码
-passwd           # 修改当前用户密码
-sudo passwd username  # root修改其他用户密码
-
-# 锁定/解锁账户
-sudo passwd -l username  # 锁定
-sudo passwd -u username  # 解锁
-
-# --------------------------
-# 4. 进程管理
-# --------------------------
-
-# 查看用户进程
-ps -u username
-pgrep -u username
-
-# 终止用户所有进程
-sudo pkill -9 -u username
-sudo killall -u username
-
-# --------------------------
-# 5. 文件权限检查
-# --------------------------
-
-# 查找用户/组拥有的文件
-sudo find / -user username 2>/dev/null
-sudo find / -group groupname 2>/dev/null
-
-# 修改文件属主/组
-sudo chown username:groupname file
-sudo chown username file      # 仅修改属主
-sudo chgrp groupname file     # 仅修改属组
-
-# --------------------------
-# 6. 日志与审计
-# --------------------------
-
-# 查看用户登录记录
-last
-lastlog
-
-# 查看sudo记录
-sudo cat /var/log/auth.log | grep sudo
+```sh {1,4,8,12}
+$ whoami                                                   # 查看当前用户
+$ id                                                       # 查看当前用户 uid/gid 及所属组
+$ id <username>                                            # 查看指定用户信息
+$ cat /etc/passwd                                          # 查看所有用户列表
+$ getent passwd <username>                                 # 查询用户条目（含 LDAP/NSS）
+$ sudo useradd <username>                                  # 添加用户
+$ sudo useradd -m -s /bin/bash <username>                  # 添加用户并创建主目录、指定 shell
+$ sudo passwd <username>                                   # 设置或修改用户密码
+$ sudo userdel <username>                                  # 删除用户（保留主目录）
+$ sudo userdel -r <username>                               # 删除用户及主目录 # [注意] 数据不可恢复
+$ sudo usermod -aG <group> <username>                      # 将用户追加到附加组
+$ sudo usermod -s /bin/bash <username>                     # 修改默认 shell
+$ sudo usermod -d /new/home <username>                     # 修改主目录
+$ su - <username>                                          # 切换用户并加载其环境
+$ su <username>                                            # 仅切换身份，不加载登录环境
 ```
+
+## 组管理
+
+```sh {1,4,7}
+$ groups <username>                                        # 查看用户所属组
+$ getent group                                             # 查看所有组
+$ getent group <groupname>                                 # 查看指定组及成员
+$ sudo groupadd <groupname>                                # 添加组
+$ sudo groupdel <groupname>                                # 删除组 # [注意] 仍有用户的主组时可能失败
+$ sudo gpasswd -a <username> <groupname>                   # 将用户加入组
+$ sudo gpasswd -d <username> <groupname>                   # 将用户从组移除
+```
+
+## 密码与账户
+
+```sh {1,3,4}
+$ passwd                                                   # 修改当前用户密码
+$ sudo passwd <username>                                   # root 修改其他用户密码
+$ sudo passwd -l <username>                                # 锁定账户
+$ sudo passwd -u <username>                                # 解锁账户
+$ sudo chage -l <username>                                 # 查看密码过期策略
+$ sudo faillock --user <username>                          # 查看账户登录失败锁定状态（部分发行版）
+```
+
+## 文件权限与所有者
+
+:::tip[说明]
+
+- **所有者**（owner）：`ls -l` 第三列，拥有该文件的用户；`chmod` 的 `u` 即所有者（user）。
+- **所属用户组**（group）：`ls -l` 第四列；`chmod` 的 `g` 即组内用户（group）。
+
+:::
+
+```sh {1,4,7,10}
+$ ls -l <file>                                             # 查看权限、所有者、所属用户组
+$ chmod 644 <file>                                         # 数字模式修改权限
+$ chmod u+x <file>                                         # 符号模式：所有者（u）增加执行权限
+$ chmod -R 755 <dir>                                       # 递归修改目录权限
+$ chown <user>:<group> <file>                              # 修改所有者与所属用户组
+$ chown <user> <file>                                      # 仅修改所有者
+$ chgrp <group> <file>                                     # 仅修改所属用户组
+$ umask                                                    # 查看默认权限掩码
+$ sudo find / -user <username> 2>/dev/null                 # 查找所有者为指定用户的文件
+$ sudo find / -group <groupname> 2>/dev/null               # 查找所属用户组为指定组的文件
+$ getfacl <file>                                           # 查看 ACL 权限
+$ setfacl -m u:<user>:rwx <file>                           # 为用户设置 ACL # [注意] 需文件系统支持 ACL
+```
+
+## 进程管理
+
+```sh {1,3,5}
+$ ps -u <username>                                         # 查看指定用户的进程
+$ pgrep -u <username>                                      # 列出指定用户的进程 pid
+$ pgrep <procname>                                         # 按进程名查找 pid
+$ sudo pkill -u <username>                                 # 终止指定用户的进程
+$ sudo pkill -9 -u <username>                              # 强制终止指定用户所有进程 # [注意] 可能导致数据丢失
+$ sudo killall -u <username>                               # 终止指定用户的所有同名进程
+$ nice -n 10 <command>                                     # 以较低优先级启动进程
+$ renice -n 5 -p <pid>                                     # 调整运行中进程的优先级
+```
+
+## 服务管理
+
+```sh {1,2,3,7,8}
+$ systemctl status <service>                               # 查看服务状态
+$ systemctl start <service>                                # 启动服务
+$ systemctl stop <service>                                 # 停止服务
+$ systemctl restart <service>                              # 重启服务
+$ systemctl reload <service>                               # 重载配置（不中断主进程）
+$ systemctl enable <service>                               # 设置开机自启
+$ systemctl disable <service>                              # 取消开机自启
+$ systemctl is-active <service>                            # 检查服务是否运行中
+$ systemctl list-units --type=service                      # 列出已加载的服务单元
+$ systemctl daemon-reload                                  # 重新加载 unit 配置
+$ journalctl -u <service>                                  # 查看指定服务日志
+$ journalctl -u <service> -f                               # 实时跟踪服务日志
+$ journalctl -xe                                           # 查看最近系统错误日志
+```
+
+## 软件包管理
+
+<Tabs syncKey="distro">
+  <TabItem label="Debian / Ubuntu">
+    ```sh {1,2,4}
+    $ sudo apt update                                      # 更新软件源索引
+    $ sudo apt install <package>                           # 安装软件包
+    $ sudo apt remove <package>                            # 卸载软件包（保留配置）
+    $ sudo apt purge <package>                             # 卸载并删除配置文件
+    $ sudo apt upgrade                                     # 升级已安装软件包
+    $ apt search <keyword>                                 # 搜索软件包
+    $ apt show <package>                                   # 查看软件包详情
+    $ dpkg -l | grep <keyword>                             # 列出已安装包并过滤
+    ```
+  </TabItem>
+  <TabItem label="RHEL / Fedora">
+    ```sh {1,2,4}
+    $ sudo dnf check-update                                # 检查可用更新
+    $ sudo dnf install <package>                           # 安装软件包
+    $ sudo dnf remove <package>                            # 卸载软件包
+    $ sudo dnf upgrade                                     # 升级已安装软件包
+    $ dnf search <keyword>                                 # 搜索软件包
+    $ dnf info <package>                                   # 查看软件包详情
+    $ rpm -qa | grep <keyword>                             # 列出已安装 RPM 并过滤
+    ```
+  </TabItem>
+</Tabs>
+
+## 磁盘与挂载
+
+```sh {1,2,5,8}
+$ df -h                                                    # 查看磁盘空间（人类可读）
+$ du -sh <path>                                            # 查看目录占用总大小
+$ du -h --max-depth=1 <path>                               # 查看一级子目录占用
+$ lsblk                                                    # 查看块设备与挂载点
+$ sudo fdisk -l                                            # 列出磁盘分区表
+$ mount                                                    # 查看当前挂载
+$ sudo mount <device> <mountpoint>                         # 挂载设备
+$ sudo umount <mountpoint>                                 # 卸载挂载点
+$ sudo mount -a                                            # 按 /etc/fstab 挂载所有条目
+```
+
+## 日志与审计
+
+```sh {1,2,5,6}
+$ last                                                     # 查看用户登录记录
+$ last <username>                                          # 查看指定用户登录记录
+$ lastlog                                                  # 查看所有用户最近登录时间
+$ sudo journalctl -b                                       # 查看本次启动以来的日志
+$ sudo journalctl --since "1 hour ago"                     # 查看最近一小时日志
+$ sudo journalctl -p err                                   # 仅查看错误级别日志
+```
+
+<Tabs syncKey="distro">
+  <TabItem label="Debian / Ubuntu">
+    ```sh
+    $ sudo grep sudo /var/log/auth.log                     # 查看 sudo 操作记录
+    ```
+  </TabItem>
+  <TabItem label="RHEL / Fedora">
+    ```sh
+    $ sudo grep sudo /var/log/secure                       # 查看 sudo 操作记录
+    ```
+  </TabItem>
+</Tabs>
+
+## 系统信息
+
+```sh {1,2,3,6}
+$ uname -a                                                 # 查看内核与架构信息
+$ hostnamectl                                              # 查看/设置主机名与系统信息
+$ timedatectl                                              # 查看/设置时区与时间同步状态
+$ cat /etc/os-release                                      # 查看发行版信息
+$ lscpu                                                    # 查看 CPU 信息
+$ free -h                                                  # 查看内存与 swap 使用
+$ uptime                                                   # 查看运行时长与负载
+$ runlevel                                                 # 查看当前运行级别（传统 init）
+```
+
+## 定时任务
+
+```sh {1,2,5}
+$ crontab -l                                               # 查看当前用户 crontab
+$ crontab -e                                               # 编辑当前用户 crontab
+$ sudo crontab -u <username> -e                            # 编辑指定用户 crontab
+$ ls /etc/cron.d/                                          # 查看系统级定时任务目录
+$ systemctl list-timers                                    # 查看 systemd 定时器
+$ systemctl status <timer>                                 # 查看定时器状态
+```
+
+## 防火墙
+
+<Tabs syncKey="distro">
+  <TabItem label="Debian / Ubuntu">
+    ```sh {1,2,4}
+    $ sudo ufw status                                      # 查看防火墙状态
+    $ sudo ufw enable                                      # 启用防火墙
+    $ sudo ufw allow 22/tcp                                # 放行 SSH 端口
+    $ sudo ufw deny <port>                                 # 拒绝指定端口
+    $ sudo ufw delete allow 22/tcp                         # 删除规则
+    ```
+  </TabItem>
+  <TabItem label="RHEL / Fedora">
+    ```sh {1,2,4}
+    $ sudo firewall-cmd --state                            # 查看防火墙状态
+    $ sudo firewall-cmd --list-all                         # 列出当前区域规则
+    $ sudo firewall-cmd --permanent --add-service=http     # 永久放行 HTTP 服务
+    $ sudo firewall-cmd --reload                           # 重载配置使永久规则生效
+    $ sudo firewall-cmd --permanent --remove-service=http  # 永久移除 HTTP 服务
+    ```
+  </TabItem>
+</Tabs>

@@ -30,6 +30,9 @@ $ reset                     # 重置终端
 
 ```shell {1,2,3,4,8,9,10}
 $ cd                        # 返回自己 $HOME 目录
+$ cd ..                     # 返回上级目录
+$ cd ~                      # 返回用户主目录
+$ cd e:                     # 切换盘符（Windows）
 $ cd {dirname}              # 进入目录
 $ pwd                       # 显示当前所在目录
 $ mkdir {dirname}           # 创建目录
@@ -268,5 +271,3 @@ $ find / -type f -size +5M           # 查找大于 5M 的文件
 $ chmod --reference f1 f2            # 将 f2 的权限设置成 f1 一模一样的
 $ curl -L cheat.sh                   # 速查表大全
 ```
-
-> 内容来自：[BASH 中文速查表](https://doc.zdzn.net/cheatsheet/bash.html)
