@@ -11,11 +11,18 @@ import {
 import type { BookmarkSectionData } from "@/bookmarks/shared/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -63,9 +70,9 @@ export function BookmarkEditFields({
   }
 
   return (
-    <>
-      <div className="grid gap-2">
-        <Label htmlFor="cardTitle">所属分组</Label>
+    <FieldGroup className="gap-4">
+      <Field>
+        <FieldLabel htmlFor="cardTitle">所属分组</FieldLabel>
         <Select
           value={form.cardTitle ?? "0"}
           onValueChange={(value) => onFieldChange("cardTitle", value)}
@@ -74,18 +81,20 @@ export function BookmarkEditFields({
             <SelectValue placeholder="选择分组" />
           </SelectTrigger>
           <SelectContent>
-            {section?.cards.map((card, index) => (
-              <SelectItem key={card.title + index} value={String(index)}>
-                {card.title}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              {section?.cards.map((card, index) => (
+                <SelectItem key={card.title + index} value={String(index)}>
+                  {card.title}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
-      </div>
+      </Field>
 
-      <div className="grid gap-2">
+      <Field data-invalid={fieldErrors.url || undefined}>
         <div className="flex items-center justify-between gap-2">
-          <Label htmlFor="url">链接 URL</Label>
+          <FieldLabel htmlFor="url">链接 URL</FieldLabel>
           <Button
             type="button"
             variant="outline"
@@ -114,19 +123,15 @@ export function BookmarkEditFields({
           />
         </div>
         {fieldErrors.url ? (
-          <p className="text-sm text-destructive" role="alert">
-            请输入链接 URL
-          </p>
+          <FieldError>请输入链接 URL</FieldError>
         ) : metadataError ? (
-          <p className="text-xs text-muted-foreground" role="status">
-            {metadataError}
-          </p>
+          <FieldDescription role="status">{metadataError}</FieldDescription>
         ) : (
-          <p className="text-xs text-muted-foreground">
+          <FieldDescription>
             {`${isNewBookmark ? "粘贴" : "修改"}链接后会自动识别网站标题，也可点击「识别」手动刷新`}
-          </p>
+          </FieldDescription>
         )}
-      </div>
+      </Field>
 
       <ShakeInputField
         id="title"
@@ -139,9 +144,9 @@ export function BookmarkEditFields({
         placeholder="根据链接自动识别"
       />
 
-      <div className="grid gap-2">
+      <Field>
         <div className="flex items-center justify-between gap-2">
-          <Label htmlFor="description">描述</Label>
+          <FieldLabel htmlFor="description">描述</FieldLabel>
           <span
             className="shrink-0 text-xs tabular-nums text-muted-foreground"
             aria-live="polite"
@@ -163,11 +168,12 @@ export function BookmarkEditFields({
         />
         {suggestedDescription ? (
           <div
-            className="rounded-md border border-border/60 bg-muted/35 px-3 py-2"
+            role="status"
             aria-live="polite"
+            className="rounded-lg border bg-card px-3 py-2"
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-medium text-muted-foreground">识别到的描述</p>
+            <div className="flex w-full items-center justify-between gap-2">
+              <span className="text-xs font-medium text-muted-foreground">识别到的描述</span>
               <Button
                 type="button"
                 variant="ghost"
@@ -183,20 +189,20 @@ export function BookmarkEditFields({
             </p>
           </div>
         ) : null}
-      </div>
+      </Field>
 
-      <div className="grid gap-2">
-        <Label htmlFor="badgeText">标签文字</Label>
+      <Field>
+        <FieldLabel htmlFor="badgeText">标签文字</FieldLabel>
         <Input
           id="badgeText"
           value={form.badgeText ?? ""}
           onChange={(e) => onFieldChange("badgeText", e.target.value)}
           placeholder="hot / 推荐 / Github"
         />
-      </div>
+      </Field>
 
-      <div className="grid gap-2">
-        <Label htmlFor="badgeVariant">标签样式</Label>
+      <Field>
+        <FieldLabel htmlFor="badgeVariant">标签样式</FieldLabel>
         <Select
           value={form.badgeVariant || "__default__"}
           onValueChange={(value) =>
@@ -219,22 +225,24 @@ export function BookmarkEditFields({
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {BOOKMARK_BADGE_VARIANTS.map(({ value, label, hint }) => (
-              <SelectItem key={value || "__default__"} value={value || "__default__"}>
-                <div className="flex items-center gap-2.5">
-                  <Badge
-                    variant={resolveBookmarkBadgeVariant(value || undefined)}
-                    className="rounded-full px-1.5 py-0 text-badge"
-                  >
-                    {label}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">{hint}</span>
-                </div>
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              {BOOKMARK_BADGE_VARIANTS.map(({ value, label, hint }) => (
+                <SelectItem key={value || "__default__"} value={value || "__default__"}>
+                  <div className="flex items-center gap-2.5">
+                    <Badge
+                      variant={resolveBookmarkBadgeVariant(value || undefined)}
+                      className="rounded-full px-1.5 py-0 text-badge"
+                    >
+                      {label}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">{hint}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
-      </div>
-    </>
+      </Field>
+    </FieldGroup>
   );
 }

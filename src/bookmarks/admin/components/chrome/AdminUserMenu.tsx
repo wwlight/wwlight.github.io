@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -106,22 +107,26 @@ export function AdminUserMenu({ name, onReturnToFrontend, onReturnToBlog, onLogo
           },
         } as Record<string, unknown>)}
       >
-        <DropdownMenuItem onSelect={() => deferMenuAction(onReturnToBlog)}>
-          <BookOpen />
-          <span>返回博客</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => deferMenuAction(onReturnToFrontend)}>
-          <Bookmark />
-          <span>返回书签</span>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem onSelect={() => deferMenuAction(onReturnToBlog)}>
+            <BookOpen />
+            <span>返回博客</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => deferMenuAction(onReturnToFrontend)}>
+            <Bookmark />
+            <span>返回书签</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-destructive focus:bg-destructive/10 focus:text-destructive [&_svg]:text-destructive"
-          onSelect={() => deferMenuAction(onLogout)}
-        >
-          <LogOut />
-          <span>退出登录</span>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className="text-destructive focus:bg-destructive/10 focus:text-destructive [&_svg]:text-destructive"
+            onSelect={() => deferMenuAction(onLogout)}
+          >
+            <LogOut />
+            <span>退出登录</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

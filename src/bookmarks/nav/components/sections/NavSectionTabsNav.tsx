@@ -62,11 +62,11 @@ export function NavSectionTabsNav({ sections }: NavSectionTabsNavProps) {
           type="button"
           variant="outline"
           size="icon"
-          className="size-8 shrink-0"
+          className="shrink-0"
           title="向左滚动"
           onClick={() => scrollTabs("left")}
         >
-          <ChevronLeft className="size-4" />
+          <ChevronLeft />
         </Button>
       ) : null}
 
@@ -105,11 +105,11 @@ export function NavSectionTabsNav({ sections }: NavSectionTabsNavProps) {
           type="button"
           variant="outline"
           size="icon"
-          className="size-8 shrink-0"
+          className="shrink-0"
           title="向右滚动"
           onClick={() => scrollTabs("right")}
         >
-          <ChevronRight className="size-4" />
+          <ChevronRight />
         </Button>
       ) : null}
     </div>

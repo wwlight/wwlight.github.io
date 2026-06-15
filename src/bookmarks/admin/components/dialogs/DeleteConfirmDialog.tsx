@@ -53,11 +53,7 @@ export function DeleteConfirmDialog({ target, onClose, onConfirm }: DeleteConfir
           <Button variant="outline" onClick={onClose}>
             取消
           </Button>
-          <Button
-            variant="destructive"
-            className="bg-red-500/80 hover:bg-red-500/90"
-            onClick={onConfirm}
-          >
+          <Button variant="destructive" onClick={onConfirm}>
             确认删除
           </Button>
         </DialogFooter>

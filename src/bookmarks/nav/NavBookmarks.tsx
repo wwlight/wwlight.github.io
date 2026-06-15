@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { BookmarkSearchInput } from "@/bookmarks/shared/components/BookmarkSearchInput";
 import { BookmarkStatsCards } from "@/bookmarks/shared/components/BookmarkStatsCards";
 import { BookmarkPageHeader } from "@/bookmarks/shared/components/BookmarkPageHeader";
 import { NavBookmarkCard } from "@/bookmarks/nav/components/cards/NavBookmarkCard";
@@ -8,12 +8,10 @@ import { countBookmarkStats } from "@/bookmarks/shared/lib/stats";
 import { NavBookmarkCardGroup } from "@/bookmarks/nav/components/cards/NavBookmarkCardGroup";
 import { NavSectionPanel } from "@/bookmarks/nav/components/sections/NavSectionPanel";
 import { NavSectionTabsNav } from "@/bookmarks/nav/components/sections/NavSectionTabsNav";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { clampSelectedSection } from "@/bookmarks/shared/lib/section-helpers";
 import { filterBookmarkSections } from "@/bookmarks/shared/lib/search";
 import type { BookmarkSectionData } from "@/bookmarks/shared/types";
-import { bookmarkSearchPlaceholder, toolbarSearchInputClass } from "@/bookmarks/shared/lib/toolbar-ui";
 import { cn } from "@/lib/utils";
 
 interface NavBookmarksProps {
@@ -53,20 +51,7 @@ export function NavBookmarks({ sections, actions }: NavBookmarksProps) {
         bookmarks={stats.bookmarks}
       />
 
-      <div className="relative max-w-md">
-        <Search
-          className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
-          aria-hidden
-        />
-        <Input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={bookmarkSearchPlaceholder}
-          autoComplete="off"
-          className={toolbarSearchInputClass}
-        />
-      </div>
+      <BookmarkSearchInput className="max-w-md" value={query} onChange={setQuery} />
 
       {hasResults ? (
         <Tabs

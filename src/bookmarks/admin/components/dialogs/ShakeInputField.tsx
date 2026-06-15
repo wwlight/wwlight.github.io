@@ -1,9 +1,13 @@
 /**
- * 功能：带 shake 动画的 Label + Input + 校验提示。
+ * 功能：带 shake 动画的 Field + Input + 校验提示。
  * 关联：EditDialog.tsx、BookmarkEditFields.tsx
  */
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface ShakeInputFieldProps {
@@ -36,8 +40,8 @@ export function ShakeInputField({
   type = "text",
 }: ShakeInputFieldProps) {
   return (
-    <div className="grid gap-2">
-      <Label htmlFor={id}>{label}</Label>
+    <Field data-invalid={invalid || undefined}>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <div
         key={invalid ? `${id}-shake-${shakeKey}` : id}
         className={cn(invalid && shakeKey > 0 && "animate-input-shake")}
@@ -54,11 +58,7 @@ export function ShakeInputField({
           autoFocus={autoFocus}
         />
       </div>
-      {errorMessage ? (
-        <p className="text-sm text-destructive" role="alert">
-          {errorMessage}
-        </p>
-      ) : null}
-    </div>
+      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+    </Field>
   );
 }

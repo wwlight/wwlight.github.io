@@ -1,9 +1,9 @@
-import { ChevronLeft, ChevronRight, Layers, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SectionJumpSelect } from "@/bookmarks/admin/components/sections/SectionJumpSelect";
+import { BookmarkSearchInput } from "@/bookmarks/shared/components/BookmarkSearchInput";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BookmarkSectionData } from "@/bookmarks/shared/types";
 import { sectionMatchesSearch } from "@/bookmarks/shared/lib/search";
@@ -12,8 +12,6 @@ import {
   adminSectionTabsTriggerClass,
   sectionTabBadgeClass,
   sectionTabsListClass,
-  bookmarkSearchPlaceholder,
-  toolbarSearchInputClass,
 } from "@/bookmarks/shared/lib/toolbar-ui";
 import { cn } from "@/lib/utils";
 
@@ -101,19 +99,15 @@ export function SectionTabsNav({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       {showTopRow ? (
         <div className="flex items-center gap-2">
           {showSearch ? (
-            <div className="relative min-w-0 max-w-md flex-1">
-              <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-foreground/55" />
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={bookmarkSearchPlaceholder}
-                className={toolbarSearchInputClass}
-              />
-            </div>
+            <BookmarkSearchInput
+              className="min-w-0 max-w-md flex-1"
+              value={query}
+              onChange={setQuery}
+            />
           ) : null}
           {onOpenSectionManage ? (
             <Button
@@ -124,7 +118,7 @@ export function SectionTabsNav({
               title="模块与分组管理"
               onClick={onOpenSectionManage}
             >
-              <Layers className="size-3.5" />
+              <Layers data-icon="inline-start" />
               结构管理
             </Button>
           ) : null}
@@ -141,11 +135,11 @@ export function SectionTabsNav({
                   type="button"
                   variant="outline"
                   size="icon"
-                  className="absolute top-1/2 left-0 z-20 size-8 shrink-0 -translate-y-1/2"
+                  className="absolute top-1/2 left-0 z-20 shrink-0 -translate-y-1/2"
                   title="向左滚动"
                   onClick={() => scrollTabs("left")}
                 >
-                  <ChevronLeft className="size-4" />
+                  <ChevronLeft />
                 </Button>
               </>
             ) : null}
@@ -156,11 +150,11 @@ export function SectionTabsNav({
                   type="button"
                   variant="outline"
                   size="icon"
-                  className="absolute top-1/2 right-0 z-20 size-8 shrink-0 -translate-y-1/2"
+                  className="absolute top-1/2 right-0 z-20 shrink-0 -translate-y-1/2"
                   title="向右滚动"
                   onClick={() => scrollTabs("right")}
                 >
-                  <ChevronRight className="size-4" />
+                  <ChevronRight />
                 </Button>
               </>
             ) : null}

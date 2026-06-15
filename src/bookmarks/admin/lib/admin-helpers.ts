@@ -451,7 +451,71 @@ export function cloneSections(sections: BookmarkSectionData[]) {
   return structuredClone(sections);
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+/** 修复 localStorage 草稿等来源的不完整结构，避免 normalizeSortOrders 访问 undefined */
+export function sanitizeSections(
+  value: unknown,
+  fallback: BookmarkSectionData[],
+): BookmarkSectionData[] {
+  if (!Array.isArray(value) || value.length === 0) return cloneSections(fallback);
+
+  const sections = value.flatMap((section, sectionIndex) => {
+    if (!isRecord(section)) return [];
+
+    const cards = Array.isArray(section.cards) ? section.cards : [];
+    return [
+      {
+        title: typeof section.title === "string" ? section.title : `模块 ${sectionIndex + 1}`,
+        sortOrder: typeof section.sortOrder === "number" ? section.sortOrder : sectionIndex,
+        stagger: Boolean(section.stagger),
+        cards: cards.flatMap((card, cardIndex) => {
+          if (!isRecord(card)) return [];
+
+          const bookmarks = Array.isArray(card.bookmarks) ? card.bookmarks : [];
+          return [
+            {
+              title: typeof card.title === "string" ? card.title : "",
+              sortOrder: typeof card.sortOrder === "number" ? card.sortOrder : cardIndex,
+              bookmarks: bookmarks.flatMap((bookmark, bookmarkIndex) => {
+                if (!isRecord(bookmark)) return [];
+
+                const title = typeof bookmark.title === "string" ? bookmark.title : "";
+                const url = typeof bookmark.url === "string" ? bookmark.url : "";
+                if (!title && !url) return [];
+
+                return [
+                  {
+                    title,
+                    url,
+                    description:
+                      typeof bookmark.description === "string" ? bookmark.description : undefined,
+                    badgeText:
+                      typeof bookmark.badgeText === "string" ? bookmark.badgeText : undefined,
+                    badgeVariant:
+                      typeof bookmark.badgeVariant === "string" ? bookmark.badgeVariant : undefined,
+                    sortOrder:
+                      typeof bookmark.sortOrder === "number" ? bookmark.sortOrder : bookmarkIndex,
+                  },
+                ];
+              }),
+            },
+          ];
+        }),
+      },
+    ];
+  });
+
+  if (sections.length === 0) return cloneSections(fallback);
+
+  normalizeSortOrders(sections);
+  return sections;
+}
+
 export function sectionsEqual(a: BookmarkSectionData[], b: BookmarkSectionData[]) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
   const left = cloneSections(a);
   const right = cloneSections(b);
   normalizeSortOrders(left);
@@ -460,9 +524,15 @@ export function sectionsEqual(a: BookmarkSectionData[], b: BookmarkSectionData[]
 }
 
 export function normalizeSortOrders(sections: BookmarkSectionData[]) {
+  if (!Array.isArray(sections)) return;
+
   sections.forEach((section, sectionIndex) => {
+    if (!Array.isArray(section.cards)) section.cards = [];
+
     section.sortOrder = sectionIndex;
     section.cards.forEach((card, cardIndex) => {
+      if (!Array.isArray(card.bookmarks)) card.bookmarks = [];
+
       card.sortOrder = cardIndex;
       card.bookmarks.forEach((bookmark, bookmarkIndex) => {
         bookmark.sortOrder = bookmarkIndex;
@@ -472,8 +542,12 @@ export function normalizeSortOrders(sections: BookmarkSectionData[]) {
 }
 
 export function countBookmarks(sections: BookmarkSectionData[]) {
+  if (!Array.isArray(sections)) return 0;
+
   return sections.reduce(
-    (sum, section) => sum + section.cards.reduce((n, card) => n + card.bookmarks.length, 0),
+    (sum, section) =>
+      sum
+      + (section.cards ?? []).reduce((n, card) => n + (card.bookmarks ?? []).length, 0),
     0,
   );
 }

@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FieldGroup } from "@/components/ui/field";
 import {
   BOOKMARK_DESCRIPTION_MAX_LENGTH,
   type EditContext,
@@ -199,7 +200,7 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
               isCompactForm ? "pb-1" : "min-h-0 flex-1 overflow-y-auto",
             )}
           >
-            <div className={cn("grid gap-4", isCompactForm ? "pb-3" : "pb-4")}>
+            <div className={cn(isCompactForm ? "pb-3" : "pb-4")}>
               {context.type === "bookmark" ? (
                 <BookmarkEditFields
                   form={form}
@@ -215,15 +216,17 @@ export function EditDialog({ open, context, sections, onClose, onSubmit }: EditD
                   onFetchMetadata={fetchMetadata}
                 />
               ) : (
-                <ShakeInputField
-                  id="title"
-                  label="标题"
-                  value={form.title ?? ""}
-                  onChange={(value) => updateField("title", value)}
-                  shakeKey={shakeKey}
-                  invalid={fieldErrors.title}
-                  errorMessage={fieldErrors.title ? "请输入标题" : undefined}
-                />
+                <FieldGroup className="gap-4">
+                  <ShakeInputField
+                    id="title"
+                    label="标题"
+                    value={form.title ?? ""}
+                    onChange={(value) => updateField("title", value)}
+                    shakeKey={shakeKey}
+                    invalid={fieldErrors.title}
+                    errorMessage={fieldErrors.title ? "请输入标题" : undefined}
+                  />
+                </FieldGroup>
               )}
             </div>
           </div>

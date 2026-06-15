@@ -4,6 +4,7 @@ import {
   cloneSections,
   countBookmarks,
   normalizeSortOrders,
+  sanitizeSections,
   sectionsEqual,
   STORAGE_KEY,
 } from "@/bookmarks/admin/lib/admin-helpers";
@@ -16,7 +17,7 @@ export function useAdminSectionsDraft(initialSections: BookmarkSectionData[]) {
     const draft = localStorage.getItem(STORAGE_KEY);
     if (draft) {
       try {
-        return JSON.parse(draft) as BookmarkSectionData[];
+        return sanitizeSections(JSON.parse(draft), initialSections);
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }

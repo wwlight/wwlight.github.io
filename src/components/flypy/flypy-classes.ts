@@ -1,13 +1,20 @@
+import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { PinyinAlphabetTone } from './flypy-alphabet-data'
 
 export type FlypyKeyVariant = 'layout' | 'mnemonic' | 'radical'
 
-export const flypyBoardStyle = {
+type FlypyBoardCssVars = {
+  '--flypy-gap': string
+  '--flypy-unit': string
+  '--flypy-key-pad': string
+}
+
+export const flypyBoardStyle: CSSProperties & FlypyBoardCssVars = {
   '--flypy-gap': 'clamp(0.18rem, 0.85cqi, 0.34rem)',
   '--flypy-unit': 'calc((100cqi - 9 * var(--flypy-gap)) / 10)',
   '--flypy-key-pad': 'clamp(0.24rem, 0.95cqi, 0.38rem)',
-} as const
+}
 
 export function flypyFigureClass(className?: string) {
   return cn(

@@ -1,6 +1,7 @@
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -20,11 +21,13 @@ export function SectionJumpSelect({ sections, selectedIndex, onSelect }: Section
         <SelectValue placeholder="跳转" />
       </SelectTrigger>
       <SelectContent align="end">
-        {sections.map((section, index) => (
-          <SelectItem key={section.title + index} value={String(index)}>
-            <span className="truncate">{section.title}</span>
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          {sections.map((section, index) => (
+            <SelectItem key={section.title + index} value={String(index)}>
+              <span className="truncate">{section.title}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

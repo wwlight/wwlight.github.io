@@ -1,8 +1,11 @@
 /** 导航页与管理端共用的 Tab 列表、搜索框 Tailwind 类 */
 export const toolbarControlClass = "h-8";
 
-/** 顶栏搜索框 */
-export const toolbarSearchInputClass = "h-8 pl-8 text-xs shadow-sm";
+/** 顶栏搜索框（InputGroup 容器） */
+export const toolbarSearchInputClass = "h-8 shadow-sm";
+
+/** 顶栏搜索框内 InputGroupInput */
+export const toolbarSearchInputControlClass = "h-8 text-xs";
 
 /** 书签模块搜索框 placeholder（管理端与导航页共用） */
 export const bookmarkSearchPlaceholder = "搜索模块、分组或书签…";
