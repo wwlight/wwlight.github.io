@@ -24,3 +24,7 @@ pnpm-debug.log*
 # bookmarks admin local snapshots
 db/data/versions/
 db/data/bookmarks.ts.bak
+
+# Skills CLI project installs (use ~/.agents/skills/ for global)
+.agents/
+skills-lock.json

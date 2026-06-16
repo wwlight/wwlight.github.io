@@ -125,13 +125,11 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 ## Vibe Coding
 
-Cursor 约定见 [CURSOR.md](CURSOR.md)。Rules 自动生效；Agent 每轮先读 `.cursor/skills/wwlight-project/SKILL.md`。
+Cursor 约定见 [CURSOR.md](CURSOR.md)。Rules 自动生效；Agent 每轮先读 `.cursor/skills/dev/SKILL.md`。
 
 | 路径 | 用途 |
 | ---- | ---- |
-| `.cursor/rules/wwlight-project.mdc` | 项目硬性约定 |
-| `.cursor/rules/karpathy-guidelines.mdc` | 最小改动、可验证目标 |
-| `.cursor/skills/wwlight-project/` | 入口 skill（含路径/路由） |
-| `.cursor/skills/dev-foundation/` | 重构、Tailwind、vp/vpr、文档写法 |
+| `.cursor/rules/dev.mdc` | 项目硬性约定 |
+| `.cursor/skills/dev/` | 入口 skill + `reference.md` + `tailwindcss.md` |
 
 模块细节：`src/theme/README.md`、`src/bookmarks/README.md`。

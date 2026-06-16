@@ -4,7 +4,7 @@
 
 - 仓库总览：[README.md](../../README.md#主题系统)
 - 技术文档：博客 [主题系列](/blog/theme/)（定制器与偏好 → Token 生成 → 色彩模式 → 双 Surface）
-- Agent 约定：`.cursor/skills/wwlight-project/SKILL.md` →「主题切换」
+- Agent 约定：本文；路由见 `.cursor/skills/dev/reference.md`
 
 ## 目录
 
@@ -41,7 +41,7 @@ vpr generate:theme-init     # scripts/init.inline.js
 
 - **legacy `data-color-theme`**：与 `data-color-primary` 同步，供旧选择器；移除前需全库检索。
 - **Color Mode 面板**：同页本地 state；跨标签靠 `subscribeSiteThemeStorage`。
-- **`lockDocumentScroll`**（`lib/color-mode/color-mode.ts`）：仅 View Transition 切换主题时用，勿照搬为弹层锁滚动（见 dev-foundation 反模式）。
+- **`lockDocumentScroll`**（`lib/color-mode/color-mode.ts`）：仅 View Transition 切换主题时用，勿照搬为弹层锁滚动（见 `dev/reference.md` 反模式）。
 
 ## 对外入口
 

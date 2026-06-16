@@ -105,6 +105,13 @@ export default defineConfig({
                 { autogenerate: { directory: 'blog/theme', collapsed: true } },
               ],
             },
+            {
+              label: 'Cursor 与 Agent',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: 'blog/cursor', collapsed: true } },
+              ],
+            },
           ],
         },
         { label: '备忘录', items: [{ autogenerate: { directory: 'memorandum' } }] },
