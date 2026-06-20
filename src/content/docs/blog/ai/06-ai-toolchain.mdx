@@ -1,0 +1,162 @@
+---
+title: 06 · AI 开发工具链
+description: AI 编程工具对比、模型网关与 SDK、本地模型方案、AI 应用部署
+sidebar:
+  order: 6
+---
+
+## AI 编程工具
+
+### Cursor
+
+基于 VS Code 的 AI-first IDE。核心差异：
+
+- **Agent 模式** — 多轮工具调用，可读文件、改代码、跑命令
+- **上下文系统** — Rules / Skills / Plugins 三层注入，见[上下文注入](/blog/ai/03-context-injection/)
+- **Inline Edit** — Cmd+K 原地修改选中代码，快速且不占对话窗口
+- **Tab 补全** — 基于上下文的多行补全，延迟极低（~100ms）
+- **MCP 支持** — 原生集成，可接入任意 MCP Server
+
+### GitHub Copilot
+
+VS Code / JetBrains 插件形态。主打补全，Chat 模式对标 Cursor 的 Agent 但工具调用能力较弱。优势在于与 GitHub 生态的整合（PR 描述、代码审查等）。免费层有额度限制。
+
+### Aider
+
+终端内 AI 编程工具，适用场景与 GUI IDE 不同：
+
+- 命令行优先，适合 SSH 远程开发
+- 显式 git 集成：每次修改自动 commit，支持 `/undo`
+- 支持多模型切换
+- 通过 `--architect` 模式分离规划与编码
+
+### 其他
+
+| 工具 | 定位 |
+| --- | --- |
+| Cline (VS Code 扩展) | 开源 Agent，MCP 支持，模型灵活 |
+| Windsurf | 基于 VS Code，AI flow 模式 |
+| Zed | Rust 写的极速编辑器，内置 AI |
+| Cody (Sourcegraph) | 代码理解 + 自动补全 |
+
+### 选择建议
+
+- 项目级 Agent 任务（多文件重构、调试）→ Cursor Agent 或 Aider
+- 快速补全和内联修改 → Cursor / Copilot
+- 开源 + 自托管模型 → Cline 或 Aider
+- 轻量编辑器偏好 → Zed
+
+## AI SDK
+
+### Vercel AI SDK
+
+面向 AI 应用的 TypeScript SDK。核心能力：
+
+- 统一的 `generateText` / `streamText` API，屏蔽各 provider 差异
+- `tool()` 定义工具，框架自动处理 tool-calling 循环
+- `useChat()` / `useCompletion()` React hooks
+- 支持 OpenAI、Anthropic、Google、Mistral 等
+- 边缘运行时兼容（Vercel Edge、Cloudflare Workers）
+
+```ts
+import { generateText, tool } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const result = await generateText({
+  model: openai('gpt-4o'),
+  tools: {
+    weather: tool({
+      description: '获取城市天气',
+      parameters: z.object({ city: z.string() }),
+      execute: async ({ city }) => { /* 调用天气 API */ },
+    }),
+  },
+  prompt: '北京今天天气怎么样？',
+});
+```
+
+### LangChain
+
+最早的 LLM 应用框架，生态最广。劣势是抽象层次多、版本迭代快、API 不够稳定。适合原型探索和学术场景，生产中使用 LangChain 的团队逐渐减少。
+
+### LlamaIndex
+
+聚焦数据索引和检索（RAG）的框架。内置多种 chunking 策略、检索算法和向量库集成。如果主要做 RAG 相关应用，LlamaIndex 比 LangChain 更专注。
+
+### OpenAI SDK vs Anthropic SDK
+
+直接使用厂商 SDK 是更轻量的选择。适合工具调用少、不需要框架抽象的简单场景。
+
+## 模型网关
+
+统一代理层，一次接入多模型提供商，不直接暴露各家的 API key。
+
+| 网关 | 特点 |
+| --- | --- |
+| **OpenRouter** | 200+ 模型，按 token 计价，无需多处注册 |
+| **Vercel AI Gateway** | 内置缓存、速率限制、用量追踪；与 Vercel AI SDK 深度集成 |
+| **Netlify AI Gateway** | 托管代理，支持 OpenAI、Anthropic、Gemini；需部署在 Netlify |
+| **LiteLLM** | 自托管代理，兼容 OpenAI API 格式 |
+
+### Vercel AI Gateway
+
+```ts
+// 配置后直接使用，不需要 API key 暴露给前端
+import { openai } from '@ai-sdk/openai';
+const model = openai('gpt-4o'); // key 在 gateway 侧管理
+```
+
+### Netlify AI Gateway
+
+```ts
+import { Netlify } from '@netlify/ai-gateway';
+const ai = new Netlify.AI();
+const response = await ai.chat('openai/gpt-4o', {
+  messages: [{ role: 'user', content: 'hi' }],
+});
+```
+
+## 本地模型
+
+不依赖云 API，在本地运行 LLM。适合隐私敏感、离线或高频低成本场景。
+
+| 工具 | 说明 |
+| --- | --- |
+| **ollama** | 一键运行开源模型，API 兼容 OpenAI 格式。`ollama run llama3.2` |
+| **llama.cpp** | C++ 推理引擎，支持 GGUF 量化模型，CPU 可用 |
+| **LM Studio** | GUI 桌面应用，内置模型发现与下载 |
+| **MLX** | Apple Silicon 优化推理框架 |
+
+### ollama 快速使用
+
+```bash
+# 拉取并运行模型
+ollama pull llama3.2
+ollama pull qwen2.5-coder
+
+# API 调用（OpenAI 兼容）
+curl http://localhost:11434/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"qwen2.5-coder","messages":[{"role":"user","content":"写一个快排"}]}'
+```
+
+本地模型的限制：
+- 同参数规模下效果弱于云端旗舰模型（GPT-4o / Claude Sonnet）
+- 推理速度受硬件限制，大模型内存需求高
+- 适合补全和简单问答，复杂 Agent 场景建议用云端模型
+
+## 部署
+
+| 平台 | 适用场景 |
+| --- | --- |
+| **Vercel** | AI SDK + Edge/Serverless，AI Gateway 集成 |
+| **Netlify** | Netlify Functions + AI Gateway |
+| **Cloudflare Workers** | 边缘 AI 推理（Workers AI），超低延迟 |
+| **Fly.io / Railway** | 需要 GPU 实例或长时间运行 |
+| **Hugging Face Spaces** | 模型 Demo 快速部署 |
+
+## 与整个系列的关系
+
+- [LLM 核心概念](/blog/ai/01-llm-fundamentals/) — Token、上下文窗口、推理的基础
+- [Agent 与 MCP](/blog/ai/02-agent-and-mcp/) — Agent 模式与工具协议
+- [RAG](/blog/ai/05-rag/) — 检索增强生成的工程实践

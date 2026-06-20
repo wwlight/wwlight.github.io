@@ -1,0 +1,161 @@
+---
+title: 02 · Agent 与 MCP
+description: AI Agent 的定义与工作模式、Tool Calling 原理、MCP 协议架构与生态
+sidebar:
+  order: 2
+---
+
+## 从 LLM 到 Agent
+
+LLM 单独使用时是一个问答引擎：输入文本，输出文本。它不会查文件、不会跑命令、不会调 API——除非有人把结果喂给它。
+
+Agent 在 LLM 外层包装了一个 **工具调用循环（tool-calling loop）**：
+
+```text
+用户输入 → LLM 判断需调用什么工具 → 执行工具 → 工具结果喂回 LLM → 再次判断 → ... → 生成最终回复
+```
+
+每次迭代 LLM 可以决定：调用一个或多个工具（function call）、基于工具结果直接回复用户、或继续调用更多工具。
+
+这个循环由 Agent 框架（Cursor、Claude Code、LangChain 等）驱动，LLM 只负责「要不要调工具、调哪个」的决策。
+
+### 为什么需要 Agent
+
+| 能力 | 纯 LLM | Agent |
+| --- | --- | --- |
+| 读文件 | 需用户粘贴内容 | 调用 `read_file` 工具 |
+| 改代码 | 只能输出建议 | 调用 `edit_file` 工具 |
+| 跑命令 | 只能描述步骤 | 调用 `shell_exec` 工具 |
+| 查文档 | 依赖训练数据（可能过时） | 调用搜索 / MCP 工具 |
+| 多步任务 | 用户手动拆解 | Agent 自行规划步骤 |
+
+## Tool Calling 的工作机制
+
+LLM 厂商在 fine-tuning 阶段教会模型输出结构化的**工具调用指令**而非纯文本。
+
+以 OpenAI 的 Function Calling 为例：
+
+```text
+# 对话中
+User: 读一下 package.json，看看用了哪些依赖
+
+# LLM 输出（而非文字回复）
+{
+  "tool_calls": [{
+    "function": {
+      "name": "read_file",
+      "arguments": "{\"path\": \"package.json\"}"
+    }
+  }]
+}
+
+# Agent 框架拦截，执行 read_file("package.json")
+# 将文件内容作为 tool result 追加到对话
+# 再次调用 LLM，让它基于文件内容生成回复
+```
+
+关键点：
+
+- LLM 不执⾏工具——只输出「请调⽤ X，参数 Y」的指令
+- Agent 框架负责实际执⾏和结果回传
+- 工具定义（名称、描述、参数 schema）需预先声明给 LLM
+
+## 主要 Agent 模式
+
+### ReAct（Reasoning + Acting）
+
+交替推理和行动，每步一次决策。当前最主流模式。
+
+```text
+Thought: 需要看看 package.json
+Action: read_file("package.json")
+Observation: { "dependencies": { "react": "^19.0.0" } }
+Thought: React 19，需确认兼容性
+Action: web_search("react 19 breaking changes")
+...
+```
+
+适合灵活探索、调试、代码修改。
+
+### Plan-Execute
+
+先生成完整计划再逐步执行。减少 LLM 调用次数但缺灵活性。
+
+```text
+Plan:
+1. 读 package.json 确认依赖
+2. 搜索 React 19 迁移指南
+3. 检查当前代码中的过时 API
+4. 生成迁移 diff
+```
+
+适合结构化任务和批量操作。实践中多数 Agent 混合使用：整体按计划，遇意外切 ReAct 重规划。
+
+## MCP 协议
+
+MCP（Model Context Protocol）是 Anthropic 发布的开放标准，解决 Agent 接入外部工具时接口不统一的问题。
+
+类比：USB 定义设备怎么连接计算机，MCP 定义工具怎么连接 Agent。
+
+### 核心抽象
+
+| MCP 概念 | 作用 |
+| --- | --- |
+| **Server** | 工具提供方 |
+| **Client** | Agent / IDE 宿主 |
+| **Tool** | 可调用的功能 |
+| **Resource** | 可读取的数据源 |
+| **Prompt** | 预置提示模板 |
+
+### 传输层
+
+| 传输方式 | 场景 |
+| --- | --- |
+| **stdio** | 本地工具，进程间通信。延迟低，无网络开销 |
+| **Streamable HTTP** | 远程服务、浏览器环境。支持服务端推送 |
+
+Cursor 中的 MCP 配置（`~/.cursor/mcp.json`）：
+
+```json
+{
+  "mcpServers": {
+    "headroom": {
+      "command": "docker",
+      "args": ["exec", "-i", "headroom", "headroom", "mcp", "serve"]
+    },
+    "figma": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-figma", "--stdio"]
+    }
+  }
+}
+```
+
+### MCP vs Function Calling
+
+不是替代关系，是不同层面：
+
+- **Function Calling** — LLM 内部能力：模型输出「请调函数 X」的指令格式
+- **MCP** — 外部协议：标准化工具如何被发现、描述、调用
+
+MCP Server 提供的工具定义，最终被 Agent 框架翻译为 Function Calling 的 tools schema 交给 LLM。
+
+### 常用 MCP Server
+
+| Server | 功能 |
+| --- | --- |
+| Filesystem | 文件读写、目录操作 |
+| GitHub | Issues、PRs、仓库操作 |
+| PostgreSQL / SQLite | 数据库查询 |
+| Puppeteer | 浏览器自动化 |
+| Figma | 设计稿读取与生成 |
+| MDN | Web 文档搜索 |
+| headroom | 上下文压缩 |
+
+没有 MCP 时，每个 Agent 框架用自己的方式定义工具；有了 MCP，Server 写一次，多个 Client（Cursor、Claude Desktop、Zed 等）通用。
+
+## 与后续内容的关系
+
+- [上下文注入](/blog/ai/03-context-injection/) — Rules / Skills / Plugins 如何向 Agent 注入持久知识
+- [上下文压缩](/blog/ai/04-context-compression/) — MCP 工具返回大量数据时的压缩策略
+- [AI 工具链](/blog/ai/06-ai-toolchain/) — Cursor、Copilot、Aider 等 Agent 工具对比

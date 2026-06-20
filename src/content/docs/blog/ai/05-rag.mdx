@@ -1,0 +1,164 @@
+---
+title: 05 · RAG 检索增强生成
+description: RAG 的架构原理、Embedding 与向量检索、Chunking 策略、与长上下文窗口的权衡
+sidebar:
+  order: 5
+---
+
+## 问题
+
+LLM 有两个限制：
+
+1. **知识截止** — 训练数据有时间边界，不知道之后的事件
+2. **幻觉** — 对不知道的内容倾向于编造，且表达流畅不易察觉
+
+给模型一份参考文档，让它「基于这份资料回答」，质量远高于让它凭记忆回答。这就是 RAG 的起点。
+
+## 什么是 RAG
+
+RAG（Retrieval-Augmented Generation）将信息检索嵌入 LLM 的生成流程：
+
+```text
+用户提问 → 检索相关文档 → 将文档作为上下文注入 prompt → LLM 基于文档生成回答
+```
+
+对比纯 LLM：
+
+| | 纯 LLM | RAG |
+| --- | --- | --- |
+| 知识来源 | 训练数据（静态） | 外部文档（实时） |
+| 更新方式 | 重新训练/微调 | 更新文档即可 |
+| 幻觉控制 | 靠 prompt 约束 | 靠文档约束 |
+| 私有数据 | 需微调 | 直接使用 |
+
+## 技术流程
+
+### 离线阶段：文档摄入（Ingestion）
+
+```text
+原始文档 → 文本切分（Chunking）→ 生成 Embedding → 存入向量库
+```
+
+**Chunking（文本切分）**
+
+将长文档切为适合检索的片段。过大的 chunk 稀释语义，过小丢失上下文。
+
+常见策略：
+
+| 策略 | 做法 | 适用场景 |
+| --- | --- | --- |
+| 固定大小 | 每 512 token 切一段，重叠 50 token | 通用文本 |
+| 按段落 | 以 `\n\n` 为界切分 | 结构化文档 |
+| 语义切分 | 按 Embedding 相似度变化点切分 | 主题分散的长文档 |
+| 层级切分 | 父子 chunk：小 chunk 检索，大 chunk 喂给 LLM | 需要上下文的高精度场景 |
+
+**Embedding**
+
+将文本转为固定维度的向量。语义相似的文本向量距离近。
+
+```text
+"苹果很好吃"     → [0.12, -0.34, 0.56, ...]  (1024维)
+"水果营养丰富"   → [0.11, -0.31, 0.58, ...]  ← 距离近
+"今天天气不错"   → [0.89, 0.42, -0.15, ...]  ← 距离远
+```
+
+常用 Embedding 模型：
+
+| 模型 | 维度 | 特点 |
+| --- | --- | --- |
+| OpenAI text-embedding-3-small | 512/1536 | 性价比高，支持缩短维度 |
+| OpenAI text-embedding-3-large | 256/1024/3072 | 高精度 |
+| BGE-M3 (BAAI) | 1024 | 开源，支持多语言 |
+| Jina Embeddings v3 | 1024 | 支持任务特定 LoRA |
+
+**向量数据库**
+
+存储 Embedding 并支持相似度检索（ANN，近似最近邻）：
+
+| 方案 | 类型 |
+| --- | --- |
+| pgvector (PostgreSQL 扩展) | 关系型 + 向量 |
+| Chroma | 嵌入式向量库 |
+| Pinecone / Weaviate / Qdrant | 专用向量库 |
+| libSQL (Turso) | 边缘数据库，内置向量支持 |
+| SQLite + sqlite-vec | 本地/嵌入式 |
+
+### 在线阶段：检索 + 生成
+
+```text
+用户提问 → 生成 Query Embedding → 向量检索 Top-K → 拼入 prompt → LLM 生成回答
+```
+
+**检索策略**
+
+| 策略 | 说明 |
+| --- | --- |
+| 稠密检索 | Embedding 相似度（语义匹配） |
+| 稀疏检索 | BM25 / TF-IDF（关键词匹配） |
+| 混合检索 | 稠密 + 稀疏，加权融合 |
+| 重排序 (Rerank) | 粗召回后用精排模型重排 Top-N |
+
+**典型 prompt 模板**
+
+```text
+基于以下参考文档回答问题。如果文档中没有相关信息，直接说"不知道"。
+
+参考文档：
+---
+{doc1}
+---
+{doc2}
+---
+
+问题：{query}
+```
+
+## RAG vs 长上下文窗口
+
+长上下文模型（200K+ tokens）出现后，有人提出「直接把所有文档全塞进去就行，不需要 RAG」。实际情况更复杂：
+
+| 维度 | RAG | 长上下文全量灌入 |
+| --- | --- | --- |
+| 精度 | 检索 Top-K 相关文档，噪音少 | "lost in the middle"，中间内容被忽略 |
+| 成本 | 检索开销固定，LLM 输入可控 | Token 成本随文档量线性增长 |
+| 延迟 | 检索 + 少量 token 生成 | 大量 token 处理延迟高 |
+| 更新 | 向量库即时更新 | 需重新构造 prompt |
+
+实践中两者互补：用 RAG 检索相关文档，利用长上下文窗口容纳更多检索结果以提升召回率。
+
+## 常见工程问题
+
+**chunk 大小怎么选？**
+
+没有通用最优值。取决于文档结构和问题类型：
+- 事实类问答：小 chunk（128–256 token），精准匹配
+- 摘要/分析：大 chunk（512–1024 token），保留上下文
+- 不确定时：先跑几组对照实验
+
+**检索不到怎么办？**
+
+- 检查 chunk 策略是否与问题类型匹配
+- 尝试混合检索（关键词 + 语义）
+- 重写用户 query（HyDE：Hypothetical Document Embeddings）
+- 降低相似度阈值，扩大召回范围
+
+**多个文档怎么排序？**
+
+- 相似度排序（默认）
+- Rerank model（Cohere、BGE-Reranker）
+- 按时间、来源权重等业务规则
+
+## 工具与框架
+
+| 工具 | 定位 |
+| --- | --- |
+| LangChain | 全栈 LLM 框架，内置 RAG 链 |
+| LlamaIndex | 专注数据索引与检索 |
+| Vercel AI SDK | 轻量 SDK，RAG 可结合 pgvector |
+| OpenAI Assistants API | 托管 RAG（File Search） |
+| Dify / FastGPT | 低代码 RAG 搭建平台 |
+
+## 与后续内容的关系
+
+- [AI 工具链](/blog/ai/06-ai-toolchain/) — Vercel AI SDK、Netlify AI Gateway 等开发工具
+- [LLM 核心概念](/blog/ai/01-llm-fundamentals/) — Token、上下文窗口、Embedding 的底层原理

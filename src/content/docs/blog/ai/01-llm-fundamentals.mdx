@@ -1,0 +1,111 @@
+---
+title: 01 · LLM 核心概念
+description: LLM 的基本原理、Token 与分词、上下文窗口、架构概述、训练与推理的区别
+sidebar:
+  order: 1
+---
+
+## 什么是 LLM
+
+LLM（Large Language Model）是一个基于 Transformer 架构的神经网络，输入一段 token 序列，输出下一个 token 的概率分布。逐 token 生成（autoregressive decoding），直到产生结束标记或达到长度上限。
+
+关键属性：
+
+- **无状态** — 每次推理独立，模型权重不变。对话历史由调用方在请求中重新提交，模型不「记住」上一轮的任何内容。
+- **概率性** — 同一输入可能产生不同输出。`temperature` 控制随机程度：趋近 0 更确定，趋近 1 更发散。
+- **知识截止** — 训练数据有截止日期。截止后的事件模型不知道。
+
+## Token 与分词
+
+Token 是模型计算的基本单位，不是字符，也不是词。英文中 1 token ≈ 0.75 个单词，中文中 1 token ≈ 1.5 个汉字。
+
+主流分词算法是 **BPE（Byte-Pair Encoding）**：从字符级开始，统计高频相邻对，逐步合并为子词单元。结果是常见词占 1 token，罕见词拆为多个 token。
+
+```text
+"context window"  →  ["context", " window"]        # 2 tokens
+"tokenization"    →  ["token", "ization"]           # 2 tokens
+"你好世界"         →  ["你好", "世界"]                 # 2 tokens (大致)
+```
+
+不同模型使用不同的 tokenizer，同一个文本在各模型下 token 数不同。OpenAI 提供 [tokenizer 可视化工具](https://platform.openai.com/tokenizer)，Anthropic 的 Claude tokenizer 也与之类似但不等价。
+
+### Token 如何计费
+
+LLM API 按输入 + 输出 token 总和计费。输入 token 包括 system prompt、对话历史、tool 结果；输出 token 包括模型生成的文本。
+
+| 模型 | 输入 $/1M tokens | 输出 $/1M tokens |
+| --- | --- | --- |
+| GPT-4o | $2.50 | $10.00 |
+| GPT-4o-mini | $0.15 | $0.60 |
+| Claude 3.5 Sonnet | $3.00 | $15.00 |
+| Claude Opus | $15.00 | $75.00 |
+| DeepSeek-V3 | $0.27 | $1.10 |
+
+> 2025 年定价参考。实际价格随模型更新波动。
+
+## 上下文窗口
+
+单次请求能容纳的 token 总数。常见窗口大小：
+
+| 模型 | 上下文窗口 |
+| --- | --- |
+| GPT-4o | 128K |
+| GPT-4o-mini | 128K |
+| Claude 3.5 Sonnet | 200K |
+| Claude Opus | 200K |
+| Gemini 1.5 Pro | 1M |
+| DeepSeek-V3 | 128K |
+
+窗口越大不等于越好用。"lost in the middle" 效应：模型倾向于关注序列开头和结尾，中间部分的信息易被忽略。长上下文场景下，**检索增强（RAG）** 往往比全量灌入更可靠。
+
+对 Agent 而言，窗口被如下内容占据：
+
+- System prompt（Cursor 注入的指令和 Rules 摘要）
+- 对话历史（用户消息 + assistant 回复）
+- Tool 调用结果（终端输出、文件内容、搜索结果）
+- 当前用户消息
+
+多轮 Agent 对话中，tool 输出是最大的变量——每次 `read`、`grep`、`npm test` 都可能追加数千 token。
+
+## 架构概述
+
+LLM 基于 Transformer（2017, Vaswani et al.），核心机制是 **自注意力（self-attention）**：
+
+- 每个 token 的表示由序列中所有 token 的加权和计算
+- 权重由 token 之间的相似度决定（点积 + softmax）
+- 堆叠多层（GPT-4 约 120 层），每层捕获不同粒度的语言结构
+
+注意力机制使得模型能在任意距离的 token 之间建立依赖——区别于 RNN 的顺序处理。代价是计算复杂度 O(n²)（n 为序列长度），这也是上下文窗口不能无限扩大的物理原因。
+
+实际使用中不需要理解 Transformer 的数学细节。对开发者而言，两个概念更重要：
+
+1. **In-Context Learning** — 通过 prompt 中的示例引导输出格式（不修改权重）
+2. **Scaling Laws** — 模型大小、数据量、算力增加时，性能可预测地提升
+
+## 训练、推理与微调
+
+| 阶段 | 做什么 | 产出 | 成本 |
+| --- | --- | --- | --- |
+| **Pre-training** | 在海量文本上做 next-token prediction | 基础模型（Base Model） | 数千万美元 |
+| **Fine-tuning / RLHF** | 在指令-回复对上调整 + 人类偏好对齐 | Chat / Instruct 模型 | 数百万美元 |
+| **Inference** | 给定 prompt，生成回复 | 单次 API 调用的输出 | 按 token 计费 |
+| **In-Context Learning** | 在 prompt 中给示例（zero/few-shot） | 改变输出风格 | 零额外训练成本 |
+
+开发者通常接触的是 **推理** 和 **上下文学习**，不需要训练或微调自己的模型。
+
+## 幻觉（Hallucination）
+
+模型生成的内容在语义上流畅但事实上错误。根本原因：LLM 是概率模型，不是知识库——它预测「哪个 token 最可能接在序列后面」，而非「哪个 token 在事实上正确」。
+
+缓解手段：
+
+- **RAG** — 从外部文档检索事实后再生成
+- **Grounding** — 要求模型引用来源
+- **Tool Use** — 让模型调用搜索引擎或数据库而非凭空生成
+- **约束输出** — 结构化格式（JSON schema）降低编造自由度
+
+## 与后续内容的关系
+
+- [Agent 与 MCP](/blog/ai/02-agent-and-mcp/) — LLM + 工具调用 = Agent；MCP 是标准化的工具接入协议
+- [上下文注入](/blog/ai/03-context-injection/) — 窗口容量有限，如何向 Agent 注入外部知识
+- [上下文压缩](/blog/ai/04-context-compression/) — Token 经济学下的工程实践

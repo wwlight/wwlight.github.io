@@ -106,10 +106,10 @@ export default defineConfig({
               ],
             },
             {
-              label: 'Cursor 与 Agent',
+              label: 'AI 开发',
               collapsed: true,
               items: [
-                { autogenerate: { directory: 'blog/cursor', collapsed: true } },
+                { autogenerate: { directory: 'blog/ai', collapsed: true } },
               ],
             },
           ],

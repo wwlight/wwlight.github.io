@@ -1,0 +1,42 @@
+---
+title: AI 开发
+sidebar:
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+## 文章列表
+
+<CardGrid stagger>
+  <LinkCard
+    title="01 · LLM 核心概念"
+    href="/blog/ai/01-llm-fundamentals/"
+    description="Token 与分词、上下文窗口、注意力机制、训练与推理、幻觉与缓解手段"
+  />
+  <LinkCard
+    title="02 · Agent 与 MCP"
+    href="/blog/ai/02-agent-and-mcp/"
+    description="从 LLM 到 Agent：Tool Calling 循环、ReAct 模式、MCP 协议架构与生态"
+  />
+  <LinkCard
+    title="03 · 上下文注入"
+    href="/blog/ai/03-context-injection/"
+    description="Rules / Skills / Plugins 的分层注入机制、加载顺序与 Token 预算"
+  />
+  <LinkCard
+    title="04 · 上下文压缩"
+    href="/blog/ai/04-context-compression/"
+    description="Token 经济学、Headroom proxy 与 MCP 的部署、统计与验证"
+  />
+  <LinkCard
+    title="05 · RAG 检索增强生成"
+    href="/blog/ai/05-rag/"
+    description="Embedding 与向量检索、Chunking 策略、RAG vs 长上下文窗口"
+  />
+  <LinkCard
+    title="06 · AI 开发工具链"
+    href="/blog/ai/06-ai-toolchain/"
+    description="AI 编程工具对比、模型网关与 SDK、本地模型、应用部署"
+  />
+</CardGrid>
