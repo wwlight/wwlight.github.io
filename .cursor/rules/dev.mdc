@@ -1,8 +1,0 @@
----
-description: wwlight 开发约定；每轮先读 dev skill
-alwaysApply: true
----
-
-# wwlight
-
-Read `.cursor/skills/dev/SKILL.md`。路由/重构/反模式 → `dev/reference.md`；className → `dev/tailwindcss.md`；主题/书签 → 各模块 README。

@@ -48,18 +48,7 @@ flowchart TB
 | `alwaysApply: false` + `globs` | **Apply to Specific Files** — 匹配文件进入上下文时附加 |
 | 三者皆无 | 通过 `@rule名` 手动引用 |
 
-**设计权衡**：`alwaysApply: true` 保证约束必达，但每条增加约 500–2000 token 的固定开销。适合放路由 Rule（指向 Skill）、全局编码准则；不适合放大段 API 文档。
-
-本仓库示例——`dev.mdc` 路由 Rule：
-
-```yaml
----
-description: wwlight 开发约定；每轮先读 dev skill
-alwaysApply: true
----
-```
-
-Netlify Plugin 的 router Rule（`netlify-skills-router.mdc`）同理：`alwaysApply: true` 作为路由入口；各功能模块 Rule（如 `netlify-functions.mdc`）设置 `description` + `alwaysApply: false`，按需展开。
+**设计权衡**：`alwaysApply: true` 保证约束必达，但每条增加约 500–2000 token 的固定开销。适合放全局编码准则；不适合放大段 API 文档。
 
 **优先级（官方规定）**：同名约束冲突时 **Team Rules → Project Rules → User Rules**。注意：User Rules **不**作用于 Inline Edit（Cmd/Ctrl+K）。
 
@@ -144,18 +133,19 @@ Cursor 与 [Agent Skills 开放标准](https://cursor.com/docs/skills) 均支持
 
 两者在 Cursor 中均为**项目级 Skill 发现路径**，运行时等价；差异主要在**工具链约定**：
 
-- **`.cursor/skills/`** — 本仓库手写的项目 Skill（如 `dev`）
+- **`.cursor/skills/`** — 本地手写的项目 Skill
 - **`.agents/skills/`** — Skills CLI 安装的项目 Skill（本仓可为空；`find-skills` 等建议装全局 `~/.agents/skills/`）
 
 <FileTree>
 
+- .serena/
+  - project.yml
+  - memories/
+    - core.md
+    - conventions.md
+    - memory_maintenance.md
 - .cursor/
-  - rules/
-    - dev.mdc
-  - skills/
-    - dev/SKILL.md
-    - dev/reference.md
-    - dev/tailwindcss.md
+  - mcp.json        # Serena MCP 配置
 - ~/.cursor/rules/
   - karpathy-guidelines.mdc
 
@@ -170,7 +160,7 @@ Cursor 与 [Agent Skills 开放标准](https://cursor.com/docs/skills) 均支持
 工程实践建议：
 
 1. **避免同名** — 项目内 CLI 安装与手写不撞名
-2. **单一入口** — alwaysApply Rule 指向唯一入口 Skill（本仓库：`dev`）
+2. **单一入口** — alwaysApply Rule 或 MCP 按需读取提供统一项目知识入口（本仓库：Serena `mem:core`）
 3. **版本管理** — CLI 全局安装记录在 `~/.agents/.skill-lock.json`；`vpx skills update` 升级（本仓用 Vite+ 时以 `vpx` 代替 `npx`）
 
 ## 会话加载流程（概念模型）
@@ -198,8 +188,7 @@ flowchart TD
 | 层 | 文件 | 职责 |
 | --- | --- | --- |
 | 行为准则 | `~/.cursor/rules/karpathy-guidelines.mdc`（全局 alwaysApply） | 最小改动、先澄清再写码 |
-| 项目路由 | `dev.mdc`（alwaysApply） | 每轮 Read `dev/SKILL.md` |
-| 项目知识 | `.cursor/skills/dev/` | `reference.md`：路径/路由、重构；`tailwindcss.md` |
+| 项目知识 | `.serena/memories/core.md` + `mem:conventions` | 目录结构、路由、命令、Tailwind v4、组件规范、反模式 |
 | CLI 扩展 | `~/.agents/skills/find-skills` 等（全局） | 发现与安装社区 Skill |
 | 部署平台 | Netlify Plugin rules/skills | Functions、Database、deploy 等 |
 

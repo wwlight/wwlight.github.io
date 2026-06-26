@@ -4,7 +4,7 @@
 
 - 仓库总览：[README.md](../../README.md#书签管理端)
 - 技术文档：博客 [书签系列](/blog/bookmarks/)（04 认证 · 05 编辑界面 · [06 站点图标](/blog/bookmarks/06-bookmark-logo-design/) · 07 部署）
-- Agent 约定：本文；路由见 `.cursor/skills/dev/reference.md`
+- Agent 约定：本文；路由与规范见 `.serena/memories/core.md` 及 `mem:conventions`
 
 ## 模块范围（模块外）
 

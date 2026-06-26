@@ -125,11 +125,11 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 
 ## Vibe Coding
 
-Cursor 约定见 [CURSOR.md](CURSOR.md)。Rules 自动生效；Agent 每轮先读 `.cursor/skills/dev/SKILL.md`。
+项目约定由 [Serena MCP](https://github.com/oraios/serena) 管理，Agent 启动后自动激活并按需读取 `.serena/memories/` 中的记忆文件。
 
 | 路径 | 用途 |
 | ---- | ---- |
-| `.cursor/rules/dev.mdc` | 项目硬性约定 |
-| `.cursor/skills/dev/` | 入口 skill + `reference.md` + `tailwindcss.md` |
+| `.serena/memories/core.md` | 目录结构、路由、命令 |
+| `.serena/memories/conventions.md` | Tailwind v4、组件、重构、反模式 |
 
 模块细节：`src/theme/README.md`、`src/bookmarks/README.md`。
