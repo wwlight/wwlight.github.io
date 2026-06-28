@@ -1,0 +1,94 @@
+---
+title: Serena MCP 配置
+sidebar:
+  order: 10
+---
+
+:::note[Serena]
+[Serena](https://github.com/oraios/serena) 是一个开源的 MCP（Model Context Protocol）服务器，为 AI 编码代理提供符号级别的代码检索、编辑和重构工具，支持 40+ 编程语言（LSP 后端免费，JetBrains 插件付费）。
+:::
+
+## 安装
+
+```sh
+# 安装 serena
+$ uv tool install -p 3.13 serena-agent
+
+# 验证
+$ serena --version
+```
+
+## 项目初始化
+
+```sh
+# 在项目根目录初始化（创建 .serena/ 目录）
+$ serena init
+```
+
+## 集成到 OpenCode
+
+在 `~/.config/opencode/opencode.json` 的 `mcp` 字段添加：
+
+```json
+{
+  "mcp": {
+    "serena": {
+      "type": "local",
+      "command": [
+        "sh", "-c",
+        "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --project-from-cwd --open-web-dashboard false"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+可选指令配置（`instructions` 字段）：
+
+```json
+"instructions": [
+  "Use `serena` tools for symbol-level code operations: find symbol definitions, references, rename across files, replace symbol bodies, insert code before/after symbols."
+]
+```
+
+## 验证
+
+重启 OpenCode 后，在对话中测试：
+
+```
+请帮我找到项目中 main 函数的定义
+```
+
+或直接提示：`使用 serena 工具来做这个操作`
+
+## 核心工具
+
+| 分类 | 工具 | 功能 |
+|------|------|------|
+| 检索 | `serena_find_symbol` | 按名称搜索符号，支持源码/文档提取 |
+| 检索 | `serena_get_symbols_overview` | 获取文件结构概览 |
+| 检索 | `serena_find_referencing_symbols` | 查找引用某符号的所有位置 |
+| 检索 | `serena_find_implementations` | 查找接口/抽象类的所有实现 |
+| 编辑 | `serena_replace_symbol_body` | 替换符号体，保留签名 |
+| 编辑 | `serena_insert_after_symbol` | 在符号之后插入代码 |
+| 编辑 | `serena_safe_delete_symbol` | 安全删除（有引用时阻止） |
+| 重构 | `serena_rename_symbol` | 跨文件重命名符号 |
+| 重构 | `serena_replace_content` | 正则/字面文本替换 |
+| 记忆 | `serena_write_memory` / `serena_read_memory` | 跨会话知识持久化 |
+
+## 常用命令
+
+| 操作 | 命令 |
+|------|------|
+| 安装 | `uv tool install -p 3.13 serena-agent` |
+| 项目初始化 | `serena init` |
+| 启动 MCP 服务 | `serena start-mcp-server --project-from-cwd` |
+| 查看版本 | `serena --version` |
+
+## 注意事项
+
+- 依赖 `uv`，安装前确保 `brew install uv`
+- 默认使用 LSP 后端（免费），支持 40+ 语言
+- 项目级配置在 `.serena/serena.yaml` 中管理
+- MCP 配置中的 paths 需要 PATH 包含 `$HOME/.local/bin`

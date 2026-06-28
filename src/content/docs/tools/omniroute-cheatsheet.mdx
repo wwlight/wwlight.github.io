@@ -1,0 +1,99 @@
+---
+title: OmniRoute 安装配置
+sidebar:
+  order: 8
+---
+
+:::note[OmniRoute]
+[OmniRoute](https://github.com/diegosouzapw/OmniRoute) 是一个开源的 AI 网关，统一端点接入 231 个 AI provider，支持 50+ 免费层、17 种路由策略、自动兜底、Token 压缩。
+:::
+
+## 安装（Docker）
+
+```sh
+$ docker run -d \
+  -p 127.0.0.1:20128:20128 \
+  --restart unless-stopped \
+  --name omniroute \
+  diegosouzapw/omniroute:main-web
+```
+
+验证：
+
+```sh
+$ curl http://localhost:20128/v1/models
+```
+
+## OpenCode 集成
+
+### 方式一：Provider 静态配置（推荐·本地实际）
+
+当前项目使用此方式，在 `~/.config/opencode/opencode.json` 的 `provider` 字段：
+
+```json
+{
+  "provider": {
+    "omniroute": {
+      "api": "openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:20128/v1"
+      },
+      "models": {
+        "auto/best-free":            { "name": "Auto Best Free", "description": "免费最优，日常首选" },
+        "oc/big-pickle":             { "name": "Big Pickle", "description": "OpenCode 免费模型" },
+        "oc/deepseek-v4-flash-free": { "name": "DeepSeek V4 Free", "description": "DeepSeek V4 免费版" }
+      }
+    }
+  },
+  "model": "omniroute/auto/best-free"
+}
+```
+
+### 方式二：@omniroute/opencode-plugin
+
+安装插件：
+
+```sh
+$ npm install @omniroute/opencode-plugin
+```
+
+在 `opencode.json` 的 `plugin` 字段添加：
+
+```json
+{
+  "plugin": [[
+    "./plugins/node_modules/@omniroute/opencode-plugin/dist/index.js",
+    {
+      "providerId": "omniroute",
+      "displayName": "OmniRoute",
+      "baseURL": "http://localhost:20128",
+      "modelCacheTtl": 300000,
+      "features": { "usableOnly": true }
+    }
+  ]]
+}
+```
+
+## 常用命令
+
+| 操作 | 命令 |
+|------|------|
+| 检查状态 | `curl http://localhost:20128/v1/models` |
+| 查看日志 | `docker logs -f omniroute` |
+| 更新镜像 | `docker pull diegosouzapw/omniroute:main-web && docker restart omniroute` |
+| 重启服务 | `docker restart omniroute` |
+| 管理面板 | 浏览器打开 `http://localhost:20128/dashboard` |
+
+## 推荐模型
+
+| 场景 | 模型 ID |
+|------|---------|
+| 日常编码（默认） | `auto/best-free` |
+| DeepSeek V4 | `oc/deepseek-v4-flash-free` |
+| Big Pickle（OC 免费） | `oc/big-pickle` |
+
+## 注意事项
+
+- Docker 端口绑定建议用 `127.0.0.1` 而非 `0.0.0.0`，避免局域网暴露
+- 免费 provider 可能较慢，可切 `auto/best-fast` 降低延迟
+- 响应头 `x-omniroute-model`、`x-omniroute-provider` 可查看实际路由

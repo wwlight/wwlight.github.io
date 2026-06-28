@@ -1,0 +1,110 @@
+---
+title: Headroom 安装配置
+sidebar:
+  order: 9
+---
+
+:::note[Headroom]
+[Headroom](https://github.com/headroomlabs-ai/headroom) 是一个本地的上下文优化层：在 LLM 收到之前压缩 tool output、日志、文件、RAG 结果和对话历史，节省 60-95% token，可逆（CCR 机制）。
+
+与 [RTK](https://github.com/rtk-ai/rtk)（Shell 输出裁剪）互补：RTK 处理 shell 层面，Headroom 处理 API 层面。
+:::
+
+## 安装（推荐：uv）
+
+```sh
+# 安装 headroom（含 proxy + MCP + 代码压缩）
+$ uv tool install "headroom-ai[proxy,mcp,code]"
+
+# 验证
+$ headroom --version
+```
+
+## 集成到 OpenCode
+
+```sh
+# 一键集成（自动修改 opencode.json + 启动 proxy + 注册 MCP + 注入 AGENTS.md）
+$ headroom wrap opencode
+```
+
+启动后 OpenCode provider 列表会出现 **Headroom Proxy**，选择即可使用。
+
+## 验证
+
+```sh
+# 检查 proxy 状态
+$ curl http://localhost:8787/health
+
+# 查看压缩统计（先进行一次对话）
+$ curl http://localhost:8787/stats
+
+# 健康检查
+$ headroom doctor
+```
+
+## 卸载
+
+```sh
+# 恢复 opencode.json + 注销 MCP + 移除 AGENTS.md 指令
+$ headroom unwrap opencode
+
+# 彻底卸载 headroom
+$ uv tool uninstall headroom-ai
+```
+
+## Docker 备选（仅 proxy，无 wrap/MCP）
+
+```sh
+$ docker run -d --name headroom \
+  -p 8787:8787 \
+  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
+  ghcr.io/chopratejas/headroom:latest
+```
+
+手动在 `opencode.json` 添加 provider：
+
+```json
+{
+  "provider": {
+    "headroom-anthropic": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Anthropic (via Headroom)",
+      "options": {
+        "baseURL": "http://localhost:8787/v1",
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      },
+      "models": {
+        "claude-sonnet-4-6": { "name": "Claude Sonnet 4.6" },
+        "claude-haiku-4-5-20251022": { "name": "Claude Haiku 4.5" }
+      }
+    }
+  }
+}
+```
+
+## 常用命令
+
+| 操作 | 命令 |
+|------|------|
+| 启动 OpenCode（含 proxy） | `headroom wrap opencode` |
+| 查看统计 | `curl http://localhost:8787/stats` |
+| 查看仪表盘 | `curl http://localhost:8787/dashboard` |
+| 性能分析 | `headroom perf` |
+| 健康检查 | `headroom doctor` |
+| 恢复原始配置 | `headroom unwrap opencode` |
+
+## 预期节省
+
+| 场景 | 节省率 |
+|------|--------|
+| 代码搜索 | 70-92% |
+| grep / 日志分析 | 60-80% |
+| 代码库探索 | 40-60% |
+| 日常编码 | 30-50% |
+
+## 注意事项
+
+- 需要至少一个 LLM API key（Anthropic / OpenAI / DeepSeek）
+- Headroom 对模型完全透明，不限 provider
+- `uv tool install` 自动管理 Python 版本，无需手动升级
+- 关闭 OpenCode 后 proxy 自动停止，不占后台资源
