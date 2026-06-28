@@ -24,6 +24,9 @@ catalogs:
     astro:
       specifier: ^7.0.3
       version: 7.0.3
+    starlight-llm-actions:
+      specifier: ^0.8.0
+      version: 0.8.0
   content:
     '@jsdevtools/rehype-url-inspector':
       specifier: ^2.0.2
@@ -124,6 +127,9 @@ overrides:
   vite: ^8.1.0
   '@clack/core': ^1.4.0
 
+patchedDependencies:
+  starlight-llm-actions: 5e4f5d89fd1ac0e8a3fe55a4806fcf91eae90503086b5d0f68ab72e1e1d70dba
+
 importers:
 
   .:
@@ -209,6 +215,9 @@ importers:
       sonner:
         specifier: catalog:frontend
         version: 2.0.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      starlight-llm-actions:
+        specifier: catalog:astro
+        version: 0.8.0(patch_hash=5e4f5d89fd1ac0e8a3fe55a4806fcf91eae90503086b5d0f68ab72e1e1d70dba)(@astrojs/starlight@0.41.1(@astrojs/markdown-remark@7.2.0)(astro@7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0))(typescript@6.0.3))(astro@7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0))(vite@8.1.0(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
       tailwind-merge:
         specifier: catalog:frontend
         version: 3.6.0
@@ -4791,6 +4800,14 @@ packages:
   spdx-license-ids@3.0.23:
     resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
 
+  starlight-llm-actions@0.8.0:
+    resolution: {integrity: sha512-DH0xgAvqpBvgXuYIAjMz2/Z8WUm6HjUVx6pTO3iD4AVWQVS5LTeHTZcvEMBHMxWPXc7qnYmW8kBVH/kwTjfYGg==}
+    engines: {node: ^22.0.0 || >=24.0.0}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.36.0'
+      astro: '>=5.6.0'
+      vite: ^8.1.0
+
   stream-replace-string@2.0.0:
     resolution: {integrity: sha512-TlnjJ1C0QrmxRNrON00JvaFFlNh5TTG00APw23j74ET7gkQpTASi6/L2fuiav8pzK715HXtUeClpBTw2NPSn6w==}
 
@@ -7292,8 +7309,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.60.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.60.0(typescript@6.0.3)
-      '@typescript-eslint/types': 8.60.0
+      '@typescript-eslint/tsconfig-utils': 8.62.0(typescript@6.0.3)
+      '@typescript-eslint/types': 8.62.0
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -7317,7 +7334,7 @@ snapshots:
       eslint: 10.5.0(jiti@2.7.0)
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
-      semver: 7.8.1
+      semver: 7.8.5
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -7364,8 +7381,8 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.60.0
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.1
-      tinyglobby: 0.2.16
+      semver: 7.8.5
+      tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -7379,8 +7396,8 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.62.0
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.1
-      tinyglobby: 0.2.16
+      semver: 7.8.5
+      tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -7531,8 +7548,8 @@ snapshots:
   astro-eslint-parser@1.4.0:
     dependencies:
       '@astrojs/compiler': 3.0.1
-      '@typescript-eslint/scope-manager': 8.60.0
-      '@typescript-eslint/types': 8.60.0
+      '@typescript-eslint/scope-manager': 8.62.0
+      '@typescript-eslint/types': 8.62.0
       astrojs-compiler-sync: 1.1.1(@astrojs/compiler@3.0.1)
       debug: 4.4.3
       entities: 7.0.1
@@ -7541,7 +7558,7 @@ snapshots:
       espree: 10.4.0
       fast-glob: 3.3.3
       is-glob: 4.0.3
-      semver: 7.8.1
+      semver: 7.8.5
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -10362,6 +10379,13 @@ snapshots:
       spdx-license-ids: 3.0.23
 
   spdx-license-ids@3.0.23: {}
+
+  starlight-llm-actions@0.8.0(patch_hash=5e4f5d89fd1ac0e8a3fe55a4806fcf91eae90503086b5d0f68ab72e1e1d70dba)(@astrojs/starlight@0.41.1(@astrojs/markdown-remark@7.2.0)(astro@7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0))(typescript@6.0.3))(astro@7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0))(vite@8.1.0(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)):
+    dependencies:
+      '@astrojs/starlight': 0.41.1(@astrojs/markdown-remark@7.2.0)(astro@7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0))(typescript@6.0.3)
+      astro: 7.0.3(@astrojs/markdown-remark@7.2.0)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.4)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)
+      zod: 4.4.3
 
   stream-replace-string@2.0.0: {}
 

@@ -7,6 +7,7 @@ import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
 import mermaid from 'astro-mermaid'
 import { defineConfig } from 'astro/config'
+import starlightLlmActions from 'starlight-llm-actions'
 import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
 import { mermaidControls } from './integrations/mermaid-controls.ts'
 import themeInitScript from './src/theme/scripts/init.inline.js?raw'
@@ -59,6 +60,16 @@ export default defineConfig({
     starlight({
       title: 'wwlight',
       credits: false,
+      plugins: [
+        starlightLlmActions({
+          actions: {
+            printPdf: true,
+            openIn: {
+              providers: { cursor: true, deepseek: true, copilot: false, perplexity: false },
+            },
+          },
+        }),
+      ],
       head: [{ tag: 'script', content: themeInitScript }],
       components: {
         Header: './src/components/Header.astro',

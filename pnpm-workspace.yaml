@@ -14,14 +14,16 @@ trustPolicyExclude:
 
 overrides:
   '@astrojs/mdx': 'catalog:astro'
-  vite: 'catalog:build'
   '@clack/core': ^1.4.0
+  vite: 'catalog:build'
 
 allowBuilds:
   esbuild: true
   sharp: true
   simple-git-hooks: true
 
+patchedDependencies:
+  starlight-llm-actions: patches/starlight-llm-actions.patch
 catalogs:
   astro:
     '@astrojs/db': ^0.20.0
@@ -31,6 +33,7 @@ catalogs:
     '@astrojs/starlight': ^0.41.1
     '@astrojs/starlight-tailwind': ^5.0.0
     astro: ^7.0.3
+    starlight-llm-actions: ^0.8.0
   build:
     vite: ^8.1.0
   content:
