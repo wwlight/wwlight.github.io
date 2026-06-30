@@ -10,7 +10,7 @@ sidebar:
 与 [RTK](https://github.com/rtk-ai/rtk)（Shell 输出裁剪）互补：RTK 处理 shell 层面，Headroom 处理 API 层面。
 :::
 
-## 安装（推荐：uv）
+## 安装
 
 ```sh
 # 安装 headroom（含 proxy + MCP + 代码压缩）
@@ -50,36 +50,6 @@ $ headroom unwrap opencode
 
 # 彻底卸载 headroom
 $ uv tool uninstall headroom-ai
-```
-
-## Docker 备选（仅 proxy，无 wrap/MCP）
-
-```sh
-$ docker run -d --name headroom \
-  -p 8787:8787 \
-  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-  ghcr.io/chopratejas/headroom:latest
-```
-
-手动在 `opencode.json` 添加 provider：
-
-```json
-{
-  "provider": {
-    "headroom-anthropic": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Anthropic (via Headroom)",
-      "options": {
-        "baseURL": "http://localhost:8787/v1",
-        "apiKey": "{env:ANTHROPIC_API_KEY}"
-      },
-      "models": {
-        "claude-sonnet-4-6": { "name": "Claude Sonnet 4.6" },
-        "claude-haiku-4-5-20251022": { "name": "Claude Haiku 4.5" }
-      }
-    }
-  }
-}
 ```
 
 ## 常用命令

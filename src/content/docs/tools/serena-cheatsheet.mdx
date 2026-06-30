@@ -8,59 +8,105 @@ sidebar:
 [Serena](https://github.com/oraios/serena) 是一个开源的 MCP（Model Context Protocol）服务器，为 AI 编码代理提供符号级别的代码检索、编辑和重构工具，支持 40+ 编程语言（LSP 后端免费，JetBrains 插件付费）。
 :::
 
-## 安装
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-```sh
-# 安装 serena
-$ uv tool install -p 3.13 serena-agent
+## 安装步骤
 
-# 验证
-$ serena --version
-```
+`uv tool install` 只安装 CLI（`serena` 位于 `~/.local/bin/`），**不启动服务**。Cursor / OpenCode 使用 [stdio 模式](https://oraios.github.io/serena/02-usage/020_running.html)：打开对话时编辑器按需 spawn `serena start-mcp-server` 子进程，通过 stdin/stdout 通信，断开即结束。
 
-## 项目初始化
+<Steps>
+1. 安装 uv 与 Serena CLI
 
-```sh
-# 在项目根目录初始化（创建 .serena/ 目录）
-$ serena init
-```
+    ```sh
+    $ brew install uv
+    $ uv tool install -p 3.13 serena-agent
+    $ serena --version
+    ```
 
-## 集成到 OpenCode
+    终端若找不到 `serena`，在 `.zshrc` 加 `export PATH="$HOME/.local/bin:$PATH"`。MCP 配置里会内联 PATH，**集成 MCP 不必改** `.zshrc`。
 
-在 `~/.config/opencode/opencode.json` 的 `mcp` 字段添加：
+2. 集成 MCP 客户端
 
-```json
-{
-  "mcp": {
-    "serena": {
-      "type": "local",
-      "command": [
-        "sh", "-c",
-        "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --project-from-cwd --open-web-dashboard false"
-      ],
-      "enabled": true
-    }
-  }
-}
-```
+    `PATH=$HOME/.local/bin:$PATH` 指向 `uv tool install` 目录（`serena` 可执行文件），不是 `uv` 本体路径。`--project-from-cwd` 从当前工作目录向上查找 `.serena/project.yml` 或 `.git` 自动绑定项目。
 
-可选指令配置（`instructions` 字段）：
+    <Tabs syncKey="mcp-client">
+      <TabItem label="Cursor">
 
-```json
-"instructions": [
-  "Use `serena` tools for symbol-level code operations: find symbol definitions, references, rename across files, replace symbol bodies, insert code before/after symbols."
-]
-```
+        在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级，所有项目共用）：
 
-## 验证
+        ```json
+        {
+          "mcpServers": {
+            "serena": {
+              "type": "stdio",
+              "command": "sh",
+              "args": [
+                "-c",
+                "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --context=vscode --project-from-cwd --open-web-dashboard false"
+              ]
+            }
+          }
+        }
+        ```
 
-重启 OpenCode 后，在对话中测试：
+      </TabItem>
+      <TabItem label="OpenCode">
 
-```
-请帮我找到项目中 main 函数的定义
-```
+        在 `~/.config/opencode/opencode.json` 的 `mcp` 字段添加：
 
-或直接提示：`使用 serena 工具来做这个操作`
+        ```json
+        {
+          "mcp": {
+            "serena": {
+              "type": "local",
+              "command": [
+                "sh", "-c",
+                "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --project-from-cwd --open-web-dashboard false"
+              ],
+              "enabled": true
+            }
+          }
+        }
+        ```
+
+        可选 `instructions`：
+
+        ```json
+        "instructions": [
+          "Use `serena` tools for symbol-level code operations: find symbol definitions, references, rename across files, replace symbol bodies, insert code before/after symbols."
+        ]
+        ```
+
+      </TabItem>
+    </Tabs>
+
+3. 初始化项目
+
+    在项目根目录执行，生成 `.serena/`：
+
+    ```sh
+    $ serena init
+    ```
+
+    ```
+    .serena/
+    ├── project.yml              # 语言、工具、模式等项目配置
+    └── memories/                # 跨会话记忆（按需读取）
+    ```
+
+    项目级配置在 `.serena/project.yml`；本地覆盖用 `.serena/project.local.yml`（不提交）。
+
+4. 验证
+
+    重启 Cursor / OpenCode，在对话中测试：
+
+    ```
+    请帮我找到项目中 main 函数的定义
+    ```
+
+    或直接提示：`使用 serena 工具来做这个操作`
+
+</Steps>
 
 ## 核心工具
 
@@ -81,14 +127,13 @@ $ serena init
 
 | 操作 | 命令 |
 |------|------|
-| 安装 | `uv tool install -p 3.13 serena-agent` |
-| 项目初始化 | `serena init` |
-| 启动 MCP 服务 | `serena start-mcp-server --project-from-cwd` |
-| 查看版本 | `serena --version` |
+| 更新 | `uv tool upgrade serena-agent` |
+| 项目索引 | `serena project index` |
+| 健康检查 | `serena project health-check` |
+| 手动启动 MCP（调试） | `serena start-mcp-server --project-from-cwd` |
 
 ## 注意事项
 
-- 依赖 `uv`，安装前确保 `brew install uv`
 - 默认使用 LSP 后端（免费），支持 40+ 语言
-- 项目级配置在 `.serena/serena.yaml` 中管理
-- MCP 配置中的 paths 需要 PATH 包含 `$HOME/.local/bin`
+- stdio 模式（Cursor / OpenCode）由编辑器拉起，无需手动常驻 `start-mcp-server`
+- 多客户端共享同一实例可用 streamable-http 模式（`--transport streamable-http`），需自行启动并配置 URL

@@ -21,166 +21,184 @@ import { Steps } from "@astrojs/starlight/components";
 
     ```sh
     $ brew install docker docker-compose colima
-    ```
-
-2.  启动 Colima 服务
-
-    ```sh
     $ brew services start colima
     ```
 
-3.  验证安装
+2.  配置 Docker CLI 插件路径
 
-    ```sh
-    $ docker info
+    ```json
+    # ~/.docker/config.json
+    {
+      "cliPluginsExtraDirs": [
+        "/opt/homebrew/lib/docker/cli-plugins"
+      ]
+    }
     ```
 
+3.  配置 Docker Context 指向 Colima
+
+    ```sh
+    $ docker context use colima
+    ```
+
+4.  配置 `COMPOSE_FILE`
+
+    `COMPOSE_FILE` 是 [Docker Compose 内建环境变量](https://docs.docker.com/compose/how-tos/environment-variables/envvars/#compose_file)；未设置时只在**当前目录**查找 `compose.yaml` / `docker-compose.yml`；指向固定路径后，任意目录执行 `docker compose` 都会自动加载，无需每次 `-f`。
+
+    ```sh
+    $ mkdir -p ~/.docker && : >> ~/.docker/compose.yml
+    $ echo 'export COMPOSE_FILE=$HOME/.docker/compose.yml' >> ~/.zshrc && source ~/.zshrc
+    ```
+
+5.  验证安装
+
+    ```sh
+    $ docker version
+    $ docker compose version
+    ```
 </Steps>
 
-## [Docker 命令大全](https://docs.docker.com/reference/cli/docker/)
+## [Docker CLI 速查](https://docs.docker.com/reference/cli/docker/)
 
-### 镜像管理
+### 常用命令
 
-```sh {1,2,6}
-$ docker images                                                           # 列出本地镜像
+Legacy 顶层命令，等价于下方 [`docker container`](https://docs.docker.com/reference/cli/docker/container/) / [`docker image`](https://docs.docker.com/reference/cli/docker/image/) 子命令。
+
+```sh {1,2,8}
+$ docker ps                                                               # 运行中容器（≈ docker container ls）
+$ docker ps -a                                                            # 所有容器
+$ docker images                                                           # 本地镜像（≈ docker image ls）
 $ docker pull <name>[:tag]                                                # 拉取镜像
-$ docker push <name>[:tag]                                                # 推送镜像
-$ docker rmi <image>                                                      # 删除镜像
-$ docker rmi $(docker images -q)                                          # 删除所有镜像
-$ docker build -t <name> .                                                # 从 Dockerfile 构建镜像
-$ docker tag <src> <target>                                               # 给镜像打标签
-$ docker search <keyword>                                                 # 搜索镜像
+$ docker run -d <image>                                                   # 后台运行（≈ docker container run -d）
+$ docker exec -it <container> <cmd>                                       # 进入容器
+$ docker logs -f <container>                                              # 跟踪日志
+$ docker init                                                             # 生成 Dockerfile、compose.yaml 等 starter 文件
 ```
 
-### 容器管理
+[`docker init`](https://docs.docker.com/reference/cli/docker/init/) 在项目目录交互式创建 starter 文件；生成后通常 `docker compose up --build` 启动。
+
+### [docker builder](https://docs.docker.com/reference/cli/docker/builder/)
+
+```sh
+$ docker builder prune                                                    # 清理构建缓存
+$ docker builder prune -a                                                 # 清理全部构建缓存
+$ docker builder prune --keep-storage 2GB                                 # 保留 2GB 缓存
+```
+
+### [docker compose](https://docs.docker.com/reference/cli/docker/compose/)
+
+```sh {2,3,5,8,11}
+$ docker compose config                                                   # 解析、渲染 compose 文件
+$ docker compose up                                                       # 创建并启动服务
+$ docker compose up -d                                                    # 后台启动
+$ docker compose down                                                     # 停止并删除容器、网络
+$ docker compose down -v                                                  # 同上，并删除卷
+$ docker compose ps                                                       # 列出容器
+$ docker compose logs                                                     # 查看日志
+$ docker compose logs -f <service>                                        # 跟踪指定服务日志
+$ docker compose exec <service> <cmd>                                     # 在运行中容器执行命令
+$ docker compose run --rm <service> <cmd>                                 # 一次性命令
+$ docker compose build                                                    # 构建服务镜像
+$ docker compose pull                                                     # 拉取服务镜像
+$ docker compose push                                                     # 推送服务镜像
+$ docker compose restart <service>                                        # 重启服务
+$ docker compose stop                                                     # 停止服务
+$ docker compose start                                                    # 启动已创建服务
+$ docker compose cp <service>:<path> <local>                              # 从容器复制到本地
+$ docker compose ls                                                       # 列出 compose 项目
+$ docker compose watch                                                    # 监听构建上下文并重建/刷新
+```
+
+### [docker container](https://docs.docker.com/reference/cli/docker/container/)
 
 ```sh {1,3,5,12,14}
-$ docker ps                                                               # 列出运行中的容器
-$ docker ps -a                                                            # 列出所有容器（含已停止）
-$ docker run <image>                                                      # 创建并启动容器
-$ docker run -d <image>                                                   # 后台运行
-$ docker run -it <image> /bin/bash                                        # 交互模式
-$ docker run -p 8080:80 <image>                                           # 端口映射
-$ docker run -v /host:/container <image>                                  # 挂载卷
-$ docker run --name <name> <image>                                        # 指定容器名
-$ docker start <container>                                                # 启动容器
-$ docker stop <container>                                                 # 停止容器
-$ docker restart <container>                                              # 重启容器
-$ docker rm <container>                                                   # 删除容器
-$ docker rm $(docker ps -aq)                                              # 删除所有容器
-$ docker logs <container>                                                 # 查看日志
-$ docker logs -f <container>                                              # 实时跟踪日志
-$ docker exec -it <container> /bin/bash                                   # 进入容器
-$ docker cp <src> <container>:<dest>                                      # 复制文件到容器
-$ docker cp <container>:<src> <dest>                                      # 从容器复制文件
-$ docker stats                                                            # 查看容器资源占用
-$ docker top <container>                                                  # 查看容器进程
-$ docker inspect <container>                                              # 查看容器详细信息
-$ docker rename <old> <new>                                               # 重命名容器
-$ docker container prune                                                  # 清理所有已停止容器
+$ docker container ls                                                     # 列出运行中容器
+$ docker container ls -a                                                  # 列出所有容器
+$ docker container run <image>                                            # 创建并启动
+$ docker container run -d <image>                                         # 后台运行
+$ docker container run -it <image> <cmd>                                    # 交互模式
+$ docker container run -p 8080:80 <image>                                 # 端口映射
+$ docker container run -v /host:/container <image>                          # 挂载卷
+$ docker container run --name <name> <image>                              # 指定容器名
+$ docker container start <container>                                      # 启动
+$ docker container stop <container>                                       # 停止
+$ docker container restart <container>                                    # 重启
+$ docker container rm <container>…                                          # 删除
+$ docker container prune                                                  # 清理已停止容器
+$ docker container logs <container>                                       # 查看日志
+$ docker container logs -f --tail 100 <container>                         # 跟踪最后 100 行
+$ docker container exec -it <container> <cmd>                             # 进入/执行命令
+$ docker container cp <src> <container>:<dest>                            # 复制到容器
+$ docker container cp <container>:<src> <dest>                            # 从容器复制
+$ docker container inspect <container>                                    # 详细信息
+$ docker container stats                                                  # 资源占用
+$ docker container diff <container>                                       # 文件系统变更
+$ docker container port <container>                                       # 端口映射
+$ docker container commit <container> <name>[:tag]                         # 保存为新镜像
+$ docker container export -o output.tar <container>                       # 导出文件系统
 ```
 
-### Docker Compose
+### [docker image](https://docs.docker.com/reference/cli/docker/image/)
 
-```sh {2}
-$ docker compose up                                                       # 启动所有服务
-$ docker compose up -d                                                    # 后台启动
-$ docker compose down                                                     # 停止并删除所有服务
-$ docker compose down -v                                                  # 停止并删除服务及卷
-$ docker compose ps                                                       # 列出服务状态
-$ docker compose logs                                                     # 查看所有服务日志
-$ docker compose logs -f                                                  # 实时跟踪日志
-$ docker compose restart                                                  # 重启所有服务
-$ docker compose stop                                                     # 停止所有服务
-$ docker compose start                                                    # 启动所有服务
-$ docker compose build                                                    # 重新构建镜像
-$ docker compose pull                                                     # 拉取最新镜像
-$ docker compose exec <service> /bin/bash                                 # 进入服务容器
+```sh {1,2,6,8}
+$ docker image ls                                                         # 列出镜像
+$ docker image pull <name>[:tag]                                          # 拉取镜像
+$ docker image push <name>[:tag]                                          # 推送镜像
+$ docker image rm <image>…                                                # 删除镜像
+$ docker image build -t <name> .                                          # 从 Dockerfile 构建
+$ docker image tag <source> <target>                                      # 打标签
+$ docker image history <image>                                            # 查看分层历史
+$ docker image prune                                                      # 清理悬空镜像
+$ docker image prune -a                                                   # 清理未使用镜像
+$ docker image save -o output.tar <image>…                                # 导出为 tar
+$ docker image load -i output.tar                                         # 从 tar 导入
+$ docker image import <file> <name>[:tag]                                 # 从归档导入
+$ docker search <term>                                                    # 搜索镜像（顶层命令）
 ```
 
-### 系统管理
-
-```sh {6,8,11}
-$ docker info                                                             # 查看系统信息
-$ docker version                                                          # 查看版本
-$ docker system df                                                        # 查看磁盘占用
-$ docker system prune                                                     # 清理所有未使用的资源
-$ docker system prune -a                                                  # 清理所有未使用的资源（含镜像）
-$ docker system prune --volumes                                           # 清理所有未使用的资源（含数据卷）
-$ docker system events                                                    # 实时查看 Docker 守护进程事件
-$ docker system events --since 1h                                         # 查看过去 1 小时的事件
-$ docker system events --filter 'type=container' --filter 'event=start'   # 过滤容器启动事件
-```
-
-### 镜像进阶操作
-
-```sh {4,5,9}
-$ docker history <image>                                                  # 查看镜像分层历史
-$ docker image prune                                                      # 清理悬空（dangling）镜像
-$ docker image prune -a                                                   # 清理所有未被容器引用的镜像
-$ docker image prune -a --filter "until=24h"                              # 清理 24 小时前的未使用镜像
-$ docker image prune --filter "label=deprecated"                          # 清理带特定标签的镜像
-$ docker builder prune                                                    # 清理构建缓存
-$ docker builder prune -a                                                 # 清理所有构建缓存
-$ docker builder prune --keep-storage 2GB                                 # 保留 2GB 构建缓存
-```
-
-### 网络管理
+### [docker network](https://docs.docker.com/reference/cli/docker/network/)
 
 ```sh
 $ docker network ls                                                       # 列出网络
 $ docker network create <name>                                            # 创建网络
 $ docker network rm <name>                                                # 删除网络
-$ docker network connect <net> <container>                                # 容器接入网络
-$ docker network disconnect <net> <container>                             # 容器断开网络
-$ docker network inspect <name>                                           # 查看网络详情
+$ docker network connect <net> <container>                                # 接入网络
+$ docker network disconnect <net> <container>                             # 断开网络
+$ docker network inspect <name>                                           # 查看详情
 ```
 
-### 数据卷管理
+### [docker system](https://docs.docker.com/reference/cli/docker/system/)
+
+```sh {1,3,6}
+$ docker version                                                          # 客户端/引擎版本
+$ docker info                                                             # 系统信息
+$ docker system df                                                        # 磁盘占用
+$ docker system prune                                                     # 清理未使用资源
+$ docker system prune -a                                                  # 含未使用镜像
+$ docker system prune --volumes                                           # 含未使用卷
+$ docker system events                                                    # 实时事件流
+$ docker system events --since 1h                                         # 过去 1 小时事件
+```
+
+### [docker volume](https://docs.docker.com/reference/cli/docker/volume/)
 
 ```sh
-$ docker volume ls                                                        # 列出数据卷
-$ docker volume create <name>                                             # 创建数据卷
-$ docker volume rm <name>                                                 # 删除数据卷
-$ docker volume prune                                                     # 清理未使用的数据卷
-$ docker volume inspect <name>                                            # 查看数据卷详情
+$ docker volume ls                                                        # 列出卷
+$ docker volume create <name>                                             # 创建卷
+$ docker volume rm <name>                                                 # 删除卷
+$ docker volume prune                                                     # 清理未使用卷
+$ docker volume inspect <name>                                            # 查看详情
 ```
 
-### 备份与迁移
-
-```sh {1,3,5,8,11}
-$ docker commit <container> <name>:<tag>                                  # 将容器保存为新镜像（环境快照）
-$ docker export -o output.tar <container>                                 # 导出容器文件系统为 tar 归档（不含卷）
-$ docker import output.tar <name>:<tag>                                   # 从 tar 归档导入为镜像
-$ docker save -o output.tar <image>                                       # 导出镜像为 tar（离线迁移）
-$ docker load -i output.tar                                               # 从 tar 加载镜像
-$ docker tag <src> <target>                                               # 复刻/重命名镜像
-```
-
-### 数据卷备份与恢复
+### 数据卷备份
 
 ```sh {2,3}
 # 备份卷到宿主机
-$ docker run --rm -v <volume>:/data -v $(pwd):/backup alpine tar czf /backup/vol-backup.tar.gz -C /data .
+$ docker container run --rm -v <volume>:/data -v $(pwd):/backup alpine tar czf /backup/vol-backup.tar.gz -C /data .
 # 从宿主机恢复卷
-$ docker run --rm -v <volume>:/data -v $(pwd):/backup alpine tar xzf /backup/vol-backup.tar.gz -C /data
+$ docker container run --rm -v <volume>:/data -v $(pwd):/backup alpine tar xzf /backup/vol-backup.tar.gz -C /data
 # 跨主机迁移卷
-$ docker run --rm -v <volume>:/data alpine tar czf - -C /data . | ssh user@host "docker run --rm -i -v <volume>:/data alpine tar xzf - -C /data"
-```
-
-### 调试与诊断
-
-```sh {1,7,9,10}
-$ docker diff <container>                                                 # 查看容器文件变更（跟踪改了啥）
-$ docker port <container>                                                 # 查看容器端口映射
-$ docker port <container> 80/tcp                                          # 查看指定协议的端口映射
-$ docker logs --since 30m <container>                                     # 查看最近 30 分钟日志
-$ docker logs --tail 100 -f <container>                                   # 跟踪最后 100 行日志
-$ docker logs --until 10m <container>                                     # 查看 10 分钟前的日志
-$ docker inspect --format '{{.NetworkSettings.IPAddress}}' <container>    # 查容器 IP
-$ docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container>  # 查所有网络 IP
-$ docker cp <src> <container>:<dest>                                      # 复制文件到容器
-$ docker cp <container>:<src> <dest>                                      # 从容器复制文件
+$ docker container run --rm -v <volume>:/data alpine tar czf - -C /data . | ssh user@host "docker container run --rm -i -v <volume>:/data alpine tar xzf - -C /data"
 ```
 
 ## Colima 常用命令
