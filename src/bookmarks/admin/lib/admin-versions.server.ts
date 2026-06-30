@@ -1,5 +1,5 @@
 /**
- * 功能：保存前版本快照归档、manifest 维护、touchSeed 触发 DB 重载。
+ * 功能：保存前版本快照归档与 manifest 维护。
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -104,12 +104,4 @@ export function archiveVersion(root: string, sections: unknown[]) {
   }
 
   return entry;
-}
-
-export function touchSeed(root: string) {
-  const seedPath = path.resolve(root, "db/seed.ts");
-  if (fs.existsSync(seedPath)) {
-    const now = new Date();
-    fs.utimesSync(seedPath, now, now);
-  }
 }

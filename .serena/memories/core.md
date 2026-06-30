@@ -43,7 +43,6 @@ Astro 7 + Starlight 0.40。GitHub Pages。Node 24。`vpr` = `vp run`。
 ## 数据
 
 - `db/data/bookmarks.ts` — 唯一可提交数据源
-- `db/config.ts` / `db/seed.ts` — Astro DB 表 + seed
 - `scripts/` — color-themes、theme-init、bookmark-logos、dev-admin
 - `integrations/` — bookmarks-admin.ts、mermaid-controls.ts
 

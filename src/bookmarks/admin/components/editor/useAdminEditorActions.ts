@@ -120,7 +120,7 @@ export function useAdminEditorActions({
         toast.success(
           restoredTransferCount > 0
             ? `已写入 db/data/bookmarks.ts（${restoredTransferCount} 个中转站书签已还原原分组）`
-            : "已写入 db/data/bookmarks.ts，等待 Astro 重新 seed",
+            : "已写入 db/data/bookmarks.ts，刷新页面即可看到更新",
         );
       } else {
         downloadTextFile("bookmarks.ts", serializeBookmarkSections(sectionsToSave));

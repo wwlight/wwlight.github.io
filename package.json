@@ -20,7 +20,6 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "@astrojs/db": "catalog:astro",
     "@astrojs/markdown-remark": "catalog:astro",
     "@astrojs/mdx": "catalog:astro",
     "@astrojs/react": "catalog:astro",
@@ -47,7 +46,6 @@
     "react-dom": "catalog:frontend",
     "sharp": "catalog:content",
     "sonner": "catalog:frontend",
-    "starlight-llm-actions": "catalog:astro",
     "tailwind-merge": "catalog:frontend",
     "tailwindcss": "catalog:frontend"
   },

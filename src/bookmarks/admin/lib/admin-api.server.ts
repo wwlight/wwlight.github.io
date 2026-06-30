@@ -11,7 +11,6 @@ import {
   archiveVersion,
   getVersionSections,
   listVersions,
-  touchSeed,
 } from "./admin-versions.server";
 import {
   BOOKMARK_METADATA_FETCH_TIMEOUT_MS,
@@ -70,7 +69,6 @@ function writeBookmarksFile(sections: BookmarkSectionData[]) {
   const filePath = path.resolve(projectRoot, "db/data/bookmarks.ts");
   if (fs.existsSync(filePath)) fs.copyFileSync(filePath, `${filePath}.bak`);
   fs.writeFileSync(filePath, content, "utf-8");
-  touchSeed(projectRoot);
   refreshBookmarkLogoCache();
 }
 

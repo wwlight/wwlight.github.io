@@ -7,7 +7,7 @@ sidebar:
 
 ## 数据流概览
 
-`db/data/bookmarks.ts`（源数据）→ 构建写入 Astro DB → 导航页 `entry.astro` 序列化 JSON → React 渲染。管理端「保存」即将草稿写回 `bookmarks.ts`。
+`db/data/bookmarks.ts`（源数据）→ 导航页 `entry.astro` 序列化 JSON → React 渲染。管理端「保存」即将草稿写回 `bookmarks.ts`。
 
 ## 开发环境持久化
 
@@ -34,7 +34,7 @@ sidebar:
 vpr build
 ```
 
-通过即表示 seed 与 injectRoute 正常。书签路由由 integration 注册，不经过 `src/pages/`。
+通过即表示书签数据加载与 injectRoute 正常。书签路由由 integration 注册，不经过 `src/pages/`。
 
 ## 站点图标与构建
 

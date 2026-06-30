@@ -13,7 +13,6 @@
 | 路径 | 职责 |
 | --- | --- |
 | `db/data/bookmarks.ts` | 唯一可提交数据源 |
-| `db/config.ts` / `db/seed.ts` | Astro DB 表与 seed |
 | `src/bookmarks/nav/entry.astro` | 导航页 Astro 入口（`injectRoute` → `/bookmarks/nav/`） |
 | `src/bookmarks/admin/entry.astro` | 管理端 Astro 入口（`injectRoute` → `/bookmarks/admin/`） |
 | `integrations/bookmarks-admin.ts` | 注册书签路由 + dev `/admin/api/*` |
@@ -97,7 +96,7 @@
 ## 数据流
 
 ```text
-db/data/bookmarks.ts → seed → Astro DB → getBookmarkSections() → JSON 注水 → React
+db/data/bookmarks.ts → getBookmarkSections() → JSON 注水 → React
 ```
 
 ## 对外入口

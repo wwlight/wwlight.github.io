@@ -1,5 +1,4 @@
 import { fileURLToPath } from 'node:url'
-import db from '@astrojs/db'
 import { unified } from '@astrojs/markdown-remark'
 import react from '@astrojs/react'
 import starlight from '@astrojs/starlight'
@@ -7,13 +6,14 @@ import inspectUrls from '@jsdevtools/rehype-url-inspector'
 import tailwindcss from '@tailwindcss/vite'
 import mermaid from 'astro-mermaid'
 import { defineConfig } from 'astro/config'
-import starlightLlmActions from 'starlight-llm-actions'
 import { bookmarksAdmin } from './integrations/bookmarks-admin.ts'
 import { mermaidControls } from './integrations/mermaid-controls.ts'
 import themeInitScript from './src/theme/scripts/init.inline.js?raw'
 
+const SITE_URL = 'https://wwlight.github.io'
+
 export default defineConfig({
-  site: 'https://wwlight.github.io',
+  site: SITE_URL,
   devToolbar: { enabled: false },
   prefetch: {
     prefetchAll: true,
@@ -54,22 +54,11 @@ export default defineConfig({
   integrations: [
     mermaid({ autoTheme: true, enableLog: false }),
     mermaidControls(),
-    db(),
     react(),
     bookmarksAdmin(),
     starlight({
       title: 'wwlight',
       credits: false,
-      plugins: [
-        starlightLlmActions({
-          actions: {
-            printPdf: true,
-            openIn: {
-              providers: { cursor: true, deepseek: true, copilot: false, perplexity: false },
-            },
-          },
-        }),
-      ],
       head: [{ tag: 'script', content: themeInitScript }],
       components: {
         Header: './src/components/Header.astro',

@@ -29,7 +29,7 @@
 | ---- | ---- |
 | 框架 | Astro 6、Starlight |
 | UI | React 19、Tailwind CSS 4、Radix UI / shadcn 风格组件 |
-| 数据 | Astro DB（书签数据） |
+| 数据 | TypeScript 文件（`db/data/bookmarks.ts`） |
 | 图表 | Mermaid 11（自研 Starlight 集成，按需加载） |
 | 工具链 | [Vite+](https://viteplus.dev)（`vp` / `vpr`）、Node.js 24、pnpm 11.4.0 |
 
@@ -104,7 +104,6 @@ vpr prepare               # 安装 Git hooks（pnpm install 时自动执行）
 │   │   └── admin/entry.astro  # 管理端 /bookmarks/admin/
 │   └── styles/                # 全局与页面样式（Starlight global 等）
 ├── db/
-│   ├── config.ts              # Astro DB 配置
 │   └── data/bookmarks.ts      # 书签数据源
 ├── integrations/              # Astro 集成（管理端 dev middleware）
 ├── scripts/                   # dev 启动脚本；`color-themes.data.mjs` 主题数据源

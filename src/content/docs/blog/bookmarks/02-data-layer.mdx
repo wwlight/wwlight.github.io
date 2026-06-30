@@ -1,13 +1,13 @@
 ---
-title: 02 · 数据模型与 Astro DB
-description: Section / Card / Bookmark 三层 schema、seed 与查询
+title: 02 · 数据模型与查询
+description: Section / Card / Bookmark 三层结构与读取
 sidebar:
   order: 2
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 
-书签数据是 **三层嵌套**：分区 → 卡片组 → 链接。Astro DB 用三张表扁平存储，应用层再组装成树。
+书签数据是 **三层嵌套**：分区 → 卡片组 → 链接。源数据以 TypeScript 文件维护，`getBookmarkSections()` 按 `sortOrder` 排序后供页面使用。
 
 ## 领域模型
 
@@ -36,47 +36,11 @@ interface BookmarkSectionData {
 }
 ```
 
-`stagger` 是展示层字段，不影响 DB 关系，但会随 seed 写入 `BookmarkSection` 表。
-
-## Astro DB 表定义
-
-```ts
-// db/config.ts
-const BookmarkSection = defineTable({
-  columns: {
-    id: column.number({ primaryKey: true }),
-    title: column.text(),
-    sortOrder: column.number(),
-    stagger: column.boolean({ default: true }),
-  },
-});
-
-const BookmarkCard = defineTable({
-  columns: {
-    id: column.number({ primaryKey: true }),
-    sectionId: column.number(),
-    title: column.text(),
-    sortOrder: column.number(),
-  },
-});
-
-const Bookmark = defineTable({
-  columns: {
-    id: column.number({ primaryKey: true }),
-    cardId: column.number(),
-    title: column.text(),
-    url: column.text(),
-    description: column.text({ optional: true }),
-    badgeText: column.text({ optional: true }),
-    badgeVariant: column.text({ optional: true }),
-    sortOrder: column.number(),
-  },
-});
-```
+`stagger` 是展示层字段，随 section 一并写入 `bookmarks.ts`。
 
 ## 数据源：TypeScript 文件
 
-真正维护的数据在 `db/data/bookmarks.ts`：
+唯一可提交数据源在 `db/data/bookmarks.ts`：
 
 ```ts
 export const bookmarkSections: BookmarkSectionData[] = [
@@ -103,52 +67,32 @@ export const bookmarkSections: BookmarkSectionData[] = [
 - 管理端保存时整文件重写，格式稳定
 - 直接进 Git diff，review 友好
 
-## Seed 流程
+## 查询
 
-```ts
-// db/seed.ts
-import { bookmarkSections } from "./data/bookmarks";
-
-export default async function seed() {
-  let sectionId = 1, cardId = 1, bookmarkId = 1;
-
-  for (const section of bookmarkSections) {
-    await db.insert(BookmarkSection).values({ id: sectionId, /* … */ });
-
-    for (const card of section.cards) {
-      await db.insert(BookmarkCard).values({ id: cardId, sectionId, /* … */ });
-
-      if (card.bookmarks.length > 0) {
-        await db.insert(Bookmark).values(
-          card.bookmarks.map((b) => ({ id: bookmarkId++, cardId, /* … */ })),
-        );
-      }
-      cardId++;
-    }
-    sectionId++;
-  }
-}
-```
-
-dev / build 时 Astro DB 自动执行 seed。改 `bookmarks.ts` 后重启 dev 或触发 HMR 即可刷新内存库。
-
-## 查询组装
-
-`getBookmarkSections()` 分三次查询，按 `sortOrder` 排序，再用 `Map` 归并：
+`getBookmarkSections()` 直接 import `bookmarkSections`，按 `sortOrder` 排序 section / card / bookmark：
 
 ```ts
 // src/bookmarks/shared/data/queries.ts
-export async function getBookmarkSections(): Promise<BookmarkSectionData[]> {
-  const sections = await db.select().from(BookmarkSection).orderBy(asc(BookmarkSection.sortOrder));
-  const cards = await db.select().from(BookmarkCard).orderBy(asc(BookmarkCard.sortOrder));
-  const bookmarks = await db.select().from(Bookmark).orderBy(asc(Bookmark.sortOrder));
+import { bookmarkSections } from '../../../../db/data/bookmarks.ts'
 
-  // cardsBySection、bookmarksByCard → 组装树
-  return sections.map(/* … */);
+export async function getBookmarkSections(): Promise<BookmarkSectionData[]> {
+  return [...bookmarkSections]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(section => ({
+      ...section,
+      cards: [...section.cards]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map(card => ({
+          ...card,
+          bookmarks: [...card.bookmarks].sort((a, b) => a.sortOrder - b.sortOrder),
+        })),
+    }))
 }
 ```
 
-书签量级在数百条时，三次查询 + 内存 join 足够；无需 SQL JOIN API。
+书签量级在数百条时，内存排序足够；无需数据库中间层。
+
+改 `bookmarks.ts` 后 dev 会通过 Vite HMR 热更新，刷新页面即可看到新数据。
 
 ## 序列化（管理端写回）
 
@@ -166,7 +110,7 @@ export async function getBookmarkSections(): Promise<BookmarkSectionData[]> {
 
 1. 打开 `db/data/bookmarks.ts`，在任意 card 的 `bookmarks` 数组追加一项
 
-2. 重启 `vpr dev`（或等待 DB 重新 seed）
+2. 保存文件（或通过管理端保存）
 
 3. 访问 `/bookmarks/nav/`，确认新链接出现
 

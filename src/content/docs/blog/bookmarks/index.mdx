@@ -11,7 +11,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 ## 使用流程
 
-1. **浏览** — 访问 `/bookmarks/nav/`，数据来自构建期 Astro DB seed。
+1. **浏览** — 访问 `/bookmarks/nav/`，数据来自 `db/data/bookmarks.ts`。
 2. **编辑** — 本地开发环境打开 `/bookmarks/admin/`，认证后可 CRUD、拖拽排序；持久化写入 `db/data/bookmarks.ts`。
 3. **发布** — 提交 `bookmarks.ts` 并部署；生产环境管理端默认无写权限（见 [04 管理端认证](/blog/bookmarks/04-admin-auth/)）。
 
@@ -19,7 +19,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 <CardGrid stagger>
   <LinkCard title="01 · 架构与技术选型" href="/blog/bookmarks/01-architecture/" description="模块边界、injectRoute 与关键取舍" />
-  <LinkCard title="02 · 数据模型与 Astro DB" href="/blog/bookmarks/02-data-layer/" description="Schema、seed 与查询" />
+  <LinkCard title="02 · 数据模型与查询" href="/blog/bookmarks/02-data-layer/" description="三层结构与读取" />
   <LinkCard title="03 · 导航页与客户端渲染" href="/blog/bookmarks/03-public-page/" description="entry.astro、JSON 注水与 React 树" />
   <LinkCard title="04 · 管理端认证" href="/blog/bookmarks/04-admin-auth/" description="凭据配置、会话与写权限" />
   <LinkCard title="05 · 管理端编辑界面" href="/blog/bookmarks/05-admin-ui/" description="布局、网格编辑与草稿模型" />

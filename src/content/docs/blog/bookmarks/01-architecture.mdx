@@ -45,7 +45,6 @@ import { Steps, FileTree } from '@astrojs/starlight/components';
   - admin/entry.astro — 管理端 Astro 入口（injectRoute）→ `/bookmarks/admin/`
 - db/
   - data/bookmarks.ts — 唯一可提交数据源
-  - config.ts / seed.ts — Astro DB
 - integrations/bookmarks-admin.ts — dev `/admin/api/*`
 
 </FileTree>
@@ -57,19 +56,15 @@ import { Steps, FileTree } from '@astrojs/starlight/components';
 ```mermaid
 sequenceDiagram
   participant File as bookmarks.ts
-  participant Seed as db/seed.ts
-  participant DB as Astro DB
   participant Page as Astro 页面
   participant React as React 岛屿
 
-  File->>Seed: 构建 / dev 启动
-  Seed->>DB: insert 三层表
-  Page->>DB: getBookmarkSections()
+  Page->>File: getBookmarkSections()
   Page->>React: JSON 写入 #bookmarks-sections-data
   React->>React: readBookmarkSectionsFromPage()
 ```
 
-**关键点：** 运行时 React 不直接读 DB，而是读页面内嵌的 JSON。Astro 在 SSR/SSG 阶段查 DB，序列化后注入 DOM。这保证了：
+**关键点：** 运行时 React 不直接读源文件，而是读页面内嵌的 JSON。Astro 在 SSR/SSG 阶段 import `bookmarks.ts`，序列化后注入 DOM。这保证了：
 
 - 导航页可以是 `client:only="react"`，hydration 前已有数据
 - 构建产物仍是静态 HTML + JS，无服务端运行时
@@ -97,7 +92,6 @@ sequenceDiagram
 
 ```js
 integrations: [
-  db(),                    // Astro DB
   react(),                 // React 岛屿
   bookmarksAdmin(),        // 开发态 /admin/api/* 中间件
   starlight({ /* … */ }),

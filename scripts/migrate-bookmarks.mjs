@@ -126,7 +126,7 @@ const seedSections = sections.map((section, sectionIndex) => ({
   })),
 }))
 
-const output = `// 书签数据源 — 在此文件维护书签，保存后 dev 会自动重新 seed
+const output = `// 书签数据源 — 在此文件维护书签，保存后 dev 会自动热更新
 // 从旧 MDX 批量导入: node scripts/migrate-bookmarks.mjs <path-to.mdx>
 
 export interface BookmarkData {

@@ -54,7 +54,7 @@ export function VersionActionConfirmDialog({
           <DialogTitle>{isRestore ? "确认写入项目" : "确认使用此版本"}</DialogTitle>
           <DialogDescription>
             {isRestore
-              ? "此操作将覆盖 db/data/bookmarks.ts，并触发 Astro 重新 seed。"
+              ? "此操作将覆盖 db/data/bookmarks.ts。"
               : "将把所选版本加载到编辑器，当前未保存的草稿会被替换。"}
           </DialogDescription>
         </DialogHeader>

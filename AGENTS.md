@@ -12,7 +12,7 @@ src/
 ├── theme/                 # 主题系统（配色、token 生成）
 ├── styles/                # 全局 CSS（Tailwind v4 入口）
 └── lib/                   # 工具函数
-db/                        # Astro DB 表定义 + seed 数据
+db/                        # 书签数据源（bookmarks.ts）
 integrations/              # 自定义 Astro 集成（bookmarks-admin, mermaid-controls）
 scripts/                   # 构建/生成脚本
 ```

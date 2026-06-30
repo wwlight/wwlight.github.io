@@ -142,7 +142,7 @@ export function BookmarksAdminApp({
           <Card className="border-border/70 shadow-xl">
             <GateCardHeader
               title="书签数据为空"
-              description="数据库未加载书签。请重启 dev 服务器（vpr dev:admin）以重新 seed，或检查 db/data/bookmarks.ts。"
+              description="未加载书签数据。请检查 db/data/bookmarks.ts 或重启 dev 服务器（vpr dev:admin）。"
             />
             <CardFooter className="justify-center pb-6">
               <Button variant="outline" asChild>
