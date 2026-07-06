@@ -1,18 +1,16 @@
 ---
-title: OmniRoute 安装配置
+title: OmniRoute 使用
 sidebar:
   order: 8
 ---
 
 :::note[OmniRoute]
-[OmniRoute](https://github.com/diegosouzapw/OmniRoute) 是一个开源的 AI 网关，统一端点接入 231 个 AI provider，支持 50+ 免费层、17 种路由策略、自动兜底、Token 压缩。
+[OmniRoute](https://github.com/diegosouzapw/OmniRoute) 本地 AI 网关：单一 OpenAI 兼容端点（`:20128`）接入多 provider，负责选路、兜底与 failover。
 :::
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-## 安装
-
-从 `docker run` 转为 `docker compose`，统一到 `~/.docker/compose.yml`。
+## 安装服务
 
 <Steps>
 1. 添加 OmniRoute 服务
@@ -47,24 +45,15 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
 </Steps>
 
-等效 `docker run`（仅作参考）：
-
-```
-# docker run -d \
-#   -p 127.0.0.1:20128:20128 \
-#   --restart unless-stopped \
-#   --name omniroute \
-#   diegosouzapw/omniroute:main-web
-```
 
 ## OpenCode 集成
 
 <Tabs syncKey="integration">
-  <TabItem label="方式一：Provider 静态配置（推荐）">
-    在 `~/.config/opencode/opencode.json` 的 `provider` 字段：
-
-    ```json
+  <TabItem label="方式一：Provider 静态配置">
+    ```json {8}
+    # ~/.config/opencode/opencode.json
     {
+      "$schema": "https://opencode.ai/config.json",
       "provider": {
         "omniroute": {
           "api": "openai-compatible",
@@ -82,26 +71,28 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
     }
     ```
   </TabItem>
-  <TabItem label="方式二：@omniroute/opencode-plugin">
-    ```sh title="安装插件"
-    $ npm install @omniroute/opencode-plugin
+  <TabItem label="方式二：Plugin（需 API Key 鉴权）">
+    适合已开通 `OmniRoute` 账号需动态拉取完整模型目录的场景。通过 `OmniRoute CLI` 一键完成插件安装与鉴权。
+
+    ```sh
+    $ npm install -g omniroute
+    $ omniroute setup opencode --base-url http://localhost:20128 --auth
     ```
 
-    在 `opencode.json` 的 `plugin` 字段添加：
-
-    ```json
-    {
-      "plugin": [[
-        "./plugins/node_modules/@omniroute/opencode-plugin/dist/index.js",
-        {
-          "providerId": "omniroute",
-          "displayName": "OmniRoute",
-          "baseURL": "http://localhost:20128",
-          "modelCacheTtl": 300000,
-          "features": { "usableOnly": true }
-        }
-      ]]
-    }
-    ```
+    > 会复制插件到 `~/.config/opencode/plugins/omniroute/`、更新 `opencode.json`、交互式写入 `API Key`。<br />
+    > 完成后重启 `OpenCode`，`/models` 即可看到完整目录。
   </TabItem>
 </Tabs>
+
+## 运维与排障
+
+控制台提示「服务器存在异常」或 `curl /v1/models` 超时：
+
+```sh
+# 重启服务
+$ docker compose restart omniroute
+# 查看日志
+$ docker logs omniroute --tail 50
+# 拉最新镜像重建
+$ docker compose up -d --pull always omniroute
+```

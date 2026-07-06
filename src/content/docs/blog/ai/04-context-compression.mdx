@@ -474,22 +474,9 @@ curl http://127.0.0.1:8787/stats-history
 
 若 `docker` 报 daemon 未连接，需先启动 Docker。
 
-### macOS launchd 服务（非 Docker）
+### 常驻部署
 
-本地安装时注册为 launchd 服务实现开机自启：
-
-```bash
-# 加载
-launchctl load ~/Library/LaunchAgents/headroom.proxy.plist
-
-# 查看状态
-launchctl list | grep headroom
-
-# 卸载
-launchctl unload ~/Library/LaunchAgents/headroom.proxy.plist
-```
-
-Plist 文件需配置 `OPENAI_TARGET_API_URL` 环境变量。详见 [Headroom 安装配置](/tools/headroom-cheatsheet/)。
+Headroom proxy 通过 Docker Compose 管理（`restart: unless-stopped`），与 OmniRoute 同文件部署。详见 [Headroom 使用](/tools/headroom-setup/)。
 
 ## 压缩效果参考
 

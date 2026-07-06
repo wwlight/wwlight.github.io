@@ -7,11 +7,11 @@ sidebar:
 import { Steps } from "@astrojs/starlight/components";
 
 :::note[Docker]
-[Docker](https://docker.com) 是一个用于开发、交付和运行容器化应用的开放平台，帮助你将应用与基础设施分离，实现快速交付。适用于本地开发环境统一、微服务部署、CI/CD 流水线、多服务编排（docker-compose）、快速原型验证等场景。
+[Docker](https://docker.com/) 是一个用于开发、交付和运行容器化应用的开放平台，帮助你将应用与基础设施分离，实现快速交付。适用于本地开发环境统一、微服务部署、CI/CD 流水线、多服务编排（docker-compose）、快速原型验证等场景。
 :::
 
 :::note[Colima]
-[Colima](https://github.com/abiosoft/colima) 是 macOS（及 Linux）上的容器运行时，以最小配置即可运行 Docker 和 Containerd，支持 Intel 和 Apple Silicon。适用于替代 Docker Desktop、本地容器开发、多实例管理、Kubernetes 集群（--kubernetes）、Containerd 运行时、GPU 加速 AI 容器（--vm-type krunkit）、Rosetta 2 模拟（--vz-rosetta）等场景。
+[Colima](https://colima.run/) 是 macOS（及 Linux）上的容器运行时，以最小配置即可运行 Docker 和 Containerd，支持 Intel 和 Apple Silicon。适用于替代 Docker Desktop、本地容器开发、多实例管理、Kubernetes 集群（--kubernetes）、Containerd 运行时、GPU 加速 AI 容器（--vm-type krunkit）、Rosetta 2 模拟（--vz-rosetta）等场景。
 :::
 
 ## 安装步骤
@@ -24,18 +24,10 @@ import { Steps } from "@astrojs/starlight/components";
     $ brew services start colima
     ```
 
-2.  配置 Docker CLI 插件路径
+2.  创建 CLI 插件目录并符号链接该插件
     ```sh
-    $ mkdir .docker && vi ~/.docker/config.json
-    ```
-
-    ```json
-    # ~/.docker/config.json
-    {
-      "cliPluginsExtraDirs": [
-        "/opt/homebrew/lib/docker/cli-plugins"
-      ]
-    }
+    $ mkdir -p ~/.docker/cli-plugins
+    $ ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
     ```
 
 3.  配置 Docker Context 指向 Colima
@@ -49,7 +41,7 @@ import { Steps } from "@astrojs/starlight/components";
     `COMPOSE_FILE` 是 [Docker Compose 内建环境变量](https://docs.docker.com/compose/how-tos/environment-variables/envvars/#compose_file)；未设置时只在**当前目录**查找 `compose.yaml` / `docker-compose.yml`；指向固定路径后，任意目录执行 `docker compose` 都会自动加载，无需每次 `-f`。
 
     ```sh
-    $ mkdir -p ~/.docker && : >> ~/.docker/compose.yml
+    $ mkdir -p ~/.docker && touch ~/.docker/compose.yml
     $ echo 'export COMPOSE_FILE=$HOME/.docker/compose.yml' >> ~/.zshrc && source ~/.zshrc
     ```
 
