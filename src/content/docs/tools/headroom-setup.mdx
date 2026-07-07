@@ -28,9 +28,16 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
         command: ["--host", "0.0.0.0", "--port", "20129"]
         environment:
           OPENAI_TARGET_API_URL: http://omniroute:20128/v1
+          LITELLM_SUPPRESS_DEBUG_INFO: "True"
         restart: unless-stopped
         depends_on:
           - omniroute
+        healthcheck:
+          test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:20129/readyz"]
+          interval: 30s
+          timeout: 5s
+          start_period: 20s
+          retries: 3
     ```
 
     `command` 覆盖镜像默认的 `--port 8787`，使容器内也监听 `20129`（仅设 `HEADROOM_PORT` 无效）。`OPENAI_TARGET_API_URL` 将压缩后的请求转发到同 compose 内的 OmniRoute。

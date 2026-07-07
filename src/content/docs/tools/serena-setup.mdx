@@ -5,14 +5,12 @@ sidebar:
 ---
 
 :::note[Serena]
-[Serena](https://github.com/oraios/serena) 是一个开源的 MCP（Model Context Protocol）服务器，为 AI 编码代理提供符号级别的代码检索、编辑和重构工具，支持 40+ 编程语言（LSP 后端免费，JetBrains 插件付费）。
+[Serena](https://github.com/oraios/serena) 是一个开源的 MCP 服务器，为 AI 编码代理提供符号级别的代码检索、编辑和重构工具，支持 40+ 语言（LSP 后端免费，JetBrains 插件付费）。
 :::
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## 安装步骤
-
-`uv tool install` 只安装 CLI（`serena` 位于 `~/.local/bin/`），**不启动服务**。Cursor / OpenCode 使用 [stdio 模式](https://oraios.github.io/serena/02-usage/020_running.html)：打开对话时编辑器按需 spawn `serena start-mcp-server` 子进程，通过 stdin/stdout 通信，断开即结束。
 
 <Steps>
 1. 安装 uv 与 Serena CLI
@@ -23,27 +21,22 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
     $ serena --version
     ```
 
-    终端若找不到 `serena`，在 `.zshrc` 加 `export PATH="$HOME/.local/bin:$PATH"`。MCP 配置里会内联 PATH，**集成 MCP 不必改** `.zshrc`。
+    终端若找不到 `serena`，在 `.zshrc` 加 `export PATH="$HOME/.local/bin:$PATH"`。MCP 配置内联 PATH，集成 MCP 不必改 `.zshrc`。
 
 2. 集成 MCP 客户端
-
-    `PATH=$HOME/.local/bin:$PATH` 指向 `uv tool install` 目录（`serena` 可执行文件），不是 `uv` 本体路径。`--project-from-cwd` 从当前工作目录向上查找 `.serena/project.yml` 或 `.git` 自动绑定项目。
 
     <Tabs syncKey="mcp-client">
       <TabItem label="Cursor">
 
-        在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级，所有项目共用）：
+        在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级）：
 
         ```json
         {
           "mcpServers": {
             "serena": {
               "type": "stdio",
-              "command": "sh",
-              "args": [
-                "-c",
-                "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --context=vscode --project-from-cwd --open-web-dashboard false"
-              ]
+              "command": "serena",
+              "args": ["start-mcp-server", "--context=vscode", "--project-from-cwd"]
             }
           }
         }
@@ -59,10 +52,7 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
           "mcp": {
             "serena": {
               "type": "local",
-              "command": [
-                "sh", "-c",
-                "PATH=$HOME/.local/bin:$PATH serena start-mcp-server --project-from-cwd --open-web-dashboard false"
-              ],
+              "command": ["serena", "start-mcp-server", "--context", "ide"],
               "enabled": true
             }
           }
@@ -82,31 +72,31 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
 3. 初始化项目
 
-    在项目根目录执行，生成 `.serena/`：
-
-    ```sh
-    $ serena init
-    ```
-
-    ```
-    .serena/
-    ├── project.yml              # 语言、工具、模式等项目配置
-    └── memories/                # 跨会话记忆（按需读取）
-    ```
-
-    项目级配置在 `.serena/project.yml`；本地覆盖用 `.serena/project.local.yml`（不提交）。
+    在项目根目录执行 `serena init`，生成 `.serena/` 目录。项目配置在 `.serena/project.yml`，本地覆盖用 `.serena/project.local.yml`（不提交）。
 
 4. 验证
 
-    重启 Cursor / OpenCode，在对话中测试：
-
-    ```
-    请帮我找到项目中 main 函数的定义
-    ```
-
-    或直接提示：`使用 serena 工具来做这个操作`
+    重启客户端，在对话中测试：`请帮我找到项目中 main 函数的定义`
 
 </Steps>
+
+
+## 常用命令
+
+```sh
+# 更新
+$ uv tool upgrade serena-agent
+
+# 项目索引
+$ serena project index
+
+# 健康检查
+$ serena project health-check
+
+# 手动启动 MCP（调试）
+$ serena start-mcp-server --project-from-cwd
+```
+
 
 ## 核心工具
 
@@ -114,7 +104,7 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 |------|------|------|
 | 检索 | `serena_find_symbol` | 按名称搜索符号，支持源码/文档提取 |
 | 检索 | `serena_get_symbols_overview` | 获取文件结构概览 |
-| 检索 | `serena_find_referencing_symbols` | 查找引用某符号的所有位置 |
+| 检索 | `serena_find_referencing_symbols` | 查找所有引用位置 |
 | 检索 | `serena_find_implementations` | 查找接口/抽象类的所有实现 |
 | 编辑 | `serena_replace_symbol_body` | 替换符号体，保留签名 |
 | 编辑 | `serena_insert_after_symbol` | 在符号之后插入代码 |
@@ -123,17 +113,9 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 | 重构 | `serena_replace_content` | 正则/字面文本替换 |
 | 记忆 | `serena_write_memory` / `serena_read_memory` | 跨会话知识持久化 |
 
-## 常用命令
-
-| 操作 | 命令 |
-|------|------|
-| 更新 | `uv tool upgrade serena-agent` |
-| 项目索引 | `serena project index` |
-| 健康检查 | `serena project health-check` |
-| 手动启动 MCP（调试） | `serena start-mcp-server --project-from-cwd` |
 
 ## 注意事项
 
 - 默认使用 LSP 后端（免费），支持 40+ 语言
-- stdio 模式（Cursor / OpenCode）由编辑器拉起，无需手动常驻 `start-mcp-server`
-- 多客户端共享同一实例可用 streamable-http 模式（`--transport streamable-http`），需自行启动并配置 URL
+- stdio 模式由编辑器拉起，无需手动常驻 `start-mcp-server`
+- 多客户端共享实例可用 `streamable-http` 模式，需自行启动并配置 URL
