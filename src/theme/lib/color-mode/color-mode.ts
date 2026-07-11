@@ -1,6 +1,5 @@
 /**
- * 功能：明暗模式偏好（light / dark / system）、解析、`data-theme` + `.dark`/`.light` class。
- * 动画：点击切换时圆形 View Transition（见 styles/view-transition.css）。
+ * 明暗模式偏好、解析、`data-theme` 写入。切换动画见 view-transition.css。
  */
 import {
   SITE_STORAGE_KEYS,
@@ -27,31 +26,6 @@ function persistThemePreference(stored: string | null, preference: ThemePreferen
 }
 
 export const THEME_STORAGE_KEY = SITE_STORAGE_KEYS.colorMode
-export const THEME_TRANSITION_DURATION = 400
-export const THEME_TRANSITION_EASING = 'ease-in-out'
-
-const ANIMATION = { fill: 'both' as const, easing: THEME_TRANSITION_EASING }
-
-function raf() {
-  return new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
-}
-
-function clipPaths(x: number, y: number, radius: number) {
-  const at = `${x}px ${y}px`
-  return {
-    grow: [`circle(0px at ${at})`, `circle(${radius}px at ${at})`] as [string, string],
-    shrink: [`circle(${radius}px at ${at})`, `circle(0px at ${at})`] as [string, string],
-  }
-}
-
-function animatePseudo(
-  keyframes: Keyframe[] | PropertyIndexedKeyframes,
-  pseudoElement: string,
-  duration: number,
-) {
-  return document.documentElement.animate(keyframes, { ...ANIMATION, duration, pseudoElement })
-    .finished
-}
 
 /** 长页已滚动时固定 body，避免 root 快照只覆盖视口导致揭示动画错位 */
 function lockDocumentScroll(): () => void {
@@ -163,33 +137,23 @@ export async function setThemeWithTransition(
   root.classList.add('theme-transitioning')
   const unlockScroll = lockDocumentScroll()
 
+  /* 供 CSS @keyframes 引用 */
+  root.style.setProperty('--vt-clip-x', `${x}px`)
+  root.style.setProperty('--vt-clip-y', `${y}px`)
+  root.style.setProperty('--vt-clip-r', `${endRadius}px`)
+
   try {
     const transition = document.startViewTransition(() => applyResolvedTheme(next))
-    await transition.ready
-    await raf()
-
-    const { grow, shrink } = clipPaths(x, y, endRadius)
-
-    if (next === 'dark') {
-      await animatePseudo(
-        { clipPath: shrink },
-        '::view-transition-old(root)',
-        THEME_TRANSITION_DURATION,
-      )
-    }
-    else {
-      await animatePseudo(
-        { clipPath: grow },
-        '::view-transition-new(root)',
-        THEME_TRANSITION_DURATION,
-      )
-    }
+    await transition.finished
   }
   catch {
     applyResolvedTheme(next)
   }
   finally {
     root.classList.remove('theme-transitioning')
+    root.style.removeProperty('--vt-clip-x')
+    root.style.removeProperty('--vt-clip-y')
+    root.style.removeProperty('--vt-clip-r')
     unlockScroll()
   }
 }
