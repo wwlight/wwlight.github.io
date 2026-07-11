@@ -2,9 +2,8 @@
   "extends": "./node_modules/astro/tsconfigs/strict.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true
   },
