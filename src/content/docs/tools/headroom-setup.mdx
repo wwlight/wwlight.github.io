@@ -5,7 +5,7 @@ sidebar:
 ---
 
 :::note[Headroom]
-[Headroom](https://github.com/headroomlabs-ai/headroom) 本地上下文压缩层：LLM 收到请求前压缩 tool output、日志与对话历史，典型节省 60-95% token（CCR 可逆）。上游接 [OmniRoute](/tools/omniroute-setup/)，下游模型无感。与 [RTK](https://github.com/rtk-ai/rtk) 互补——RTK 裁终端输出，Headroom 裁 API 上下文。详见 [官方文档](https://headroom-docs.vercel.app/docs)。
+[Headroom](https://headroom-docs.vercel.app/docs) 本地上下文压缩层：在工具输出、日志、文件和 RAG 块到达 LLM 之前对其进行压缩，节省 60-95% token。上游接 [OmniRoute](/tools/omniroute-setup/)，下游模型无感。[RTK](/tools/rtk-setup/) 裁终端输出，Headroom 裁 API 上下文。
 :::
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -30,17 +30,15 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
           OPENAI_TARGET_API_URL: http://omniroute:20128/v1
           LITELLM_SUPPRESS_DEBUG_INFO: "True"
         restart: unless-stopped
+        volumes:
+          - ~/.docker/headroom-data:/root/.headroom
         depends_on:
           - omniroute
-        healthcheck:
-          test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:20129/readyz"]
-          interval: 30s
-          timeout: 5s
-          start_period: 20s
-          retries: 3
     ```
 
-    `command` 覆盖镜像默认的 `--port 8787`，使容器内也监听 `20129`（仅设 `HEADROOM_PORT` 无效）。`OPENAI_TARGET_API_URL` 将压缩后的请求转发到同 compose 内的 OmniRoute。
+    - `command` 覆盖镜像默认的 `--port 8787`，使容器内也监听 `20129`。
+    - `OPENAI_TARGET_API_URL` 将压缩后的请求转发到同 compose 内的 OmniRoute。
+    - `volumes` 把 `/root/.headroom`（含 `proxy_savings.json` 统计、压缩缓存）挂到绑定挂载 `~/.docker/headroom-data`，避免 `docker compose down` / 更新镜像后统计清零。
 
 2. 命令
 
@@ -101,7 +99,7 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
   </TabItem>
   <TabItem label="Cursor">
 
-    在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级，所有项目共用）：
+    > 在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级，所有项目共用）。
 
     ```json
     {

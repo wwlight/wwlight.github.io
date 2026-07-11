@@ -968,6 +968,11 @@ export const bookmarkSections: BookmarkSectionData[] = [
             "url": "https://7sim.cc/en",
             "sortOrder": 19,
             "description": "接收短信的临时虚拟号码"
+          },
+          {
+            "title": "GreenVideo",
+            "url": "https://greenvideo.cc/",
+            "sortOrder": 20
           }
         ]
       }
@@ -2078,6 +2083,11 @@ export const bookmarkSections: BookmarkSectionData[] = [
             "title": "Font Awesome",
             "url": "https://fontawesome.com/",
             "sortOrder": 8
+          },
+          {
+            "title": "UXWing",
+            "url": "https://uxwing.com/",
+            "sortOrder": 9
           }
         ]
       },

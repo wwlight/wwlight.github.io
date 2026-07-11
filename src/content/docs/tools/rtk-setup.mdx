@@ -1,0 +1,88 @@
+---
+title: RTK 使用
+sidebar:
+  order: 10
+---
+
+:::note[RTK]
+[RTK](https://github.com/rtk-ai/rtk)（Rust Token Killer）终端输出压缩层：在命令输出到达 LLM 之前压缩 `git` / `ls` / `grep` / `test` / `build` 等常见开发命令，节省 60-90% token。[Headroom](/tools/headroom-setup/) 裁 API 上下文，RTK 裁终端输出。
+:::
+
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+
+## 安装
+
+```sh
+# macOS 安装
+$ brew install rtk
+# windows 安装
+$ scoop install rtk
+# 验证安装
+$ rtk --version
+```
+
+`rtk` 需在 `PATH` 中。OpenCode / Cursor 的集成均依赖 `rtk rewrite` 子命令自动改写命令，缺失时插件会安全降级为原命令。
+
+## 集成
+
+<Tabs syncKey="rtk-client">
+  <TabItem label="OpenCode">
+
+    > 全局安装 OpenCode 插件，写入 `~/.config/opencode/plugins/rtk.ts`。
+
+    ```sh
+    $ rtk init -g --opencode
+    ```
+
+  </TabItem>
+  <TabItem label="Cursor">
+
+    > 注册 Cursor 钩子到 `~/.cursor/hooks.json`，`preToolUse` 拦截 `Shell` 工具调用。
+
+    ```sh
+    $ rtk init -g --agent cursor
+    ```
+
+  </TabItem>
+</Tabs>
+
+同时安装两者：
+
+```sh
+$ rtk init -g --opencode --agent cursor
+```
+
+## 验证
+
+```sh
+# 预览改写结果（不改写原命令）
+$ rtk rewrite "git status"      # → rtk git status
+$ rtk rewrite "ls -la src/"     # → rtk ls -la src/
+$ rtk rewrite "cat foo.ts"      # → rtk read foo.ts
+# 查看当前接入状态
+$ rtk init --show
+# 查看 token 节省统计
+$ rtk gain
+```
+
+## 遥测与隐私
+
+```sh
+# 查看遥测状态（默认开启）
+$ rtk telemetry status
+# 关闭匿名使用统计（随时可开/关，不影响功能）
+$ rtk telemetry disable
+# 要求删除已收集数据（GDPR/RGPD 合规）
+$ rtk telemetry forget
+```
+
+## 运维与卸载
+
+```sh
+# 重新安装 / 更新插件与钩子（幂等）
+$ rtk init -g --opencode --agent cursor
+# 移除全部 RTK 接入（OpenCode 插件 + Cursor 钩子 + 指令）
+$ rtk init -g --uninstall
+# 仅移除 OpenCode 插件
+$ rtk init --opencode --uninstall
+```

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceFingerprint": "05974e425c5932ca948fff7868f4b3e93c90c30e7899b347f7fbf3cff3422883",
+  "sourceFingerprint": "13acc02851dd594ec98bd96c5f23d49559bb6a037c7bf7eb04821487b75ab6e0",
   "byUrl": {
     "https://tldr.inbrowser.app/": {
       "domain": "tldr.inbrowser.app"
@@ -457,6 +457,9 @@
     },
     "https://7sim.cc/en": {
       "domain": "7sim.cc"
+    },
+    "https://greenvideo.cc/": {
+      "domain": "greenvideo.cc"
     },
     "https://developer.mozilla.org/": {
       "domain": "developer.mozilla.org"
@@ -952,6 +955,9 @@
     },
     "https://fontawesome.com/": {
       "domain": "fontawesome.com"
+    },
+    "https://uxwing.com/": {
+      "domain": "uxwing.com"
     },
     "https://lordicon.com/": {
       "domain": "lordicon.com"

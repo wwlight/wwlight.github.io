@@ -5,7 +5,7 @@ sidebar:
 ---
 
 :::note[Serena]
-[Serena](https://github.com/oraios/serena) 是一个开源的 MCP 服务器，为 AI 编码代理提供符号级别的代码检索、编辑和重构工具，支持 40+ 语言（LSP 后端免费，JetBrains 插件付费）。
+[Serena](https://github.com/oraios/serena) 是一个强大的 MCP 编程工具包，提供语义检索和编辑能力——为你的智能体量身打造的 IDE。
 :::
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -13,10 +13,9 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 ## 安装步骤
 
 <Steps>
-1. 安装 uv 与 Serena CLI
+1. 安装 Serena
 
     ```sh
-    $ brew install uv
     $ uv tool install -p 3.13 serena-agent
     $ serena --version
     ```
@@ -26,23 +25,6 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 2. 集成 MCP 客户端
 
     <Tabs syncKey="mcp-client">
-      <TabItem label="Cursor">
-
-        在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级）：
-
-        ```json
-        {
-          "mcpServers": {
-            "serena": {
-              "type": "stdio",
-              "command": "serena",
-              "args": ["start-mcp-server", "--context=vscode", "--project-from-cwd"]
-            }
-          }
-        }
-        ```
-
-      </TabItem>
       <TabItem label="OpenCode">
 
         在 `~/.config/opencode/opencode.json` 的 `mcp` 字段添加：
@@ -68,6 +50,23 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
         ```
 
       </TabItem>
+      <TabItem label="Cursor">
+
+        在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级）：
+
+        ```json
+        {
+          "mcpServers": {
+            "serena": {
+              "type": "stdio",
+              "command": "serena",
+              "args": ["start-mcp-server", "--context=vscode", "--project-from-cwd"]
+            }
+          }
+        }
+        ```
+
+      </TabItem>
     </Tabs>
 
 3. 初始化项目
@@ -86,13 +85,10 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 ```sh
 # 更新
 $ uv tool upgrade serena-agent
-
 # 项目索引
 $ serena project index
-
 # 健康检查
 $ serena project health-check
-
 # 手动启动 MCP（调试）
 $ serena start-mcp-server --project-from-cwd
 ```

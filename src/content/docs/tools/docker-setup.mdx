@@ -1,5 +1,5 @@
 ---
-title: docker 命令速查表
+title: Docker 使用
 sidebar:
   order: 7
 ---
@@ -11,7 +11,7 @@ import { Steps } from "@astrojs/starlight/components";
 :::
 
 :::note[Colima]
-[Colima](https://colima.run/) 是 macOS（及 Linux）上的容器运行时，以最小配置即可运行 Docker 和 Containerd，支持 Intel 和 Apple Silicon。适用于替代 Docker Desktop、本地容器开发、多实例管理、Kubernetes 集群（--kubernetes）、Containerd 运行时、GPU 加速 AI 容器（--vm-type krunkit）、Rosetta 2 模拟（--vz-rosetta）等场景。
+[Colima](https://colima.run/) 是 macOS（及 Linux）上的容器运行时，以最小配置即可运行 Docker 和 Containerd，支持 Intel 和 Apple Silicon。适用于替代 Docker Desktop、本地容器开发、多实例管理、Kubernetes 集群、Containerd 运行时、GPU 加速 AI 容器、Rosetta 2 模拟等场景。
 :::
 
 ## 安装步骤
@@ -56,8 +56,6 @@ import { Steps } from "@astrojs/starlight/components";
 ## [Docker CLI 速查](https://docs.docker.com/reference/cli/docker/)
 
 ### 常用命令
-
-Legacy 顶层命令，等价于下方 [`docker container`](https://docs.docker.com/reference/cli/docker/container/) / [`docker image`](https://docs.docker.com/reference/cli/docker/image/) 子命令。
 
 ```sh {1,2,8}
 $ docker ps                                            # 运行中容器（≈ docker container ls）
@@ -141,7 +139,7 @@ $ docker image pull <name>[:tag]                       # 拉取镜像
 $ docker image push <name>[:tag]                       # 推送镜像
 $ docker image rm <image>…                             # 删除镜像
 $ docker image build -t <name> .                       # 从 Dockerfile 构建
-$ docker image tag <source> <target>                   # 打标签
+$ docker image tag <source> <target>                  # 打标签
 $ docker image history <image>                         # 查看分层历史
 $ docker image prune                                   # 清理悬空镜像
 $ docker image prune -a                                # 清理未使用镜像
