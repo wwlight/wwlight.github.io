@@ -49,7 +49,7 @@ rtk vp add <pkg>         # 添加依赖（不是 pnpm add）
 
 ### Tailwind v4
 - 用内置 scale：`p-1`、`min-h-15`，不用 `p-[1]`、`min-h-[60px]`
-- CSS 变量：`bg-(--primary)`，不用 `bg-[var(--primary)]`
+- CSS 变量：`bg-(--primary)`，不用方括号写法（避免 Tailwind JIT 误扫）
 - data 属性：`data-state-open:`、`group-data-state-open:`，不用 `data-[state=open]:`
 - 渐变：`bg-linear-to-*`，不用 `bg-gradient-to-*`
 - 方括号仅保留：`color-mix`、`calc()`、复杂 `shadow-[...]`
@@ -76,7 +76,7 @@ rtk vp add <pkg>         # 添加依赖（不是 pnpm add）
 |------|------|
 | `bg-gradient-to-*` | Tailwind v4 用 `bg-linear-to-*` |
 | `data-[state=open]:` | v4 用 `data-state-open:` |
-| `bg-[var(--...)]` | v4 用 `bg-(--...)` |
+| 方括号写法（如 `bg-...[...]`） | v4 用 `bg-(--...)` |
 | 引入新图标库 | 只用 Lucide |
 | `body { fixed } + scrollTo` 锁滚动 | 用 `html { overflow: hidden }` + `app-scrollbar` |
 | Radix Dialog 已锁时再叠自建锁 | 信任 Radix 的锁 |
