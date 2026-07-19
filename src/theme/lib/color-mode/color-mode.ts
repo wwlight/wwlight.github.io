@@ -7,6 +7,10 @@ import {
 } from '@/lib/site-storage'
 import { syncSiteFavicon } from '@/lib/generated-logo'
 
+/** 明暗切换圆形揭示动画参数。直接写常量，避免读 CSS 变量后被构建压缩成 `.4s` 导致 parseFloat 误判。 */
+const VT_DURATION = 400
+const VT_EASING = 'ease-in-out'
+
 export type ResolvedTheme = 'dark' | 'light'
 export type ThemePreference = ResolvedTheme | 'system'
 
@@ -137,30 +141,36 @@ export async function setThemeWithTransition(
   root.classList.add('theme-transitioning')
   const unlockScroll = lockDocumentScroll()
 
-  /* 供 CSS @keyframes 引用 */
-  root.style.setProperty('--vt-clip-x', `${x}px`)
-  root.style.setProperty('--vt-clip-y', `${y}px`)
-  root.style.setProperty('--vt-clip-r', `${endRadius}px`)
+  let clipAnimation: Animation | null = null
 
   try {
     const transition = document.startViewTransition(() => applyResolvedTheme(next))
+    await transition.ready
+
+    const pseudo = next === 'dark'
+      ? '::view-transition-old(root)'
+      : '::view-transition-new(root)'
+
+    const fromClip = next === 'dark'
+      ? `circle(${endRadius}px at ${x}px ${y}px)`
+      : `circle(0px at ${x}px ${y}px)`
+    const toClip = next === 'dark'
+      ? `circle(0px at ${x}px ${y}px)`
+      : `circle(${endRadius}px at ${x}px ${y}px)`
+
+    clipAnimation = document.documentElement.animate(
+      { clipPath: [fromClip, toClip] },
+      { duration: VT_DURATION, easing: VT_EASING, fill: 'both', pseudoElement: pseudo },
+    )
+
     await transition.finished
   }
   catch {
     applyResolvedTheme(next)
   }
   finally {
+    clipAnimation?.cancel()
     root.classList.remove('theme-transitioning')
-    root.style.removeProperty('--vt-clip-x')
-    root.style.removeProperty('--vt-clip-y')
-    root.style.removeProperty('--vt-clip-r')
     unlockScroll()
   }
-}
-
-export function toggleThemeWithTransition(event: { clientX: number, clientY: number }) {
-  const next = getResolvedTheme() === 'dark' ? 'light' : 'dark'
-  storeThemePreference(next)
-  void setThemeWithTransition(next, event)
-  return next
 }

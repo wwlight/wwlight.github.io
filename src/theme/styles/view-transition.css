@@ -1,17 +1,16 @@
-/* 明暗切换圆形揭示动画。data-theme 由 color-mode.ts 写入，CSS animation 驱动 clip-path。 */
+/* 明暗切换圆形揭示动画。data-theme 由 color-mode.ts 写入，clip-path 由 JS animate() 驱动。 */
 
 :root {
   --theme-transition-duration: 400ms;
   --theme-transition-easing: ease-in-out;
 }
 
-/* 覆盖 UA 默认 cross-fade，用 clip-path 动画实现圆形揭示 */
+/* 覆盖 UA 默认 cross-fade。clip-path 实际由 color-mode.ts 的 JS animate() 驱动，
+   此 keyframes 跑空动画仅占住 animation 槽位 */
 @keyframes view-transition {
-  from {
-    clip-path: var(--vt-clip-from, none);
-  }
+  from,
   to {
-    clip-path: var(--vt-clip-to, none);
+    clip-path: none;
   }
 }
 
@@ -35,7 +34,7 @@
   animation-name: none;
 }
 
-/* 切 dark：old 在上层内收；切 light：new 在上层外扩 */
+/* 切 dark：old 在上层内收；切 light：new 在上层外扩。clip-path 动画由 JS animate() 驱动 */
 ::view-transition-old(root),
 [data-theme='light']::view-transition-new(root) {
   z-index: 2147483647;
@@ -44,25 +43,6 @@
 ::view-transition-new(root),
 [data-theme='light']::view-transition-old(root) {
   z-index: 1;
-}
-
-/* 进入 dark：old shrink；进入 light：new grow。不动的元素设为 none 即不裁剪。 */
-[data-theme='dark']::view-transition-old(root) {
-  --vt-clip-from: circle(var(--vt-clip-r) at var(--vt-clip-x) var(--vt-clip-y));
-  --vt-clip-to: circle(0px at var(--vt-clip-x) var(--vt-clip-y));
-}
-[data-theme='dark']::view-transition-new(root) {
-  --vt-clip-from: none;
-  --vt-clip-to: none;
-}
-
-[data-theme='light']::view-transition-old(root) {
-  --vt-clip-from: none;
-  --vt-clip-to: none;
-}
-[data-theme='light']::view-transition-new(root) {
-  --vt-clip-from: circle(0px at var(--vt-clip-x) var(--vt-clip-y));
-  --vt-clip-to: circle(var(--vt-clip-r) at var(--vt-clip-x) var(--vt-clip-y));
 }
 
 /* 长页切换时暂停卡片等局部 transition，避免与 root 圆形揭示冲突 */
