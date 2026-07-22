@@ -7,3 +7,10 @@
 @utility stroke-icon {
   stroke-width: 1.85;
 }
+
+/** 小鹤键位 SVG：统一中西文无衬线，禁止假粗 */
+@utility flypy-svg-type {
+  font-family:
+    'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', system-ui, sans-serif;
+  font-synthesis: none;
+}

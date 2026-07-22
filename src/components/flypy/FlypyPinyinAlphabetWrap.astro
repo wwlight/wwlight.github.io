@@ -1,50 +1,8 @@
 ---
-import {
-  flypyAlphabetOuterWrapClass,
-  flypyAlphabetPreviewBarClass,
-  flypyAlphabetPreviewClass,
-  flypyAlphabetPreviewImgClass,
-  flypyAlphabetPreviewTriggerClass,
-  flypyAlphabetPreviewWrapClass,
-  flypyFallbackImgClass,
-  flypyInteractiveClass,
-} from './flypy-classes'
-import { FLYPY_PREVIEW_IMAGES } from './flypy-data'
+import { flypyAlphabetOuterWrapClass } from './flypy-classes'
 import FlypyPinyinAlphabet from './FlypyPinyinAlphabet'
-
-const previewAlt = '悟空拼音字母表'
-const previewSrc = FLYPY_PREVIEW_IMAGES.alphabet
 ---
 
 <div class={flypyAlphabetOuterWrapClass}>
-  <img
-    class={flypyFallbackImgClass}
-    src={previewSrc}
-    alt={previewAlt}
-    loading="lazy"
-    decoding="async"
-  />
-  <div class={flypyInteractiveClass}>
-    <div class={flypyAlphabetPreviewBarClass}>
-      <div class={flypyAlphabetPreviewWrapClass}>
-        <button
-          type="button"
-          class={flypyAlphabetPreviewTriggerClass}
-          aria-label={`${previewAlt}，悬停查看原图`}
-        >
-          查看
-        </button>
-        <div class={flypyAlphabetPreviewClass} role="tooltip" aria-hidden="true">
-          <img
-            class={flypyAlphabetPreviewImgClass}
-            src={previewSrc}
-            alt={previewAlt}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-      </div>
-    </div>
-    <FlypyPinyinAlphabet client:visible />
-  </div>
+  <FlypyPinyinAlphabet client:visible />
 </div>

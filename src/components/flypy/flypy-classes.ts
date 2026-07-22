@@ -2,8 +2,6 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { PinyinAlphabetTone } from './flypy-alphabet-data'
 
-export type FlypyKeyVariant = 'layout' | 'mnemonic' | 'radical'
-
 type FlypyBoardCssVars = {
   '--flypy-gap': string
   '--flypy-unit': string
@@ -26,72 +24,10 @@ export function flypyFigureClass(className?: string) {
   )
 }
 
-export const flypyFallbackImgClass = cn(
-  'block w-full rounded-[calc(var(--radius,0.25rem)+0.1rem)] sm:hidden',
-)
-
-export const flypyInteractiveClass = cn('hidden sm:block')
-
-export const flypyBoardClass = cn('@container flex w-full flex-col gap-[var(--flypy-gap)]')
-
-export const flypyRowBaseClass = cn(
-  'm-0 flex w-full min-h-[var(--flypy-unit)] items-stretch gap-[var(--flypy-gap)]',
-)
-
-export const FLYPY_ROW_CLASS = [
-  flypyRowBaseClass,
-  cn(
-    flypyRowBaseClass,
-    'ps-[calc(var(--flypy-unit)*0.5+var(--flypy-gap)*0.5)]',
-  ),
-  cn(
-    flypyRowBaseClass,
-    'ps-[calc(var(--flypy-unit)*1.5+var(--flypy-gap)*1.5)]',
-  ),
-] as const
-
-/** 键帽统一尺寸（键帽与右下角印章共用） */
+/** 字母表卡片与键位图共用的键帽尺寸 */
 export const flypyKeySizeClass = cn(
   'h-[var(--flypy-unit)] min-h-[var(--flypy-unit)] max-h-[var(--flypy-unit)]',
   'w-[var(--flypy-unit)] min-w-0',
-)
-
-/** 三张键盘图共用的键帽外壳 */
-export const flypyKeyBaseClass = cn(
-  flypyKeySizeClass,
-  'box-border m-0 flex flex-none flex-col items-stretch justify-start gap-0 overflow-hidden',
-  'p-[var(--flypy-key-pad)]',
-  'rounded-[calc(var(--radius,0.25rem)+0.1rem)]',
-  'border border-[color-mix(in_oklab,var(--sl-color-gray-5,var(--border))_36%,transparent)]',
-  'bg-[color-mix(in_oklab,var(--sl-color-bg,var(--background))_90%,var(--sl-color-gray-6,var(--muted)))]',
-  'text-(--sl-color-text,var(--foreground)) leading-[1.1]',
-  'shadow-[inset_0_1px_0_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_10%,transparent),0_1px_2px_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_7%,transparent)]',
-)
-
-const flypyKeyDefaultTextClass = 'text-[clamp(0.58rem,2.65cqi,0.74rem)]'
-const flypyKeyRadicalTextClass = 'text-[clamp(0.54rem,2.35cqi,0.68rem)]'
-
-const flypyKeyVariantClass: Record<FlypyKeyVariant, string> = {
-  layout: flypyKeyDefaultTextClass,
-  mnemonic: flypyKeyDefaultTextClass,
-  radical: flypyKeyRadicalTextClass,
-}
-
-export function flypyKeyClass(variant: FlypyKeyVariant = 'layout', className?: string) {
-  return cn(flypyKeyBaseClass, flypyKeyVariantClass[variant], className)
-}
-
-/** 键帽内部下方内容区（韵母、字根行等）共用布局 */
-export const flypyKeyBodyBaseClass = cn(
-  'm-0 flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-0 overflow-hidden',
-)
-
-export const flypyKeyHeadClass = cn(
-  'm-0 flex shrink-0 items-start justify-between gap-[0.08rem] leading-none',
-)
-
-export const flypyKeyLetterClass = cn(
-  'shrink-0 text-[clamp(0.92rem,4.2cqi,1.2rem)] font-bold leading-none',
 )
 
 export const flypyInitialTextClass =
@@ -103,68 +39,6 @@ export const flypyFinalTextClass =
 export const flypyFinalAltTextClass =
   'text-[light-dark(#16a34a,#4ade80)]'
 
-export const flypyKeyInitialClass = cn(
-  'shrink-0 text-[clamp(0.68rem,2.8cqi,0.84rem)] font-semibold leading-none',
-  flypyInitialTextClass,
-)
-
-export const flypyKeyAltClass = cn(
-  'shrink-0 text-[clamp(0.64rem,2.65cqi,0.8rem)] font-semibold leading-none',
-  flypyInitialTextClass,
-)
-
-export const flypyKeyTopRightClass = cn(
-  'inline-flex min-w-0 flex-1 items-start justify-end gap-[0.04rem] overflow-hidden leading-none',
-)
-
-export function flypyMnemonicCharClass(green?: boolean) {
-  return cn(
-    'shrink-0 text-[clamp(0.56rem,2.25cqi,0.72rem)] font-semibold leading-none',
-    green
-      ? 'text-[color-mix(in_oklab,var(--primary)_22%,#16a34a)]'
-      : 'text-[color-mix(in_oklab,var(--primary)_42%,#ea580c)]',
-  )
-}
-
-export function flypyKeyCornerClass(kind: keyof typeof flypyRadicalKindClass) {
-  return cn(
-    'shrink-0 text-right text-[clamp(0.5rem,2.05cqi,0.64rem)] font-semibold leading-none',
-    flypyRadicalKindClass[kind],
-  )
-}
-
-export function flypyFinalsClass() {
-  return cn(
-    flypyKeyBodyBaseClass,
-    'text-center text-[clamp(0.74rem,3.15cqi,0.96rem)] font-semibold leading-[1.28]',
-  )
-}
-
-export function flypyFinalLineClass(green?: boolean) {
-  return cn(
-    'm-0 block w-full overflow-hidden p-0 text-center text-[1em] leading-[1.28] text-ellipsis whitespace-nowrap',
-    green ? flypyFinalAltTextClass : flypyFinalTextClass,
-  )
-}
-
-export const flypyRadicalLinesClass = cn(
-  flypyKeyBodyBaseClass,
-  'text-[clamp(0.62rem,2.85cqi,0.82rem)] font-semibold',
-)
-
-export const flypyRadicalLineClass = cn(
-  'm-0 flex w-full flex-nowrap items-center justify-center gap-0 overflow-hidden p-0 text-center leading-[1.28]',
-)
-
-export function flypyRadicalLineSpanClass(multi: boolean) {
-  return cn(
-    'shrink-0 text-center leading-[1.28]',
-    multi
-      ? 'overflow-visible whitespace-nowrap'
-      : 'max-w-full overflow-hidden text-ellipsis whitespace-nowrap',
-  )
-}
-
 export const flypyRadicalKindClass = {
   phonetic: 'text-(--sl-color-text,var(--foreground))',
   'non-phonetic': 'text-[light-dark(#dc2626,#f87171)]',
@@ -172,20 +46,34 @@ export const flypyRadicalKindClass = {
   stroke: 'text-[light-dark(#2563eb,#60a5fa)]',
 } as const
 
-export function flypyRadicalSegmentClass(
-  multi: boolean,
-  kind: keyof typeof flypyRadicalKindClass,
-) {
-  return cn(flypyRadicalLineSpanClass(multi), flypyRadicalKindClass[kind])
-}
+/** 双拼布局 / 口诀 SVG 文字色 */
+export const flypyShuangpinToneClass = {
+  default: 'text-(--sl-color-text,var(--foreground))',
+  initial: flypyInitialTextClass,
+  final: flypyFinalTextClass,
+  'final-green': flypyFinalAltTextClass,
+  orange: 'text-[color-mix(in_oklab,var(--primary)_42%,#ea580c)]',
+  green: 'text-[color-mix(in_oklab,var(--primary)_22%,#16a34a)]',
+} as const
 
-export const flypyBrandWrapClass = cn(
-  'group relative m-0 box-border flex-none',
-  flypyKeySizeClass,
+export const flypySvgBoardClass = cn(
+  'flypy-svg-type block h-auto w-full overflow-visible',
 )
 
-export const flypyBrandButtonClass = cn(
-  'grid h-full w-full cursor-help appearance-none place-items-center border p-0',
+export const flypySvgKeyFill
+  = 'color-mix(in oklab, var(--sl-color-bg, var(--background)) 90%, var(--sl-color-gray-6, var(--muted)))'
+
+export const flypySvgKeyStroke
+  = 'color-mix(in oklab, var(--sl-color-gray-5, var(--border)) 36%, transparent)'
+
+export const flypySvgBrandFoClass = cn(
+  'box-border h-full w-full overflow-visible',
+  '[&>*]:h-full! [&>*]:w-full! [&>*]:min-h-0! [&>*]:max-h-none!',
+  '[&_button]:text-[length:0.95rem] [&_button]:leading-[1.15]',
+)
+
+export const flypySvgDownloadBtnClass = cn(
+  'grid h-full w-full cursor-pointer appearance-none place-items-center border p-0',
   'rounded-[calc(var(--radius,0.25rem)+0.1rem)]',
   'border-[color-mix(in_oklab,var(--primary)_70%,transparent)]',
   'bg-(--primary) text-(--primary-foreground,var(--sl-color-white))',
@@ -193,84 +81,9 @@ export const flypyBrandButtonClass = cn(
   'shadow-[inset_0_1px_0_color-mix(in_oklab,white_18%,transparent),0_1px_2px_color-mix(in_oklab,var(--primary)_35%,transparent)]',
 )
 
-export const flypyBrandPreviewClass = cn(
-  'pointer-events-none invisible absolute right-0 bottom-[calc(100%+0.55rem)] z-8 opacity-0',
-  'w-[min(28rem,calc(100cqi*2.4))] rounded-[calc(var(--radius,0.25rem)+0.15rem)]',
-  'border border-[color-mix(in_oklab,var(--sl-color-gray-5,var(--border))_48%,transparent)] bg-(--sl-color-bg,var(--background)) p-[0.35rem]',
-  'shadow-[0_10px_28px_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_16%,transparent),0_2px_8px_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_8%,transparent)]',
-  'transition-[opacity,visibility] duration-[180ms] ease-out',
-  '[@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100',
-  '[@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100',
-)
-
-export const flypyBrandPreviewImgClass = cn(
-  'block w-full rounded-[calc(var(--radius,0.25rem)+0.05rem)]',
-)
-
-export const flypyLegendTextClass = cn(
-  'mt-[0.85rem] mb-0 text-[0.78rem] leading-normal text-(--sl-color-text,var(--foreground))',
-)
-
-export const flypySmallTitleClass = cn(
-  'mt-4 mb-2 text-[0.9rem] font-semibold text-(--sl-color-text,var(--foreground))',
-)
-
-export const flypySmallListClass = cn(
-  'm-0 columns-2 gap-4 p-0 text-[0.86rem] leading-[1.6] list-none md:columns-3',
-)
-
-export const flypySmallItemClass = cn(
-  'relative mb-[0.3rem] break-inside-avoid ps-[calc(0.9rem+0.3rem)] leading-none',
-)
-
-export const flypySmallKeyClass = cn(
-  'absolute top-[0.85rem] left-0 flex h-[1em] w-[0.9rem] items-end font-bold leading-none text-(--primary)',
-)
-
-export const flypySmallCharsClass = cn(
-  'flex min-w-0 flex-wrap leading-none',
-)
-
-export const flypySmallCharClass = cn(
-  'inline-flex h-[calc(0.85rem+1em)] w-[1.12em] shrink-0 grow-0 basis-[1.12em] flex-col leading-none',
-)
-
-export const flypySmallPinyinClass = cn(
-  'box-border flex h-[0.85rem] shrink-0 items-end justify-center text-[0.72rem] leading-none font-normal tracking-normal whitespace-nowrap text-(--sl-color-gray-3,var(--muted-foreground))',
-)
-
-export const flypySmallHanziClass = cn(
-  'box-border flex h-[1em] shrink-0 items-end justify-center text-center leading-none',
-)
-
 export const flypyAlphabetOuterWrapClass = cn('not-content my-5')
 
 export const flypyAlphabetWrapClass = cn('space-y-4')
-
-export const flypyAlphabetPreviewWrapClass = cn('group/preview relative')
-
-export const flypyAlphabetPreviewBarClass = cn('mb-2 flex justify-end')
-
-export const flypyAlphabetPreviewTriggerClass = cn(
-  'cursor-help appearance-none border-0 bg-transparent p-0',
-  'text-[0.78rem] leading-normal text-(--sl-color-gray-3,var(--muted-foreground))',
-  'underline decoration-dotted underline-offset-[0.2em]',
-  'transition-colors hover:text-(--sl-color-text,var(--foreground))',
-)
-
-export const flypyAlphabetPreviewClass = cn(
-  'pointer-events-none invisible absolute right-0 top-[calc(100%+0.35rem)] z-8 opacity-0',
-  'w-[min(36rem,92vw)] rounded-[calc(var(--radius,0.25rem)+0.15rem)]',
-  'border border-[color-mix(in_oklab,var(--sl-color-gray-5,var(--border))_48%,transparent)] bg-(--sl-color-bg,var(--background)) p-[0.35rem]',
-  'shadow-[0_10px_28px_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_16%,transparent),0_2px_8px_color-mix(in_oklab,var(--sl-color-text,var(--foreground))_8%,transparent)]',
-  'transition-[opacity,visibility] duration-[180ms] ease-out',
-  '[@media(hover:hover)_and_(pointer:fine)]:group-hover/preview:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover/preview:opacity-100',
-  '[@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100',
-)
-
-export const flypyAlphabetPreviewImgClass = cn(
-  'block w-full rounded-[calc(var(--radius,0.25rem)+0.05rem)]',
-)
 
 export function flypyAlphabetSectionClass(tone: PinyinAlphabetTone) {
   return cn(
@@ -300,7 +113,7 @@ export const flypyAlphabetGridClass = cn(
   '@container flex w-full flex-wrap gap-[var(--flypy-gap)]',
 )
 
-export function flypyAlphabetCardClass(options?: { active?: boolean; dimmed?: boolean }) {
+export function flypyAlphabetCardClass(options?: { active?: boolean, dimmed?: boolean }) {
   return cn(
     flypyKeySizeClass,
     'relative box-border flex flex-none min-w-0 cursor-default flex-col overflow-visible',

@@ -1,112 +1,223 @@
 ---
 import {
-  FLYPY_ROW_CLASS,
-  flypyBoardClass,
-  flypyBoardStyle,
-  flypyKeyClass,
-  flypyKeyCornerClass,
-  flypyKeyHeadClass,
-  flypyKeyLetterClass,
-  flypyLegendTextClass,
   flypyRadicalKindClass,
-  flypyRadicalLineClass,
-  flypyRadicalLinesClass,
-  flypyRadicalSegmentClass,
-  flypySmallCharClass,
-  flypySmallCharsClass,
-  flypySmallHanziClass,
-  flypySmallItemClass,
-  flypySmallKeyClass,
-  flypySmallListClass,
-  flypySmallPinyinClass,
-  flypySmallTitleClass,
+  flypySvgBoardClass,
+  flypySvgBrandFoClass,
+  flypySvgDownloadBtnClass,
+  flypySvgKeyFill,
+  flypySvgKeyStroke,
 } from './flypy-classes'
+import { GLYPH_CROPS } from './flypy-data'
 import {
-  FLYPY_PREVIEW_IMAGES,
-  FLYPY_RADICAL_ROWS,
-  FLYPY_SMALL_CHAR_PINYIN,
-  FLYPY_SMALL_CHARS,
-} from './flypy-data'
-import FlypyBrand from './FlypyBrand.astro'
+  buildRadicalSvgLayout,
+  FLYPY_SVG_RADIUS,
+} from './flypy-radical-svg-layout'
 import FlypyFigure from './FlypyFigure.astro'
+
+const layout = buildRadicalSvgLayout()
+const cropMap = new Map(GLYPH_CROPS.map(c => [c.id, c]))
 ---
 
-<FlypyFigure
-  src={FLYPY_PREVIEW_IMAGES.radicals}
-  alt="小鹤音形部件字根键位图"
-  ariaLabel="小鹤音形部件字根键位图"
->
-  <div class={flypyBoardClass} style={flypyBoardStyle}>
-    {
-      FLYPY_RADICAL_ROWS.map((row, rowIndex) => (
-        <div class={FLYPY_ROW_CLASS[rowIndex]}>
-          {row.map(item => (
-            <div class={flypyKeyClass('radical')}>
-              <div class={flypyKeyHeadClass}>
-                <span class={flypyKeyLetterClass}>{item.key}</span>
-                {item.corner && (
-                  <span class={flypyKeyCornerClass(item.corner.kind)}>
-                    {item.corner.text}
-                  </span>
-                )}
-              </div>
-              <div class={flypyRadicalLinesClass}>
-                {item.lines.map(line => (
-                  <div class={flypyRadicalLineClass}>
-                    {line.map(segment => (
-                      <span
-                        class={flypyRadicalSegmentClass(
-                          line.length > 1,
-                          segment.kind,
-                        )}
-                      >
-                        {segment.text}
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          {rowIndex === 2 && (
-            <FlypyBrand
-              previewSrc={FLYPY_PREVIEW_IMAGES.radicals}
-              previewAlt="小鹤音形部件字根键位原图"
+<FlypyFigure ariaLabel="小鹤音形部件字根键位图">
+  <svg
+    class={flypySvgBoardClass}
+    viewBox={layout.viewBox}
+    role="img"
+    aria-label="小鹤音形部件字根键位图"
+  >
+    <defs>
+      {
+        GLYPH_CROPS.map(crop => (
+          <symbol id={`flypy-glyph-${crop.id}`} viewBox={crop.viewBox}>
+            {crop.path && (
+              <path d={crop.path} fill="currentColor" stroke="none" />
+            )}
+            {crop.strokes?.map(d => (
+              <path
+                d={d}
+                stroke="currentColor"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
+            ))}
+          </symbol>
+        ))
+      }
+    </defs>
+
+    <g data-part="keyboard">
+      {
+        layout.keys.map(key => (
+          <g data-key={key.key}>
+            <rect
+              x={key.x}
+              y={key.y}
+              width={key.size}
+              height={key.size}
+              rx={FLYPY_SVG_RADIUS}
+              ry={FLYPY_SVG_RADIUS}
+              fill={flypySvgKeyFill}
+              stroke={flypySvgKeyStroke}
+              stroke-width="1"
             />
-          )}
-        </div>
-      ))
-    }
-  </div>
-
-  <p class={flypyLegendTextClass}>
-    基本以音定键，
-    <span class={flypyRadicalKindClass['non-phonetic']}>红色非音托部件</span>，
-    <span class={flypyRadicalKindClass.special}>绿色特别规则部件</span>，
-    <span class={flypyRadicalKindClass.stroke}>蓝色为笔画</span>
-  </p>
-
-  <p class={flypySmallTitleClass}>小字字根</p>
-  <ul class={flypySmallListClass}>
-    {
-      FLYPY_SMALL_CHARS.map(item => (
-        <li class={flypySmallItemClass}>
-          <span class={flypySmallKeyClass}>{item.key}</span>
-          <span class={flypySmallCharsClass}>
-            {[...item.chars].map((char) => {
-              const pinyin = FLYPY_SMALL_CHAR_PINYIN[char]
+            <text
+              x={key.letterX}
+              y={key.letterY}
+              font-size={key.letterSize}
+              font-weight="700"
+              fill="currentColor"
+              class={flypyRadicalKindClass.phonetic}
+            >
+              {key.key}
+            </text>
+            {key.corner && (
+              <text
+                x={key.corner.x}
+                y={key.corner.y}
+                font-size={key.corner.size}
+                font-weight="500"
+                text-anchor="end"
+                fill="currentColor"
+                class={flypyRadicalKindClass[key.corner.kind]}
+              >
+                {key.corner.text}
+              </text>
+            )}
+            {key.glyphs.map((glyph) => {
+              if (glyph.type === 'text') {
+                return (
+                  <text
+                    x={glyph.x + glyph.w / 2}
+                    y={glyph.y + glyph.h * 0.82}
+                    font-size={glyph.h}
+                    font-weight="500"
+                    text-anchor="middle"
+                    fill="currentColor"
+                    class={flypyRadicalKindClass[glyph.kind]}
+                  >
+                    {glyph.char}
+                  </text>
+                )
+              }
+              const crop = cropMap.get(glyph.id)
+              if (!crop?.path && !crop?.strokes?.length)
+                return null
               return (
-                <span class={flypySmallCharClass}>
-                  <span class={flypySmallPinyinClass} aria-hidden={!pinyin}>
-                    {pinyin ?? ''}
-                  </span>
-                  <span class={flypySmallHanziClass}>{char}</span>
-                </span>
+                <use
+                  href={`#flypy-glyph-${glyph.id}`}
+                  x={glyph.x}
+                  y={glyph.y}
+                  width={glyph.w}
+                  height={glyph.h}
+                  fill="currentColor"
+                  class={flypyRadicalKindClass[glyph.kind]}
+                />
               )
             })}
-          </span>
-        </li>
-      ))
-    }
-  </ul>
+          </g>
+        ))
+      }
+
+      <foreignObject
+        x={layout.brand.x}
+        y={layout.brand.y}
+        width={layout.brand.size}
+        height={layout.brand.size}
+      >
+        <div class={flypySvgBrandFoClass}>
+          <button
+            type="button"
+            class={flypySvgDownloadBtnClass}
+            data-flypy-svg-download
+            data-download-name="小鹤音形部件字根键位图.png"
+            aria-label="下载小鹤音形部件字根键位图 PNG"
+            title="下载 PNG"
+          >
+            <span>小鹤<br />双形</span>
+          </button>
+        </div>
+      </foreignObject>
+    </g>
+
+    <text
+      x={layout.width / 2}
+      y={layout.legendY}
+      font-size={layout.font.legend}
+      font-weight="500"
+      text-anchor="middle"
+      fill="currentColor"
+      class={flypyRadicalKindClass.phonetic}
+    >
+      基本以音定键，
+      <tspan class={flypyRadicalKindClass['non-phonetic']} fill="currentColor">红色非音托部件</tspan>
+      ，
+      <tspan class={flypyRadicalKindClass.special} fill="currentColor">绿色特别规则部件</tspan>
+      ，
+      <tspan class={flypyRadicalKindClass.stroke} fill="currentColor">蓝色为笔画</tspan>
+    </text>
+
+    <text
+      x="0"
+      y={layout.smallTitleY}
+      font-size={layout.font.smallTitle}
+      font-weight="500"
+      fill="currentColor"
+      class={flypyRadicalKindClass.phonetic}
+    >
+      小字字根
+    </text>
+
+    <g data-part="small-chars">
+      {
+        layout.smallItems.map(item => (
+          <g data-small-key={item.key}>
+            <text
+              x={item.keyX}
+              y={item.keyY}
+              font-size={layout.font.smallKey}
+              font-weight="700"
+              fill="var(--primary)"
+            >
+              {item.key}
+            </text>
+            {item.chars.map(ch => (
+              <g>
+                <text
+                  x={ch.x}
+                  y={ch.pinyinY}
+                  font-size={layout.font.smallPinyin}
+                  font-weight="400"
+                  text-anchor="middle"
+                  fill="var(--sl-color-gray-3, var(--muted-foreground))"
+                  aria-hidden={ch.pinyin ? undefined : 'true'}
+                >
+                  {ch.pinyin ?? ''}
+                </text>
+                <text
+                  x={ch.x}
+                  y={ch.charY}
+                  font-size={layout.font.smallHanzi}
+                  font-weight="500"
+                  text-anchor="middle"
+                  fill="currentColor"
+                  class={flypyRadicalKindClass.phonetic}
+                >
+                  {ch.char}
+                </text>
+              </g>
+            ))}
+          </g>
+        ))
+      }
+    </g>
+  </svg>
 </FlypyFigure>
+
+<script>
+  import { setupFlypySvgDownload } from './flypy-svg-download'
+
+  setupFlypySvgDownload()
+  document.addEventListener('astro:page-load', setupFlypySvgDownload)
+</script>

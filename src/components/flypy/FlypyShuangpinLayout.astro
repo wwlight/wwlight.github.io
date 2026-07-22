@@ -1,45 +1,110 @@
 ---
 import {
-  FLYPY_ROW_CLASS,
-  flypyBoardClass,
-  flypyBoardStyle,
-  flypyKeyClass,
-  flypyKeyHeadClass,
-  flypyKeyInitialClass,
-  flypyKeyLetterClass,
+  flypyShuangpinToneClass,
+  flypySvgBoardClass,
+  flypySvgBrandFoClass,
+  flypySvgDownloadBtnClass,
+  flypySvgKeyFill,
+  flypySvgKeyStroke,
 } from './flypy-classes'
-import { FLYPY_PREVIEW_IMAGES, FLYPY_ROWS } from './flypy-data'
-import FlypyBrand from './FlypyBrand.astro'
+import {
+  buildLayoutSvgLayout,
+  FLYPY_SVG_RADIUS,
+} from './flypy-shuangpin-svg-layout'
 import FlypyFigure from './FlypyFigure.astro'
-import FlypyFinals from './FlypyFinals.astro'
+
+const layout = buildLayoutSvgLayout()
 ---
 
-<FlypyFigure
-  src={FLYPY_PREVIEW_IMAGES.layout}
-  alt="小鹤双拼键盘布局"
-  ariaLabel="小鹤双拼键盘布局"
->
-  <div class={flypyBoardClass} style={flypyBoardStyle}>
-    {
-      FLYPY_ROWS.map((row, rowIndex) => (
-        <div class={FLYPY_ROW_CLASS[rowIndex]}>
-          {row.map(item => (
-            <div class={flypyKeyClass('layout')}>
-              <div class={flypyKeyHeadClass}>
-                <span class={flypyKeyLetterClass}>{item.key}</span>
-                <span class={flypyKeyInitialClass}>{item.initial}</span>
-              </div>
-              <FlypyFinals finals={item.finals} />
-            </div>
-          ))}
-          {rowIndex === 2 && (
-            <FlypyBrand
-              previewSrc={FLYPY_PREVIEW_IMAGES.layout}
-              previewAlt="小鹤双拼键盘布局原图"
+<FlypyFigure ariaLabel="小鹤双拼键盘布局">
+  <svg
+    class={flypySvgBoardClass}
+    viewBox={layout.viewBox}
+    role="img"
+    aria-label="小鹤双拼键盘布局"
+  >
+    <g data-part="keyboard">
+      {
+        layout.keys.map(key => (
+          <g data-key={key.key}>
+            <rect
+              x={key.x}
+              y={key.y}
+              width={key.size}
+              height={key.size}
+              rx={FLYPY_SVG_RADIUS}
+              ry={FLYPY_SVG_RADIUS}
+              fill={flypySvgKeyFill}
+              stroke={flypySvgKeyStroke}
+              stroke-width="1"
             />
-          )}
+            <text
+              x={key.letter.x}
+              y={key.letter.y}
+              font-size={key.letter.size}
+              font-weight="700"
+              text-anchor={key.letter.anchor}
+              fill="currentColor"
+              class={flypyShuangpinToneClass[key.letter.tone]}
+            >
+              {key.letter.text}
+            </text>
+            {key.topRight.map(item => (
+              <text
+                x={item.x}
+                y={item.y}
+                font-size={item.size}
+                font-weight="500"
+                text-anchor={item.anchor}
+                fill="currentColor"
+                class={flypyShuangpinToneClass[item.tone]}
+              >
+                {item.text}
+              </text>
+            ))}
+            {key.finals.map(item => (
+              <text
+                x={item.x}
+                y={item.y}
+                font-size={item.size}
+                font-weight="500"
+                text-anchor={item.anchor}
+                fill="currentColor"
+                class={flypyShuangpinToneClass[item.tone]}
+              >
+                {item.text}
+              </text>
+            ))}
+          </g>
+        ))
+      }
+
+      <foreignObject
+        x={layout.brand.x}
+        y={layout.brand.y}
+        width={layout.brand.size}
+        height={layout.brand.size}
+      >
+        <div class={flypySvgBrandFoClass}>
+          <button
+            type="button"
+            class={flypySvgDownloadBtnClass}
+            data-flypy-svg-download
+            data-download-name="小鹤双拼键盘布局.png"
+            aria-label="下载小鹤双拼键盘布局 PNG"
+            title="下载 PNG"
+          >
+            <span>小鹤<br />双拼</span>
+          </button>
         </div>
-      ))
-    }
-  </div>
+      </foreignObject>
+    </g>
+  </svg>
 </FlypyFigure>
+
+<script>
+  import { setupFlypySvgDownload } from './flypy-svg-download'
+
+  setupFlypySvgDownload()
+  document.addEventListener('astro:page-load', setupFlypySvgDownload)
+</script>
