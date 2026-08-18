@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   ui: {
     fonts: false
   },
+  mcp: {
+    enabled: false,
+  },
   studio: {
     repository: {
       provider: 'github',

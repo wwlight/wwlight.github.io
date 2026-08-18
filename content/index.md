@@ -18,7 +18,7 @@ Docus brings the best of the Nuxt ecosystem into one CLI.
   ---
   color: neutral
   size: xl
-  to: /getting-started/installation
+  to: /notes/dev-qa
   trailing-icon: i-lucide-arrow-right
   ---
   Get started
