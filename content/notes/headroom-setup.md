@@ -1,0 +1,142 @@
+---
+title: Headroom 使用
+navigation:
+  icon: i-lucide:toolbox
+---
+
+::note
+[Headroom](https://headroom-docs.vercel.app/docs) 本地上下文压缩层：在工具输出、日志、文件和 RAG 块到达 LLM 之前对其进行压缩，节省 60-95% token。上游接 [OmniRoute](/tools/omniroute-setup/)，下游模型无感。[RTK](/tools/rtk-setup/) 裁终端输出，Headroom 裁 API 上下文。
+::
+
+
+## 安装服务
+
+前置：[OmniRoute](/tools/omniroute-setup/) 已部署在同一 `~/.docker/compose.yml`。
+
+::steps{level="4"}
+
+#### 添加 Headroom 服务
+
+```yml [~/.docker/compose.yml]
+services:
+  headroom:
+    image: ghcr.io/chopratejas/headroom:latest
+    container_name: headroom
+    ports:
+      - "127.0.0.1:20129:20129"
+    command: ["--host", "0.0.0.0", "--port", "20129"]
+    environment:
+      OPENAI_TARGET_API_URL: http://omniroute:20128/v1
+      LITELLM_SUPPRESS_DEBUG_INFO: "True"
+    restart: unless-stopped
+    volumes:
+      - ~/.docker/headroom-data:/root/.headroom
+    depends_on:
+      - omniroute
+```
+
+- `command` 覆盖镜像默认的 `--port 8787`，使容器内也监听 `20129`。
+- `OPENAI_TARGET_API_URL` 将压缩后的请求转发到同 compose 内的 OmniRoute。
+- `volumes` 把 `/root/.headroom`（含 `proxy_savings.json` 统计、压缩缓存）挂到绑定挂载 `~/.docker/headroom-data`，避免 `docker compose down` / 更新镜像后统计清零。
+
+#### 命令
+
+```sh
+# 启动
+$ docker compose up -d headroom
+# 停止
+$ docker compose stop headroom
+# 更新
+$ docker compose up -d --pull always headroom
+```
+
+##### 验证
+
+```sh
+$ curl http://127.0.0.1:20129/health
+$ curl http://127.0.0.1:20129/stats
+```
+
+::
+
+## 集成 MCP
+
+::tabs{sync="mcp-client"}
+
+:::tabs-item{label="OpenCode"}
+
+> provider `baseURL` 指向 Headroom proxy，MCP 通过 `docker exec` 进入容器。
+
+```json [~/.config/opencode/opencode.json] {14}
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "headroom": {
+      "type": "local",
+      "command": ["docker", "exec", "-i", "headroom", "headroom", "mcp", "serve", "--proxy-url", "http://localhost:20129"],
+      "enabled": true
+    }
+  },
+  "provider": {
+    "omniroute": {
+      "api": "openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:20129/v1"
+      },
+      "models": {
+        "auto/best-free":            { "name": "Auto Best Free", "description": "免费最优，日常首选" },
+        "oc/big-pickle":             { "name": "Big Pickle", "description": "OpenCode 免费模型" },
+        "oc/deepseek-v4-flash-free": { "name": "DeepSeek V4 Free", "description": "DeepSeek V4 免费版" }
+      }
+    }
+  },
+  "model": "omniroute/auto/best-free"
+}
+```
+
+> 流量路径：OpenCode → Headroom `:20129`（压缩）→ OmniRoute `:20128` → LLM。
+
+:::
+
+:::tabs-item{label="Cursor"}
+
+> 用户级，所有项目共用。
+
+```json [~/.cursor/mcp.json]
+{
+  "mcpServers": {
+    "headroom": {
+      "command": "docker",
+      "args": ["exec", "-i", "headroom", "headroom", "mcp", "serve", "--proxy-url", "http://localhost:20129"]
+    }
+  }
+}
+```
+
+:::
+
+::
+
+## 运维与卸载
+
+```sh
+# 健康检查
+$ curl http://127.0.0.1:20129/health
+# 压缩统计
+$ curl http://127.0.0.1:20129/stats
+# 仪表盘
+$ curl http://127.0.0.1:20129/dashboard
+# MCP 状态（容器名 headroom，容器内 headroom CLI）
+$ docker exec headroom headroom mcp status
+# 删除容器
+$ docker compose rm -f headroom
+# 删除镜像
+$ docker rmi ghcr.io/chopratejas/headroom:latest
+```
+
+> 卸载后从 `~/.cursor/mcp.json` 或 `opencode.json` 移除 `headroom`；OpenCode 还将 provider `baseURL` 改回 `http://localhost:20128/v1`。
+
+## 注意事项
+
+- Headroom 与 OmniRoute 须在同一 compose 文件，容器间通过服务名 `omniroute` 互通
+- Proxy 压缩 HTTP 流量，MCP 压缩 Agent 主动提交的大块内容，二者数据面独立

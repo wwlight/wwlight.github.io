@@ -1,0 +1,120 @@
+---
+title: Serena 使用
+navigation:
+  icon: i-lucide:toolbox
+---
+
+::note
+[Serena](https://github.com/oraios/serena) 是一个强大的 MCP 编程工具包，提供语义检索和编辑能力——为你的智能体量身打造的 IDE。
+::
+
+
+## 安装步骤
+
+::steps{level="4"}
+
+#### 安装 Serena
+
+```sh
+$ uv tool install -p 3.13 serena-agent
+$ serena --version
+```
+
+终端若找不到 `serena`，在 `.zshrc` 加 `export PATH="$HOME/.local/bin:$PATH"`。MCP 配置内联 PATH，集成 MCP 不必改 `.zshrc`。
+
+#### 集成 MCP 客户端
+
+::tabs{sync="mcp-client"}
+
+:::tabs-item{label="OpenCode"}
+
+在 `~/.config/opencode/opencode.json` 的 `mcp` 字段添加：
+
+```json
+{
+  "mcp": {
+    "serena": {
+      "type": "local",
+      "command": ["serena", "start-mcp-server", "--context", "ide"],
+      "enabled": true
+    }
+  }
+}
+```
+
+可选 `instructions`：
+
+```json
+"instructions": [
+  "Use `serena` tools for symbol-level code operations: find symbol definitions, references, rename across files, replace symbol bodies, insert code before/after symbols."
+]
+```
+
+:::
+
+:::tabs-item{label="Cursor"}
+
+在 `~/.cursor/mcp.json` 的 `mcpServers` 添加（用户级）：
+
+```json
+{
+  "mcpServers": {
+    "serena": {
+      "type": "stdio",
+      "command": "serena",
+      "args": ["start-mcp-server", "--context=vscode", "--project-from-cwd"]
+    }
+  }
+}
+```
+
+:::
+
+::
+
+#### 初始化项目
+
+在项目根目录执行 `serena init`，生成 `.serena/` 目录。项目配置在 `.serena/project.yml`，本地覆盖用 `.serena/project.local.yml`（不提交）。
+
+#### 验证
+
+重启客户端，在对话中测试：`请帮我找到项目中 main 函数的定义`
+
+::
+
+
+## 常用命令
+
+```sh
+# 更新
+$ uv tool upgrade serena-agent
+# 项目索引
+$ serena project index
+# 健康检查
+$ serena project health-check
+# 手动启动 MCP（调试）
+$ serena start-mcp-server --project-from-cwd
+```
+
+
+## 核心工具
+
+| 分类 | 工具 | 功能 |
+|------|------|------|
+| 检索 | `serena_find_symbol` | 按名称搜索符号，支持源码/文档提取 |
+| 检索 | `serena_get_symbols_overview` | 获取文件结构概览 |
+| 检索 | `serena_find_referencing_symbols` | 查找所有引用位置 |
+| 检索 | `serena_find_implementations` | 查找接口/抽象类的所有实现 |
+| 编辑 | `serena_replace_symbol_body` | 替换符号体，保留签名 |
+| 编辑 | `serena_insert_after_symbol` | 在符号之后插入代码 |
+| 编辑 | `serena_safe_delete_symbol` | 安全删除（有引用时阻止） |
+| 重构 | `serena_rename_symbol` | 跨文件重命名符号 |
+| 重构 | `serena_replace_content` | 正则/字面文本替换 |
+| 记忆 | `serena_write_memory` / `serena_read_memory` | 跨会话知识持久化 |
+
+
+## 注意事项
+
+- 默认使用 LSP 后端（免费），支持 40+ 语言
+- stdio 模式由编辑器拉起，无需手动常驻 `start-mcp-server`
+- 多客户端共享实例可用 `streamable-http` 模式，需自行启动并配置 URL

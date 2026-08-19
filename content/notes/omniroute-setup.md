@@ -1,0 +1,104 @@
+---
+title: OmniRoute 使用
+navigation:
+  icon: i-lucide:toolbox
+---
+
+::note
+[OmniRoute](https://github.com/diegosouzapw/OmniRoute) 本地 AI 网关：单一 OpenAI 兼容端点接入多 provider，负责选路、兜底与 failover。
+::
+
+
+## 安装服务
+
+::steps{level="4"}
+
+#### 添加 OmniRoute 服务
+
+```yml [~/.docker/compose.yml]
+services:
+  omniroute:
+    image: diegosouzapw/omniroute:main-web
+    container_name: omniroute
+    ports:
+      - "127.0.0.1:20128:20128"
+    restart: unless-stopped
+```
+
+#### 命令
+
+```sh
+# 启动
+$ docker compose up -d omniroute
+# 停止
+$ docker compose stop omniroute
+# 更新
+$ docker compose up -d --pull always omniroute
+```
+
+#### 验证
+
+```sh
+$ curl http://localhost:20128/v1/models
+```
+
+::
+
+
+## OpenCode 集成
+
+::tabs{sync="integration"}
+
+:::tabs-item{label="方式一：Provider 静态配置"}
+
+```json {8}
+# ~/.config/opencode/opencode.json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "omniroute": {
+      "api": "openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:20128/v1"
+      },
+      "models": {
+        "auto/best-free":            { "name": "Auto Best Free", "description": "免费最优，日常首选" },
+        "oc/big-pickle":             { "name": "Big Pickle", "description": "OpenCode 免费模型" },
+        "oc/deepseek-v4-flash-free": { "name": "DeepSeek V4 Free", "description": "DeepSeek V4 免费版" }
+      }
+    }
+  },
+  "model": "omniroute/auto/best-free"
+}
+```
+
+:::
+
+:::tabs-item{label="方式二：Plugin（需 API Key 鉴权）"}
+
+适合已开通 `OmniRoute` 账号需动态拉取完整模型目录的场景。通过 `OmniRoute CLI` 一键完成插件安装与鉴权。
+
+```sh
+$ npm install -g omniroute
+$ omniroute setup opencode --base-url http://localhost:20128 --auth
+```
+
+> 会复制插件到 `~/.config/opencode/plugins/omniroute/`、更新 `opencode.json`、交互式写入 `API Key`。<br />
+> 完成后重启 `OpenCode`，`/models` 即可看到完整目录。
+
+:::
+
+::
+
+## 运维与排障
+
+控制台提示「服务器存在异常」或 `curl /v1/models` 超时：
+
+```sh
+# 重启服务
+$ docker compose restart omniroute
+# 查看日志
+$ docker logs omniroute --tail 50
+# 拉最新镜像重建
+$ docker compose up -d --pull always omniroute
+```
