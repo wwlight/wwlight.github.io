@@ -8,6 +8,23 @@ export default defineNuxtConfig({
   ui: {
     fonts: false
   },
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          langs: ['sh', 'js', 'json', 'md']
+        },
+        rehypePlugins: {
+          'rehype-external-links': {
+            options: {
+              target: '_blank',
+              rel: ['noopener', 'noreferrer']
+            }
+          }
+        }
+      }
+    }
+  },
   mcp: {
     enabled: false,
   },
