@@ -1,7 +1,3 @@
-/**
- * 明暗切换圆形揭示动画（移植自 wwlight.github.io/src/theme/lib/color-mode/color-mode.ts）
- * 使用 View Transitions API + clip-path，配合 app/app.css 的分层规则。
- */
 const VT_DURATION = 400
 const VT_EASING = 'ease-in-out'
 
@@ -32,23 +28,16 @@ function getSystemTheme(): 'dark' | 'light' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-function getResolvedTheme(): 'dark' | 'light' {
-  const root = document.documentElement
-  if (root.classList.contains('dark'))
-    return 'dark'
-  if (root.classList.contains('light'))
-    return 'light'
-  return getSystemTheme()
-}
-
 function applyTheme(theme: 'dark' | 'light') {
-  const root = document.documentElement
-  root.classList.toggle('dark', theme === 'dark')
-  root.classList.toggle('light', theme === 'light')
+  document.documentElement.classList.toggle('dark', theme === 'dark')
 }
 
 export function useThemeTransition() {
   const colorMode = useColorMode()
+
+  function getResolvedTheme(): 'dark' | 'light' {
+    return colorMode.value === 'dark' ? 'dark' : 'light'
+  }
 
   async function setModeWithTransition(
     preference: 'dark' | 'light' | 'system',

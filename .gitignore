@@ -35,3 +35,6 @@ logs
 #VSC
 .history
 .wrangler
+
+# Serena (AI tooling) project config
+.serena

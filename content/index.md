@@ -19,7 +19,7 @@ Docus brings the best of the Nuxt ecosystem into one CLI.
   color: neutral
   size: xl
   to: /notes/dev-qa
-  trailing-icon: i-lucide-arrow-right
+  trailing-icon: i-lucide:arrow-right
   ---
   Get started
   :::
@@ -43,7 +43,7 @@ Shipped with many features
 #features
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://nuxt.com
   ---
@@ -56,7 +56,7 @@ Shipped with many features
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://ui.nuxt.com/
   ---
@@ -69,7 +69,7 @@ Shipped with many features
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://content.nuxt.com
   ---
@@ -82,7 +82,7 @@ Shipped with many features
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://nuxt.com/docs/guide/directory-structure/app-config
   ---
@@ -95,7 +95,7 @@ Shipped with many features
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://content.nuxt.com/studio
   ---
@@ -108,7 +108,7 @@ Shipped with many features
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
+  icon: i-simple-icons:nuxt
   target: _blank
   to: https://ui.nuxt.com/components/content-search
   ---

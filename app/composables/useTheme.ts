@@ -57,7 +57,7 @@ export function useTheme() {
   const customColorsData = useState<Record<string, Record<string, string>>>('nuxt-ui-custom-colors', () => readLocalStorage('nuxt-ui-custom-colors', {}))
   const cssVariablesData = useState<{ light?: Record<string, string>, dark?: Record<string, string> }>('nuxt-ui-css-variables', () => readLocalStorage('nuxt-ui-css-variables', {}))
   const _radius = useLocalStorage('nuxt-ui-radius', 0.25)
-  const _font = useLocalStorage('nuxt-ui-font', 'Public Sans')
+  const _font = useLocalStorage('nuxt-ui-font', 'LXGW WenKai')
   const _iconSet = useLocalStorage('nuxt-ui-icons', 'lucide')
   const _blackAsPrimary = useLocalStorage('nuxt-ui-black-as-primary', false)
 
@@ -95,7 +95,20 @@ export function useTheme() {
     }
   })
 
-  const fonts = ['Public Sans', 'DM Sans', 'Geist', 'Inter', 'Poppins', 'Outfit', 'Raleway']
+  const fonts = [
+    { label: 'LXGW WenKai', value: 'LXGW WenKai' },
+    { label: 'ZCOOL KuaiLe', value: 'ZCOOL KuaiLe' },
+    { label: 'Fira Code', value: 'Fira Code' },
+    { label: 'Public Sans', value: 'Public Sans' },
+    { label: 'DM Sans', value: 'DM Sans' },
+    { label: 'Geist', value: 'Geist Variable' },
+    { label: 'Inter', value: 'Inter' },
+    { label: 'Poppins', value: 'Poppins' },
+    { label: 'Outfit', value: 'Outfit' },
+    { label: 'Raleway', value: 'Raleway' }
+  ]
+  const fontFamilyMap: Record<string, string> = { Geist: 'Geist Variable' }
+  const resolveFontFamily = (name: string) => fontFamilyMap[name] || name
 
   const font = computed({
     get() {
@@ -129,7 +142,7 @@ export function useTheme() {
     }
   })
 
-  const modes = computed(() => [
+  const modes = computed((): { label: 'light' | 'dark' | 'system', icon: string }[] => [
     { label: 'light', icon: appConfig.ui.icons.light },
     { label: 'dark', icon: appConfig.ui.icons.dark },
     { label: 'system', icon: appConfig.ui.icons.system }
@@ -154,7 +167,7 @@ export function useTheme() {
 
   const radiusStyle = computed(() => `:root { --ui-radius: ${_radius.value}rem; }`)
   const blackAsPrimaryStyle = computed(() => _blackAsPrimary.value ? `:root { --ui-primary: black; } .dark { --ui-primary: white; }` : ':root {}')
-  const fontStyle = computed(() => `:root { --font-sans: '${_font.value}', sans-serif; }`)
+  const fontStyle = computed(() => `:root { --font-sans: '${resolveFontFamily(_font.value)}', sans-serif; }`)
   const customColorsStyle = computed(() => {
     const entries = Object.entries(customColorsData.value)
     if (!entries.length) return ''
@@ -177,15 +190,7 @@ export function useTheme() {
     return parts.join(' ')
   })
 
-  const link = computed(() => {
-    const name = _font.value
-    if (name === 'Public Sans') return []
-    return [{
-      rel: 'stylesheet' as const,
-      href: `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;500;600;700&display=swap`,
-      id: `font-${name.toLowerCase().replace(/\s+/g, '-')}`
-    }]
-  })
+  const link = computed(() => [])
 
   const style = [
     { innerHTML: radiusStyle, id: 'nuxt-ui-radius', tagPriority: -2 },
@@ -198,7 +203,7 @@ export function useTheme() {
   const hasCSSChanges = computed(() => {
     return _radius.value !== 0.25
       || _blackAsPrimary.value
-      || _font.value !== 'Public Sans'
+      || _font.value !== 'LXGW WenKai'
       || hasCustomColors.value
       || hasCSSVariables.value
   })
@@ -218,7 +223,7 @@ export function useTheme() {
     ]
 
     if (_font.value !== 'Public Sans') {
-      lines.push('', '@theme {', `  --font-sans: '${_font.value}', sans-serif;`, '}')
+      lines.push('', '@theme {', `  --font-sans: '${resolveFontFamily(_font.value)}', sans-serif;`, '}')
     }
 
     const colorLines: string[] = []
@@ -360,7 +365,7 @@ export function useTheme() {
     window.localStorage.removeItem('nuxt-ui-neutral')
 
     _radius.value = 0.25
-    _font.value = 'Public Sans'
+    _font.value = 'LXGW WenKai'
     _iconSet.value = 'lucide'
     appConfig.ui.icons = themeIcons.lucide as any
     _blackAsPrimary.value = false

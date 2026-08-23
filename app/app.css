@@ -1,12 +1,28 @@
-/* 明暗切换圆形揭示动画（移植自 wwlight.github.io/src/theme/styles/view-transition.css） */
+@import '@fontsource/inter';
+@import '@fontsource/dm-sans';
+@import '@fontsource/poppins';
+@import '@fontsource/outfit';
+@import '@fontsource/raleway';
+@import '@fontsource-variable/geist';
+@import '@fontsource/zcool-kuaile';
+@import '@fontsource/fira-code';
+@import '@fontsource/lxgw-wenkai';
 
 :root {
   --theme-transition-duration: 400ms;
   --theme-transition-easing: ease-in-out;
+  --tw-prose-body: var(--font-sans);
 }
 
-/* 覆盖 UA 默认 cross-fade。clip-path 实际由 JS animate() 驱动，
-   此 keyframes 跑空动画仅占住 animation 槽位 */
+.prose {
+  font-family: var(--font-sans) !important;
+}
+
+.prose pre,
+.prose code {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
 @keyframes view-transition {
   from,
   to {
@@ -34,18 +50,16 @@
   animation-name: none;
 }
 
-/* 切 dark：old(亮) 在上层内收；切 light：new(亮) 在上层外扩。clip-path 由 JS animate() 驱动 */
 ::view-transition-old(root),
-html.light::view-transition-new(root) {
+html:not(.dark)::view-transition-new(root) {
   z-index: 2147483647;
 }
 
 ::view-transition-new(root),
-html.light::view-transition-old(root) {
+html:not(.dark)::view-transition-old(root) {
   z-index: 1;
 }
 
-/* 长页切换时暂停卡片等局部 transition，避免与 root 圆形揭示冲突 */
 html.theme-transitioning *,
 html.theme-transitioning *::before,
 html.theme-transitioning *::after {

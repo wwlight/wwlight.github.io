@@ -10,7 +10,31 @@ export default defineNuxtConfig({
   },
   icon: {
     serverBundle: {
-      collections: ['lucide', 'ph', 'tabler']
+      collections: ['lucide', 'ph', 'tabler', 'simple-icons', 'vscode-icons']
+    },
+    clientBundle: {
+      icons: [
+        'lucide:notebook-text',
+        'lucide:monitor',
+        'lucide:sparkles',
+        'lucide:code-xml',
+        'lucide:terminal',
+        'lucide:puzzle',
+        'lucide:container',
+        'lucide:git-branch',
+        'lucide:square-terminal',
+        'lucide:minimize-2',
+        'lucide:scan-search',
+        'lucide:scissors',
+        'lucide:route',
+        'lucide:server',
+        'lucide:braces',
+        'lucide:package',
+        'lucide:toolbox',
+        'lucide:arrow-right',
+        'simple-icons:apple',
+        'simple-icons:nuxt'
+      ]
     }
   },
   content: {
