@@ -1,0 +1,53 @@
+/* 明暗切换圆形揭示动画（移植自 wwlight.github.io/src/theme/styles/view-transition.css） */
+
+:root {
+  --theme-transition-duration: 400ms;
+  --theme-transition-easing: ease-in-out;
+}
+
+/* 覆盖 UA 默认 cross-fade。clip-path 实际由 JS animate() 驱动，
+   此 keyframes 跑空动画仅占住 animation 槽位 */
+@keyframes view-transition {
+  from,
+  to {
+    clip-path: none;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: view-transition var(--theme-transition-duration) var(--theme-transition-easing) both;
+  mix-blend-mode: normal;
+  position: fixed;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-position: left top;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  animation-name: none;
+}
+
+::view-transition-group(root) {
+  animation-name: none;
+}
+
+/* 切 dark：old(亮) 在上层内收；切 light：new(亮) 在上层外扩。clip-path 由 JS animate() 驱动 */
+::view-transition-old(root),
+html.light::view-transition-new(root) {
+  z-index: 2147483647;
+}
+
+::view-transition-new(root),
+html.light::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* 长页切换时暂停卡片等局部 transition，避免与 root 圆形揭示冲突 */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
+}

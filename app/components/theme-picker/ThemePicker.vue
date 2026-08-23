@@ -1,0 +1,207 @@
+<script setup lang="ts">
+import { useClipboard } from '@vueuse/core'
+
+const colorMode = useColorMode()
+
+const { setModeWithTransition } = useThemeTransition()
+
+const open = ref(false)
+
+function onModeSelect(preference: 'dark' | 'light' | 'system', event: MouseEvent) {
+  void setModeWithTransition(preference, event)
+}
+
+const { copy: copyCSS, copied: copiedCSS } = useClipboard()
+const { copy: copyConfig, copied: copiedConfig } = useClipboard()
+
+const {
+  neutralColors,
+  neutral,
+  primaryColors,
+  primary,
+  blackAsPrimary,
+  setBlackAsPrimary,
+  radiuses,
+  radius,
+  fonts,
+  font,
+  icon,
+  icons,
+  modes,
+  hasCSSChanges,
+  hasConfigChanges,
+  configLabel,
+  exportCSS,
+  exportConfig,
+  resetTheme
+} = useTheme()
+</script>
+
+<template>
+  <UPopover v-model:open="open" :ui="{ content: 'w-72 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
+    <template #default>
+      <UButton
+        icon="i-lucide-swatch-book"
+        color="neutral"
+        :variant="open ? 'soft' : 'ghost'"
+        square
+        aria-label="Color picker"
+        :ui="{ leadingIcon: 'text-primary' }"
+      />
+    </template>
+
+    <template #content>
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Primary
+        </legend>
+
+        <div class="grid grid-cols-3 gap-1 -mx-2">
+          <ThemePickerButton
+            label="Black"
+            :selected="blackAsPrimary"
+            @click="setBlackAsPrimary(true)"
+          >
+            <template #leading>
+              <span class="inline-block size-2 rounded-full bg-black dark:bg-white" />
+            </template>
+          </ThemePickerButton>
+
+          <ThemePickerButton
+            v-for="color in primaryColors"
+            :key="color"
+            :label="color"
+            :chip="color"
+            :selected="!blackAsPrimary && primary === color"
+            @click="primary = color"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Neutral
+        </legend>
+
+        <div class="grid grid-cols-3 gap-1 -mx-2">
+          <ThemePickerButton
+            v-for="color in neutralColors"
+            :key="color"
+            :label="color"
+            :chip="color === 'neutral' ? 'old-neutral' : color"
+            :selected="neutral === color"
+            @click="neutral = color"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Radius
+        </legend>
+
+        <div class="grid grid-cols-5 gap-1 -mx-2">
+          <ThemePickerButton
+            v-for="r in radiuses"
+            :key="r"
+            :label="String(r)"
+            class="justify-center px-0"
+            :selected="radius === r"
+            @click="radius = r"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Font
+        </legend>
+
+        <div class="-mx-2">
+          <USelect
+            v-model="font"
+            size="sm"
+            color="neutral"
+            icon="i-lucide-type"
+            :items="fonts"
+            class="w-full ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
+            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Icons
+        </legend>
+
+        <div class="-mx-2">
+          <USelect
+            v-model="icon"
+            size="sm"
+            color="neutral"
+            :icon="icons.find(i => i.value === icon)?.icon"
+            :items="icons"
+            class="w-full ring-default rounded-sm hover:bg-elevated/50 capitalize text-[11px] data-[state=open]:bg-elevated/50"
+            :ui="{ item: 'capitalize text-[11px]', trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Color Mode
+        </legend>
+
+        <div class="grid grid-cols-3 gap-1 -mx-2">
+          <ThemePickerButton
+            v-for="m in modes"
+            :key="m.label"
+            v-bind="m"
+            :selected="colorMode.preference === m.label"
+            @click="onModeSelect(m.label, $event)"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset v-if="hasCSSChanges || hasConfigChanges">
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
+          Export
+        </legend>
+
+        <div class="flex items-center justify-between gap-1 -mx-2">
+          <UButton
+            v-if="hasCSSChanges"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            label="main.css"
+            class="flex-1 text-[11px]"
+            :icon="copiedCSS ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+            @click="copyCSS(exportCSS())"
+          />
+          <UButton
+            v-if="hasConfigChanges"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            :label="configLabel"
+            :icon="copiedConfig ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+            class="flex-1 text-[11px]"
+            @click="copyConfig(exportConfig())"
+          />
+          <UTooltip text="Reset theme">
+            <UButton
+              color="neutral"
+              variant="outline"
+              size="sm"
+              icon="i-lucide-rotate-ccw"
+              class="ms-auto ring-default hover:bg-elevated/50"
+              @click="resetTheme"
+            />
+          </UTooltip>
+        </div>
+      </fieldset>
+    </template>
+  </UPopover>
+</template>

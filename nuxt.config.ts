@@ -8,6 +8,11 @@ export default defineNuxtConfig({
   ui: {
     fonts: false
   },
+  icon: {
+    serverBundle: {
+      collections: ['lucide', 'ph', 'tabler']
+    }
+  },
   content: {
     build: {
       markdown: {
@@ -29,6 +34,7 @@ export default defineNuxtConfig({
     enabled: false,
   },
   studio: {
+    route: '/admin',
     repository: {
       provider: 'github',
       owner: 'wwlight',
