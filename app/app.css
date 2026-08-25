@@ -1,13 +1,3 @@
-@import '@fontsource/inter';
-@import '@fontsource/dm-sans';
-@import '@fontsource/poppins';
-@import '@fontsource/outfit';
-@import '@fontsource/raleway';
-@import '@fontsource-variable/geist';
-@import '@fontsource/zcool-kuaile';
-@import '@fontsource/fira-code';
-@import '@fontsource/lxgw-wenkai';
-
 :root {
   --theme-transition-duration: 400ms;
   --theme-transition-easing: ease-in-out;
@@ -58,6 +48,10 @@ html:not(.dark)::view-transition-new(root) {
 ::view-transition-new(root),
 html:not(.dark)::view-transition-old(root) {
   z-index: 1;
+}
+
+html.theme-transitioning {
+  scrollbar-gutter: stable;
 }
 
 html.theme-transitioning *,

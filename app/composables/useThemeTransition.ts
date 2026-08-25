@@ -8,11 +8,15 @@ function lockDocumentScroll(): () => void {
     return () => {}
 
   const { body } = document
+  const root = document.documentElement
+  const scrollbarWidth = window.innerWidth - root.clientWidth
   body.style.position = 'fixed'
   body.style.top = `-${scrollY}px`
   body.style.left = '0'
   body.style.right = '0'
   body.style.width = '100%'
+  if (scrollbarWidth > 0)
+    body.style.paddingRight = `${scrollbarWidth}px`
 
   return () => {
     body.style.position = ''
@@ -20,6 +24,7 @@ function lockDocumentScroll(): () => void {
     body.style.left = ''
     body.style.right = ''
     body.style.width = ''
+    body.style.paddingRight = ''
     window.scrollTo(0, scrollY)
   }
 }

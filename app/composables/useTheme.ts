@@ -4,6 +4,31 @@ import { themeIcons, cssVariableDefaults } from '../utils/theme'
 import { omit } from '#ui/utils'
 import colors from 'tailwindcss/colors'
 
+// 默认字体静态引入，保证首屏有 @font-face（其余字体按需动态加载）
+import '../assets/fonts/LXGWWenKai-Regular.ttf?subsets'
+const STATIC_FAMILIES = new Set(['LXGW WenKai'])
+
+// family -> 动态 import（不用 import.meta.glob：glob 会进 SSR 静态依赖，首屏注入所有字体 css）
+const familyLoader = new Map<string, () => Promise<any>>()
+{
+  const defs: Array<[string, () => Promise<any>]> = [
+    ['LXGW WenKai', () => import('../assets/fonts/LXGWWenKai-Regular.ttf?subsets')],
+    ['LXGW WenKai Light', () => import('../assets/fonts/LXGWWenKai-Light.ttf?subsets')],
+    ['LXGW WenKai Medium', () => import('../assets/fonts/LXGWWenKai-Medium.ttf?subsets')],
+    ['ZCOOL KuaiLe', () => import('../assets/fonts/ZCOOLKuaiLe-Regular.ttf?subsets')],
+    ['Fira Code', () => import('../assets/fonts/FiraCode.ttf?subsets')],
+    ['KingHwa_OldSong', () => import('../assets/fonts/KingHwa_OldSong.ttf?subsets')],
+    ['Huiwen-mincho', () => import('../assets/fonts/Huiwen-mincho.ttf?subsets')],
+    ['STDongGuanTi', () => import('../assets/fonts/STDongGuanTi.ttf?subsets')],
+    ['STDongGuanTi Bld', () => import('../assets/fonts/STDongGuanTi-Bld.ttf?subsets')],
+    ['STDongGuanTi Light', () => import('../assets/fonts/STDongGuanTi-Light.ttf?subsets')],
+    ['LXGW Bright', () => import('../assets/fonts/LXGWBright-Regular.ttf?subsets')],
+    ['LXGW Bright Light', () => import('../assets/fonts/LXGWBright-Light.ttf?subsets')],
+    ['LXGW Bright Medium', () => import('../assets/fonts/LXGWBright-Medium.ttf?subsets')]
+  ]
+  for (const [fam, loader] of defs) familyLoader.set(fam, loader)
+}
+
 function readLocalStorage<T>(key: string, fallback: T): T {
   if (!import.meta.client) return fallback
   try {
@@ -58,6 +83,7 @@ export function useTheme() {
   const cssVariablesData = useState<{ light?: Record<string, string>, dark?: Record<string, string> }>('nuxt-ui-css-variables', () => readLocalStorage('nuxt-ui-css-variables', {}))
   const _radius = useLocalStorage('nuxt-ui-radius', 0.25)
   const _font = useLocalStorage('nuxt-ui-font', 'LXGW WenKai')
+  const _weight = useLocalStorage('nuxt-ui-font-weight', 'LXGW WenKai')
   const _iconSet = useLocalStorage('nuxt-ui-icons', 'lucide')
   const _blackAsPrimary = useLocalStorage('nuxt-ui-black-as-primary', false)
 
@@ -96,19 +122,65 @@ export function useTheme() {
   })
 
   const fonts = [
-    { label: 'LXGW WenKai', value: 'LXGW WenKai' },
+    {
+      label: 'LXGW WenKai', value: 'LXGW WenKai',
+      weights: [
+        { label: 'Regular', value: 'LXGW WenKai' },
+        { label: 'Light', value: 'LXGW WenKai Light' },
+        { label: 'Medium', value: 'LXGW WenKai Medium' }
+      ]
+    },
+    {
+      label: 'LXGW WK Bright', value: 'LXGW Bright',
+      weights: [
+        { label: 'Regular', value: 'LXGW Bright' },
+        { label: 'Light', value: 'LXGW Bright Light' },
+        { label: 'Medium', value: 'LXGW Bright Medium' }
+      ]
+    },
+    { label: '京華老宋体', value: 'KingHwa_OldSong' },
+    { label: '汇文明朝体', value: 'Huiwen-mincho' },
+    {
+      label: '上图东观体', value: 'STDongGuanTi',
+      weights: [
+        { label: 'Regular', value: 'STDongGuanTi' },
+        { label: 'Bold', value: 'STDongGuanTi Bld' },
+        { label: 'Light', value: 'STDongGuanTi Light' }
+      ]
+    },
     { label: 'ZCOOL KuaiLe', value: 'ZCOOL KuaiLe' },
-    { label: 'Fira Code', value: 'Fira Code' },
-    { label: 'Public Sans', value: 'Public Sans' },
-    { label: 'DM Sans', value: 'DM Sans' },
-    { label: 'Geist', value: 'Geist Variable' },
-    { label: 'Inter', value: 'Inter' },
-    { label: 'Poppins', value: 'Poppins' },
-    { label: 'Outfit', value: 'Outfit' },
-    { label: 'Raleway', value: 'Raleway' }
+    { label: 'Fira Code', value: 'Fira Code' }
   ]
-  const fontFamilyMap: Record<string, string> = { Geist: 'Geist Variable' }
-  const resolveFontFamily = (name: string) => fontFamilyMap[name] || name
+  // 已加载的 family 避免重复；默认字体已静态引入
+  const loadedFonts = new Set<string>(STATIC_FAMILIES)
+  async function ensureFont(family: string | undefined) {
+    if (!family || loadedFonts.has(family)) return
+    const loader = familyLoader.get(family)
+    if (!loader) return
+    loadedFonts.add(family)
+    try {
+      await loader()
+    } catch (e) {
+      // 单字体失败不影响整体
+    }
+  }
+  // 当前选中字体的字重列表（带字重才有，value 即实际 CSS family 名）；无字重的字体为空
+  const currentFont = computed(() => fonts.find(f => f.value === _font.value))
+  const fontWeights = computed(() => currentFont.value?.weights ?? [])
+  const weight = computed({
+    get() {
+      return _weight.value
+    },
+    set(option) {
+      _weight.value = option
+    }
+  })
+  // 按选中字重解析实际 family（value 即 CSS family 名）
+  const resolveFontFamily = (name: string) => {
+    const f = fonts.find(x => x.value === name)
+    if (f?.weights?.length && f.weights.some(w => w.value === _weight.value)) return _weight.value
+    return name
+  }
 
   const font = computed({
     get() {
@@ -116,8 +188,19 @@ export function useTheme() {
     },
     set(option) {
       _font.value = option
+      // 切换字体时同步字重：带字重默认选第一个，无字重则清空
+      const f = fonts.find(x => x.value === option)
+      if (f?.weights?.length) {
+        _weight.value = f.weights[0]!.value
+      } else {
+        _weight.value = ''
+      }
     }
   })
+
+  // 当前生效 family；切换时才加载对应分包
+  const activeFamily = computed(() => resolveFontFamily(_font.value))
+  watch(activeFamily, (f) => { void ensureFont(f) }, { immediate: true })
 
   const icons = [{
     label: 'Lucide',
@@ -222,9 +305,7 @@ export function useTheme() {
       '@import "@nuxt/ui";'
     ]
 
-    if (_font.value !== 'Public Sans') {
-      lines.push('', '@theme {', `  --font-sans: '${resolveFontFamily(_font.value)}', sans-serif;`, '}')
-    }
+    lines.push('', '@theme {', `  --font-sans: '${resolveFontFamily(_font.value)}', sans-serif;`, '}')
 
     const colorLines: string[] = []
     for (const [name, shades] of Object.entries(customColorsData.value)) {
@@ -366,6 +447,7 @@ export function useTheme() {
 
     _radius.value = 0.25
     _font.value = 'LXGW WenKai'
+    _weight.value = 'LXGW WenKai'
     _iconSet.value = 'lucide'
     appConfig.ui.icons = themeIcons.lucide as any
     _blackAsPrimary.value = false
@@ -410,6 +492,8 @@ export function useTheme() {
     radius,
     fonts,
     font,
+    fontWeights,
+    weight,
     icon,
     icons,
     modes,

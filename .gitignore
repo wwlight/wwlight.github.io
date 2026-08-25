@@ -6,6 +6,9 @@
 .cache
 dist
 
+# 分包字体原始 ttf（由 modules/font-subset.ts 自动下载，不入库）
+app/assets/fonts/*.ttf
+
 # Node dependencies
 node_modules
 

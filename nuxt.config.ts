@@ -3,10 +3,22 @@ export default defineNuxtConfig({
     'docus'
   ],
   modules: [
-    'nuxt-studio'
+    'nuxt-studio',
+    './modules/font-subset'
   ],
   ui: {
     fonts: false
+  },
+  experimental: {
+    // 关闭基于可见/交互的预取，避免首屏带出路由 chunk
+    defaults: {
+      nuxtLink: {
+        prefetchOn: {
+          interaction: false,
+          visibility: false
+        }
+      }
+    }
   },
   icon: {
     serverBundle: {

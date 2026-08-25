@@ -25,6 +25,8 @@ const {
   radius,
   fonts,
   font,
+  fontWeights,
+  weight,
   icon,
   icons,
   modes,
@@ -38,7 +40,7 @@ const {
 </script>
 
 <template>
-  <UPopover v-model:open="open" :ui="{ content: 'w-72 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
+  <UPopover v-model:open="open" :ui="{ content: 'w-80 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
     <template #default>
       <UButton
         icon="i-lucide-swatch-book"
@@ -117,14 +119,24 @@ const {
           Font
         </legend>
 
-        <div class="-mx-2">
+<div class="flex gap-2 -mx-2">
           <USelect
             v-model="font"
             size="sm"
             color="neutral"
             icon="i-lucide-type"
             :items="fonts"
-            class="w-full ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
+            class="flex-1 min-w-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
+            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+          />
+          <USelect
+            v-if="fontWeights.length"
+            v-model="weight"
+            size="sm"
+            color="neutral"
+            icon="i-lucide-italic"
+            :items="fontWeights"
+            class="w-28 shrink-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
             :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
           />
         </div>
