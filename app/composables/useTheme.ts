@@ -4,6 +4,10 @@ import { themeIcons, cssVariableDefaults } from '../utils/theme'
 import { omit } from '#ui/utils'
 import colors from 'tailwindcss/colors'
 
+// 字体切换时等待字体就绪的上限（ms）。正常情况字体就绪即切（秒级）；该值仅在缓存未命中
+// 或分包现场生成等极端情况下兜底，避免切换永久卡住。
+const FONT_SWITCH_TIMEOUT = 30000
+
 // 默认字体静态引入，保证首屏有 @font-face（其余字体按需动态加载）
 import '../assets/fonts/LXGWWenKai-Regular.ttf?subsets'
 const STATIC_FAMILIES = new Set(['LXGW WenKai'])
@@ -187,6 +191,7 @@ export function useTheme() {
       return _font.value
     },
     set(option) {
+      if (option === _font.value) return
       _font.value = option
       // 切换字体时同步字重：带字重默认选第一个，无字重则清空
       const f = fonts.find(x => x.value === option)
@@ -195,12 +200,42 @@ export function useTheme() {
       } else {
         _weight.value = ''
       }
+      // 生效切族统一由 pendingFamily 的 watch 触发
     }
   })
 
+  // 用户选中的目标 family（跟随 _font/_weight，切字族或字重都会变化）
+  const pendingFamily = computed(() => resolveFontFamily(_font.value))
   // 当前生效 family；切换时才加载对应分包
-  const activeFamily = computed(() => resolveFontFamily(_font.value))
-  watch(activeFamily, (f) => { void ensureFont(f) }, { immediate: true })
+  const applyFamily = ref(pendingFamily.value)
+
+  // 直接改 #nuxt-ui-font 的 style 内容，绕过 unhead 更新链路，保证运行时即时生效
+  function writeFontStyle(family: string) {
+    applyFamily.value = family
+    if (!import.meta.client) return
+    const el = document.getElementById('nuxt-ui-font')
+    const css = `:root { --font-sans: '${family}', sans-serif; }`
+    if (el) el.textContent = css
+  }
+
+  // 字体（分包 @font-face 注入 + woff2 下载）就绪后再切换；超时仅兜底防挂死
+  async function applyFont(family: string) {
+    if (family === applyFamily.value && loadedFonts.has(family)) return
+    const ready = (async () => {
+      await ensureFont(family)
+      if (import.meta.client && 'fonts' in document) {
+        await Promise.all([
+          document.fonts.load(`16px '${family}'`, '中文字体测试样例').catch(() => undefined),
+          document.fonts.load(`16px '${family}'`, 'Latin sample 0123').catch(() => undefined),
+        ])
+      }
+    })()
+    await Promise.race([ready, new Promise<void>(resolve => setTimeout(resolve, FONT_SWITCH_TIMEOUT))])
+    writeFontStyle(family)
+  }
+
+  watch(applyFamily, (f) => { void ensureFont(f) }, { immediate: true })
+  watch(pendingFamily, (f) => { if (f !== applyFamily.value) void applyFont(f) }, { immediate: true })
 
   const icons = [{
     label: 'Lucide',
@@ -250,7 +285,7 @@ export function useTheme() {
 
   const radiusStyle = computed(() => `:root { --ui-radius: ${_radius.value}rem; }`)
   const blackAsPrimaryStyle = computed(() => _blackAsPrimary.value ? `:root { --ui-primary: black; } .dark { --ui-primary: white; }` : ':root {}')
-  const fontStyle = computed(() => `:root { --font-sans: '${resolveFontFamily(_font.value)}', sans-serif; }`)
+  const fontStyle = computed(() => `:root { --font-sans: '${applyFamily.value}', sans-serif; }`)
   const customColorsStyle = computed(() => {
     const entries = Object.entries(customColorsData.value)
     if (!entries.length) return ''
@@ -305,7 +340,7 @@ export function useTheme() {
       '@import "@nuxt/ui";'
     ]
 
-    lines.push('', '@theme {', `  --font-sans: '${resolveFontFamily(_font.value)}', sans-serif;`, '}')
+    lines.push('', '@theme {', `  --font-sans: '${applyFamily.value}', sans-serif;`, '}')
 
     const colorLines: string[] = []
     for (const [name, shades] of Object.entries(customColorsData.value)) {

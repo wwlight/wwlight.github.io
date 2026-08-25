@@ -9,17 +9,6 @@ export default defineNuxtConfig({
   ui: {
     fonts: false
   },
-  experimental: {
-    // 关闭基于可见/交互的预取，避免首屏带出路由 chunk
-    defaults: {
-      nuxtLink: {
-        prefetchOn: {
-          interaction: false,
-          visibility: false
-        }
-      }
-    }
-  },
   icon: {
     serverBundle: {
       collections: ['lucide', 'ph', 'tabler', 'simple-icons', 'vscode-icons']
