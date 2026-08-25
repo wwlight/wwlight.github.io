@@ -4,8 +4,11 @@ import { join } from 'node:path'
 import font from 'vite-plugin-font'
 import { fontSources } from '../font-sources'
 
-// 原始 ttf 的下载缓存目录（node_modules 会被 CI 保留，避免每次构建重新下载）
+// 原始 ttf 的下载缓存目录（放在 node_modules 下。CI 需平台缓存该目录，否则每次构建都会重新下载全部 ttf，网络耗时可能触发超时）
 const TTF_CACHE_DIR = join(process.cwd(), 'node_modules', '.cache', 'font-ttf')
+
+// ensureFonts 在 client/server 两次 vite build 的 config() 里都会被触发，这里保证只真正执行一次
+let fontsReady: Promise<void> | null = null
 
 // 分包只保留站点实际用字，首屏体积大幅下降
 const SCAN_FILES = [
@@ -72,24 +75,24 @@ function fontGroupPlugin(fonts: FontSource[]) {
       const fileDir = new Map<string, string>() // woff2 文件名 -> dir
       for (const out of Object.values(bundle)) {
         if (out?.type !== 'asset' || typeof out.source !== 'string' || !out.source.includes('@font-face')) continue
-        let css: string = out.source
-        css.replace(/@font-face\{([^}]*)\}/g, (blk: string) => {
-          const famMatch = blk.match(/font-family:\s*"?([^";}]+)"?/)
-          if (!famMatch) return blk
+        for (const blk of out.source.matchAll(/@font-face\{([^}]*)\}/g)) {
+          const famMatch = blk[1]!.match(/font-family:\s*"?([^";}]+)"?/)
+          if (!famMatch) continue
           const dir = matchDir(famMatch[1]!.trim())
-          if (!dir) return blk
-          blk.replace(/url\(\.\/(?!fonts\/)([^)]+\.woff2)\)/g, (m: string, wf: string) => {
-            fileDir.set(wf, dir!)
-            return m
-          })
-          return blk
-        })
-        if (fileDir.size) {
-          let next = css
+          if (!dir) continue
+          for (const wf of blk[1]!.matchAll(/url\(\.\/(?!fonts\/)([^)]+\.woff2)\)/g)) {
+            fileDir.set(wf[1]!, dir)
+          }
+        }
+      }
+      if (fileDir.size) {
+        for (const out of Object.values(bundle)) {
+          if (out?.type !== 'asset' || typeof out.source !== 'string' || !out.source.includes('@font-face')) continue
+          let next = out.source
           for (const [wf, dir] of fileDir) {
             next = next.split(`url(./${wf})`).join(`url(./fonts/${dir}/${wf})`)
           }
-          if (next !== css) out.source = next
+          if (next !== out.source) out.source = next
         }
       }
       for (const out of Object.values(bundle)) {
@@ -97,9 +100,7 @@ function fontGroupPlugin(fonts: FontSource[]) {
         if (!out.fileName.endsWith('.woff2')) continue
         const base = out.fileName.split('/').pop()!
         const dir = fileDir.get(base)
-        if (dir) {
-          out.fileName = `_nuxt/fonts/${dir}/${base}`
-        }
+        if (dir) out.fileName = `_nuxt/fonts/${dir}/${base}`
       }
     }
   }
@@ -120,7 +121,8 @@ export default defineNuxtModule<ModuleOptions>({
     addVitePlugin(() => ({
       name: 'ensure-font-subset',
       async config() {
-        await ensureFonts(fonts, outDir)
+        fontsReady ||= ensureFonts(fonts, outDir)
+        await fontsReady
       }
     }))
     addVitePlugin(font.vite({

@@ -49,6 +49,9 @@ export default defineNuxtConfig({
       ]
     }
   },
+  hooks: {
+    close: () => process.exit(0)
+  },
   content: {
     build: {
       markdown: {
