@@ -4,10 +4,33 @@ export default defineNuxtConfig({
   ],
   modules: [
     'nuxt-studio',
+    '@nuxt/fonts',
     './modules/font-subset'
   ],
+  fonts: {
+    providers: {
+      google: false, bunny: false, fontsource: false, npm: false
+    },
+    families: [
+      'LXGW WenKai', 'LXGW WenKai Light', 'LXGW WenKai Medium',
+      'ZCOOL KuaiLe', 'Fira Code',
+      'KingHwa_OldSong', 'Huiwen-mincho',
+      'STDongGuanTi', 'STDongGuanTi Bld', 'STDongGuanTi Light',
+      'LXGW Bright', 'LXGW Bright Light', 'LXGW Bright Medium'
+    ].map(name => ({ name, provider: 'local-split', global: true }))
+  },
   ui: {
     fonts: false
+  },
+  experimental: {
+    defaults: {
+      nuxtLink: {
+        prefetchOn: {
+          interaction: false,
+          visibility: false
+        }
+      }
+    }
   },
   icon: {
     serverBundle: {

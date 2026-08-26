@@ -1,2 +1,8 @@
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
+
+# 构建间持久化字体下载与分包缓存，避免重复下载/切分
+[cache]
+  path = [
+    "node_modules/.cache"
+  ]

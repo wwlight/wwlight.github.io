@@ -8,30 +8,8 @@ import colors from 'tailwindcss/colors'
 // 或分包现场生成等极端情况下兜底，避免切换永久卡住。
 const FONT_SWITCH_TIMEOUT = 30000
 
-// 默认字体静态引入，保证首屏有 @font-face（其余字体按需动态加载）
-import '../assets/fonts/LXGWWenKai-Regular.ttf?subsets'
-const STATIC_FAMILIES = new Set(['LXGW WenKai'])
-
-// family -> 动态 import（不用 import.meta.glob：glob 会进 SSR 静态依赖，首屏注入所有字体 css）
-const familyLoader = new Map<string, () => Promise<any>>()
-{
-  const defs: Array<[string, () => Promise<any>]> = [
-    ['LXGW WenKai', () => import('../assets/fonts/LXGWWenKai-Regular.ttf?subsets')],
-    ['LXGW WenKai Light', () => import('../assets/fonts/LXGWWenKai-Light.ttf?subsets')],
-    ['LXGW WenKai Medium', () => import('../assets/fonts/LXGWWenKai-Medium.ttf?subsets')],
-    ['ZCOOL KuaiLe', () => import('../assets/fonts/ZCOOLKuaiLe-Regular.ttf?subsets')],
-    ['Fira Code', () => import('../assets/fonts/FiraCode.ttf?subsets')],
-    ['KingHwa_OldSong', () => import('../assets/fonts/KingHwa_OldSong.ttf?subsets')],
-    ['Huiwen-mincho', () => import('../assets/fonts/Huiwen-mincho.ttf?subsets')],
-    ['STDongGuanTi', () => import('../assets/fonts/STDongGuanTi.ttf?subsets')],
-    ['STDongGuanTi Bld', () => import('../assets/fonts/STDongGuanTi-Bld.ttf?subsets')],
-    ['STDongGuanTi Light', () => import('../assets/fonts/STDongGuanTi-Light.ttf?subsets')],
-    ['LXGW Bright', () => import('../assets/fonts/LXGWBright-Regular.ttf?subsets')],
-    ['LXGW Bright Light', () => import('../assets/fonts/LXGWBright-Light.ttf?subsets')],
-    ['LXGW Bright Medium', () => import('../assets/fonts/LXGWBright-Medium.ttf?subsets')]
-  ]
-  for (const [fam, loader] of defs) familyLoader.set(fam, loader)
-}
+// 字体制切换的序号：快速连切时只允许最新的切换写回 style
+let fontSwitchSeq = 0
 
 function readLocalStorage<T>(key: string, fallback: T): T {
   if (!import.meta.client) return fallback
@@ -155,19 +133,6 @@ export function useTheme() {
     { label: 'ZCOOL KuaiLe', value: 'ZCOOL KuaiLe' },
     { label: 'Fira Code', value: 'Fira Code' }
   ]
-  // 已加载的 family 避免重复；默认字体已静态引入
-  const loadedFonts = new Set<string>(STATIC_FAMILIES)
-  async function ensureFont(family: string | undefined) {
-    if (!family || loadedFonts.has(family)) return
-    const loader = familyLoader.get(family)
-    if (!loader) return
-    loadedFonts.add(family)
-    try {
-      await loader()
-    } catch (e) {
-      // 单字体失败不影响整体
-    }
-  }
   // 当前选中字体的字重列表（带字重才有，value 即实际 CSS family 名）；无字重的字体为空
   const currentFont = computed(() => fonts.find(f => f.value === _font.value))
   const fontWeights = computed(() => currentFont.value?.weights ?? [])
@@ -218,11 +183,11 @@ export function useTheme() {
     if (el) el.textContent = css
   }
 
-  // 字体（分包 @font-face 注入 + woff2 下载）就绪后再切换；超时仅兜底防挂死
+  // 字体（分片 woff2 下载）就绪后再切换；超时仅兜底防挂死；竞态下只允许最新切换生效
   async function applyFont(family: string) {
-    if (family === applyFamily.value && loadedFonts.has(family)) return
+    if (family === applyFamily.value) return
+    const seq = ++fontSwitchSeq
     const ready = (async () => {
-      await ensureFont(family)
       if (import.meta.client && 'fonts' in document) {
         await Promise.all([
           document.fonts.load(`16px '${family}'`, '中文字体测试样例').catch(() => undefined),
@@ -231,10 +196,10 @@ export function useTheme() {
       }
     })()
     await Promise.race([ready, new Promise<void>(resolve => setTimeout(resolve, FONT_SWITCH_TIMEOUT))])
+    if (seq !== fontSwitchSeq) return
     writeFontStyle(family)
   }
 
-  watch(applyFamily, (f) => { void ensureFont(f) }, { immediate: true })
   watch(pendingFamily, (f) => { if (f !== applyFamily.value) void applyFont(f) }, { immediate: true })
 
   const icons = [{
