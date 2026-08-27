@@ -40,7 +40,7 @@ const {
 </script>
 
 <template>
-  <UPopover v-model:open="open" :ui="{ content: 'w-80 px-6 py-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-5rem)]' }">
+  <UPopover v-model:open="open" :ui="{ content: 'w-80 px-6 py-4 flex flex-col gap-4 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-5rem)]' }">
     <template #default>
       <UButton
         icon="i-lucide-swatch-book"
