@@ -1,24 +1,22 @@
 ---
 seo:
-  title: Write beautiful docs with Markdown
-  description: Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box. Docus brings together the best of the Nuxt ecosystem. Powered by Nuxt UI.
+  title: 我的笔记 · AI / 开发 / 系统
+  description: 个人的 AI 工具、开发技巧与系统使用记录集散地。
 ---
 
 ::u-page-hero
 #title
-Write beautiful docs with Markdown
+我的笔记 · AI / 开发 / 系统
 
 #description
-Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box.
-
-Docus brings the best of the Nuxt ecosystem into one CLI.
+记录 AI 工具实战、开发技巧与系统使用经验，随手沉淀、随手翻查。
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /notes/dev-qa
+  to: /ai/agent-tools
   trailing-icon: i-lucide:arrow-right
   ---
   Get started
@@ -38,84 +36,66 @@ Docus brings the best of the Nuxt ecosystem into one CLI.
 
 ::u-page-section
 #title
-Shipped with many features
+快速入口
 
 #features
   :::u-page-feature
   ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://nuxt.com
+  icon: i-lucide-sparkles
+  to: /ai/agent-tools
   ---
   #title
-  Built with [Nuxt 4]{.text-primary}
+  AI 工具
 
   #description
-  Optimized by the most famous Vue framework. Docus gives you everything you need to build fast, performant, and SEO-friendly websites.
+  Agent 工具与 AI 工作流的使用记录。
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://ui.nuxt.com/
+  icon: i-lucide-code-xml
+  to: /notes/dev-qa
   ---
   #title
-  Powered by [Nuxt UI]{.text-primary}
+  开发笔记
 
   #description
-  Beautiful out of the box, minimal by design but highly customizable. Docus leverages Nuxt UI to give you the best docs writing experience with zero boilerplate, just focus on your content.
+  Git、JS、命令行等开发实用问答与技巧。
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://content.nuxt.com
+  icon: i-lucide-monitor
+  to: /system/system-software
   ---
   #title
-  Enhanced Markdown syntax by [Nuxt Content]{.text-primary}
+  系统与软件
 
   #description
-  The only thing you need to take care about is writing your content. Write your pages in Markdown and extend with MDC syntax to embed Nuxt UI or custom Vue components. Structure, routing, and rendering are handled for you.
+  常用软件、系统配置与使用记录。
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://nuxt.com/docs/guide/directory-structure/app-config
+  icon: i-lucide-puzzle
+  to: /other/flypy-pinyin
   ---
   #title
-  Customize with [Nuxt App Config]{.text-primary}
+  小鹤双拼
 
   #description
-  Update colors, social links, header logos and component styles globally using the `app.config.ts`, no direct code modifications required.
+  拼音、双拼布局与音形字根键位图。
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://content.nuxt.com/studio
+  icon: i-lucide-route
+  to: /notes/bash-cheatsheet
   ---
   #title
-  Edit in production with [Nuxt Studio]{.text-primary}
+  常用命令速查
 
   #description
-  Edit your content in production with zero Markdown knowledge required. Let your non technical colleagues collaborate on the documentation and integrate Vue components without code skills.
-  :::
-
-  :::u-page-feature
-  ---
-  icon: i-simple-icons:nuxt
-  target: _blank
-  to: https://ui.nuxt.com/components/content-search
-  ---
-  #title
-  Built-in navigation and [full-text search]{.text-primary}
-
-  #description
-  Only focus on ordering your content, Docus handles the search modal and auto-generates the side navigation for you.
+  Bash、Linux 与常用工具的速查手册。
   :::
 ::

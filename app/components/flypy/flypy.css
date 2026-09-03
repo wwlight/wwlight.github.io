@@ -1,0 +1,316 @@
+/* 小鹤 flypy 组件统一样式 —— 由参考项目 flypy-classes.ts 中的 Tailwind 类串翻译而来 */
+
+.flypy-figure {
+  margin: 1.25rem 0;
+  width: 100%;
+  overflow: visible;
+  border-radius: calc(var(--radius, 0.25rem) + 0.25rem);
+  border: 1px solid color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 60%, transparent);
+  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 80%, var(--ui-border, var(--muted, light-dark(#dcdce2, #353540))));
+  padding: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .flypy-figure {
+    padding: 0.65rem;
+  }
+}
+
+/* 字根/双拼 SVG 键位颜色类别 */
+.flypy-kind-phonetic {
+  color: var(--ui-text, var(--foreground, light-dark(#1a1a1a, #e4e4e7)));
+}
+
+.flypy-kind-non-phonetic {
+  color: light-dark(#dc2626, #f87171);
+}
+
+.flypy-kind-special {
+  color: var(--ui-success);
+}
+
+.flypy-kind-stroke {
+  color: light-dark(#2563eb, #60a5fa);
+}
+
+/* 双拼布局/口诀 文案色调 */
+.flypy-tone-default {
+  color: var(--ui-text, var(--foreground, light-dark(#1a1a1a, #e4e4e7)));
+}
+
+.flypy-tone-initial {
+  color: light-dark(#dc2626, #f87171);
+}
+
+.flypy-tone-final {
+  color: light-dark(#2563eb, #60a5fa);
+}
+
+.flypy-tone-final-green {
+  color: var(--ui-success);
+}
+
+.flypy-tone-orange {
+  color: light-dark(#ea580c, #fb923c);
+}
+
+.flypy-tone-green {
+  color: var(--ui-success);
+}
+
+/* SVG 底板 */
+.flypy-svg-type {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color-scheme: light dark;
+  font-family: 'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+.flypy-svg-key-fill {
+  fill: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 58%, transparent);
+}
+
+.flypy-svg-key-stroke {
+  stroke: color-mix(in oklab, light-dark(#c9c9d0, #565662) 32%, transparent);
+}
+
+/* 品牌位（下载按钮） */
+.flypy-svg-brand-fo {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.flypy-svg-brand-fo > * {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.flypy-svg-brand-fo button {
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.flypy-svg-download-btn {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  appearance: none;
+  margin: 0;
+  border: 1px solid color-mix(in oklab, var(--ui-primary, var(--primary, #2563eb)) 70%, transparent);
+  border-radius: calc(var(--radius, 0.25rem) + 0.1rem);
+  background: var(--ui-primary, var(--primary, #2563eb));
+  color: var(--ui-text-inverted, #ffffff);
+  font-family: inherit;
+  text-align: center;
+  font-size: clamp(0.6rem, 2.4cqi, 0.76rem);
+  font-weight: bold;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 18%, transparent),
+    0 1px 2px color-mix(in oklab, var(--ui-primary, var(--primary, #2563eb)) 35%, transparent);
+}
+
+/* 拼音字母表 */
+.flypy-alphabet-outer {
+  margin: 1.25rem 0;
+}
+
+.flypy-alphabet-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.flypy-alphabet-section {
+  overflow: hidden;
+  border-radius: calc(var(--radius, 0.25rem) + 0.12rem);
+  border: 1px solid color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 48%, transparent);
+  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 92%, light-dark(#d4d4d8, #3f3f46));
+  padding: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .flypy-alphabet-section {
+    padding: 1rem;
+  }
+}
+
+.flypy-alphabet-section.initial {
+  box-shadow: inset 3px 0 0 color-mix(in oklab, light-dark(#dc2626, #f87171) 55%, transparent);
+}
+
+.flypy-alphabet-section.final {
+  box-shadow: inset 3px 0 0 color-mix(in oklab, light-dark(#2563eb, #60a5fa) 55%, transparent);
+}
+
+.flypy-alphabet-section.syllable {
+  box-shadow: inset 3px 0 0 color-mix(in oklab, var(--ui-success) 55%, transparent);
+}
+
+.flypy-alphabet-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.flypy-alphabet-section-title.initial {
+  color: light-dark(#dc2626, #f87171);
+}
+
+.flypy-alphabet-section-title.final {
+  color: light-dark(#2563eb, #60a5fa);
+}
+
+.flypy-alphabet-section-title.syllable {
+  color: var(--ui-success);
+}
+
+.flypy-alphabet-grid {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--flypy-gap);
+  --flypy-gap: clamp(0.18rem, 0.85cqi, 0.34rem);
+  --flypy-unit: calc((100cqi - 9 * var(--flypy-gap)) / 10);
+  --flypy-key-pad: clamp(0.24rem, 0.95cqi, 0.38rem);
+}
+
+.flypy-key-size {
+  width: var(--flypy-unit);
+  min-width: 0;
+  height: var(--flypy-unit);
+  min-height: var(--flypy-unit);
+  max-height: var(--flypy-unit);
+}
+
+.flypy-alphabet-card {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  min-width: 0;
+  overflow: visible;
+  cursor: default;
+  border-radius: calc(var(--radius, 0.25rem) + 0.1rem);
+  border: 1px solid color-mix(in oklab, light-dark(#d4d4d8, #52525b) 36%, transparent);
+  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 72%, light-dark(#c9c9d0, #43434e));
+  padding: var(--flypy-key-pad);
+  font-family: 'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  line-height: 1;
+  transition: border-color 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.flypy-alphabet-card.dimmed {
+  opacity: 0.35;
+}
+
+.flypy-alphabet-card.active {
+  z-index: 1;
+  border-color: color-mix(in oklab, light-dark(#a1a1aa, #3f3f46) 65%, transparent);
+}
+
+.flypy-alphabet-card-head {
+  margin: 0;
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-inline-end: 0.14rem;
+  padding-top: 0.12rem;
+  line-height: 1;
+}
+
+.flypy-alphabet-card-category {
+  text-align: right;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.flypy-alphabet-card-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.flypy-alphabet-card-pinyin-wrap {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.flypy-alphabet-card-pinyin {
+  text-align: center;
+  font-weight: 600;
+}
+
+.flypy-alphabet-card-pinyin.initial {
+  font-size: clamp(0.88rem, 4.4cqi, 1.14rem);
+}
+
+.flypy-alphabet-card-pinyin.final {
+  font-size: clamp(0.8rem, 4cqi, 1.04rem);
+}
+
+.flypy-alphabet-card-pinyin.syllable {
+  font-size: clamp(0.72rem, 3.6cqi, 0.94rem);
+}
+
+.flypy-alphabet-card-footer {
+  position: relative;
+  display: flex;
+  min-height: clamp(0.62rem, 2.4cqi, 0.78rem);
+  flex-shrink: 0;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.flypy-alphabet-card-hanzi {
+  text-align: center;
+  font-size: clamp(0.54rem, 2.35cqi, 0.68rem);
+  line-height: 1;
+  color: var(--ui-text-muted, var(--muted-foreground, light-dark(#71717a, #a1a1aa)));
+}
+
+/* 字根图小字区 */
+.flypy-small-key {
+  fill: var(--ui-primary, var(--primary, #2563eb));
+}
+
+.flypy-small-pinyin {
+  fill: var(--ui-text-muted, var(--muted-foreground, light-dark(#71717a, #a1a1aa)));
+}
+
+/* 声母分组色令牌 */
+.flypy-group-initial-0 { color: light-dark(#dc2626, #f87171); }
+.flypy-group-initial-1 { color: light-dark(#ea580c, #fb923c); }
+.flypy-group-initial-2 { color: light-dark(#ca8a04, #facc15); }
+.flypy-group-initial-3 { color: light-dark(#65a30d, #a3e635); }
+.flypy-group-initial-4 { color: var(--ui-success); }
+.flypy-group-initial-5 { color: light-dark(#0d9488, #2dd4bf); }
+.flypy-group-initial-6 { color: light-dark(#2563eb, #60a5fa); }
+.flypy-group-initial-7 { color: light-dark(#7c3aed, #a78bfa); }
+
+/* 韵母分组色令牌 */
+.flypy-group-final-0 { color: light-dark(#0284c7, #38bdf8); }
+.flypy-group-final-1 { color: light-dark(#4f46e5, #818cf8); }
+.flypy-group-final-2 { color: light-dark(#9333ea, #c084fc); }
+.flypy-group-final-3 { color: light-dark(#1d4ed8, #60a5fa); }
+.flypy-group-final-4 { color: light-dark(#0891b2, #22d3ee); }
