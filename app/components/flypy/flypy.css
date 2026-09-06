@@ -10,6 +10,10 @@
   padding: 0.85rem;
 }
 
+html.dark .flypy-figure {
+  background: color-mix(in oklab, var(--ui-bg, var(--background, #18181b)) 74%, color-mix(in oklab, var(--ui-border, var(--muted, #353540)) 100%, white 6%));
+}
+
 @media (max-width: 640px) {
   .flypy-figure {
     padding: 0.65rem;
@@ -73,7 +77,7 @@
 }
 
 .flypy-svg-key-stroke {
-  stroke: color-mix(in oklab, light-dark(#c9c9d0, #565662) 32%, transparent);
+  stroke: color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 74%, transparent);
 }
 
 /* 品牌位（下载按钮） */
