@@ -3,27 +3,33 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import fontSplit from 'cn-font-split/dist/auto.mjs'
+import { SPLIT_DIR, TTF_CACHE_DIR } from './paths.mjs'
 
 const fonts = JSON.parse(readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8'))
-
-const TTF_CACHE_DIR = join(process.cwd(), 'node_modules', '.cache', 'font-ttf')
-const CACHE_SPLIT = join(process.cwd(), 'node_modules', '.cache', 'cn-split')
 
 // 单分片目标大小：调大→每片更多字符、片数更少（体积驱动，适配不同字重）
 const CHUNK_SIZE = 400 * 1024
 
 async function ensureOne(f) {
   const cached = join(TTF_CACHE_DIR, f.name)
-  if (existsSync(cached)) return
+  if (existsSync(cached)) {
+    console.log('[font-split-worker] ttf cache hit', f.name)
+    return
+  }
+  console.log('[font-split-worker] download', f.name)
   const res = await fetch(f.url)
   if (!res.ok) throw new Error(`download ${f.name}: ${res.status}`)
   writeFileSync(cached, Buffer.from(await res.arrayBuffer()))
 }
 
 async function splitOne(f) {
-  const cacheDir = join(CACHE_SPLIT, f.dir)
+  const cacheDir = join(SPLIT_DIR, f.dir)
   if (!existsSync(join(TTF_CACHE_DIR, f.name))) return
-  if (existsSync(join(cacheDir, 'result.css'))) return
+  if (existsSync(join(cacheDir, 'result.css'))) {
+    console.log('[font-split-worker] cache hit', f.dir)
+    return
+  }
+  console.log('[font-split-worker] split', f.dir)
   mkdirSync(cacheDir, { recursive: true })
   await fontSplit({
     input: new Uint8Array(readFileSync(join(TTF_CACHE_DIR, f.name))),
@@ -39,7 +45,7 @@ try {
   let idx = 0
   const w = async () => { while (idx < fonts.length) await ensureOne(fonts[idx++]) }
   await Promise.all(Array.from({ length: Math.min(4, fonts.length) }, w))
-  mkdirSync(CACHE_SPLIT, { recursive: true })
+  mkdirSync(SPLIT_DIR, { recursive: true })
   // 切分并行（限流 3 族同时），首次冷构建更快
   let splitIdx = 0
   const sp = async () => { while (splitIdx < fonts.length) await splitOne(fonts[splitIdx++]) }

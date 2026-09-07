@@ -1,6 +1,7 @@
 import { defu } from 'defu'
 import { useLocalStorage } from '@vueuse/core'
 import { themeIcons, cssVariableDefaults } from '../utils/theme'
+import { DEFAULT_SANS_FAMILY, criticalFontLinks, ensureFontFaceCss } from '../utils/font-subset'
 import { omit } from '#ui/utils'
 import colors from 'tailwindcss/colors'
 
@@ -64,8 +65,8 @@ export function useTheme() {
   const customColorsData = useState<Record<string, Record<string, string>>>('nuxt-ui-custom-colors', () => readLocalStorage('nuxt-ui-custom-colors', {}))
   const cssVariablesData = useState<{ light?: Record<string, string>, dark?: Record<string, string> }>('nuxt-ui-css-variables', () => readLocalStorage('nuxt-ui-css-variables', {}))
   const _radius = useLocalStorage('nuxt-ui-radius', 0.25)
-  const _font = useLocalStorage('nuxt-ui-font', 'LXGW WenKai')
-  const _weight = useLocalStorage('nuxt-ui-font-weight', 'LXGW WenKai')
+  const _font = useLocalStorage('nuxt-ui-font', DEFAULT_SANS_FAMILY)
+  const _weight = useLocalStorage('nuxt-ui-font-weight', DEFAULT_SANS_FAMILY)
   const _iconSet = useLocalStorage('nuxt-ui-icons', 'lucide')
   const _blackAsPrimary = useLocalStorage('nuxt-ui-black-as-primary', false)
 
@@ -183,10 +184,10 @@ export function useTheme() {
     if (el) el.textContent = css
   }
 
-  // 字体（分片 woff2 下载）就绪后再切换；超时仅兜底防挂死；竞态下只允许最新切换生效
+  // 先注入该族 family.css（非首屏字体按需加载），再等分片就绪后切换
   async function applyFont(family: string) {
-    if (family === applyFamily.value) return
     const seq = ++fontSwitchSeq
+    await ensureFontFaceCss(family)
     const ready = (async () => {
       if (import.meta.client && 'fonts' in document) {
         await Promise.all([
@@ -200,7 +201,10 @@ export function useTheme() {
     writeFontStyle(family)
   }
 
-  watch(pendingFamily, (f) => { if (f !== applyFamily.value) void applyFont(f) }, { immediate: true })
+  watch(pendingFamily, (f) => {
+    if (f !== applyFamily.value) void applyFont(f)
+    else void ensureFontFaceCss(f)
+  }, { immediate: true })
 
   const icons = [{
     label: 'Lucide',
@@ -273,7 +277,7 @@ export function useTheme() {
     return parts.join(' ')
   })
 
-  const link = computed(() => [])
+  const link = computed(() => criticalFontLinks())
 
   const style = [
     { innerHTML: radiusStyle, id: 'nuxt-ui-radius', tagPriority: -2 },
@@ -286,7 +290,7 @@ export function useTheme() {
   const hasCSSChanges = computed(() => {
     return _radius.value !== 0.25
       || _blackAsPrimary.value
-      || _font.value !== 'LXGW WenKai'
+      || _font.value !== DEFAULT_SANS_FAMILY
       || hasCustomColors.value
       || hasCSSVariables.value
   })
@@ -446,8 +450,8 @@ export function useTheme() {
     window.localStorage.removeItem('nuxt-ui-neutral')
 
     _radius.value = 0.25
-    _font.value = 'LXGW WenKai'
-    _weight.value = 'LXGW WenKai'
+    _font.value = DEFAULT_SANS_FAMILY
+    _weight.value = DEFAULT_SANS_FAMILY
     _iconSet.value = 'lucide'
     appConfig.ui.icons = themeIcons.lucide as any
     _blackAsPrimary.value = false

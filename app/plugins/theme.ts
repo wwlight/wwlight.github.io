@@ -1,5 +1,6 @@
 import { defu } from 'defu'
 import { themeIcons, cssVariableDefaults } from '../utils/theme'
+import { CRITICAL_FONT_FAMILIES, FONT_FACE_HREF } from '../utils/font-subset'
 
 export default defineNuxtPlugin({
   enforce: 'post',
@@ -61,6 +62,22 @@ export default defineNuxtPlugin({
       useHead({
         script: [{
           innerHTML: `
+            (function() {
+              var hrefs = ${JSON.stringify(FONT_FACE_HREF)};
+              var critical = ${JSON.stringify(CRITICAL_FONT_FAMILIES)};
+              function parse(key) {
+                try { return JSON.parse(localStorage.getItem(key) || 'null'); }
+                catch (e) { return null; }
+              }
+              var font = parse('nuxt-ui-font');
+              var weight = parse('nuxt-ui-font-weight');
+              var family = (weight && hrefs[weight]) ? weight : font;
+              if (!family || !hrefs[family] || critical.indexOf(family) !== -1) return;
+              var link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = hrefs[family];
+              document.head.appendChild(link);
+            })();
             (function() {
               var primaryColor = localStorage.getItem('nuxt-ui-primary');
               var neutralColor = localStorage.getItem('nuxt-ui-neutral');

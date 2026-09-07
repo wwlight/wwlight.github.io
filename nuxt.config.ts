@@ -7,17 +7,12 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     './modules/font-subset'
   ],
+  // 关掉远程/本地 provider，避免 Docus / Nuxt UI 再注入 Inter；正文字体由 font-subset 的 family.css 提供
   fonts: {
     providers: {
-      google: false, bunny: false, fontsource: false, npm: false
+      google: false, bunny: false, fontsource: false, npm: false, local: false
     },
-    families: [
-      'LXGW WenKai', 'LXGW WenKai Light', 'LXGW WenKai Medium',
-      'ZCOOL KuaiLe', 'Fira Code',
-      'KingHwa_OldSong', 'Huiwen-mincho',
-      'STDongGuanTi', 'STDongGuanTi Bld', 'STDongGuanTi Light',
-      'LXGW Bright', 'LXGW Bright Light', 'LXGW Bright Medium'
-    ].map(name => ({ name, provider: 'local-split', global: true }))
+    families: []
   },
   ui: {
     fonts: false

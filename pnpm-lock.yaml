@@ -250,9 +250,6 @@ importers:
       cn-font-split:
         specifier: 7.4.3
         version: 7.4.3
-      unifont:
-        specifier: 0.7.5
-        version: 0.7.5
 
 packages:
 

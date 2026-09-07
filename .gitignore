@@ -5,6 +5,7 @@
 .nitro
 .cache
 dist
+public/font-subset
 
 # Node dependencies
 node_modules
