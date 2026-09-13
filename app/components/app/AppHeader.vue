@@ -1,16 +1,16 @@
 <script setup lang="ts">
+const appConfig = useAppConfig()
 const { isEnabled: isAssistantEnabled } = useAssistant()
 const { isEnabled, locales } = useDocusI18n()
 const { subNavigationMode } = useSubNavigation()
+
+const githubUrl = computed(() => appConfig.github?.url)
 </script>
 
 <template>
   <UHeader
-    :ui="{ center: 'flex-1' }"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
   >
-    <AppHeaderCenter />
-
     <template #left>
       <AppHeaderLeft />
     </template>
@@ -37,7 +37,17 @@ const { subNavigationMode } = useSubNavigation()
         />
       </template>
 
-      <UContentSearchButton class="lg:hidden" />
+      <UContentSearchButton />
+
+      <UButton
+        v-if="githubUrl"
+        icon="i-simple-icons-github"
+        color="neutral"
+        variant="ghost"
+        :to="githubUrl"
+        target="_blank"
+        aria-label="GitHub"
+      />
 
       <ThemePicker />
     </template>

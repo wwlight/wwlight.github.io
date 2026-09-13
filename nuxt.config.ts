@@ -51,7 +51,11 @@ export default defineNuxtConfig({
         'lucide:package',
         'lucide:toolbox',
         'lucide:arrow-right',
+        'lucide:rocket',
+        'lucide:book-open',
+        'lucide:bookmark',
         'simple-icons:apple',
+        'simple-icons:github',
         'simple-icons:nuxt',
         'vscode-icons:file-type-json',
         'vscode-icons:file-type-text'

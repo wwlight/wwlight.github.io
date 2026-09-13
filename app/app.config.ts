@@ -1,4 +1,10 @@
 export default defineAppConfig({
+  github: {
+    url: 'https://github.com/wwlight/docs'
+  },
+  navigation: {
+    sub: 'header'
+  },
   ui: {
     colors: {
       primary: 'green',

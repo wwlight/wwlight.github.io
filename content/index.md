@@ -1,22 +1,22 @@
 ---
 seo:
-  title: 我的笔记 · AI / 开发 / 系统
-  description: 个人的 AI 工具、开发技巧与系统使用记录集散地。
+  title: 我的笔记
+  description: Bookmarks / AI / Guides
 ---
 
 ::u-page-hero
 #title
-我的笔记 · AI / 开发 / 系统
+我的笔记
 
 #description
-记录 AI 工具实战、开发技巧与系统使用经验，随手沉淀、随手翻查。
+Bookmarks / AI / Guides
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /ai/agent-tools
+  to: /bookmarks/tools
   trailing-icon: i-lucide:arrow-right
   ---
   Get started
@@ -27,7 +27,7 @@ seo:
   color: neutral
   icon: simple-icons-github
   size: xl
-  to: https://github.com/nuxt-content/docus
+  to: https://github.com/wwlight/docs
   variant: outline
   ---
   Star on GitHub
@@ -41,11 +41,23 @@ seo:
 #features
   :::u-page-feature
   ---
+  icon: i-lucide-bookmark
+  to: /bookmarks/tools
+  ---
+  #title
+  Bookmarks
+
+  #description
+  工具 / 开发 / 学习 / 视觉 / 设计等分类书签。
+  :::
+
+  :::u-page-feature
+  ---
   icon: i-lucide-sparkles
   to: /ai/agent-tools
   ---
   #title
-  AI 工具
+  AI
 
   #description
   Agent 工具与 AI 工作流的使用记录。
@@ -53,20 +65,20 @@ seo:
 
   :::u-page-feature
   ---
-  icon: i-lucide-code-xml
-  to: /notes/dev-qa
+  icon: i-lucide-book-open
+  to: /guides/notes/dev-qa
   ---
   #title
-  开发笔记
+  Guides
 
   #description
-  Git、JS、命令行等开发实用问答与技巧。
+  开发笔记、系统软件与其它实用记录。
   :::
 
   :::u-page-feature
   ---
   icon: i-lucide-monitor
-  to: /system/system-software
+  to: /guides/system/system-software
   ---
   #title
   系统与软件
@@ -78,7 +90,7 @@ seo:
   :::u-page-feature
   ---
   icon: i-lucide-puzzle
-  to: /other/flypy-pinyin
+  to: /guides/other/flypy-pinyin
   ---
   #title
   小鹤双拼
@@ -90,7 +102,7 @@ seo:
   :::u-page-feature
   ---
   icon: i-lucide-route
-  to: /notes/bash-cheatsheet
+  to: /guides/notes/bash-cheatsheet
   ---
   #title
   常用命令速查
