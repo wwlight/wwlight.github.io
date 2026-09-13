@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "wwlight.github.io",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

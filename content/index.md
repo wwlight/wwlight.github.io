@@ -1,12 +1,12 @@
 ---
 seo:
-  title: 我的笔记
+  title: wwlight
   description: Bookmarks / AI / Guides
 ---
 
 ::u-page-hero
 #title
-我的笔记
+wwlight
 
 #description
 Bookmarks / AI / Guides
@@ -27,7 +27,7 @@ Bookmarks / AI / Guides
   color: neutral
   icon: simple-icons-github
   size: xl
-  to: https://github.com/wwlight/docs
+  to: https://github.com/wwlight/wwlight.github.io
   variant: outline
   ---
   Star on GitHub

@@ -1,6 +1,9 @@
 export default defineAppConfig({
   github: {
-    url: 'https://github.com/wwlight/docs'
+    url: 'https://github.com/wwlight/wwlight.github.io'
+  },
+  header: {
+    title: 'wwlight'
   },
   navigation: {
     sub: 'header'

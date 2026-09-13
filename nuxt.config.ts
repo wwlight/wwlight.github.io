@@ -90,7 +90,7 @@ export default defineNuxtConfig({
     repository: {
       provider: 'github',
       owner: 'wwlight',
-      repo: 'docs',
+      repo: 'wwlight.github.io',
       branch: 'main'
     }
   }
