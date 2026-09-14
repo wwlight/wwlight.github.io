@@ -48,7 +48,7 @@ Bookmarks / AI / Guides
   Bookmarks
 
   #description
-  工具 / 开发 / 学习 / 视觉 / 设计等分类书签。
+  工具 / 开发 / 学习 / 媒体 / 设计等分类书签。
   :::
 
   :::u-page-feature

@@ -85,6 +85,9 @@ export default defineNuxtConfig({
   mcp: {
     enabled: false,
   },
+  llms: {
+    domain: 'https://wwlight.github.io',
+  },
   studio: {
     route: '/admin',
     repository: {
