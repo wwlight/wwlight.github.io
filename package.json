@@ -6,16 +6,17 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@nuxt/kit": "^4.5.2",
+    "@nuxt/kit": "^4.6.0",
     "cn-font-split": "7.4.3"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.131",
+    "@iconify-json/lucide": "^1.2.140",
     "@iconify-json/ph": "^1.2.2",
-    "@iconify-json/simple-icons": "^1.2.95",
-    "@iconify-json/tabler": "^1.2.38",
+    "@iconify-json/simple-icons": "^1.2.99",
+    "@iconify-json/tabler": "^1.2.41",
     "@iconify-json/vscode-icons": "^1.2.77",
-    "@vueuse/core": "^14.4.0",
+    "@nuxtjs/mdc": "0.23.2",
+    "@vueuse/core": "^15.0.0",
     "better-sqlite3": "^13.0.3",
     "defu": "^6.1.7",
     "docus": "latest",
