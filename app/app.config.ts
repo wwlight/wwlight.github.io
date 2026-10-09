@@ -16,6 +16,7 @@ export default defineAppConfig({
     prose: {
       codeIcon: {
         jsonc: 'i-vscode-icons-file-type-json',
+        '.gitmodules': 'i-vscode-icons-file-type-ini',
       },
     },
   },

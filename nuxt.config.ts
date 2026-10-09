@@ -51,6 +51,7 @@ export default defineNuxtConfig({
         'simple-icons:nuxt',
         'vscode-icons:file-type-json',
         'vscode-icons:file-type-text',
+        'vscode-icons:file-type-ini',
       ],
     },
   },
@@ -61,7 +62,7 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          langs: ['sh', 'js', 'json', 'jsonc', 'md'],
+          langs: ['sh', 'js', 'json', 'jsonc', 'md', 'ini'],
         },
         rehypePlugins: {
           'rehype-external-links': {
