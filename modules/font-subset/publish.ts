@@ -1,6 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { PUBLISH_DIR, SPLIT_DIR, renderFamilyCss, sources } from './faces'
+import { PUBLISH_DIR, SPLIT_DIR, renderFamilyCss, sources } from './faces.ts'
 
 export function publishFontAssets(): void {
   if (existsSync(PUBLISH_DIR)) rmSync(PUBLISH_DIR, { recursive: true })

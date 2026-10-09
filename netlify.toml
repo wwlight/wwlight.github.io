@@ -1,9 +1,6 @@
 [build.environment]
 NODE_OPTIONS = "--max-old-space-size=4096"
 
-[[plugins]]
-package = "./plugins/font-subset-cache"
-
 # woff2 不可变长缓存；family.css 每次再验证（1～2 级目录）
 [[headers]]
 for = "/font-subset/:dir/*.woff2"

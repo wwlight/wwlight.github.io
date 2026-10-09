@@ -5,7 +5,8 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "preview": "nuxt preview",
-    "fmt": "vp fmt -c .oxfmtrc.json . '!content/**'"
+    "fmt": "vp fmt -c .oxfmtrc.json . '!content/**'",
+    "fonts": "node modules/font-subset/update.mjs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.140",

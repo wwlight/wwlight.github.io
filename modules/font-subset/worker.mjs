@@ -8,12 +8,27 @@ import { getBinName, matchPlatform } from 'cn-font-split/dist/load.mjs'
 import { isMusl } from 'cn-font-split/dist/node/isMusl.mjs'
 import { SPLIT_DIR, TTF_CACHE_DIR } from './paths.mjs'
 
+const require = createRequire(import.meta.url)
 const fonts = JSON.parse(
   readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8'),
 )
 
 // 单分片目标大小：调大→每片更多字符、片数更少（体积驱动，适配不同字重）
 const CHUNK_SIZE = 400 * 1024
+
+async function fetchFont(url) {
+  const retryable = new Set([429, 500, 502, 503, 504])
+  let status = 0
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const res = await fetch(url)
+    if (res.ok) return Buffer.from(await res.arrayBuffer())
+    status = res.status
+    if (!retryable.has(status) || attempt === 3) break
+    console.log(`[font-split-worker] retry ${attempt} after ${status}`)
+    await new Promise((resolve) => setTimeout(resolve, 2000 * attempt))
+  }
+  throw new Error(`download failed: ${status} ${url}`)
+}
 
 async function ensureOne(f) {
   const cached = join(TTF_CACHE_DIR, f.name)
@@ -22,23 +37,34 @@ async function ensureOne(f) {
     return
   }
   console.log('[font-split-worker] download', f.name)
-  const res = await fetch(f.url)
-  if (!res.ok) throw new Error(`download ${f.name}: ${res.status}`)
-  writeFileSync(cached, Buffer.from(await res.arrayBuffer()))
+  writeFileSync(cached, await fetchFont(f.url))
 }
 
 function nativeBinPath() {
-  const require = createRequire(import.meta.url)
   const nodeEntry = require.resolve('cn-font-split/dist/node/index.mjs')
   const name = getBinName(matchPlatform(process.platform, process.arch, isMusl))
   return resolve(dirname(nodeEntry), '..', name)
 }
 
-function installNativeBin() {
-  const require = createRequire(import.meta.url)
-  const cli = join(dirname(require.resolve('cn-font-split/package.json')), 'dist/cli.js')
+function packageRoot() {
+  return dirname(require.resolve('cn-font-split/package.json'))
+}
+
+function readInstalledCoreVersion() {
+  const versionFile = join(packageRoot(), 'dist/version')
+  if (!existsSync(versionFile)) return ''
+  for (const line of readFileSync(versionFile, 'utf8').split('\n')) {
+    const version = line.trim().split('@')[1]
+    if (version) return version
+  }
+  return ''
+}
+
+function installNativeBin(version) {
+  const cli = join(packageRoot(), 'dist/cli.js')
+  const spec = version ? `default@${version}` : 'default'
   return new Promise((resolvePromise, reject) => {
-    const child = spawn(process.execPath, [cli, 'i', 'default'], { stdio: 'inherit' })
+    const child = spawn(process.execPath, [cli, 'i', spec], { stdio: 'inherit' })
     child.on('error', reject)
     child.on('exit', (code) => {
       if (code === 0) resolvePromise()
@@ -50,8 +76,12 @@ function installNativeBin() {
 async function ensureNativeBin() {
   const path = nativeBinPath()
   if (existsSync(path)) return path
-  console.log('[font-split-worker] native library missing, running cn-font-split install')
-  await installNativeBin()
+  const version = readInstalledCoreVersion()
+  console.log(
+    '[font-split-worker] native library missing, running cn-font-split install',
+    version || 'latest',
+  )
+  await installNativeBin(version)
   if (!existsSync(path)) throw new Error(`cn-font-split native library missing: ${path}`)
   return path
 }

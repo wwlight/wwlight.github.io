@@ -1,8 +1,7 @@
 import { defineNuxtModule } from '@nuxt/kit'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-
-const SUBSET_DIR = 'vendor/font-subset'
+import { SUBSET_DIR } from './paths.mjs'
 
 export default defineNuxtModule({
   meta: { name: 'font-subset' },
@@ -15,6 +14,8 @@ export default defineNuxtModule({
     nuxt.options.nitro.publicAssets.push({
       dir,
       baseURL: 'font-subset',
+      // Nitro 只在 maxAge > 0 时写 Cache-Control；具体策略在 netlify.toml
+      maxAge: 0,
     })
   },
 })
