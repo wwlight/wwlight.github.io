@@ -1,0 +1,4 @@
+[submodule "vendor/font-subset"]
+	path = vendor/font-subset
+	url = https://github.com/wwlight/wwlight.github.io.git
+	branch = font-subset

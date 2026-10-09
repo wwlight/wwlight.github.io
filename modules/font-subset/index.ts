@@ -1,54 +1,20 @@
 import { defineNuxtModule } from '@nuxt/kit'
-import { mkdirSync } from 'node:fs'
-import { fork } from 'node:child_process'
-import { fileURLToPath } from 'node:url'
-import { PUBLISH_DIR } from './faces'
-import { publishFontAssets } from './publish'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 
-async function runWorker(): Promise<void> {
-  const workerUrl = fileURLToPath(new URL('./worker.mjs', import.meta.url))
-  const child = fork(workerUrl, [], {
-    stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-    execArgv: [],
-  })
-  await new Promise<void>((resolve, reject) => {
-    child.on('message', (m) => {
-      if ((m as any)?.kind === 'done') resolve()
-    })
-    child.on('error', reject)
-    child.on('exit', (code) => {
-      if (code !== 0) reject(new Error(`font-split worker exited ${code}`))
-    })
-  })
-  child.disconnect()
-}
-
-async function prepareAndPublish(): Promise<void> {
-  await runWorker()
-  publishFontAssets()
-}
+const SUBSET_DIR = 'vendor/font-subset'
 
 export default defineNuxtModule({
   meta: { name: 'font-subset' },
   setup(_, nuxt) {
-    const prepared = prepareAndPublish()
-
-    mkdirSync(PUBLISH_DIR, { recursive: true })
+    const dir = join(nuxt.options.rootDir, SUBSET_DIR)
+    if (!existsSync(join(dir, 'lxgw/regular/family.css'))) {
+      throw new Error(`[font-subset] missing ${SUBSET_DIR}. Run git submodule update --init.`)
+    }
     nuxt.options.nitro.publicAssets ||= []
     nuxt.options.nitro.publicAssets.push({
-      dir: PUBLISH_DIR,
+      dir,
       baseURL: 'font-subset',
-    })
-
-    nuxt.hook('nitro:config', async () => {
-      await prepared
-    })
-    nuxt.hook('close', async () => {
-      try {
-        await prepared
-      } catch (e) {
-        console.error('[font-subset] prepare failed', e)
-      }
     })
   },
 })
