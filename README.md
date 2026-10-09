@@ -1,6 +1,11 @@
 # wwlight
 
-个人文档站：书签、AI 使用记录与开发笔记。线上地址 [wwlight.github.io](https://wwlight.github.io)。
+个人文档站：书签、AI 使用记录与开发笔记。
+
+线上地址：
+
+- [wwlight.netlify.app](https://wwlight.netlify.app)、[wwlight.vercel.app](https://wwlight.vercel.app)：当前主仓库
+- [wwlight.github.io](https://wwlight.github.io)：旧版 Astro 站点
 
 ## 内容
 
@@ -12,10 +17,9 @@
 
 ## 本地开发
 
-使用 [pnpm](https://pnpm.io/) 11.22。
-
 ```bash
 pnpm install
+git submodule update --init
 pnpm dev
 ```
 
@@ -35,10 +39,6 @@ pnpm preview  # 预览构建结果
 
 站点里还有这些部分：
 
-- `modules/font-subset`：构建时用 cn-font-split 按页面用字生成中文与等宽字体子集，发布到 `/font-subset`
+- `modules/font-subset`：中文与等宽字体子集放在子模块 `font-subset`（同一仓库的 `font-subset` 分支），站点从 `/font-subset` 提供。改字库后执行 `pnpm fonts`，再在主仓库提交子模块的新提交号
 - 明暗主题与强调色切换
 - 小鹤双拼键位图（`app/components/flypy`）
-
-## 部署
-
-`netlify.toml` 为字体子集设置缓存：`.woff2` 长期缓存，`family.css` 每次再验证。
