@@ -1,8 +1,11 @@
 // cn 精细分包 worker（纯 JS，Node 直接运行；cn FFI 同步阻塞，放子进程避免卡 dev 主循环）
+import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { createRequire } from 'node:module'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import fontSplit from 'cn-font-split/dist/auto.mjs'
+import { getBinName, matchPlatform } from 'cn-font-split/dist/load.mjs'
+import { isMusl } from 'cn-font-split/dist/node/isMusl.mjs'
 import { SPLIT_DIR, TTF_CACHE_DIR } from './paths.mjs'
 
 const fonts = JSON.parse(
@@ -24,6 +27,45 @@ async function ensureOne(f) {
   writeFileSync(cached, Buffer.from(await res.arrayBuffer()))
 }
 
+function nativeBinPath() {
+  const require = createRequire(import.meta.url)
+  const nodeEntry = require.resolve('cn-font-split/dist/node/index.mjs')
+  const name = getBinName(matchPlatform(process.platform, process.arch, isMusl))
+  return resolve(dirname(nodeEntry), '..', name)
+}
+
+function installNativeBin() {
+  const require = createRequire(import.meta.url)
+  const cli = join(dirname(require.resolve('cn-font-split/package.json')), 'dist/cli.js')
+  return new Promise((resolvePromise, reject) => {
+    const child = spawn(process.execPath, [cli, 'i', 'default'], { stdio: 'inherit' })
+    child.on('error', reject)
+    child.on('exit', (code) => {
+      if (code === 0) resolvePromise()
+      else reject(new Error(`cn-font-split install exited ${code}`))
+    })
+  })
+}
+
+async function ensureNativeBin() {
+  const path = nativeBinPath()
+  if (existsSync(path)) return path
+  console.log('[font-split-worker] native library missing, running cn-font-split install')
+  await installNativeBin()
+  if (!existsSync(path)) throw new Error(`cn-font-split native library missing: ${path}`)
+  return path
+}
+
+let fontSplitPromise
+function loadFontSplit() {
+  fontSplitPromise ??= (async () => {
+    process.env.CN_FONT_SPLIT_BIN = await ensureNativeBin()
+    const mod = await import('cn-font-split/dist/auto.mjs')
+    return mod.default
+  })()
+  return fontSplitPromise
+}
+
 async function splitOne(f) {
   const cacheDir = join(SPLIT_DIR, f.dir)
   if (!existsSync(join(TTF_CACHE_DIR, f.name))) return
@@ -33,6 +75,7 @@ async function splitOne(f) {
   }
   console.log('[font-split-worker] split', f.dir)
   mkdirSync(cacheDir, { recursive: true })
+  const fontSplit = await loadFontSplit()
   await fontSplit({
     input: new Uint8Array(readFileSync(join(TTF_CACHE_DIR, f.name))),
     outDir: cacheDir,
