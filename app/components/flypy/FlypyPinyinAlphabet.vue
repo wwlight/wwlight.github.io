@@ -13,15 +13,18 @@ function groupClass(item: PinyinAlphabetItem): string {
   return item.groupColor ? `flypy-group-${item.groupColor}` : ''
 }
 
-function cardClass(section: PinyinAlphabetSection, item: PinyinAlphabetItem): Record<string, boolean> {
+function cardClass(
+  section: PinyinAlphabetSection,
+  item: PinyinAlphabetItem,
+): Record<string, boolean> {
   const active = Boolean(item.groupKey) && hoveredGroup.value === item.groupKey
-  const dimmed = Boolean(item.groupKey) && sectionActive(section) && hoveredGroup.value !== item.groupKey
+  const dimmed =
+    Boolean(item.groupKey) && sectionActive(section) && hoveredGroup.value !== item.groupKey
   return { active, dimmed }
 }
 
 function onCardEnter(item: PinyinAlphabetItem) {
-  if (item.groupKey)
-    hoveredGroup.value = item.groupKey
+  if (item.groupKey) hoveredGroup.value = item.groupKey
 }
 </script>
 
@@ -44,17 +47,13 @@ function onCardEnter(item: PinyinAlphabetItem) {
             @mouseenter="onCardEnter(item)"
           >
             <div v-if="item.category" class="flypy-alphabet-card-head">
-              <span
-                :class="['flypy-alphabet-card-category', groupClass(item)]"
-              >
+              <span :class="['flypy-alphabet-card-category', groupClass(item)]">
                 {{ item.category }}
               </span>
             </div>
             <div class="flypy-alphabet-card-body">
               <div class="flypy-alphabet-card-pinyin-wrap">
-                <span
-                  :class="['flypy-alphabet-card-pinyin', section.tone, groupClass(item)]"
-                >
+                <span :class="['flypy-alphabet-card-pinyin', section.tone, groupClass(item)]">
                   {{ item.pinyin }}
                 </span>
               </div>

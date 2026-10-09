@@ -58,7 +58,10 @@ export const FLYPY_MNEMONIC_ROWS: FlypyMnemonicKeyData[][] = [
     {
       key: 'T',
       mnemonicChars: [{ char: '月', tone: 'green' }],
-      finals: [{ text: 'ue', tone: 'green' }, { text: 'üe', tone: 'green' }],
+      finals: [
+        { text: 'ue', tone: 'green' },
+        { text: 'üe', tone: 'green' },
+      ],
     },
     { key: 'Y', mnemonicChars: [{ char: '云' }], finals: [{ text: 'un' }] },
     { key: 'U', altInitial: 'sh', mnemonicChars: [{ char: '梳' }], finals: [{ text: 'u' }] },
@@ -124,9 +127,7 @@ export type GlyphCropId =
   | 'bi_left'
   | 'ji_left'
 
-export type RadicalComponent =
-  | { type: 'text'; char: string }
-  | { type: 'symbol'; id: GlyphCropId }
+export type RadicalComponent = { type: 'text'; char: string } | { type: 'symbol'; id: GlyphCropId }
 
 export type RadicalSegment = {
   components: RadicalComponent[]
@@ -141,10 +142,10 @@ export type RadicalKeyData = {
 
 const t = (char: string): RadicalComponent => ({ type: 'text', char })
 const sym = (id: GlyphCropId): RadicalComponent => ({ type: 'symbol', id })
-const seg = (
-  components: RadicalComponent[],
-  kind: RadicalKind,
-): RadicalSegment => ({ components, kind })
+const seg = (components: RadicalComponent[], kind: RadicalKind): RadicalSegment => ({
+  components,
+  kind,
+})
 
 export type GlyphCropDef = {
   id: GlyphCropId
@@ -188,7 +189,7 @@ export const GLYPH_CROPS: GlyphCropDef[] = [
     id: 'ji_left',
     viewBox: '-277.71 -794.32 1125.43 833.65',
     path: 'M 126 -743 Q 126 -749 136.5 -749 Q 147 -749 200 -720 L 200 -720 L 430 -738 Q 435 -739 440 -739 L 440 -739 L 448 -739 Q 467 -739 480 -727.5 Q 493 -716 493 -707.5 Q 493 -699 488 -692 Q 483 -685 482 -677 L 482 -677 L 453 -408 Q 481 -376 481 -367.5 Q 481 -359 473.5 -358 Q 466 -357 455 -356 L 455 -356 L 201 -346 L 202 -107 Q 272 -136 369 -188 L 369 -188 Q 345 -225 326.5 -249 Q 308 -273 308 -280 Q 308 -287 320 -298 Q 332 -309 341.5 -309 Q 351 -309 361 -296 L 361 -296 Q 404 -243 461 -158.5 Q 518 -74 518 -62.5 Q 518 -51 502.5 -38.5 Q 487 -26 475 -26 Q 463 -26 456 -40 L 456 -40 Q 427 -97 395 -147 L 395 -147 Q 265 -66 189 -36 Q 113 -6 105 -6 Q 97 -6 84.5 -14.5 Q 72 -23 62 -36 Q 52 -49 52 -60 L 52 -60 Q 52 -64 66 -65.5 Q 80 -67 96 -71.5 Q 112 -76 127 -80 L 127 -80 L 142 -85 L 140 -646 Q 140 -698 127 -737 L 127 -737 Q 126 -740 126 -743 M 421 -684 L 199 -670 L 200 -564 L 412 -576 M 408 -525 L 200 -513 L 200 -397 L 398 -405',
-  }
+  },
 ]
 
 export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
@@ -202,10 +203,7 @@ export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
     },
     {
       key: 'W',
-      lines: [
-        [seg([t('亠'), t('文')], 'phonetic')],
-        [seg([t('夂'), t('攵')], 'phonetic')],
-      ],
+      lines: [[seg([t('亠'), t('文')], 'phonetic')], [seg([t('夂'), t('攵')], 'phonetic')]],
     },
     {
       key: 'E',
@@ -232,17 +230,11 @@ export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
     },
     {
       key: 'I',
-      lines: [
-        [seg([t('彳'), t('亍')], 'phonetic')],
-        [seg([t('虫')], 'phonetic')],
-      ],
+      lines: [[seg([t('彳'), t('亍')], 'phonetic')], [seg([t('虫')], 'phonetic')]],
     },
     {
       key: 'O',
-      lines: [
-        [seg([t('日')], 'special')],
-        [seg([t('月'), t('目')], 'phonetic')],
-      ],
+      lines: [[seg([t('日')], 'special')], [seg([t('月'), t('目')], 'phonetic')]],
     },
     {
       key: 'P',
@@ -258,18 +250,12 @@ export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
     },
     {
       key: 'S',
-      lines: [
-        [seg([t('纟'), t('厶')], 'phonetic')],
-        [seg([t('龴'), t('罒')], 'phonetic')],
-      ],
+      lines: [[seg([t('纟'), t('厶')], 'phonetic')], [seg([t('龴'), t('罒')], 'phonetic')]],
     },
     {
       key: 'D',
       corner: seg([t('点'), t('丶')], 'stroke'),
-      lines: [
-        [seg([t('冫'), t('氵')], 'phonetic')],
-        [seg([t('⺈'), t('刂')], 'phonetic')],
-      ],
+      lines: [[seg([t('冫'), t('氵')], 'phonetic')], [seg([t('⺈'), t('刂')], 'phonetic')]],
     },
     {
       key: 'F',
@@ -287,17 +273,11 @@ export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
     },
     {
       key: 'H',
-      lines: [
-        [seg([t('灬'), t('虍')], 'phonetic')],
-        [seg([sym('yu_xia'), t('黑')], 'phonetic')],
-      ],
+      lines: [[seg([t('灬'), t('虍')], 'phonetic')], [seg([sym('yu_xia'), t('黑')], 'phonetic')]],
     },
     {
       key: 'J',
-      lines: [
-        [seg([t('钅'), t('龹')], 'phonetic')],
-        [seg([t('金')], 'phonetic')],
-      ],
+      lines: [[seg([t('钅'), t('龹')], 'phonetic')], [seg([t('金')], 'phonetic')]],
     },
     {
       key: 'K',
@@ -315,10 +295,7 @@ export const FLYPY_RADICAL_ROWS: RadicalKeyData[][] = [
   [
     {
       key: 'Z',
-      lines: [
-        [seg([t('辶'), t('廴')], 'special')],
-        [seg([t('⻊')], 'phonetic')],
-      ],
+      lines: [[seg([t('辶'), t('廴')], 'special')], [seg([t('⻊')], 'phonetic')]],
     },
     {
       key: 'X',
@@ -379,28 +356,28 @@ export const FLYPY_SMALL_CHARS: { key: string; chars: string }[] = [
 
 /** 小字字根拼音标注：易混读音 + 生僻字 */
 export const FLYPY_SMALL_CHAR_PINYIN: Record<string, string> = {
-  '卞': 'biàn',
-  '甫': 'fǔ',
-  '弗': 'fú',
-  '丐': 'gài',
-  '夬': 'guài',
-  '臼': 'jiù',
-  '戋': 'jiān',
-  '耒': 'lěi',
-  '皿': 'mǐn',
-  '廿': 'niàn',
-  '爿': 'pán',
-  '冉': 'rǎn',
-  '巳': 'sì',
-  '矢': 'shǐ',
-  '豕': 'shǐ',
-  '戊': 'wù',
-  '戌': 'xū',
-  '乍': 'zhà',
-  '兀': 'wù',
-  '禺': 'yú',
-  '臾': 'yú',
-  '弋': 'yì',
-  '聿': 'yù',
-  '曳': 'yè',
+  卞: 'biàn',
+  甫: 'fǔ',
+  弗: 'fú',
+  丐: 'gài',
+  夬: 'guài',
+  臼: 'jiù',
+  戋: 'jiān',
+  耒: 'lěi',
+  皿: 'mǐn',
+  廿: 'niàn',
+  爿: 'pán',
+  冉: 'rǎn',
+  巳: 'sì',
+  矢: 'shǐ',
+  豕: 'shǐ',
+  戊: 'wù',
+  戌: 'xū',
+  乍: 'zhà',
+  兀: 'wù',
+  禺: 'yú',
+  臾: 'yú',
+  弋: 'yì',
+  聿: 'yù',
+  曳: 'yè',
 }

@@ -1,35 +1,27 @@
 export default defineNuxtConfig({
-  extends: [
-    'docus'
-  ],
-  modules: [
-    'nuxt-studio',
-    '@nuxt/fonts',
-    './modules/font-subset'
-  ],
-  // 关掉远程/本地 provider，避免 Docus / Nuxt UI 再注入 Inter；正文字体由 font-subset 的 family.css 提供
-  fonts: {
-    providers: {
-      google: false, bunny: false, fontsource: false, npm: false, local: false
-    },
-    families: []
-  },
+  extends: ['docus'],
+  modules: ['nuxt-studio', './modules/font-subset'],
   ui: {
-    fonts: false
+    fonts: false,
+  },
+  docus: {
+    assistant: {
+      enabled: false,
+    },
   },
   experimental: {
     defaults: {
       nuxtLink: {
         prefetchOn: {
           interaction: false,
-          visibility: false
-        }
-      }
-    }
+          visibility: false,
+        },
+      },
+    },
   },
   icon: {
     serverBundle: {
-      collections: ['lucide', 'ph', 'tabler', 'simple-icons', 'vscode-icons']
+      collections: ['lucide', 'ph', 'tabler', 'simple-icons', 'vscode-icons'],
     },
     clientBundle: {
       icons: [
@@ -58,29 +50,29 @@ export default defineNuxtConfig({
         'simple-icons:github',
         'simple-icons:nuxt',
         'vscode-icons:file-type-json',
-        'vscode-icons:file-type-text'
-      ]
-    }
+        'vscode-icons:file-type-text',
+      ],
+    },
   },
   hooks: {
-    close: () => process.exit(0)
+    close: () => process.exit(0),
   },
   content: {
     build: {
       markdown: {
         highlight: {
-          langs: ['sh', 'js', 'json', 'jsonc', 'md']
+          langs: ['sh', 'js', 'json', 'jsonc', 'md'],
         },
         rehypePlugins: {
           'rehype-external-links': {
             options: {
               target: '_blank',
-              rel: ['noopener', 'noreferrer']
-            }
-          }
-        }
-      }
-    }
+              rel: ['noopener', 'noreferrer'],
+            },
+          },
+        },
+      },
+    },
   },
   mcp: {
     enabled: false,
@@ -94,7 +86,7 @@ export default defineNuxtConfig({
       provider: 'github',
       owner: 'wwlight',
       repo: 'wwlight.github.io',
-      branch: 'main'
-    }
-  }
+      branch: 'main',
+    },
+  },
 })

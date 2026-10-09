@@ -42,11 +42,18 @@ function sanitizeCustomColors(input: Record<string, any>): Record<string, Record
   return result
 }
 
-function sanitizeCSSVariables(input: { light?: Record<string, any>, dark?: Record<string, any> }): { light: Record<string, string>, dark: Record<string, string> } {
+function sanitizeCSSVariables(input: { light?: Record<string, any>; dark?: Record<string, any> }): {
+  light: Record<string, string>
+  dark: Record<string, string>
+} {
   const clean = (vars?: Record<string, unknown>) => {
     const result: Record<string, string> = {}
     for (const [key, value] of Object.entries(vars || {})) {
-      if (SAFE_CSS_VAR_KEY.test(key) && typeof value === 'string' && SAFE_CSS_VAR_VALUE.test(value)) {
+      if (
+        SAFE_CSS_VAR_KEY.test(key) &&
+        typeof value === 'string' &&
+        SAFE_CSS_VAR_VALUE.test(value)
+      ) {
         result[key] = value
       }
     }
@@ -59,18 +66,38 @@ export function useTheme() {
   const appConfig = useAppConfig()
   const colorMode = useColorMode()
 
-  const color = computed(() => colorMode.value === 'dark' ? (colors as any)[appConfig.ui.colors.neutral][900] : 'white')
+  const color = computed(() =>
+    colorMode.value === 'dark' ? (colors as any)[appConfig.ui.colors.neutral][900] : 'white',
+  )
 
-  const aiThemeExtras = useState<Record<string, any>>('nuxt-ui-ai-theme', () => readLocalStorage('nuxt-ui-ai-theme', {}))
-  const customColorsData = useState<Record<string, Record<string, string>>>('nuxt-ui-custom-colors', () => readLocalStorage('nuxt-ui-custom-colors', {}))
-  const cssVariablesData = useState<{ light?: Record<string, string>, dark?: Record<string, string> }>('nuxt-ui-css-variables', () => readLocalStorage('nuxt-ui-css-variables', {}))
+  const aiThemeExtras = useState<Record<string, any>>('nuxt-ui-ai-theme', () =>
+    readLocalStorage('nuxt-ui-ai-theme', {}),
+  )
+  const customColorsData = useState<Record<string, Record<string, string>>>(
+    'nuxt-ui-custom-colors',
+    () => readLocalStorage('nuxt-ui-custom-colors', {}),
+  )
+  const cssVariablesData = useState<{
+    light?: Record<string, string>
+    dark?: Record<string, string>
+  }>('nuxt-ui-css-variables', () => readLocalStorage('nuxt-ui-css-variables', {}))
   const _radius = useLocalStorage('nuxt-ui-radius', 0.25)
   const _font = useLocalStorage('nuxt-ui-font', DEFAULT_SANS_FAMILY)
   const _weight = useLocalStorage('nuxt-ui-font-weight', DEFAULT_SANS_FAMILY)
   const _iconSet = useLocalStorage('nuxt-ui-icons', 'lucide')
   const _blackAsPrimary = useLocalStorage('nuxt-ui-black-as-primary', false)
 
-  const neutralColors = ['slate', 'gray', 'zinc', 'neutral', 'stone', 'taupe', 'mauve', 'mist', 'olive']
+  const neutralColors = [
+    'slate',
+    'gray',
+    'zinc',
+    'neutral',
+    'stone',
+    'taupe',
+    'mauve',
+    'mist',
+    'olive',
+  ]
   const neutral = computed({
     get() {
       return appConfig.ui.colors.neutral
@@ -78,7 +105,7 @@ export function useTheme() {
     set(option) {
       appConfig.ui.colors.neutral = option
       window.localStorage.setItem('nuxt-ui-neutral', appConfig.ui.colors.neutral)
-    }
+    },
   })
 
   const colorsToOmit = ['inherit', 'current', 'transparent', 'black', 'white', ...neutralColors]
@@ -91,7 +118,7 @@ export function useTheme() {
       appConfig.ui.colors.primary = option
       window.localStorage.setItem('nuxt-ui-primary', appConfig.ui.colors.primary)
       setBlackAsPrimary(false)
-    }
+    },
   })
 
   const radiuses = [0, 0.125, 0.25, 0.375, 0.5]
@@ -101,41 +128,44 @@ export function useTheme() {
     },
     set(option) {
       _radius.value = option
-    }
+    },
   })
 
   const fonts = [
     {
-      label: 'LXGW WenKai', value: 'LXGW WenKai',
+      label: 'LXGW WenKai',
+      value: 'LXGW WenKai',
       weights: [
         { label: 'Regular', value: 'LXGW WenKai' },
         { label: 'Light', value: 'LXGW WenKai Light' },
-        { label: 'Medium', value: 'LXGW WenKai Medium' }
-      ]
+        { label: 'Medium', value: 'LXGW WenKai Medium' },
+      ],
     },
     {
-      label: 'LXGW WK Bright', value: 'LXGW Bright',
+      label: 'LXGW WK Bright',
+      value: 'LXGW Bright',
       weights: [
         { label: 'Regular', value: 'LXGW Bright' },
         { label: 'Light', value: 'LXGW Bright Light' },
-        { label: 'Medium', value: 'LXGW Bright Medium' }
-      ]
+        { label: 'Medium', value: 'LXGW Bright Medium' },
+      ],
     },
     { label: '京華老宋体', value: 'KingHwa_OldSong' },
     { label: '汇文明朝体', value: 'Huiwen-mincho' },
     {
-      label: '上图东观体', value: 'STDongGuanTi',
+      label: '上图东观体',
+      value: 'STDongGuanTi',
       weights: [
         { label: 'Regular', value: 'STDongGuanTi' },
         { label: 'Bold', value: 'STDongGuanTi Bld' },
-        { label: 'Light', value: 'STDongGuanTi Light' }
-      ]
+        { label: 'Light', value: 'STDongGuanTi Light' },
+      ],
     },
     { label: 'ZCOOL KuaiLe', value: 'ZCOOL KuaiLe' },
-    { label: 'Fira Code', value: 'Fira Code' }
+    { label: 'Fira Code', value: 'Fira Code' },
   ]
   // 当前选中字体的字重列表（带字重才有，value 即实际 CSS family 名）；无字重的字体为空
-  const currentFont = computed(() => fonts.find(f => f.value === _font.value))
+  const currentFont = computed(() => fonts.find((f) => f.value === _font.value))
   const fontWeights = computed(() => currentFont.value?.weights ?? [])
   const weight = computed({
     get() {
@@ -143,12 +173,12 @@ export function useTheme() {
     },
     set(option) {
       _weight.value = option
-    }
+    },
   })
   // 按选中字重解析实际 family（value 即 CSS family 名）
   const resolveFontFamily = (name: string) => {
-    const f = fonts.find(x => x.value === name)
-    if (f?.weights?.length && f.weights.some(w => w.value === _weight.value)) return _weight.value
+    const f = fonts.find((x) => x.value === name)
+    if (f?.weights?.length && f.weights.some((w) => w.value === _weight.value)) return _weight.value
     return name
   }
 
@@ -160,14 +190,14 @@ export function useTheme() {
       if (option === _font.value) return
       _font.value = option
       // 切换字体时同步字重：带字重默认选第一个，无字重则清空
-      const f = fonts.find(x => x.value === option)
+      const f = fonts.find((x) => x.value === option)
       if (f?.weights?.length) {
         _weight.value = f.weights[0]!.value
       } else {
         _weight.value = ''
       }
       // 生效切族统一由 pendingFamily 的 watch 触发
-    }
+    },
   })
 
   // 用户选中的目标 family（跟随 _font/_weight，切字族或字重都会变化）
@@ -196,29 +226,40 @@ export function useTheme() {
         ])
       }
     })()
-    await Promise.race([ready, new Promise<void>(resolve => setTimeout(resolve, FONT_SWITCH_TIMEOUT))])
+    await Promise.race([
+      ready,
+      new Promise<void>((resolve) => setTimeout(resolve, FONT_SWITCH_TIMEOUT)),
+    ])
     if (seq !== fontSwitchSeq) return
     writeFontStyle(family)
   }
 
-  watch(pendingFamily, (f) => {
-    if (f !== applyFamily.value) void applyFont(f)
-    else void ensureFontFaceCss(f)
-  }, { immediate: true })
+  watch(
+    pendingFamily,
+    (f) => {
+      if (f !== applyFamily.value) void applyFont(f)
+      else void ensureFontFaceCss(f)
+    },
+    { immediate: true },
+  )
 
-  const icons = [{
-    label: 'Lucide',
-    icon: 'i-lucide-feather',
-    value: 'lucide'
-  }, {
-    label: 'Phosphor',
-    icon: 'i-ph-phosphor-logo',
-    value: 'phosphor'
-  }, {
-    label: 'Tabler',
-    icon: 'i-tabler-brand-tabler',
-    value: 'tabler'
-  }]
+  const icons = [
+    {
+      label: 'Lucide',
+      icon: 'i-lucide-feather',
+      value: 'lucide',
+    },
+    {
+      label: 'Phosphor',
+      icon: 'i-ph-phosphor-logo',
+      value: 'phosphor',
+    },
+    {
+      label: 'Tabler',
+      icon: 'i-tabler-brand-tabler',
+      value: 'tabler',
+    },
+  ]
   const icon = computed({
     get() {
       return _iconSet.value
@@ -226,13 +267,13 @@ export function useTheme() {
     set(option) {
       _iconSet.value = option
       appConfig.ui.icons = themeIcons[option as keyof typeof themeIcons] as any
-    }
+    },
   })
 
-  const modes = computed((): { label: 'light' | 'dark' | 'system', icon: string }[] => [
+  const modes = computed((): { label: 'light' | 'dark' | 'system'; icon: string }[] => [
     { label: 'light', icon: appConfig.ui.icons.light },
     { label: 'dark', icon: appConfig.ui.icons.dark },
-    { label: 'system', icon: appConfig.ui.icons.system }
+    { label: 'system', icon: appConfig.ui.icons.system },
   ])
   const mode = computed({
     get() {
@@ -240,7 +281,7 @@ export function useTheme() {
     },
     set(option) {
       colorMode.preference = option
-    }
+    },
   })
 
   const blackAsPrimary = computed(() => _blackAsPrimary.value)
@@ -250,16 +291,24 @@ export function useTheme() {
   }
 
   const hasCustomColors = computed(() => Object.keys(customColorsData.value).length > 0)
-  const hasCSSVariables = computed(() => Object.keys(cssVariablesData.value.light || {}).length > 0 || Object.keys(cssVariablesData.value.dark || {}).length > 0)
+  const hasCSSVariables = computed(
+    () =>
+      Object.keys(cssVariablesData.value.light || {}).length > 0 ||
+      Object.keys(cssVariablesData.value.dark || {}).length > 0,
+  )
 
   const radiusStyle = computed(() => `:root { --ui-radius: ${_radius.value}rem; }`)
-  const blackAsPrimaryStyle = computed(() => _blackAsPrimary.value ? `:root { --ui-primary: black; } .dark { --ui-primary: white; }` : ':root {}')
+  const blackAsPrimaryStyle = computed(() =>
+    _blackAsPrimary.value
+      ? `:root { --ui-primary: black; } .dark { --ui-primary: white; }`
+      : ':root {}',
+  )
   const fontStyle = computed(() => `:root { --font-sans: '${applyFamily.value}', sans-serif; }`)
   const customColorsStyle = computed(() => {
     const entries = Object.entries(customColorsData.value)
     if (!entries.length) return ''
     const vars = entries.flatMap(([name, shades]) =>
-      Object.entries(shades).map(([shade, hex]) => `--color-${name}-${shade}: ${hex};`)
+      Object.entries(shades).map(([shade, hex]) => `--color-${name}-${shade}: ${hex};`),
     )
     return `:root { ${vars.join(' ')} }`
   })
@@ -268,11 +317,19 @@ export function useTheme() {
     const parts: string[] = []
     if (Object.keys(data.light || {}).length) {
       const full = { ...cssVariableDefaults.light, ...data.light }
-      parts.push(`.light { ${Object.entries(full).map(([k, v]) => `${k}: ${v};`).join(' ')} }`)
+      parts.push(
+        `.light { ${Object.entries(full)
+          .map(([k, v]) => `${k}: ${v};`)
+          .join(' ')} }`,
+      )
     }
     if (Object.keys(data.dark || {}).length) {
       const full = { ...cssVariableDefaults.dark, ...data.dark }
-      parts.push(`.dark { ${Object.entries(full).map(([k, v]) => `${k}: ${v};`).join(' ')} }`)
+      parts.push(
+        `.dark { ${Object.entries(full)
+          .map(([k, v]) => `${k}: ${v};`)
+          .join(' ')} }`,
+      )
     }
     return parts.join(' ')
   })
@@ -284,30 +341,31 @@ export function useTheme() {
     { innerHTML: blackAsPrimaryStyle, id: 'nuxt-ui-black-as-primary', tagPriority: -2 },
     { innerHTML: fontStyle, id: 'nuxt-ui-font', tagPriority: -2 },
     { innerHTML: customColorsStyle, id: 'chat-custom-colors', tagPriority: -2 },
-    { innerHTML: cssVariablesStyle, id: 'chat-css-variables', tagPriority: -2 }
+    { innerHTML: cssVariablesStyle, id: 'chat-css-variables', tagPriority: -2 },
   ]
 
   const hasCSSChanges = computed(() => {
-    return _radius.value !== 0.25
-      || _blackAsPrimary.value
-      || _font.value !== DEFAULT_SANS_FAMILY
-      || hasCustomColors.value
-      || hasCSSVariables.value
+    return (
+      _radius.value !== 0.25 ||
+      _blackAsPrimary.value ||
+      _font.value !== DEFAULT_SANS_FAMILY ||
+      hasCustomColors.value ||
+      hasCSSVariables.value
+    )
   })
 
   const hasConfigChanges = computed(() => {
-    return appConfig.ui.colors.primary !== 'green'
-      || appConfig.ui.colors.neutral !== 'slate'
-      || _iconSet.value !== 'lucide'
-      || !!aiThemeExtras.value.colors
-      || !!aiThemeExtras.value.ui
+    return (
+      appConfig.ui.colors.primary !== 'green' ||
+      appConfig.ui.colors.neutral !== 'slate' ||
+      _iconSet.value !== 'lucide' ||
+      !!aiThemeExtras.value.colors ||
+      !!aiThemeExtras.value.ui
+    )
   })
 
   function exportCSS(): string {
-    const lines = [
-      '@import "tailwindcss";',
-      '@import "@nuxt/ui";'
-    ]
+    const lines = ['@import "tailwindcss";', '@import "@nuxt/ui";']
 
     lines.push('', '@theme {', `  --font-sans: '${applyFamily.value}', sans-serif;`, '}')
 
@@ -322,8 +380,14 @@ export function useTheme() {
       lines.push('', '@theme static {', ...colorLines, '}')
     }
 
-    const lightOverrides = Object.entries(cssVariablesData.value.light || {}).filter(([key, val]) => val !== cssVariableDefaults.light[key as keyof typeof cssVariableDefaults.light])
-    const darkOverrides = Object.entries(cssVariablesData.value.dark || {}).filter(([key, val]) => val !== cssVariableDefaults.dark[key as keyof typeof cssVariableDefaults.dark])
+    const lightOverrides = Object.entries(cssVariablesData.value.light || {}).filter(
+      ([key, val]) =>
+        val !== cssVariableDefaults.light[key as keyof typeof cssVariableDefaults.light],
+    )
+    const darkOverrides = Object.entries(cssVariablesData.value.dark || {}).filter(
+      ([key, val]) =>
+        val !== cssVariableDefaults.dark[key as keyof typeof cssVariableDefaults.dark],
+    )
 
     const rootLines: string[] = []
     if (_radius.value !== 0.25) {
@@ -338,7 +402,12 @@ export function useTheme() {
     }
 
     if (lightOverrides.length) {
-      lines.push('', ':root, .light {', ...lightOverrides.map(([key, val]) => `  ${key}: ${val};`), '}')
+      lines.push(
+        '',
+        ':root, .light {',
+        ...lightOverrides.map(([key, val]) => `  ${key}: ${val};`),
+        '}',
+      )
     }
 
     const darkLines: string[] = []
@@ -359,10 +428,24 @@ export function useTheme() {
   function exportConfig(): string {
     const config: Record<string, any> = {}
 
-    const defaultColors: Record<string, string> = { primary: 'green', neutral: 'slate', secondary: 'blue', success: 'green', info: 'blue', warning: 'yellow', error: 'red' }
-    const colorEntries = Object.entries(defaultColors).filter(([key, def]) => (appConfig.ui.colors as any)[key] !== def)
+    const defaultColors: Record<string, string> = {
+      primary: 'green',
+      neutral: 'slate',
+      secondary: 'blue',
+      success: 'green',
+      info: 'blue',
+      warning: 'yellow',
+      error: 'red',
+    }
+    const colorEntries = Object.entries(defaultColors).filter(
+      ([key, def]) => (appConfig.ui.colors as any)[key] !== def,
+    )
     if (colorEntries.length) {
-      config.ui = { colors: Object.fromEntries(colorEntries.map(([key]) => [key, (appConfig.ui.colors as any)[key]])) }
+      config.ui = {
+        colors: Object.fromEntries(
+          colorEntries.map(([key]) => [key, (appConfig.ui.colors as any)[key]]),
+        ),
+      }
     }
 
     if (_iconSet.value !== 'lucide') {
@@ -379,7 +462,7 @@ export function useTheme() {
 
     const configString = JSON.stringify(config, null, 2)
       .replace(/"([^"]+)":/g, '$1:')
-      .replace(/"/g, '\'')
+      .replace(/"/g, "'")
 
     return `export default defineAppConfig(${configString})`
   }
@@ -390,10 +473,13 @@ export function useTheme() {
     window.localStorage.setItem('nuxt-ui-custom-colors', JSON.stringify(merged))
   }
 
-  function injectCSSVariables(cssVariables: { light?: Record<string, string>, dark?: Record<string, string> }) {
+  function injectCSSVariables(cssVariables: {
+    light?: Record<string, string>
+    dark?: Record<string, string>
+  }) {
     const merged = {
       light: { ...cssVariablesData.value.light, ...cssVariables.light },
-      dark: { ...cssVariablesData.value.dark, ...cssVariables.dark }
+      dark: { ...cssVariablesData.value.dark, ...cssVariables.dark },
     }
     cssVariablesData.value = merged
     window.localStorage.setItem('nuxt-ui-css-variables', JSON.stringify(merged))
@@ -410,8 +496,10 @@ export function useTheme() {
     }
 
     if (settings.primary && SAFE_NAME.test(settings.primary)) primary.value = settings.primary
-    if (settings.neutral && neutralColors.includes(settings.neutral)) neutral.value = settings.neutral
-    if (settings.radius !== undefined && Number.isFinite(Number(settings.radius))) radius.value = Number(settings.radius)
+    if (settings.neutral && neutralColors.includes(settings.neutral))
+      neutral.value = settings.neutral
+    if (settings.radius !== undefined && Number.isFinite(Number(settings.radius)))
+      radius.value = Number(settings.radius)
     if (settings.font && SAFE_NAME.test(settings.font)) font.value = settings.font
     if (settings.icons && settings.icons in themeIcons) icon.value = settings.icons
     if (settings.blackAsPrimary !== undefined) setBlackAsPrimary(!!settings.blackAsPrimary)
@@ -421,7 +509,7 @@ export function useTheme() {
 
     for (const color of colorKeys) {
       if (settings[color] && SAFE_NAME.test(settings[color])) {
-        (appConfig.ui.colors as any)[color] = settings[color]
+        ;(appConfig.ui.colors as any)[color] = settings[color]
         savedExtras.colors = savedExtras.colors || {}
         savedExtras.colors[color] = settings[color]
       }
@@ -430,9 +518,14 @@ export function useTheme() {
     if (settings.ui) {
       savedExtras.ui = savedExtras.ui || {}
       for (const [key, value] of Object.entries(settings.ui)) {
-        if (key === 'colors' || key === '__proto__' || key === 'constructor' || key === 'prototype') continue
+        if (key === 'colors' || key === '__proto__' || key === 'constructor' || key === 'prototype')
+          continue
 
-        const merged = defu(value as Record<string, any>, (appConfig.ui as any)[key] || {}, savedExtras.ui[key] || {})
+        const merged = defu(
+          value as Record<string, any>,
+          (appConfig.ui as any)[key] || {},
+          savedExtras.ui[key] || {},
+        )
         ;(appConfig.ui as any)[key] = merged
         savedExtras.ui[key] = merged
       }
@@ -456,17 +549,23 @@ export function useTheme() {
     appConfig.ui.icons = themeIcons.lucide as any
     _blackAsPrimary.value = false
 
-    const defaultColors: Record<string, string> = { secondary: 'blue', success: 'green', info: 'blue', warning: 'yellow', error: 'red' }
+    const defaultColors: Record<string, string> = {
+      secondary: 'blue',
+      success: 'green',
+      info: 'blue',
+      warning: 'yellow',
+      error: 'red',
+    }
     const extras = aiThemeExtras.value
     if (extras.colors) {
       for (const key of Object.keys(extras.colors)) {
-        (appConfig.ui.colors as any)[key] = defaultColors[key] || (appConfig.ui.colors as any)[key]
+        ;(appConfig.ui.colors as any)[key] = defaultColors[key] || (appConfig.ui.colors as any)[key]
       }
     }
     if (extras.ui) {
       for (const key of Object.keys(extras.ui)) {
         if (key === 'colors' || key === 'icons') continue
-        (appConfig.ui as any)[key] = undefined
+        ;(appConfig.ui as any)[key] = undefined
       }
     }
     window.localStorage.removeItem('nuxt-ui-ai-theme')
@@ -508,6 +607,6 @@ export function useTheme() {
     exportCSS,
     exportConfig,
     applyThemeSettings,
-    resetTheme
+    resetTheme,
   }
 }

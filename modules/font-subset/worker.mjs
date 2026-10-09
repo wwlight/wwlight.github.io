@@ -5,7 +5,9 @@ import { fileURLToPath } from 'node:url'
 import fontSplit from 'cn-font-split/dist/auto.mjs'
 import { SPLIT_DIR, TTF_CACHE_DIR } from './paths.mjs'
 
-const fonts = JSON.parse(readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8'))
+const fonts = JSON.parse(
+  readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8'),
+)
 
 // 单分片目标大小：调大→每片更多字符、片数更少（体积驱动，适配不同字重）
 const CHUNK_SIZE = 400 * 1024
@@ -36,19 +38,23 @@ async function splitOne(f) {
     outDir: cacheDir,
     silent: true,
     reporter: false,
-    chunkSize: CHUNK_SIZE
+    chunkSize: CHUNK_SIZE,
   })
 }
 
 try {
   mkdirSync(TTF_CACHE_DIR, { recursive: true })
   let idx = 0
-  const w = async () => { while (idx < fonts.length) await ensureOne(fonts[idx++]) }
+  const w = async () => {
+    while (idx < fonts.length) await ensureOne(fonts[idx++])
+  }
   await Promise.all(Array.from({ length: Math.min(4, fonts.length) }, w))
   mkdirSync(SPLIT_DIR, { recursive: true })
   // 切分并行（限流 3 族同时），首次冷构建更快
   let splitIdx = 0
-  const sp = async () => { while (splitIdx < fonts.length) await splitOne(fonts[splitIdx++]) }
+  const sp = async () => {
+    while (splitIdx < fonts.length) await splitOne(fonts[splitIdx++])
+  }
   await Promise.all(Array.from({ length: Math.min(3, fonts.length) }, sp))
   console.log('[font-split-worker] done', fonts.length)
   process.send?.({ kind: 'done', count: fonts.length })

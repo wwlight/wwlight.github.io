@@ -7,11 +7,18 @@ import { publishFontAssets } from './publish'
 
 async function runWorker(): Promise<void> {
   const workerUrl = fileURLToPath(new URL('./worker.mjs', import.meta.url))
-  const child = fork(workerUrl, [], { stdio: ['inherit', 'inherit', 'inherit', 'ipc'], execArgv: [] })
+  const child = fork(workerUrl, [], {
+    stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+    execArgv: [],
+  })
   await new Promise<void>((resolve, reject) => {
-    child.on('message', (m) => { if ((m as any)?.kind === 'done') resolve() })
+    child.on('message', (m) => {
+      if ((m as any)?.kind === 'done') resolve()
+    })
     child.on('error', reject)
-    child.on('exit', (code) => { if (code !== 0) reject(new Error(`font-split worker exited ${code}`)) })
+    child.on('exit', (code) => {
+      if (code !== 0) reject(new Error(`font-split worker exited ${code}`))
+    })
   })
   child.disconnect()
 }
@@ -30,14 +37,18 @@ export default defineNuxtModule({
     nuxt.options.nitro.publicAssets ||= []
     nuxt.options.nitro.publicAssets.push({
       dir: PUBLISH_DIR,
-      baseURL: 'font-subset'
+      baseURL: 'font-subset',
     })
 
     nuxt.hook('nitro:config', async () => {
       await prepared
     })
     nuxt.hook('close', async () => {
-      try { await prepared } catch (e) { console.error('[font-subset] prepare failed', e) }
+      try {
+        await prepared
+      } catch (e) {
+        console.error('[font-subset] prepare failed', e)
+      }
     })
-  }
+  },
 })

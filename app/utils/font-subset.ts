@@ -4,7 +4,10 @@ export const DEFAULT_SANS_FAMILY = 'LXGW WenKai'
 export const CRITICAL_FONT_FAMILIES = [DEFAULT_SANS_FAMILY, 'Fira Code'] as const
 
 export const FONT_FACE_HREF: Record<string, string> = Object.fromEntries(
-  (sources as { family: string, dir: string }[]).map(s => [s.family, `/font-subset/${s.dir}/family.css`])
+  (sources as { family: string; dir: string }[]).map((s) => [
+    s.family,
+    `/font-subset/${s.dir}/family.css`,
+  ]),
 )
 
 const fontFaceCssPending = new Map<string, Promise<void>>()

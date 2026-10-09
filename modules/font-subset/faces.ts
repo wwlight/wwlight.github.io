@@ -3,10 +3,20 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PUBLISH_DIR, SPLIT_DIR } from './paths.mjs'
 
-export interface FontSource { name: string, url: string, family: string, dir: string }
-export interface Face { file: string, range?: string }
+export interface FontSource {
+  name: string
+  url: string
+  family: string
+  dir: string
+}
+export interface Face {
+  file: string
+  range?: string
+}
 
-export const sources = JSON.parse(readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8')) as FontSource[]
+export const sources = JSON.parse(
+  readFileSync(fileURLToPath(new URL('./sources.json', import.meta.url)), 'utf8'),
+) as FontSource[]
 
 export { PUBLISH_DIR, SPLIT_DIR }
 
@@ -42,8 +52,10 @@ export function renderFamilyCss(src: FontSource): string {
   const faces = getFaces(src.dir)
   const weight = inferWeight(src.family)
   const family = src.family.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  return faces.map((f) => {
-    const range = f.range ? `unicode-range:${f.range};` : ''
-    return `@font-face{font-family:"${family}";src:url(/font-subset/${src.dir}/${f.file})format("woff2");font-display:swap;font-weight:${weight};font-style:normal;${range}}`
-  }).join('')
+  return faces
+    .map((f) => {
+      const range = f.range ? `unicode-range:${f.range};` : ''
+      return `@font-face{font-family:"${family}";src:url(/font-subset/${src.dir}/${f.file})format("woff2");font-display:swap;font-weight:${weight};font-style:normal;${range}}`
+    })
+    .join('')
 }

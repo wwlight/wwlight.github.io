@@ -12,12 +12,12 @@ const slots = defineSlots<{
   leading: () => any
 }>()
 
-const lightColor = computed(() => props.chip
-  ? (colors as any)[props.chip]?.[500] || `var(--color-${props.chip}-500)`
-  : '')
-const darkColor = computed(() => props.chip
-  ? (colors as any)[props.chip]?.[400] || `var(--color-${props.chip}-400)`
-  : '')
+const lightColor = computed(() =>
+  props.chip ? (colors as any)[props.chip]?.[500] || `var(--color-${props.chip}-500)` : '',
+)
+const darkColor = computed(() =>
+  props.chip ? (colors as any)[props.chip]?.[400] || `var(--color-${props.chip}-400)` : '',
+)
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const darkColor = computed(() => props.chip
           :class="`bg-(--color-light) dark:bg-(--color-dark)`"
           :style="{
             '--color-light': lightColor,
-            '--color-dark': darkColor
+            '--color-dark': darkColor,
           }"
         />
       </slot>

@@ -42,7 +42,7 @@ export const themeIcons = {
     system: 'i-lucide-monitor',
     tip: 'i-lucide-lightbulb',
     upload: 'i-lucide-upload',
-    warning: 'i-lucide-triangle-alert'
+    warning: 'i-lucide-triangle-alert',
   },
   phosphor: {
     arrowDown: 'i-ph-arrow-down',
@@ -87,7 +87,7 @@ export const themeIcons = {
     system: 'i-ph-monitor',
     tip: 'i-ph-lightbulb',
     upload: 'i-ph-upload',
-    warning: 'i-ph-warning'
+    warning: 'i-ph-warning',
   },
   tabler: {
     arrowDown: 'i-tabler-arrow-down',
@@ -132,8 +132,8 @@ export const themeIcons = {
     system: 'i-tabler-device-desktop',
     tip: 'i-tabler-bulb',
     upload: 'i-tabler-upload',
-    warning: 'i-tabler-alert-triangle'
-  }
+    warning: 'i-tabler-alert-triangle',
+  },
 }
 
 export type ThemeIcons = keyof typeof themeIcons
@@ -154,7 +154,7 @@ export const cssVariableDefaults = {
     '--ui-border': 'var(--ui-color-neutral-200)',
     '--ui-border-muted': 'var(--ui-color-neutral-200)',
     '--ui-border-accented': 'var(--ui-color-neutral-300)',
-    '--ui-border-inverted': 'var(--ui-color-neutral-900)'
+    '--ui-border-inverted': 'var(--ui-color-neutral-900)',
   },
   dark: {
     '--ui-text-dimmed': 'var(--ui-color-neutral-500)',
@@ -171,6 +171,6 @@ export const cssVariableDefaults = {
     '--ui-border': 'var(--ui-color-neutral-800)',
     '--ui-border-muted': 'var(--ui-color-neutral-700)',
     '--ui-border-accented': 'var(--ui-color-neutral-700)',
-    '--ui-border-inverted': 'white'
-  }
+    '--ui-border-inverted': 'white',
+  },
 } as const

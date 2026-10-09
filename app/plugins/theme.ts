@@ -1,5 +1,5 @@
 import { defu } from 'defu'
-import { themeIcons, cssVariableDefaults } from '../utils/theme'
+import { themeIcons } from '../utils/theme'
 import { CRITICAL_FONT_FAMILIES, FONT_FACE_HREF } from '../utils/font-subset'
 
 export default defineNuxtPlugin({
@@ -42,14 +42,17 @@ export default defineNuxtPlugin({
         const extras = JSON.parse(localStorage.getItem('nuxt-ui-ai-theme') || '{}')
         if (extras.colors) {
           for (const [key, value] of Object.entries(extras.colors)) {
-            (appConfig.ui.colors as any)[key] = value
+            ;(appConfig.ui.colors as any)[key] = value
           }
         }
         if (extras.ui) {
           onNuxtReady(() => {
             for (const [key, value] of Object.entries(extras.ui)) {
               if (key === 'colors' || key === 'icons') continue
-              (appConfig.ui as any)[key] = defu(value as Record<string, any>, (appConfig.ui as any)[key] || {})
+              ;(appConfig.ui as any)[key] = defu(
+                value as Record<string, any>,
+                (appConfig.ui as any)[key] || {},
+              )
             }
           })
         }
@@ -60,8 +63,9 @@ export default defineNuxtPlugin({
 
     if (import.meta.server) {
       useHead({
-        script: [{
-          innerHTML: `
+        script: [
+          {
+            innerHTML: `
             (function() {
               var hrefs = ${JSON.stringify(FONT_FACE_HREF)};
               var critical = ${JSON.stringify(CRITICAL_FONT_FAMILIES)};
@@ -118,10 +122,11 @@ export default defineNuxtPlugin({
               }
             })();
             `.replace(/\s+/g, ' '),
-          type: 'text/javascript',
-          tagPriority: -1
-        }]
+            type: 'text/javascript',
+            tagPriority: -1,
+          },
+        ],
       })
     }
-  }
+  },
 })

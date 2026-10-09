@@ -11,7 +11,7 @@ export default defineNuxtPlugin(() => {
 
   function isPrimaryCssReady() {
     return Boolean(
-      getComputedStyle(document.documentElement).getPropertyValue('--ui-primary').trim()
+      getComputedStyle(document.documentElement).getPropertyValue('--ui-primary').trim(),
     )
   }
 
@@ -67,12 +67,9 @@ export default defineNuxtPlugin(() => {
 
   onNuxtReady(() => {
     syncSiteFavicon()
-    watch(
-      [() => appConfig.ui.colors.primary, () => colorMode.value],
-      () => {
-        faviconRetryCount = 0
-        requestAnimationFrame(() => syncSiteFavicon())
-      }
-    )
+    watch([() => appConfig.ui.colors.primary, () => colorMode.value], () => {
+      faviconRetryCount = 0
+      requestAnimationFrame(() => syncSiteFavicon())
+    })
   })
 })

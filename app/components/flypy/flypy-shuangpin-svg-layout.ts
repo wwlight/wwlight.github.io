@@ -4,10 +4,7 @@ import type {
   MnemonicCharTone,
   MnemonicFinalTone,
 } from './flypy-data'
-import {
-  FLYPY_MNEMONIC_ROWS,
-  FLYPY_ROWS,
-} from './flypy-data'
+import { FLYPY_MNEMONIC_ROWS, FLYPY_ROWS } from './flypy-data'
 import {
   FLYPY_SVG_GAP,
   FLYPY_SVG_PAD,
@@ -64,7 +61,7 @@ function estimateTextWidth(text: string, fontSize: number): number {
 }
 
 function layoutTopRight(
-  items: { text: string, tone: ShuangpinSvgTone, size: number }[],
+  items: { text: string; tone: ShuangpinSvgTone; size: number }[],
   keyX: number,
   keySize: number,
   pad: number,
@@ -90,7 +87,7 @@ function layoutTopRight(
 }
 
 function layoutFinals(
-  lines: { text: string, tone: ShuangpinSvgTone }[],
+  lines: { text: string; tone: ShuangpinSvgTone }[],
   keyX: number,
   keyY: number,
   keySize: number,
@@ -131,7 +128,7 @@ function layoutLayoutKey(item: FlypyKeyData, x: number, y: number): ShuangpinSvg
   )
 
   const finals = layoutFinals(
-    item.finals.split(' / ').map(text => ({ text, tone: 'final' as const })),
+    item.finals.split(' / ').map((text) => ({ text, tone: 'final' as const })),
     x,
     y,
     size,
@@ -176,15 +173,14 @@ function layoutMnemonicKey(item: FlypyMnemonicKeyData, x: number, y: number): Sh
   const letterY = y + pad + letterSize * 0.85
   const bodyTop = y + pad + Math.max(letterSize, altSize, charSize) * 1.2
 
-  const topItems: { text: string, tone: ShuangpinSvgTone, size: number }[] = []
-  if (item.altInitial)
-    topItems.push({ text: item.altInitial, tone: 'initial', size: altSize })
+  const topItems: { text: string; tone: ShuangpinSvgTone; size: number }[] = []
+  if (item.altInitial) topItems.push({ text: item.altInitial, tone: 'initial', size: altSize })
   for (const ch of item.mnemonicChars ?? [])
     topItems.push({ text: ch.char, tone: charTone(ch.tone), size: charSize })
 
   const topRight = layoutTopRight(topItems, x, size, pad, letterY)
   const finals = layoutFinals(
-    item.finals.map(f => ({ text: f.text, tone: finalTone(f.tone) })),
+    item.finals.map((f) => ({ text: f.text, tone: finalTone(f.tone) })),
     x,
     y,
     size,

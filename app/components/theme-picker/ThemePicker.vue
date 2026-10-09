@@ -35,12 +35,18 @@ const {
   configLabel,
   exportCSS,
   exportConfig,
-  resetTheme
+  resetTheme,
 } = useTheme()
 </script>
 
 <template>
-  <UPopover v-model:open="open" :ui="{ content: 'w-80 px-6 py-4 flex flex-col gap-4 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-5rem)]' }">
+  <UPopover
+    v-model:open="open"
+    :ui="{
+      content:
+        'w-80 px-6 py-4 flex flex-col gap-4 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-5rem)]',
+    }"
+  >
     <template #default>
       <UButton
         icon="i-lucide-swatch-book"
@@ -54,9 +60,7 @@ const {
 
     <template #content>
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Primary
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Primary</legend>
 
         <div class="grid grid-cols-3 gap-1 -mx-2">
           <ThemePickerButton
@@ -81,9 +85,7 @@ const {
       </fieldset>
 
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Neutral
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Neutral</legend>
 
         <div class="grid grid-cols-3 gap-1 -mx-2">
           <ThemePickerButton
@@ -98,9 +100,7 @@ const {
       </fieldset>
 
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Radius
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Radius</legend>
 
         <div class="grid grid-cols-5 gap-1 -mx-2">
           <ThemePickerButton
@@ -115,11 +115,9 @@ const {
       </fieldset>
 
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Font
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Font</legend>
 
-<div class="flex gap-2 -mx-2">
+        <div class="flex gap-2 -mx-2">
           <USelect
             v-model="font"
             size="sm"
@@ -127,7 +125,9 @@ const {
             icon="i-lucide-type"
             :items="fonts"
             class="flex-1 min-w-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+            :ui="{
+              trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200',
+            }"
           />
           <USelect
             v-if="fontWeights.length"
@@ -137,33 +137,34 @@ const {
             icon="i-lucide-italic"
             :items="fontWeights"
             class="w-28 shrink-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+            :ui="{
+              trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200',
+            }"
           />
         </div>
       </fieldset>
 
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Icons
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Icons</legend>
 
         <div class="-mx-2">
           <USelect
             v-model="icon"
             size="sm"
             color="neutral"
-            :icon="icons.find(i => i.value === icon)?.icon"
+            :icon="icons.find((i) => i.value === icon)?.icon"
             :items="icons"
             class="w-full ring-default rounded-sm hover:bg-elevated/50 capitalize text-[11px] data-[state=open]:bg-elevated/50"
-            :ui="{ item: 'capitalize text-[11px]', trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+            :ui="{
+              item: 'capitalize text-[11px]',
+              trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200',
+            }"
           />
         </div>
       </fieldset>
 
       <fieldset>
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Color Mode
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Color Mode</legend>
 
         <div class="grid grid-cols-3 gap-1 -mx-2">
           <ThemePickerButton
@@ -177,9 +178,7 @@ const {
       </fieldset>
 
       <fieldset v-if="hasCSSChanges || hasConfigChanges">
-        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">
-          Export
-        </legend>
+        <legend class="text-[11px] leading-none font-semibold mb-2 select-none">Export</legend>
 
         <div class="flex items-center justify-between gap-1 -mx-2">
           <UButton

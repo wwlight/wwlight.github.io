@@ -4,6 +4,6 @@ declare module '*.ttf?subsets' {
 }
 
 declare module '../../modules/font-subset/sources.json' {
-  const sources: { name: string, url: string, family: string, dir: string }[]
+  const sources: { name: string; url: string; family: string; dir: string }[]
   export default sources
 }

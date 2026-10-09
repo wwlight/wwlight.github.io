@@ -1,26 +1,26 @@
 [build.environment]
-  NODE_OPTIONS = "--max-old-space-size=4096"
+NODE_OPTIONS = "--max-old-space-size=4096"
 
 [[plugins]]
-  package = "./plugins/font-subset-cache"
+package = "./plugins/font-subset-cache"
 
 # woff2 不可变长缓存；family.css 每次再验证（1～2 级目录）
 [[headers]]
-  for = "/font-subset/:dir/*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+for = "/font-subset/:dir/*.woff2"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/font-subset/:dir/:subdir/*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+for = "/font-subset/:dir/:subdir/*.woff2"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/font-subset/:dir/family.css"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+for = "/font-subset/:dir/family.css"
+[headers.values]
+Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
-  for = "/font-subset/:dir/:subdir/family.css"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+for = "/font-subset/:dir/:subdir/family.css"
+[headers.values]
+Cache-Control = "public, max-age=0, must-revalidate"

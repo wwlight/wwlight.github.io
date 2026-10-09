@@ -7,11 +7,10 @@ import { setupFlypySvgDownload } from './flypy-svg-download'
 import FlypyFigure from './FlypyFigure.vue'
 
 const layout = buildRadicalSvgLayout()
-const cropMap = new Map(GLYPH_CROPS.map(c => [c.id, c]))
+const cropMap = new Map(GLYPH_CROPS.map((c) => [c.id, c]))
 
 function hasShape(glyph: RadicalSvgGlyphPos): boolean {
-  if (glyph.type !== 'symbol')
-    return false
+  if (glyph.type !== 'symbol') return false
   const crop = cropMap.get(glyph.id)
   return Boolean(crop?.path || crop?.strokes?.length)
 }
@@ -36,12 +35,7 @@ onMounted(() => {
           :id="`flypy-glyph-${crop.id}`"
           :viewBox="crop.viewBox"
         >
-          <path
-            v-if="crop.path"
-            :d="crop.path"
-            fill="currentColor"
-            stroke="none"
-          />
+          <path v-if="crop.path" :d="crop.path" fill="currentColor" stroke="none" />
           <path
             v-for="(d, i) in crop.strokes ?? []"
             :key="i"
@@ -165,11 +159,7 @@ onMounted(() => {
       </text>
 
       <g data-part="small-chars">
-        <g
-          v-for="item in layout.smallItems"
-          :key="item.key"
-          :data-small-key="item.key"
-        >
+        <g v-for="item in layout.smallItems" :key="item.key" :data-small-key="item.key">
           <text
             :x="item.keyX"
             :y="item.keyY"

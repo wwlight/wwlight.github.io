@@ -13,12 +13,7 @@ onMounted(() => {
 
 <template>
   <FlypyFigure aria-label="小鹤双拼键位口诀">
-    <svg
-      class="flypy-svg-type"
-      :viewBox="layout.viewBox"
-      role="img"
-      aria-label="小鹤双拼键位口诀"
-    >
+    <svg class="flypy-svg-type" :viewBox="layout.viewBox" role="img" aria-label="小鹤双拼键位口诀">
       <g data-part="keyboard">
         <g v-for="key in layout.keys" :key="key.key" :data-key="key.key">
           <rect

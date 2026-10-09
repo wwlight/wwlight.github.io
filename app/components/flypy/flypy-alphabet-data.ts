@@ -97,16 +97,10 @@ const FLYPY_INITIAL_GROUP_COLORS = [
   'initial-7',
 ] as const
 
-const FLYPY_FINAL_GROUP_COLORS = [
-  'final-0',
-  'final-1',
-  'final-2',
-  'final-3',
-  'final-4',
-] as const
+const FLYPY_FINAL_GROUP_COLORS = ['final-0', 'final-1', 'final-2', 'final-3', 'final-4'] as const
 
 function buildItems(pinyins: readonly string[]): PinyinAlphabetItem[] {
-  return pinyins.map(pinyin => ({
+  return pinyins.map((pinyin) => ({
     pinyin,
     hanzi: FLYPY_PINYIN_HANZI[pinyin],
   }))
@@ -128,7 +122,7 @@ function buildGroupedItems(
     const groupColor = colors[index % colors.length]
     const groupKey = `${tone}:${category}`
 
-    return tokens.map(pinyin => ({
+    return tokens.map((pinyin) => ({
       pinyin,
       hanzi: FLYPY_PINYIN_HANZI[pinyin],
       category,

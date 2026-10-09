@@ -5,13 +5,26 @@
   width: 100%;
   overflow: visible;
   border-radius: calc(var(--radius, 0.25rem) + 0.25rem);
-  border: 1px solid color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 60%, transparent);
-  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 80%, var(--ui-border, var(--muted, light-dark(#dcdce2, #353540))));
+  border: 1px solid
+    color-mix(
+      in oklab,
+      var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 60%,
+      transparent
+    );
+  background: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 80%,
+    var(--ui-border, var(--muted, light-dark(#dcdce2, #353540)))
+  );
   padding: 0.85rem;
 }
 
 html.dark .flypy-figure {
-  background: color-mix(in oklab, var(--ui-bg, var(--background, #18181b)) 74%, color-mix(in oklab, var(--ui-border, var(--muted, #353540)) 100%, white 6%));
+  background: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, #18181b)) 74%,
+    color-mix(in oklab, var(--ui-border, var(--muted, #353540)) 100%, white 6%)
+  );
 }
 
 @media (max-width: 640px) {
@@ -69,15 +82,25 @@ html.dark .flypy-figure {
   height: auto;
   overflow: visible;
   color-scheme: light dark;
-  font-family: 'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family:
+    'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    sans-serif;
 }
 
 .flypy-svg-key-fill {
-  fill: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 58%, transparent);
+  fill: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 58%,
+    transparent
+  );
 }
 
 .flypy-svg-key-stroke {
-  stroke: color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 74%, transparent);
+  stroke: color-mix(
+    in oklab,
+    var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 74%,
+    transparent
+  );
 }
 
 /* 品牌位（下载按钮） */
@@ -137,8 +160,17 @@ html.dark .flypy-figure {
 .flypy-alphabet-section {
   overflow: hidden;
   border-radius: calc(var(--radius, 0.25rem) + 0.12rem);
-  border: 1px solid color-mix(in oklab, var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 48%, transparent);
-  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 92%, light-dark(#d4d4d8, #3f3f46));
+  border: 1px solid
+    color-mix(
+      in oklab,
+      var(--ui-border, var(--border, light-dark(#d4d4d8, #3f3f46))) 48%,
+      transparent
+    );
+  background: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 92%,
+    light-dark(#d4d4d8, #3f3f46)
+  );
   padding: 0.75rem;
 }
 
@@ -207,11 +239,19 @@ html.dark .flypy-figure {
   cursor: default;
   border-radius: calc(var(--radius, 0.25rem) + 0.1rem);
   border: 1px solid color-mix(in oklab, light-dark(#d4d4d8, #52525b) 36%, transparent);
-  background: color-mix(in oklab, var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 72%, light-dark(#c9c9d0, #43434e));
+  background: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 72%,
+    light-dark(#c9c9d0, #43434e)
+  );
   padding: var(--flypy-key-pad);
-  font-family: 'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family:
+    'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    sans-serif;
   line-height: 1;
-  transition: border-color 0.2s ease-out, opacity 0.2s ease-out;
+  transition:
+    border-color 0.2s ease-out,
+    opacity 0.2s ease-out;
 }
 
 .flypy-alphabet-card.dimmed {
@@ -303,18 +343,44 @@ html.dark .flypy-figure {
 }
 
 /* 声母分组色令牌 */
-.flypy-group-initial-0 { color: light-dark(#dc2626, #f87171); }
-.flypy-group-initial-1 { color: light-dark(#ea580c, #fb923c); }
-.flypy-group-initial-2 { color: light-dark(#ca8a04, #facc15); }
-.flypy-group-initial-3 { color: light-dark(#65a30d, #a3e635); }
-.flypy-group-initial-4 { color: var(--ui-success); }
-.flypy-group-initial-5 { color: light-dark(#0d9488, #2dd4bf); }
-.flypy-group-initial-6 { color: light-dark(#2563eb, #60a5fa); }
-.flypy-group-initial-7 { color: light-dark(#7c3aed, #a78bfa); }
+.flypy-group-initial-0 {
+  color: light-dark(#dc2626, #f87171);
+}
+.flypy-group-initial-1 {
+  color: light-dark(#ea580c, #fb923c);
+}
+.flypy-group-initial-2 {
+  color: light-dark(#ca8a04, #facc15);
+}
+.flypy-group-initial-3 {
+  color: light-dark(#65a30d, #a3e635);
+}
+.flypy-group-initial-4 {
+  color: var(--ui-success);
+}
+.flypy-group-initial-5 {
+  color: light-dark(#0d9488, #2dd4bf);
+}
+.flypy-group-initial-6 {
+  color: light-dark(#2563eb, #60a5fa);
+}
+.flypy-group-initial-7 {
+  color: light-dark(#7c3aed, #a78bfa);
+}
 
 /* 韵母分组色令牌 */
-.flypy-group-final-0 { color: light-dark(#0284c7, #38bdf8); }
-.flypy-group-final-1 { color: light-dark(#4f46e5, #818cf8); }
-.flypy-group-final-2 { color: light-dark(#9333ea, #c084fc); }
-.flypy-group-final-3 { color: light-dark(#1d4ed8, #60a5fa); }
-.flypy-group-final-4 { color: light-dark(#0891b2, #22d3ee); }
+.flypy-group-final-0 {
+  color: light-dark(#0284c7, #38bdf8);
+}
+.flypy-group-final-1 {
+  color: light-dark(#4f46e5, #818cf8);
+}
+.flypy-group-final-2 {
+  color: light-dark(#9333ea, #c084fc);
+}
+.flypy-group-final-3 {
+  color: light-dark(#1d4ed8, #60a5fa);
+}
+.flypy-group-final-4 {
+  color: light-dark(#0891b2, #22d3ee);
+}

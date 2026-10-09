@@ -1,22 +1,22 @@
 export default defineAppConfig({
   github: {
-    url: 'https://github.com/wwlight/wwlight.github.io'
+    url: 'https://github.com/wwlight/wwlight.github.io',
   },
   header: {
-    title: 'wwlight'
+    title: 'wwlight',
   },
   navigation: {
-    sub: 'header'
+    sub: 'header',
   },
   ui: {
     colors: {
       primary: 'green',
-      neutral: 'slate'
+      neutral: 'slate',
     },
     prose: {
       codeIcon: {
-        jsonc: 'i-vscode-icons-file-type-json'
-      }
-    }
-  }
+        jsonc: 'i-vscode-icons-file-type-json',
+      },
+    },
+  },
 })

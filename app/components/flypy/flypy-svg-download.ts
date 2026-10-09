@@ -24,8 +24,7 @@ function pageBackground(liveSvg: SVGSVGElement): string {
   const figure = liveSvg.closest('figure')
   if (figure) {
     const bg = getComputedStyle(figure).backgroundColor
-    if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)')
-      return bg
+    if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return bg
   }
   return getComputedStyle(document.body).backgroundColor || '#111'
 }
@@ -38,20 +37,15 @@ function inlineComputedStyles(live: Element, clone: Element) {
     const parts: string[] = []
     for (const prop of STYLE_PROPS) {
       const value = style.getPropertyValue(prop)
-      if (value)
-        parts.push(`${prop}:${value}`)
+      if (value) parts.push(`${prop}:${value}`)
     }
-    if (parts.length)
-      clone.setAttribute('style', parts.join(';'))
-  }
-  else if (live.tagName.toLowerCase() === 'path') {
+    if (parts.length) clone.setAttribute('style', parts.join(';'))
+  } else if (live.tagName.toLowerCase() === 'path') {
     // symbol 内保留 currentColor，由各 <use> 的 color 决定
     const fill = live.getAttribute('fill')
     const stroke = live.getAttribute('stroke')
-    if (fill)
-      clone.setAttribute('fill', fill)
-    if (stroke)
-      clone.setAttribute('stroke', stroke)
+    if (fill) clone.setAttribute('fill', fill)
+    if (stroke) clone.setAttribute('stroke', stroke)
     if (live.getAttribute('stroke-width'))
       clone.setAttribute('stroke-width', live.getAttribute('stroke-width')!)
     if (live.getAttribute('stroke-linecap'))
@@ -63,8 +57,7 @@ function inlineComputedStyles(live: Element, clone: Element) {
   const liveChildren = [...live.children]
   const cloneChildren = [...clone.children]
   const n = Math.min(liveChildren.length, cloneChildren.length)
-  for (let i = 0; i < n; i++)
-    inlineComputedStyles(liveChildren[i]!, cloneChildren[i]!)
+  for (let i = 0; i < n; i++) inlineComputedStyles(liveChildren[i]!, cloneChildren[i]!)
 }
 
 function freezeBrand(liveSvg: SVGSVGElement, cloneSvg: SVGSVGElement) {
@@ -98,11 +91,12 @@ function freezeBrand(liveSvg: SVGSVGElement, cloneSvg: SVGSVGElement) {
 
   const lines = (btn instanceof HTMLElement ? btn.innerText : btn.textContent || '')
     .split(/\n/)
-    .map(s => s.trim())
+    .map((s) => s.trim())
     .filter(Boolean)
-  const ratios = lines.length <= 1
-    ? [0.52]
-    : lines.map((_, i) => 0.38 + (0.24 * i) / Math.max(1, lines.length - 1))
+  const ratios =
+    lines.length <= 1
+      ? [0.52]
+      : lines.map((_, i) => 0.38 + (0.24 * i) / Math.max(1, lines.length - 1))
 
   lines.forEach((label, i) => {
     const t = document.createElementNS(SVG_NS, 'text')
@@ -155,15 +149,14 @@ function collectFontFaces(): string {
     let css = ''
     if (el.tagName.toLowerCase() === 'style') {
       css = el.textContent || ''
-    }
-    else if (el instanceof HTMLLinkElement && el.sheet) {
+    } else if (el instanceof HTMLLinkElement && el.sheet) {
       try {
-        css = [...el.sheet.cssRules].map(r => r.cssText).join('\n')
+        css = [...el.sheet.cssRules].map((r) => r.cssText).join('\n')
+      } catch {
+        /* cross-origin */
       }
-      catch { /* cross-origin */ }
     }
-    if (css.includes('@font-face') && /font-family:\s*['"]?LXGW/i.test(css))
-      blocks.push(css)
+    if (css.includes('@font-face') && /font-family:\s*['"]?LXGW/i.test(css)) blocks.push(css)
   })
   return blocks.join('\n')
 }
@@ -223,8 +216,7 @@ async function svgToPngBlob(liveSvg: SVGSVGElement): Promise<Blob> {
     canvas.width = Math.round(cssW * scale)
     canvas.height = Math.round(cssH * scale)
     const ctx = canvas.getContext('2d')
-    if (!ctx)
-      throw new Error('Canvas 不可用')
+    if (!ctx) throw new Error('Canvas 不可用')
 
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = 'high'
@@ -257,14 +249,10 @@ async function svgToPngBlob(liveSvg: SVGSVGElement): Promise<Blob> {
       ctx.stroke()
     }
 
-    const blob = await new Promise<Blob | null>(resolve =>
-      canvas.toBlob(resolve, 'image/png'),
-    )
-    if (!blob)
-      throw new Error('toBlob 失败')
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
+    if (!blob) throw new Error('toBlob 失败')
     return blob
-  }
-  finally {
+  } finally {
     URL.revokeObjectURL(url)
   }
 }
@@ -282,16 +270,14 @@ function triggerDownload(blob: Blob, filename: string) {
 
 export function setupFlypySvgDownload() {
   document.querySelectorAll<HTMLElement>('[data-flypy-svg-download]').forEach((btn) => {
-    if (btn.dataset.bound === '1')
-      return
+    if (btn.dataset.bound === '1') return
     btn.dataset.bound = '1'
     btn.addEventListener('click', () => {
       const svg = btn.closest('svg')
-      if (!(svg instanceof SVGSVGElement))
-        return
+      if (!(svg instanceof SVGSVGElement)) return
       const filename = btn.dataset.downloadName || DEFAULT_DOWNLOAD_NAME
       void svgToPngBlob(svg)
-        .then(blob => triggerDownload(blob, filename))
+        .then((blob) => triggerDownload(blob, filename))
         .catch((err) => {
           console.error(err)
         })

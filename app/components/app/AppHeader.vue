@@ -8,9 +8,7 @@ const githubUrl = computed(() => appConfig.github?.url)
 </script>
 
 <template>
-  <UHeader
-    :class="{ 'flex flex-col': subNavigationMode === 'header' }"
-  >
+  <UHeader :class="{ 'flex flex-col': subNavigationMode === 'header' }">
     <template #left>
       <AppHeaderLeft />
     </template>
@@ -31,10 +29,7 @@ const githubUrl = computed(() => appConfig.github?.url)
           </template>
         </ClientOnly>
 
-        <USeparator
-          orientation="vertical"
-          class="h-8"
-        />
+        <USeparator orientation="vertical" class="h-8" />
       </template>
 
       <UContentSearchButton />
@@ -53,21 +48,14 @@ const githubUrl = computed(() => appConfig.github?.url)
     </template>
 
     <template #toggle="{ open, toggle }">
-      <IconMenuToggle
-        :open="open"
-        class="lg:hidden"
-        @click="toggle"
-      />
+      <IconMenuToggle :open="open" class="lg:hidden" @click="toggle" />
     </template>
 
     <template #body>
       <AppHeaderBody />
     </template>
 
-    <template
-      v-if="subNavigationMode === 'header'"
-      #bottom
-    >
+    <template v-if="subNavigationMode === 'header'" #bottom>
       <AppHeaderBottom />
     </template>
   </UHeader>

@@ -12,5 +12,5 @@ module.exports = {
     const ttf = await utils.cache.save(TTF_DIR)
     const split = await utils.cache.save(SPLIT_DIR)
     console.log(`[font-subset-cache] save ttf=${ttf} split=${split}`)
-  }
+  },
 }

@@ -5,24 +5,19 @@ import type {
   RadicalKeyData,
   RadicalSegment,
 } from './flypy-data'
-import {
-  FLYPY_RADICAL_ROWS,
-  FLYPY_SMALL_CHAR_PINYIN,
-  FLYPY_SMALL_CHARS,
-} from './flypy-data'
+import { FLYPY_RADICAL_ROWS, FLYPY_SMALL_CHAR_PINYIN, FLYPY_SMALL_CHARS } from './flypy-data'
 
 export const FLYPY_SVG_WIDTH = 1000
 export const FLYPY_SVG_GAP = 8
-export const FLYPY_SVG_UNIT
-  = (FLYPY_SVG_WIDTH - 9 * FLYPY_SVG_GAP) / 10
+export const FLYPY_SVG_UNIT = (FLYPY_SVG_WIDTH - 9 * FLYPY_SVG_GAP) / 10
 export const FLYPY_SVG_PAD = FLYPY_SVG_UNIT * 0.09
 export const FLYPY_SVG_RADIUS = 6
 
 const ROW_INDENT = [0, 0.5, 1.5] as const
 
 export type RadicalSvgGlyph =
-  | { type: 'text', char: string, kind: RadicalKind }
-  | { type: 'symbol', id: GlyphCropId, kind: RadicalKind }
+  | { type: 'text'; char: string; kind: RadicalKind }
+  | { type: 'symbol'; id: GlyphCropId; kind: RadicalKind }
 
 export type RadicalSvgGlyphPos = RadicalSvgGlyph & {
   x: number
@@ -93,26 +88,18 @@ function flattenLine(line: RadicalSegment[]): RadicalSvgGlyph[] {
   const out: RadicalSvgGlyph[] = []
   for (const segment of line) {
     for (const comp of segment.components) {
-      if (comp.type === 'text')
-        out.push({ type: 'text', char: comp.char, kind: segment.kind })
-      else
-        out.push({ type: 'symbol', id: comp.id, kind: segment.kind })
+      if (comp.type === 'text') out.push({ type: 'text', char: comp.char, kind: segment.kind })
+      else out.push({ type: 'symbol', id: comp.id, kind: segment.kind })
     }
   }
   return out
 }
 
 function cornerText(corner: RadicalSegment): string {
-  return corner.components
-    .map((c: RadicalComponent) => (c.type === 'text' ? c.char : ''))
-    .join('')
+  return corner.components.map((c: RadicalComponent) => (c.type === 'text' ? c.char : '')).join('')
 }
 
-function layoutKey(
-  item: RadicalKeyData,
-  x: number,
-  y: number,
-): RadicalSvgKeyLayout {
+function layoutKey(item: RadicalKeyData, x: number, y: number): RadicalSvgKeyLayout {
   const size = FLYPY_SVG_UNIT
   const pad = FLYPY_SVG_PAD
   const letterSize = size * 0.22
@@ -128,11 +115,8 @@ function layoutKey(
 
   const glyphs: RadicalSvgGlyphPos[] = []
   for (const line of lines) {
-    const widths = line.map(g =>
-      g.type === 'symbol' ? glyphH * 1.35 : glyphH,
-    )
-    const total
-      = widths.reduce((a, b) => a + b, 0) + Math.max(0, line.length - 1) * glyphGap
+    const widths = line.map((g) => (g.type === 'symbol' ? glyphH * 1.35 : glyphH))
+    const total = widths.reduce((a, b) => a + b, 0) + Math.max(0, line.length - 1) * glyphGap
     let gx = x + (size - total) / 2
     for (let i = 0; i < line.length; i++) {
       const g = line[i]!
@@ -172,9 +156,7 @@ function layoutKey(
   }
 }
 
-function layoutSmallItems(
-  startY: number,
-): { items: RadicalSvgSmallItem[], endY: number } {
+function layoutSmallItems(startY: number): { items: RadicalSvgSmallItem[]; endY: number } {
   const padX = 4
   const colGap = 16
   const cols = 3
