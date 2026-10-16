@@ -98,3 +98,8 @@ html.theme-transitioning *::before,
 html.theme-transitioning *::after {
   transition: none !important;
 }
+
+.emperor-table :is(th, td):nth-child(-n + 3) {
+  white-space: nowrap;
+  vertical-align: middle;
+}
