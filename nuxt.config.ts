@@ -45,6 +45,7 @@ export default defineNuxtConfig({
         'lucide:arrow-right',
         'lucide:rocket',
         'lucide:book-open',
+        'lucide:library',
         'lucide:bookmark',
         'simple-icons:apple',
         'simple-icons:github',
@@ -56,7 +57,25 @@ export default defineNuxtConfig({
     },
   },
   hooks: {
-    close: () => process.exit(0),
+    ready({ options }) {
+      const site = options.site
+      if (!site || typeof site.url !== 'string' || !options.appConfig.seo)
+        return
+
+      const hostname = URL.parse(site.url)?.hostname
+      if (!hostname)
+        return
+
+      Object.assign(options.appConfig.seo, {
+        titleTemplate: `%s - ${hostname}`,
+        title: hostname,
+      })
+    },
+    close: (nuxt) => {
+      if (nuxt.options._prepare)
+        return
+      process.exit(0)
+    },
   },
   content: {
     build: {
