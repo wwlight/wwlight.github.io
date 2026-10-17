@@ -68,7 +68,7 @@ Bookmarks / AI / Guides / Read
   :::u-page-feature
   ---
   icon: i-lucide:library
-  to: /read/2021/liulang-diqiu
+  to: /read/2021/wandering-earth
   ---
   #title
   Read
