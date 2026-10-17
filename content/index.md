@@ -1,15 +1,19 @@
 ---
 seo:
   title: wwlight
-  description: Bookmarks / AI / Guides
+  description: Bookmarks / AI / Guides / Read
 ---
 
 ::u-page-hero
+---
+ui:
+  title: text-primary
+---
 #title
 wwlight
 
 #description
-Bookmarks / AI / Guides
+Bookmarks / AI / Guides / Read
 
 #links
   :::u-button
@@ -35,22 +39,8 @@ Bookmarks / AI / Guides
 ::
 
 ::u-page-section
-#title
-快速入口
 
 #features
-  :::u-page-feature
-  ---
-  icon: i-lucide-bookmark
-  to: /bookmarks/tools
-  ---
-  #title
-  Bookmarks
-
-  #description
-  工具 / 开发 / 学习 / 媒体 / 设计等分类书签。
-  :::
-
   :::u-page-feature
   ---
   icon: i-lucide-sparkles
@@ -73,6 +63,18 @@ Bookmarks / AI / Guides
 
   #description
   开发笔记、系统软件与其它实用记录。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-library
+  to: /read/2021/liulang-diqiu
+  ---
+  #title
+  Read
+
+  #description
+  按年份整理的读书笔记。
   :::
 
   :::u-page-feature
