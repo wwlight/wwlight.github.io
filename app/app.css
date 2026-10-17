@@ -103,3 +103,12 @@ html.theme-transitioning *::after {
   white-space: nowrap;
   vertical-align: middle;
 }
+
+.book-meta table {
+  table-layout: fixed;
+}
+
+.book-meta :is(th, td):first-child {
+  width: 10rem;
+  white-space: nowrap;
+}
