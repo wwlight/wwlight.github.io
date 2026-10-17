@@ -246,7 +246,7 @@ export function useTheme() {
   const icons = [
     {
       label: 'Lucide',
-      icon: 'i-lucide-feather',
+      icon: 'i-lucide:feather',
       value: 'lucide',
     },
     {

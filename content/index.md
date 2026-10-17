@@ -43,7 +43,7 @@ Bookmarks / AI / Guides / Read
 #features
   :::u-page-feature
   ---
-  icon: i-lucide-sparkles
+  icon: i-lucide:sparkles
   to: /ai/agent-tools
   ---
   #title
@@ -55,7 +55,7 @@ Bookmarks / AI / Guides / Read
 
   :::u-page-feature
   ---
-  icon: i-lucide-book-open
+  icon: i-lucide:book-open
   to: /guides/notes/dev-qa
   ---
   #title
@@ -67,7 +67,7 @@ Bookmarks / AI / Guides / Read
 
   :::u-page-feature
   ---
-  icon: i-lucide-library
+  icon: i-lucide:library
   to: /read/2021/liulang-diqiu
   ---
   #title
@@ -79,7 +79,7 @@ Bookmarks / AI / Guides / Read
 
   :::u-page-feature
   ---
-  icon: i-lucide-monitor
+  icon: i-lucide:monitor
   to: /guides/system/system-software
   ---
   #title
@@ -91,7 +91,7 @@ Bookmarks / AI / Guides / Read
 
   :::u-page-feature
   ---
-  icon: i-lucide-puzzle
+  icon: i-lucide:puzzle
   to: /guides/other/flypy-pinyin
   ---
   #title
@@ -103,7 +103,7 @@ Bookmarks / AI / Guides / Read
 
   :::u-page-feature
   ---
-  icon: i-lucide-route
+  icon: i-lucide:route
   to: /guides/notes/bash-cheatsheet
   ---
   #title

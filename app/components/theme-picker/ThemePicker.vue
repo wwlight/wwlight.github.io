@@ -49,7 +49,7 @@ const {
   >
     <template #default>
       <UButton
-        icon="i-lucide-swatch-book"
+        icon="i-lucide:swatch-book"
         color="neutral"
         :variant="open ? 'soft' : 'ghost'"
         square
@@ -122,7 +122,7 @@ const {
             v-model="font"
             size="sm"
             color="neutral"
-            icon="i-lucide-type"
+            icon="i-lucide:type"
             :items="fonts"
             class="flex-1 min-w-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
             :ui="{
@@ -134,7 +134,7 @@ const {
             v-model="weight"
             size="sm"
             color="neutral"
-            icon="i-lucide-italic"
+            icon="i-lucide:italic"
             :items="fontWeights"
             class="w-28 shrink-0 ring-default rounded-sm hover:bg-elevated/50 text-[11px] data-[state=open]:bg-elevated/50"
             :ui="{
@@ -188,7 +188,7 @@ const {
             size="sm"
             label="main.css"
             class="flex-1 text-[11px]"
-            :icon="copiedCSS ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+            :icon="copiedCSS ? 'i-lucide:copy-check' : 'i-lucide:copy'"
             @click="copyCSS(exportCSS())"
           />
           <UButton
@@ -197,7 +197,7 @@ const {
             variant="soft"
             size="sm"
             :label="configLabel"
-            :icon="copiedConfig ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+            :icon="copiedConfig ? 'i-lucide:copy-check' : 'i-lucide:copy'"
             class="flex-1 text-[11px]"
             @click="copyConfig(exportConfig())"
           />
@@ -206,7 +206,7 @@ const {
               color="neutral"
               variant="outline"
               size="sm"
-              icon="i-lucide-rotate-ccw"
+              icon="i-lucide:rotate-ccw"
               class="ms-auto ring-default hover:bg-elevated/50"
               @click="resetTheme"
             />
