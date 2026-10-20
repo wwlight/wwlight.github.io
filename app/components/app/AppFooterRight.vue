@@ -55,7 +55,6 @@ function onToggleColorMode(event: MouseEvent) {
     <UButton
       v-for="(link, index) of links"
       :key="index"
-      size="sm"
       v-bind="{ color: 'neutral', variant: 'ghost', ...link }"
     />
   </template>
@@ -63,7 +62,6 @@ function onToggleColorMode(event: MouseEvent) {
     v-if="!forcedColorMode"
     color="neutral"
     variant="ghost"
-    size="xl"
     :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
     @click="onToggleColorMode"
   >
