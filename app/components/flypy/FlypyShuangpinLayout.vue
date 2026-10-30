@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { buildLayoutSvgLayout, FLYPY_SVG_RADIUS } from './flypy-shuangpin-svg-layout'
 import { setupFlypySvgDownload } from './flypy-svg-download'
-import FlypyFigure from './FlypyFigure.vue'
+import { FLYPY_TONE_CLASS } from './flypy-style'
 
 const layout = buildLayoutSvgLayout()
 
@@ -33,7 +32,7 @@ onMounted(() => {
             font-weight="700"
             :text-anchor="key.letter.anchor"
             fill="currentColor"
-            :class="`flypy-tone-${key.letter.tone}`"
+            :class="FLYPY_TONE_CLASS[key.letter.tone]"
           >
             {{ key.letter.text }}
           </text>
@@ -46,7 +45,7 @@ onMounted(() => {
             font-weight="500"
             :text-anchor="item.anchor"
             fill="currentColor"
-            :class="`flypy-tone-${item.tone}`"
+            :class="FLYPY_TONE_CLASS[item.tone]"
           >
             {{ item.text }}
           </text>
@@ -59,7 +58,7 @@ onMounted(() => {
             font-weight="500"
             :text-anchor="item.anchor"
             fill="currentColor"
-            :class="`flypy-tone-${item.tone}`"
+            :class="FLYPY_TONE_CLASS[item.tone]"
           >
             {{ item.text }}
           </text>

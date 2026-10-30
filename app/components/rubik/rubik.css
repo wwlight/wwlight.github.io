@@ -1,0 +1,32 @@
+.rubik-sticker {
+  stroke: color-mix(in oklab, var(--ui-text, #18181b) 28%, transparent);
+  stroke-width: 0.9;
+}
+
+.rubik-sticker.active {
+  stroke: var(--ui-primary, #16a34a);
+  stroke-width: 2.1;
+}
+
+.rubik-cycle-ring {
+  fill: none;
+  stroke: color-mix(in oklab, var(--ui-text, #18181b) 38%, transparent);
+  stroke-width: 1.35;
+}
+
+.rubik-cycle-ring-mid {
+  stroke: var(--ui-primary, #16a34a);
+  stroke-width: 1.8;
+  stroke-opacity: 0.55;
+}
+
+.rubik-cycle-reuleaux {
+  fill: color-mix(in oklab, var(--ui-primary, #16a34a) 18%, transparent);
+  stroke: var(--ui-primary, #16a34a);
+  stroke-width: 2.1;
+  stroke-linejoin: round;
+}
+
+.dark .rubik-cycle-ring {
+  stroke: color-mix(in oklab, var(--ui-text, #fafafa) 32%, transparent);
+}

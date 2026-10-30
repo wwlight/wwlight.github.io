@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { FLYPY_PINYIN_ALPHABET } from './flypy-alphabet-data'
 import type { PinyinAlphabetItem, PinyinAlphabetSection } from './flypy-alphabet-data'
+import { FLYPY_GROUP_CLASS, FLYPY_SECTION_ACCENT, FLYPY_SECTION_TITLE } from './flypy-style'
+import './flypy.css'
 
 const hoveredGroup = ref<string | null>(null)
 
@@ -10,7 +11,7 @@ function sectionActive(section: PinyinAlphabetSection): boolean {
 }
 
 function groupClass(item: PinyinAlphabetItem): string {
-  return item.groupColor ? `flypy-group-${item.groupColor}` : ''
+  return item.groupColor ? FLYPY_GROUP_CLASS[item.groupColor] ?? '' : ''
 }
 
 function cardClass(
@@ -29,14 +30,14 @@ function onCardEnter(item: PinyinAlphabetItem) {
 </script>
 
 <template>
-  <div class="flypy-alphabet-outer">
-    <div class="flypy-alphabet-wrap">
+  <div class="my-5">
+    <div class="flex flex-col gap-4">
       <section
         v-for="section in FLYPY_PINYIN_ALPHABET"
         :key="section.title"
-        :class="['flypy-alphabet-section', section.tone]"
+        :class="['overflow-hidden rounded-md bg-muted/40 p-3 ring ring-default sm:p-4 border-s-[3px]', FLYPY_SECTION_ACCENT[section.tone]]"
       >
-        <h3 :class="['flypy-alphabet-section-title', section.tone]">
+        <h3 :class="['mt-0 mb-3 text-sm font-semibold', FLYPY_SECTION_TITLE[section.tone]]">
           {{ section.title }}
         </h3>
         <div class="flypy-alphabet-grid" @mouseleave="hoveredGroup = null">

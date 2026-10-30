@@ -66,9 +66,9 @@ function onToggleColorMode(event: MouseEvent) {
     @click="onToggleColorMode"
   >
     <template #leading="{ ui }">
-      <UIcon :class="[ui.leadingIcon, 'dark:hidden']" :name="appConfig.ui.icons.light" />
+      <UIcon :class="[ui.leadingIcon, 'size-5 dark:hidden']" :name="appConfig.ui.icons.light" />
       <UIcon
-        :class="[ui.leadingIcon, 'hidden dark:inline-block']"
+        :class="[ui.leadingIcon, 'hidden size-5 dark:inline-block']"
         :name="appConfig.ui.icons.dark"
       />
     </template>

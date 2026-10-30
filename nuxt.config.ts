@@ -9,6 +9,9 @@ export default defineNuxtConfig({
       enabled: false,
     },
   },
+  devtools: {
+    disableAuthorization: true,
+  },
   experimental: {
     defaults: {
       nuxtLink: {

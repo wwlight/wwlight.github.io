@@ -12,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <figure class="flypy-figure" :aria-label="ariaLabel">
+  <GuidePanel as="figure" :aria-label="ariaLabel">
     <slot />
-  </figure>
+  </GuidePanel>
 </template>

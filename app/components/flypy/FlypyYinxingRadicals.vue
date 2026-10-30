@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { GLYPH_CROPS } from './flypy-data'
 import type { RadicalSvgGlyphPos } from './flypy-radical-svg-layout'
 import { buildRadicalSvgLayout, FLYPY_SVG_RADIUS } from './flypy-radical-svg-layout'
 import { setupFlypySvgDownload } from './flypy-svg-download'
-import FlypyFigure from './FlypyFigure.vue'
+import { FLYPY_KIND_CLASS } from './flypy-style'
 
 const layout = buildRadicalSvgLayout()
 const cropMap = new Map(GLYPH_CROPS.map((c) => [c.id, c]))
@@ -67,7 +66,7 @@ onMounted(() => {
             :font-size="key.letterSize"
             font-weight="700"
             fill="currentColor"
-            class="flypy-kind-phonetic"
+            :class="FLYPY_KIND_CLASS.phonetic"
           >
             {{ key.key }}
           </text>
@@ -79,7 +78,7 @@ onMounted(() => {
             font-weight="500"
             text-anchor="end"
             fill="currentColor"
-            :class="`flypy-kind-${key.corner.kind}`"
+            :class="FLYPY_KIND_CLASS[key.corner.kind]"
           >
             {{ key.corner.text }}
           </text>
@@ -92,7 +91,7 @@ onMounted(() => {
               font-weight="500"
               text-anchor="middle"
               fill="currentColor"
-              :class="`flypy-kind-${glyph.kind}`"
+              :class="FLYPY_KIND_CLASS[glyph.kind]"
             >
               {{ glyph.char }}
             </text>
@@ -104,7 +103,7 @@ onMounted(() => {
               :width="glyph.w"
               :height="glyph.h"
               fill="currentColor"
-              :class="`flypy-kind-${glyph.kind}`"
+              :class="FLYPY_KIND_CLASS[glyph.kind]"
             />
           </template>
         </g>
@@ -137,14 +136,14 @@ onMounted(() => {
         font-weight="500"
         text-anchor="middle"
         fill="currentColor"
-        class="flypy-kind-phonetic"
+        :class="FLYPY_KIND_CLASS.phonetic"
       >
         基本以音定键，
-        <tspan class="flypy-kind-non-phonetic" fill="currentColor">红色非音托部件</tspan>
+        <tspan :class="FLYPY_KIND_CLASS['non-phonetic']" fill="currentColor">红色非音托部件</tspan>
         ，
-        <tspan class="flypy-kind-special" fill="currentColor">绿色特别规则部件</tspan>
+        <tspan :class="FLYPY_KIND_CLASS.special" fill="currentColor">绿色特别规则部件</tspan>
         ，
-        <tspan class="flypy-kind-stroke" fill="currentColor">蓝色为笔画</tspan>
+        <tspan :class="FLYPY_KIND_CLASS.stroke" fill="currentColor">蓝色为笔画</tspan>
       </text>
 
       <text
@@ -153,7 +152,7 @@ onMounted(() => {
         :font-size="layout.font.smallTitle"
         font-weight="500"
         fill="currentColor"
-        class="flypy-kind-phonetic"
+        :class="FLYPY_KIND_CLASS.phonetic"
       >
         小字字根
       </text>
@@ -165,7 +164,8 @@ onMounted(() => {
             :y="item.keyY"
             :font-size="layout.font.smallKey"
             font-weight="700"
-            class="flypy-small-key"
+            fill="currentColor"
+            class="text-primary"
           >
             {{ item.key }}
           </text>
@@ -176,7 +176,8 @@ onMounted(() => {
               :font-size="layout.font.smallPinyin"
               font-weight="400"
               text-anchor="middle"
-              class="flypy-small-pinyin"
+              fill="currentColor"
+              class="text-muted"
               :aria-hidden="ch.pinyin ? undefined : 'true'"
             >
               {{ ch.pinyin ?? '' }}
@@ -188,7 +189,7 @@ onMounted(() => {
               font-weight="500"
               text-anchor="middle"
               fill="currentColor"
-              class="flypy-kind-phonetic"
+              :class="FLYPY_KIND_CLASS.phonetic"
             >
               {{ ch.char }}
             </text>
