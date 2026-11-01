@@ -49,7 +49,6 @@ export default defineNuxtConfig({
         'lucide:rocket',
         'lucide:book-open',
         'lucide:library',
-        'lucide:bookmark',
         'simple-icons:apple',
         'simple-icons:github',
         'simple-icons:nuxt',

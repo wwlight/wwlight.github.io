@@ -1,7 +1,7 @@
 ---
 seo:
   title: wwlight
-  description: Bookmarks / AI / Guides / Read
+  description: AI / Guides / Read
 ---
 
 ::u-page-hero
@@ -13,14 +13,14 @@ ui:
 wwlight
 
 #description
-Bookmarks / AI / Guides / Read
+AI / Guides / Read
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /bookmarks/tools
+  to: /ai/agent-tools
   trailing-icon: i-lucide:arrow-right
   ---
   Get started
@@ -39,7 +39,6 @@ Bookmarks / AI / Guides / Read
 ::
 
 ::u-page-section
-
 #features
   :::u-page-feature
   ---
