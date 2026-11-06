@@ -99,12 +99,9 @@ html.theme-transitioning *::after {
   transition: none !important;
 }
 
-.emperor-table :is(th, td):nth-child(-n + 3) {
-  white-space: nowrap;
-  vertical-align: middle;
-}
-
-.person-table :is(th, td):first-child {
+.emperor-table :is(th, td):nth-child(-n + 3),
+.person-table :is(th, td):first-child,
+.fit-sides :is(th, td):is(:first-child, :last-child) {
   white-space: nowrap;
   vertical-align: middle;
 }
