@@ -104,6 +104,11 @@ html.theme-transitioning *::after {
   vertical-align: middle;
 }
 
+.person-table :is(th, td):first-child {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
 .book-meta table {
   table-layout: fixed;
 }
