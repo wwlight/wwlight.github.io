@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   extends: ['docus'],
-  modules: ['nuxt-studio', './modules/font-subset'],
+  modules: ['@vueuse/nuxt', 'nuxt-studio', './modules/font-subset'],
   ui: {
     fonts: false,
   },
@@ -61,12 +61,10 @@ export default defineNuxtConfig({
   hooks: {
     ready({ options }) {
       const site = options.site
-      if (!site || typeof site.url !== 'string' || !options.appConfig.seo)
-        return
+      if (!site || typeof site.url !== 'string' || !options.appConfig.seo) return
 
       const hostname = URL.parse(site.url)?.hostname
-      if (!hostname)
-        return
+      if (!hostname) return
 
       Object.assign(options.appConfig.seo, {
         titleTemplate: `%s - ${hostname}`,
@@ -74,8 +72,7 @@ export default defineNuxtConfig({
       })
     },
     close: (nuxt) => {
-      if (nuxt.options._prepare)
-        return
+      if (nuxt.options._prepare) return
       process.exit(0)
     },
   },

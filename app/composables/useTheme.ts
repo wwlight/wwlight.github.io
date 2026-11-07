@@ -1,9 +1,19 @@
 import { defu } from 'defu'
 import { useLocalStorage } from '@vueuse/core'
-import { themeIcons, cssVariableDefaults } from '../utils/theme'
-import { DEFAULT_SANS_FAMILY, criticalFontLinks, ensureFontFaceCss } from '../utils/font-subset'
-import { omit } from '#ui/utils'
+import { themeIcons, cssVariableDefaults, neutralColors, primaryColors } from '~/utils/theme'
+import { getPreset, palettesToCss, themePresets, type ThemePreset } from '~/utils/theme/presets'
+import { DEFAULT_SANS_FAMILY, criticalFontLinks, ensureFontFaceCss } from '~/utils/font-subset'
 import colors from 'tailwindcss/colors'
+
+const DEFAULT_COLORS = {
+  primary: 'green',
+  secondary: 'blue',
+  success: 'green',
+  info: 'blue',
+  warning: 'yellow',
+  error: 'red',
+  neutral: 'slate',
+} as const
 
 // 字体切换时等待字体就绪的上限（ms）。正常情况字体就绪即切（秒级）；该值仅在缓存未命中
 // 或分包现场生成等极端情况下兜底，避免切换永久卡住。
@@ -86,18 +96,13 @@ export function useTheme() {
   const _weight = useLocalStorage('nuxt-ui-font-weight', DEFAULT_SANS_FAMILY)
   const _iconSet = useLocalStorage('nuxt-ui-icons', 'lucide')
   const _blackAsPrimary = useLocalStorage('nuxt-ui-black-as-primary', false)
+  const _presetId = useLocalStorage('nuxt-ui-preset', 'default')
+  const _palettes = useLocalStorage<Record<string, Record<string, string>>>('nuxt-ui-palettes', {})
 
-  const neutralColors = [
-    'slate',
-    'gray',
-    'zinc',
-    'neutral',
-    'stone',
-    'taupe',
-    'mauve',
-    'mist',
-    'olive',
-  ]
+  function markCustom() {
+    if (_presetId.value !== 'custom') _presetId.value = 'custom'
+  }
+
   const neutral = computed({
     get() {
       return appConfig.ui.colors.neutral
@@ -105,11 +110,10 @@ export function useTheme() {
     set(option) {
       appConfig.ui.colors.neutral = option
       window.localStorage.setItem('nuxt-ui-neutral', appConfig.ui.colors.neutral)
+      markCustom()
     },
   })
 
-  const colorsToOmit = ['inherit', 'current', 'transparent', 'black', 'white', ...neutralColors]
-  const primaryColors = Object.keys(omit(colors, colorsToOmit as any))
   const primary = computed({
     get() {
       return appConfig.ui.colors.primary
@@ -118,16 +122,18 @@ export function useTheme() {
       appConfig.ui.colors.primary = option
       window.localStorage.setItem('nuxt-ui-primary', appConfig.ui.colors.primary)
       setBlackAsPrimary(false)
+      markCustom()
     },
   })
 
-  const radiuses = [0, 0.125, 0.25, 0.375, 0.5]
+  const radiuses = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75]
   const radius = computed({
     get() {
       return _radius.value
     },
     set(option) {
       _radius.value = option
+      markCustom()
     },
   })
 
@@ -173,6 +179,7 @@ export function useTheme() {
     },
     set(option) {
       _weight.value = option
+      markCustom()
     },
   })
   // 按选中字重解析实际 family（value 即 CSS family 名）
@@ -196,7 +203,7 @@ export function useTheme() {
       } else {
         _weight.value = ''
       }
-      // 生效切族统一由 pendingFamily 的 watch 触发
+      markCustom()
     },
   })
 
@@ -267,6 +274,7 @@ export function useTheme() {
     set(option) {
       _iconSet.value = option
       appConfig.ui.icons = themeIcons[option as keyof typeof themeIcons] as any
+      markCustom()
     },
   })
 
@@ -288,6 +296,59 @@ export function useTheme() {
 
   function setBlackAsPrimary(value: boolean) {
     _blackAsPrimary.value = value
+    if (value) markCustom()
+  }
+
+  const selectedPreset = computed(() => _presetId.value)
+  const currentPreset = computed(
+    () =>
+      getPreset(_presetId.value) ||
+      ({
+        id: 'custom',
+        name: 'Custom',
+        icon: 'i-lucide-palette',
+        radius: _radius.value,
+        icons: _iconSet.value as ThemePreset['icons'],
+        colors: {
+          primary: appConfig.ui.colors.primary,
+          neutral: appConfig.ui.colors.neutral,
+        },
+      } satisfies ThemePreset),
+  )
+
+  function applyColorDefaults() {
+    for (const [key, value] of Object.entries(DEFAULT_COLORS)) {
+      ;(appConfig.ui.colors as any)[key] = value
+    }
+  }
+
+  function applyPreset(presetOrId: string | ThemePreset) {
+    const preset = typeof presetOrId === 'string' ? getPreset(presetOrId) : presetOrId
+    if (!preset) return
+
+    applyColorDefaults()
+    if (preset.colors.primary) {
+      appConfig.ui.colors.primary = preset.colors.primary
+      window.localStorage.setItem('nuxt-ui-primary', preset.colors.primary)
+    } else {
+      window.localStorage.removeItem('nuxt-ui-primary')
+    }
+    if (preset.colors.neutral) {
+      appConfig.ui.colors.neutral = preset.colors.neutral
+      window.localStorage.setItem('nuxt-ui-neutral', preset.colors.neutral)
+    } else {
+      window.localStorage.removeItem('nuxt-ui-neutral')
+    }
+    for (const key of ['secondary', 'success', 'info', 'warning', 'error'] as const) {
+      if (preset.colors[key]) (appConfig.ui.colors as any)[key] = preset.colors[key]
+    }
+
+    _radius.value = preset.radius
+    _blackAsPrimary.value = !!preset.blackAsPrimary
+    _iconSet.value = preset.icons
+    appConfig.ui.icons = themeIcons[preset.icons] as any
+    _palettes.value = preset.palettes || {}
+    _presetId.value = preset.id
   }
 
   const hasCustomColors = computed(() => Object.keys(customColorsData.value).length > 0)
@@ -303,6 +364,7 @@ export function useTheme() {
       ? `:root { --ui-primary: black; } .dark { --ui-primary: white; }`
       : ':root {}',
   )
+  const palettesStyle = computed(() => palettesToCss(_palettes.value || {}))
   const fontStyle = computed(() => `:root { --font-sans: '${applyFamily.value}', sans-serif; }`)
   const customColorsStyle = computed(() => {
     const entries = Object.entries(customColorsData.value)
@@ -339,6 +401,7 @@ export function useTheme() {
   const style = [
     { innerHTML: radiusStyle, id: 'nuxt-ui-radius', tagPriority: -2 },
     { innerHTML: blackAsPrimaryStyle, id: 'nuxt-ui-black-as-primary', tagPriority: -2 },
+    { innerHTML: palettesStyle, id: 'nuxt-ui-palettes', tagPriority: -2 },
     { innerHTML: fontStyle, id: 'nuxt-ui-font', tagPriority: -2 },
     { innerHTML: customColorsStyle, id: 'chat-custom-colors', tagPriority: -2 },
     { innerHTML: cssVariablesStyle, id: 'chat-css-variables', tagPriority: -2 },
@@ -348,11 +411,20 @@ export function useTheme() {
     return (
       _radius.value !== 0.25 ||
       _blackAsPrimary.value ||
+      Object.keys(_palettes.value || {}).length > 0 ||
       _font.value !== DEFAULT_SANS_FAMILY ||
+      (_weight.value !== '' && _weight.value !== DEFAULT_SANS_FAMILY) ||
       hasCustomColors.value ||
       hasCSSVariables.value
     )
   })
+
+  const hasAppConfigChanges = computed(
+    () =>
+      appConfig.ui.colors.primary !== 'green' ||
+      appConfig.ui.colors.neutral !== 'slate' ||
+      _iconSet.value !== 'lucide',
+  )
 
   const hasConfigChanges = computed(() => {
     return (
@@ -536,18 +608,9 @@ export function useTheme() {
   }
 
   function resetTheme() {
-    appConfig.ui.colors.primary = 'green'
-    window.localStorage.removeItem('nuxt-ui-primary')
-
-    appConfig.ui.colors.neutral = 'slate'
-    window.localStorage.removeItem('nuxt-ui-neutral')
-
-    _radius.value = 0.25
+    applyPreset('default')
     _font.value = DEFAULT_SANS_FAMILY
     _weight.value = DEFAULT_SANS_FAMILY
-    _iconSet.value = 'lucide'
-    appConfig.ui.icons = themeIcons.lucide as any
-    _blackAsPrimary.value = false
 
     const defaultColors: Record<string, string> = {
       secondary: 'blue',
@@ -585,6 +648,10 @@ export function useTheme() {
     color,
     style,
     link,
+    themePresets,
+    selectedPreset,
+    currentPreset,
+    applyPreset,
     neutralColors,
     neutral,
     primaryColors,
@@ -602,6 +669,7 @@ export function useTheme() {
     modes,
     mode,
     hasCSSChanges,
+    hasAppConfigChanges,
     hasConfigChanges,
     configLabel: computed(() => 'app.config.ts'),
     exportCSS,

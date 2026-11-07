@@ -14,19 +14,17 @@ const host = ref<HTMLElement | null>(null)
 const active = ref(false)
 let io: IntersectionObserver | null = null
 
-const dots = computed(() => active.value ? ringDots(props.cube, props.turn) : [])
+const dots = computed(() => (active.value ? ringDots(props.cube, props.turn) : []))
 
 onMounted(() => {
   io = new IntersectionObserver(
     (entries) => {
-      const on = entries.some(e => e.isIntersecting)
-      if (on !== active.value)
-        active.value = on
+      const on = entries.some((e) => e.isIntersecting)
+      if (on !== active.value) active.value = on
     },
     { rootMargin: '80px 0px', threshold: 0.01 },
   )
-  if (host.value)
-    io.observe(host.value)
+  if (host.value) io.observe(host.value)
 })
 
 onBeforeUnmount(() => {
@@ -43,10 +41,7 @@ onBeforeUnmount(() => {
       role="img"
       :aria-label="label ?? '六面圆环图'"
     >
-      <path
-        :d="RING_REULEAUX"
-        class="rubik-cycle-reuleaux"
-      />
+      <path :d="RING_REULEAUX" class="rubik-cycle-reuleaux" />
       <circle
         v-for="ring in RING_CIRCLES"
         :key="ring.id"
@@ -65,10 +60,6 @@ onBeforeUnmount(() => {
         :style="{ fill: RUBIK_FACE_HEX[dot.color] }"
       />
     </svg>
-    <div
-      v-else
-      class="aspect-square w-full"
-      aria-hidden="true"
-    />
+    <div v-else class="aspect-square w-full" aria-hidden="true" />
   </div>
 </template>

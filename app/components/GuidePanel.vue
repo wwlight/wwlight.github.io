@@ -1,7 +1,10 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  as?: string
-}>(), { as: 'div' })
+withDefaults(
+  defineProps<{
+    as?: string
+  }>(),
+  { as: 'div' },
+)
 </script>
 
 <template>

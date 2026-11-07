@@ -1,26 +1,45 @@
 import { defu } from 'defu'
-import { themeIcons } from '../utils/theme'
-import { CRITICAL_FONT_FAMILIES, FONT_FACE_HREF } from '../utils/font-subset'
+import { themeIcons } from '~/utils/theme'
+import { getPreset } from '~/utils/theme/presets'
+import { CRITICAL_FONT_FAMILIES, FONT_FACE_HREF } from '~/utils/font-subset'
+
+function readStorage(key: string): string | null {
+  const raw = localStorage.getItem(key)
+  if (!raw) return null
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return raw
+  }
+}
 
 export default defineNuxtPlugin({
   enforce: 'post',
   setup() {
     const appConfig = useAppConfig()
-    const { style, link } = useTheme()
+    const { style, link, applyPreset } = useTheme()
 
     useHead({ style, link })
 
     if (import.meta.client) {
-      const primary = localStorage.getItem('nuxt-ui-primary')
-      if (primary) appConfig.ui.colors.primary = primary
+      const presetId = readStorage('nuxt-ui-preset')
+      const preset = presetId ? getPreset(presetId) : null
+      if (preset && preset.id !== 'default') {
+        applyPreset(preset)
+      } else {
+        const primary = localStorage.getItem('nuxt-ui-primary')
+        if (primary) appConfig.ui.colors.primary = primary
 
-      const neutral = localStorage.getItem('nuxt-ui-neutral')
-      if (neutral) appConfig.ui.colors.neutral = neutral
+        const neutral = localStorage.getItem('nuxt-ui-neutral')
+        if (neutral) appConfig.ui.colors.neutral = neutral
 
-      onNuxtReady(() => {
-        const icons = localStorage.getItem('nuxt-ui-icons')
-        if (icons) appConfig.ui.icons = themeIcons[icons as keyof typeof themeIcons] as any
-      })
+        onNuxtReady(() => {
+          const icons = readStorage('nuxt-ui-icons')
+          if (icons && icons in themeIcons) {
+            appConfig.ui.icons = themeIcons[icons as keyof typeof themeIcons] as any
+          }
+        })
+      }
 
       function restoreState<T>(key: string) {
         try {

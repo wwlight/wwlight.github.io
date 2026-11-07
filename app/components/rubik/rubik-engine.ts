@@ -28,11 +28,11 @@ export function copyCube(cube: Cube): Cube {
 }
 
 export function isSolved(cube: Cube): boolean {
-  return FACES.every(face => cube[face].every(sticker => sticker === face))
+  return FACES.every((face) => cube[face].every((sticker) => sticker === face))
 }
 
 export function cubeKey(cube: Cube): string {
-  return FACES.map(face => cube[face].join('')).join('')
+  return FACES.map((face) => cube[face].join('')).join('')
 }
 
 type Face9 = [Face, Face, Face, Face, Face, Face, Face, Face, Face]
@@ -45,7 +45,13 @@ function rotateFace(face: Face[], turns: number) {
   }
 }
 
-function cycle4(cube: Cube, a: [Face, number], b: [Face, number], c: [Face, number], d: [Face, number]) {
+function cycle4(
+  cube: Cube,
+  a: [Face, number],
+  b: [Face, number],
+  c: [Face, number],
+  d: [Face, number],
+) {
   const tmp = cube[a[0]][a[1]]!
   cube[a[0]][a[1]] = cube[d[0]][d[1]]!
   cube[d[0]][d[1]] = cube[c[0]][c[1]]!
@@ -57,34 +63,124 @@ type SideCycle = [[Face, number], [Face, number], [Face, number], [Face, number]
 
 const MOVE_CYCLES: Record<Face, SideCycle[]> = {
   U: [
-    [['F', 0], ['L', 0], ['B', 0], ['R', 0]],
-    [['F', 1], ['L', 1], ['B', 1], ['R', 1]],
-    [['F', 2], ['L', 2], ['B', 2], ['R', 2]],
+    [
+      ['F', 0],
+      ['L', 0],
+      ['B', 0],
+      ['R', 0],
+    ],
+    [
+      ['F', 1],
+      ['L', 1],
+      ['B', 1],
+      ['R', 1],
+    ],
+    [
+      ['F', 2],
+      ['L', 2],
+      ['B', 2],
+      ['R', 2],
+    ],
   ],
   D: [
-    [['F', 6], ['R', 6], ['B', 6], ['L', 6]],
-    [['F', 7], ['R', 7], ['B', 7], ['L', 7]],
-    [['F', 8], ['R', 8], ['B', 8], ['L', 8]],
+    [
+      ['F', 6],
+      ['R', 6],
+      ['B', 6],
+      ['L', 6],
+    ],
+    [
+      ['F', 7],
+      ['R', 7],
+      ['B', 7],
+      ['L', 7],
+    ],
+    [
+      ['F', 8],
+      ['R', 8],
+      ['B', 8],
+      ['L', 8],
+    ],
   ],
   R: [
-    [['U', 8], ['B', 0], ['D', 8], ['F', 8]],
-    [['U', 5], ['B', 3], ['D', 5], ['F', 5]],
-    [['U', 2], ['B', 6], ['D', 2], ['F', 2]],
+    [
+      ['U', 8],
+      ['B', 0],
+      ['D', 8],
+      ['F', 8],
+    ],
+    [
+      ['U', 5],
+      ['B', 3],
+      ['D', 5],
+      ['F', 5],
+    ],
+    [
+      ['U', 2],
+      ['B', 6],
+      ['D', 2],
+      ['F', 2],
+    ],
   ],
   L: [
-    [['U', 6], ['F', 6], ['D', 6], ['B', 2]],
-    [['U', 3], ['F', 3], ['D', 3], ['B', 5]],
-    [['U', 0], ['F', 0], ['D', 0], ['B', 8]],
+    [
+      ['U', 6],
+      ['F', 6],
+      ['D', 6],
+      ['B', 2],
+    ],
+    [
+      ['U', 3],
+      ['F', 3],
+      ['D', 3],
+      ['B', 5],
+    ],
+    [
+      ['U', 0],
+      ['F', 0],
+      ['D', 0],
+      ['B', 8],
+    ],
   ],
   F: [
-    [['U', 6], ['R', 0], ['D', 2], ['L', 8]],
-    [['U', 7], ['R', 3], ['D', 1], ['L', 5]],
-    [['U', 8], ['R', 6], ['D', 0], ['L', 2]],
+    [
+      ['U', 6],
+      ['R', 0],
+      ['D', 2],
+      ['L', 8],
+    ],
+    [
+      ['U', 7],
+      ['R', 3],
+      ['D', 1],
+      ['L', 5],
+    ],
+    [
+      ['U', 8],
+      ['R', 6],
+      ['D', 0],
+      ['L', 2],
+    ],
   ],
   B: [
-    [['U', 2], ['L', 0], ['D', 6], ['R', 8]],
-    [['U', 1], ['L', 3], ['D', 7], ['R', 5]],
-    [['U', 0], ['L', 6], ['D', 8], ['R', 2]],
+    [
+      ['U', 2],
+      ['L', 0],
+      ['D', 6],
+      ['R', 8],
+    ],
+    [
+      ['U', 1],
+      ['L', 3],
+      ['D', 7],
+      ['R', 5],
+    ],
+    [
+      ['U', 0],
+      ['L', 6],
+      ['D', 8],
+      ['R', 2],
+    ],
   ],
 }
 
@@ -92,26 +188,21 @@ const FACE_CW = [2, 5, 8, 1, 4, 7, 0, 3, 6] as const
 
 function slotStep(face: Face, index: number, turnFace: Face, prime: boolean): [Face, number] {
   if (face === turnFace) {
-    const dest = prime
-      ? FACE_CW.indexOf(index as typeof FACE_CW[number])
-      : (FACE_CW[index] ?? -1)
+    const dest = prime ? FACE_CW.indexOf(index as (typeof FACE_CW)[number]) : (FACE_CW[index] ?? -1)
     return [face, dest < 0 ? index : dest]
   }
   for (const cycle of MOVE_CYCLES[turnFace]) {
-    const k = cycle.findIndex(slot => slot[0] === face && slot[1] === index)
-    if (k < 0)
-      continue
+    const k = cycle.findIndex((slot) => slot[0] === face && slot[1] === index)
+    if (k < 0) continue
     const next = cycle[(k + (prime ? 3 : 1)) % 4]
-    if (next)
-      return next
+    if (next) return next
   }
   return [face, index]
 }
 
 export function slotAfter(move: string, face: Face, index: number): [Face, number] {
   const parsed = parseMove(move)
-  if (!parsed)
-    return [face, index]
+  if (!parsed) return [face, index]
   const steps = parsed.turns === 2 ? 2 : 1
   const prime = parsed.turns === 2 ? false : parsed.prime
   let f = face
@@ -126,16 +217,14 @@ export function slotAfter(move: string, face: Face, index: number): [Face, numbe
 
 export function slotStepMove(move: string, face: Face, index: number): [Face, number] {
   const parsed = parseMove(move)
-  if (!parsed)
-    return [face, index]
+  if (!parsed) return [face, index]
   const prime = parsed.turns === 2 ? false : parsed.prime
   return slotStep(face, index, parsed.face, prime)
 }
 
 export function applyMove(cube: Cube, move: string): Cube {
   const parsed = parseMove(move)
-  if (!parsed)
-    return cube
+  if (!parsed) return cube
 
   const turns = parsed.turns === 2 ? 2 : parsed.prime ? 3 : 1
   rotateFace(cube[parsed.face], turns)
@@ -146,11 +235,10 @@ export function applyMove(cube: Cube, move: string): Cube {
   return cube
 }
 
-export function parseMove(move: string): { face: Face, prime: boolean, turns: 1 | 2 } | null {
+export function parseMove(move: string): { face: Face; prime: boolean; turns: 1 | 2 } | null {
   const match = move.trim().match(/^([UDLRFB])(2)?'?$/)
   const face = match?.[1]
-  if (!match || !face || !FACE_SET.has(face))
-    return null
+  if (!match || !face || !FACE_SET.has(face)) return null
   return {
     face: face as Face,
     prime: move.includes("'") && !move.includes('2'),
@@ -165,18 +253,15 @@ export function parseAlg(alg: string): string[] {
     .split(/\s+/)
     .filter(Boolean)
     .map((token) => {
-      if (token.endsWith("2'"))
-        return `${token[0]}2`
+      if (token.endsWith("2'")) return `${token[0]}2`
       return token
     })
 }
 
 export function invertMove(move: string): string {
   const parsed = parseMove(move)
-  if (!parsed)
-    return move
-  if (parsed.turns === 2)
-    return `${parsed.face}2`
+  if (!parsed) return move
+  if (parsed.turns === 2) return `${parsed.face}2`
   return parsed.prime ? parsed.face : `${parsed.face}'`
 }
 
@@ -185,8 +270,7 @@ export function invertAlg(alg: string): string {
 }
 
 export function applyAlg(cube: Cube, alg: string): Cube {
-  for (const move of parseAlg(alg))
-    applyMove(cube, move)
+  for (const move of parseAlg(alg)) applyMove(cube, move)
   return cube
 }
 
@@ -198,8 +282,7 @@ export function cubeAfter(setup: string, alg: string, n: number): Cube {
   const cube = cubeFromAlg(setup)
   const moves = parseAlg(alg)
   const end = Math.max(0, Math.min(n, moves.length))
-  for (let i = 0; i < end; i++)
-    applyMove(cube, moves[i]!)
+  for (let i = 0; i < end; i++) applyMove(cube, moves[i]!)
   return cube
 }
 
@@ -207,10 +290,9 @@ export function moveFace(move: string): Face | null {
   return parseMove(move)?.face ?? null
 }
 
-export function moveSpin(move: string): { face: Face, quarters: number } | null {
+export function moveSpin(move: string): { face: Face; quarters: number } | null {
   const parsed = parseMove(move)
-  if (!parsed)
-    return null
+  if (!parsed) return null
   return {
     face: parsed.face,
     quarters: parsed.turns === 2 ? 2 : parsed.prime ? -1 : 1,
@@ -229,19 +311,17 @@ const FACE_ZH: Record<Face, string> = {
 /** Human-readable gloss for one WCA move token, e.g. R' → 右面逆时针 */
 export function moveZh(move: string): string {
   const parsed = parseMove(move)
-  if (!parsed)
-    return move
+  if (!parsed) return move
   const face = FACE_ZH[parsed.face]
-  if (parsed.turns === 2)
-    return `${face} 180°`
+  if (parsed.turns === 2) return `${face} 180°`
   return parsed.prime ? `${face}逆时针` : `${face}顺时针`
 }
 
 export function firstTwoLayersSolved(cube: Cube): boolean {
-  const d = cube.D.every(sticker => sticker === 'D')
+  const d = cube.D.every((sticker) => sticker === 'D')
   const f2l = [3, 4, 5, 6, 7, 8]
-  const sides = (['F', 'R', 'B', 'L'] as const).every(face =>
-    f2l.every(i => cube[face][i] === face),
+  const sides = (['F', 'R', 'B', 'L'] as const).every((face) =>
+    f2l.every((i) => cube[face][i] === face),
   )
   return d && sides
 }
@@ -251,9 +331,9 @@ export function sideTop(cube: Cube, face: Face): string {
 }
 
 export function lastLayerEdgesOriented(cube: Cube): boolean {
-  return [1, 3, 5, 7].every(i => cube.U[i] === 'U')
+  return [1, 3, 5, 7].every((i) => cube.U[i] === 'U')
 }
 
 export function lastLayerFaceSolved(cube: Cube): boolean {
-  return cube.U.every(sticker => sticker === 'U')
+  return cube.U.every((sticker) => sticker === 'U')
 }

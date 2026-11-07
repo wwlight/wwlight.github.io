@@ -40,12 +40,14 @@ export function isoPolys(cube: Cube): RubikPoly[] {
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {
       const i = r * 3 + c
-      polys.push(sticker(`U${i}`, 'U', cube.U[i]!, [
-        uPt(r, c),
-        uPt(r, c + 1),
-        uPt(r + 1, c + 1),
-        uPt(r + 1, c),
-      ]))
+      polys.push(
+        sticker(`U${i}`, 'U', cube.U[i]!, [
+          uPt(r, c),
+          uPt(r, c + 1),
+          uPt(r + 1, c + 1),
+          uPt(r + 1, c),
+        ]),
+      )
     }
   }
 
@@ -54,12 +56,14 @@ export function isoPolys(cube: Cube): RubikPoly[] {
       const i = r * 3 + c
       const topLeft = add(uPt(3, c), ISO_DOWN, r)
       const topRight = add(uPt(3, c + 1), ISO_DOWN, r)
-      polys.push(sticker(`F${i}`, 'F', cube.F[i]!, [
-        topLeft,
-        topRight,
-        add(topRight, ISO_DOWN),
-        add(topLeft, ISO_DOWN),
-      ]))
+      polys.push(
+        sticker(`F${i}`, 'F', cube.F[i]!, [
+          topLeft,
+          topRight,
+          add(topRight, ISO_DOWN),
+          add(topLeft, ISO_DOWN),
+        ]),
+      )
     }
   }
 
@@ -68,12 +72,14 @@ export function isoPolys(cube: Cube): RubikPoly[] {
       const i = r * 3 + c
       const topFront = add(uPt(3 - c, 3), ISO_DOWN, r)
       const topBack = add(uPt(2 - c, 3), ISO_DOWN, r)
-      polys.push(sticker(`R${i}`, 'R', cube.R[i]!, [
-        topFront,
-        topBack,
-        add(topBack, ISO_DOWN),
-        add(topFront, ISO_DOWN),
-      ]))
+      polys.push(
+        sticker(`R${i}`, 'R', cube.R[i]!, [
+          topFront,
+          topBack,
+          add(topBack, ISO_DOWN),
+          add(topFront, ISO_DOWN),
+        ]),
+      )
     }
   }
 

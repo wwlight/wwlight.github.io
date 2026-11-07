@@ -27,12 +27,10 @@ function paintNow() {
   }
   const el = canvas.value
   const box = host.value
-  if (!el || !box)
-    return
+  if (!el || !box) return
   const w = box.clientWidth
   const h = box.clientHeight
-  if (w < 2 || h < 2)
-    return
+  if (w < 2 || h < 2) return
   if (el.width !== w || el.height !== h) {
     el.width = w
     el.height = h
@@ -40,8 +38,7 @@ function paintNow() {
   }
   if (!ctx) {
     ctx = el.getContext('2d', { alpha: true })
-    if (!ctx)
-      return
+    if (!ctx) return
   }
   ctx.setTransform(1, 0, 0, 1, 0, 0)
   drawCubeScene(ctx, w, h, props.cube, props.turn ?? null)
@@ -51,34 +48,28 @@ function paintNow() {
 function requestPaint() {
   dirty = true
   if (props.turn) {
-    if (raf)
-      cancelAnimationFrame(raf)
+    if (raf) cancelAnimationFrame(raf)
     paintNow()
     return
   }
-  if (raf)
-    return
+  if (raf) return
   raf = requestAnimationFrame(paintNow)
 }
 
 onMounted(() => {
   ro = new ResizeObserver(() => requestPaint())
-  if (host.value)
-    ro.observe(host.value)
+  if (host.value) ro.observe(host.value)
 
   io = new IntersectionObserver(
     (entries) => {
-      const on = entries.some(e => e.isIntersecting)
-      if (on === active.value)
-        return
+      const on = entries.some((e) => e.isIntersecting)
+      if (on === active.value) return
       active.value = on
-      if (on && dirty)
-        requestPaint()
+      if (on && dirty) requestPaint()
     },
     { rootMargin: '40px 0px', threshold: 0.01 },
   )
-  if (host.value)
-    io.observe(host.value)
+  if (host.value) io.observe(host.value)
 })
 
 watch(
@@ -87,8 +78,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  if (raf)
-    cancelAnimationFrame(raf)
+  if (raf) cancelAnimationFrame(raf)
   ro?.disconnect()
   io?.disconnect()
   ctx = null

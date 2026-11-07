@@ -1,4 +1,4 @@
-import sources from '../../modules/font-subset/sources.json'
+import sources from '~~/modules/font-subset/sources.json'
 
 export const DEFAULT_SANS_FAMILY = 'LXGW WenKai'
 export const CRITICAL_FONT_FAMILIES = [DEFAULT_SANS_FAMILY, 'Fira Code'] as const

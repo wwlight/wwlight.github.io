@@ -104,7 +104,7 @@ function hanziOf(pinyin: string): string {
 }
 
 function buildItems(pinyins: readonly string[]): PinyinAlphabetItem[] {
-  return pinyins.map(pinyin => ({
+  return pinyins.map((pinyin) => ({
     pinyin,
     hanzi: hanziOf(pinyin),
   }))
@@ -126,7 +126,7 @@ function buildGroupedItems(
     const groupColor = colors[index % colors.length] ?? colors[0]!
     const groupKey = `${tone}:${category}`
 
-    return tokens.map(pinyin => ({
+    return tokens.map((pinyin) => ({
       pinyin,
       hanzi: hanziOf(pinyin),
       category,

@@ -138,6 +138,68 @@ export const themeIcons = {
 
 export type ThemeIcons = keyof typeof themeIcons
 
+export const primaryColors = [
+  'red',
+  'orange',
+  'amber',
+  'yellow',
+  'lime',
+  'green',
+  'emerald',
+  'teal',
+  'cyan',
+  'sky',
+  'blue',
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose',
+]
+
+export const neutralColors = [
+  'slate',
+  'gray',
+  'zinc',
+  'neutral',
+  'stone',
+  'taupe',
+  'mauve',
+  'mist',
+  'olive',
+]
+
+/** Shade 500 (light) / 400 (dark). Hardcoded so picker dots never depend on Tailwind emitting --color-*-N. */
+export const chipColors: Record<string, { light: string; dark: string }> = {
+  red: { light: 'oklch(63.7% 0.237 25.331)', dark: 'oklch(70.4% 0.191 22.216)' },
+  orange: { light: 'oklch(70.5% 0.213 47.604)', dark: 'oklch(75% 0.183 55.934)' },
+  amber: { light: 'oklch(76.9% 0.188 70.08)', dark: 'oklch(82.8% 0.189 84.429)' },
+  yellow: { light: 'oklch(79.5% 0.184 86.047)', dark: 'oklch(85.2% 0.199 91.936)' },
+  lime: { light: 'oklch(76.8% 0.233 130.85)', dark: 'oklch(84.1% 0.238 128.85)' },
+  green: { light: 'oklch(72.3% 0.219 149.579)', dark: 'oklch(79.2% 0.209 151.711)' },
+  emerald: { light: 'oklch(69.6% 0.17 162.48)', dark: 'oklch(76.5% 0.177 163.223)' },
+  teal: { light: 'oklch(70.4% 0.14 182.503)', dark: 'oklch(77.7% 0.152 181.912)' },
+  cyan: { light: 'oklch(71.5% 0.143 215.221)', dark: 'oklch(78.9% 0.154 211.53)' },
+  sky: { light: 'oklch(68.5% 0.169 237.323)', dark: 'oklch(74.6% 0.16 232.661)' },
+  blue: { light: 'oklch(62.3% 0.214 259.815)', dark: 'oklch(70.7% 0.165 254.624)' },
+  indigo: { light: 'oklch(58.5% 0.233 277.117)', dark: 'oklch(67.3% 0.182 276.935)' },
+  violet: { light: 'oklch(60.6% 0.25 292.717)', dark: 'oklch(70.2% 0.183 293.541)' },
+  purple: { light: 'oklch(62.7% 0.265 303.9)', dark: 'oklch(71.4% 0.203 305.504)' },
+  fuchsia: { light: 'oklch(66.7% 0.295 322.15)', dark: 'oklch(74% 0.238 322.16)' },
+  pink: { light: 'oklch(65.6% 0.241 354.308)', dark: 'oklch(71.8% 0.202 349.761)' },
+  rose: { light: 'oklch(64.5% 0.246 16.439)', dark: 'oklch(71.2% 0.194 13.428)' },
+  slate: { light: 'oklch(55.4% 0.046 257.417)', dark: 'oklch(70.4% 0.04 256.788)' },
+  gray: { light: 'oklch(55.1% 0.027 264.364)', dark: 'oklch(70.7% 0.022 261.325)' },
+  zinc: { light: 'oklch(55.2% 0.016 285.938)', dark: 'oklch(70.5% 0.015 286.067)' },
+  'old-neutral': { light: 'oklch(55.6% 0 none)', dark: 'oklch(70.8% 0 none)' },
+  stone: { light: 'oklch(55.3% 0.013 58.071)', dark: 'oklch(70.9% 0.01 56.259)' },
+  taupe: { light: 'oklch(54.7% 0.021 43.1)', dark: 'oklch(71.4% 0.014 41.2)' },
+  mauve: { light: 'oklch(54.2% 0.034 322.5)', dark: 'oklch(71.1% 0.019 323.02)' },
+  mist: { light: 'oklch(56% 0.021 213.5)', dark: 'oklch(72.3% 0.014 214.4)' },
+  olive: { light: 'oklch(58% 0.031 107.3)', dark: 'oklch(73.7% 0.021 106.9)' },
+}
+
 export const cssVariableDefaults = {
   light: {
     '--ui-text-dimmed': 'var(--ui-color-neutral-400)',

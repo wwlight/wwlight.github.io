@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './flypy.css'
-import { ensureFontFaceCss } from '../../utils/font-subset'
+import { ensureFontFaceCss } from '~/utils/font-subset'
 
 defineProps<{
   ariaLabel?: string

@@ -11,7 +11,7 @@ function sectionActive(section: PinyinAlphabetSection): boolean {
 }
 
 function groupClass(item: PinyinAlphabetItem): string {
-  return item.groupColor ? FLYPY_GROUP_CLASS[item.groupColor] ?? '' : ''
+  return item.groupColor ? (FLYPY_GROUP_CLASS[item.groupColor] ?? '') : ''
 }
 
 function cardClass(
@@ -35,7 +35,10 @@ function onCardEnter(item: PinyinAlphabetItem) {
       <section
         v-for="section in FLYPY_PINYIN_ALPHABET"
         :key="section.title"
-        :class="['overflow-hidden rounded-md bg-muted/40 p-3 ring ring-default sm:p-4 border-s-[3px]', FLYPY_SECTION_ACCENT[section.tone]]"
+        :class="[
+          'overflow-hidden rounded-md bg-muted/40 p-3 ring ring-default sm:p-4 border-s-[3px]',
+          FLYPY_SECTION_ACCENT[section.tone],
+        ]"
       >
         <h3 :class="['mt-0 mb-3 text-sm font-semibold', FLYPY_SECTION_TITLE[section.tone]]">
           {{ section.title }}

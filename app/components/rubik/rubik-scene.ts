@@ -21,7 +21,7 @@ const FACE_RGB: Record<Face, Vec> = {
 
 const PLASTIC: Vec = [28, 28, 32]
 
-const DIRS: { face: Face, n: Vec }[] = [
+const DIRS: { face: Face; n: Vec }[] = [
   { face: 'R', n: [1, 0, 0] },
   { face: 'L', n: [-1, 0, 0] },
   { face: 'U', n: [0, 1, 0] },
@@ -67,11 +67,7 @@ function dot(a: Vec, b: Vec) {
 }
 
 function cross(a: Vec, b: Vec): Vec {
-  return [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0],
-  ]
+  return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
 }
 
 function norm(a: Vec): Vec {
@@ -83,52 +79,35 @@ function rotate(p: Vec, axis: 'x' | 'y' | 'z', a: number): Vec {
   const c = Math.cos(a)
   const s = Math.sin(a)
   const [x, y, z] = p
-  if (axis === 'x')
-    return [x, y * c - z * s, y * s + z * c]
-  if (axis === 'y')
-    return [x * c + z * s, y, -x * s + z * c]
+  if (axis === 'x') return [x, y * c - z * s, y * s + z * c]
+  if (axis === 'y') return [x * c + z * s, y, -x * s + z * c]
   return [x * c - y * s, x * s + y * c, z]
 }
 
 function inLayer(x: number, y: number, z: number, face: Face) {
-  if (face === 'U')
-    return y === 1
-  if (face === 'D')
-    return y === -1
-  if (face === 'R')
-    return x === 1
-  if (face === 'L')
-    return x === -1
-  if (face === 'F')
-    return z === 1
+  if (face === 'U') return y === 1
+  if (face === 'D') return y === -1
+  if (face === 'R') return x === 1
+  if (face === 'L') return x === -1
+  if (face === 'F') return z === 1
   return z === -1
 }
 
 function stickerIndex(x: number, y: number, z: number, face: Face) {
-  if (face === 'U')
-    return (z + 1) * 3 + (x + 1)
-  if (face === 'D')
-    return (1 - z) * 3 + (x + 1)
-  if (face === 'F')
-    return (1 - y) * 3 + (x + 1)
-  if (face === 'B')
-    return (1 - y) * 3 + (1 - x)
-  if (face === 'R')
-    return (1 - y) * 3 + (1 - z)
+  if (face === 'U') return (z + 1) * 3 + (x + 1)
+  if (face === 'D') return (1 - z) * 3 + (x + 1)
+  if (face === 'F') return (1 - y) * 3 + (x + 1)
+  if (face === 'B') return (1 - y) * 3 + (1 - x)
+  if (face === 'R') return (1 - y) * 3 + (1 - z)
   return (1 - y) * 3 + (z + 1)
 }
 
 function isOuter(x: number, y: number, z: number, face: Face) {
-  if (face === 'U')
-    return y === 1
-  if (face === 'D')
-    return y === -1
-  if (face === 'R')
-    return x === 1
-  if (face === 'L')
-    return x === -1
-  if (face === 'F')
-    return z === 1
+  if (face === 'U') return y === 1
+  if (face === 'D') return y === -1
+  if (face === 'R') return x === 1
+  if (face === 'L') return x === -1
+  if (face === 'F') return z === 1
   return z === -1
 }
 
@@ -150,8 +129,7 @@ function cubieQuads(cube: Cube, x: number, y: number, z: number): Quad[] {
   const center: Vec = [x, y, z]
   const quads: Quad[] = []
   for (const dir of DIRS) {
-    if (!isOuter(x, y, z, dir.face))
-      continue
+    if (!isOuter(x, y, z, dir.face)) continue
     const n = dir.n
     const u: Vec = n[0] === 0 ? [1, 0, 0] : [0, 1, 0]
     const v = cross(n, u)
@@ -224,13 +202,12 @@ export function drawCubeScene(
   ctx.clearRect(0, 0, w, h)
 
   const spin = turn ? moveSpin(turn.move) : null
-  const angle = spin && turn ? turn.t * spin.quarters * CW_SIGN[spin.face] * Math.PI / 2 : 0
+  const angle = spin && turn ? (turn.t * spin.quarters * CW_SIGN[spin.face] * Math.PI) / 2 : 0
   const axis = spin ? AXIS[spin.face] : 'y'
   const face = spin?.face
 
   function xf(p: Vec, x: number, y: number, z: number): Vec {
-    if (face && inLayer(x, y, z, face))
-      return rotate(p, axis, angle)
+    if (face && inLayer(x, y, z, face)) return rotate(p, axis, angle)
     return p
   }
 
@@ -239,27 +216,21 @@ export function drawCubeScene(
   for (let x = -1; x <= 1; x++) {
     for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
-        if (x === 0 && y === 0 && z === 0)
-          continue
+        if (x === 0 && y === 0 && z === 0) continue
         for (const q of cubieQuads(cube, x, y, z)) {
           const n = xf(q.n, x, y, z)
-          const pts = q.pts.map(p => xf(p, x, y, z))
+          const pts = q.pts.map((p) => xf(p, x, y, z))
           const p0 = pts[0]!
           const p2 = pts[2]!
-          const mid: Vec = [
-            (p0[0] + p2[0]) / 2,
-            (p0[1] + p2[1]) / 2,
-            (p0[2] + p2[2]) / 2,
-          ]
-          if (dot(n, sub(cam, mid)) <= 0.02)
-            continue
+          const mid: Vec = [(p0[0] + p2[0]) / 2, (p0[1] + p2[1]) / 2, (p0[2] + p2[2]) / 2]
+          if (dot(n, sub(cam, mid)) <= 0.02) continue
           const proj = pts.map(project) as [Pt2, Pt2, Pt2, Pt2]
           const lit = Math.max(0, dot(n, LIGHT))
           const fillLit = Math.max(0, dot(n, FILL))
           const diff = 0.48 + 0.42 * lit + 0.12 * fillLit
           const spec = q.sticker ? 0.1 * lit ** 10 : 0.03 * lit ** 6
-          const depth = (proj[0][2] + proj[1][2] + proj[2][2] + proj[3][2]) / 4
-            - (q.sticker ? 0.05 : 0)
+          const depth =
+            (proj[0][2] + proj[1][2] + proj[2][2] + proj[3][2]) / 4 - (q.sticker ? 0.05 : 0)
           draws.push({
             proj,
             fill: shade(q.color, diff, spec),

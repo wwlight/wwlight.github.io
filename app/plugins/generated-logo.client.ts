@@ -1,4 +1,4 @@
-import { buildGeneratedLogoSvg } from '../utils/generated-logo'
+import { buildGeneratedLogoSvg } from '~/utils/generated-logo'
 
 const FAVICON_LINK_SELECTOR = 'link[rel~="icon"]'
 const MAX_FAVICON_RETRIES = 40

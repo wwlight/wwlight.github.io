@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GENERATED_LOGO_PATHS, GENERATED_LOGO_STROKE } from '../utils/generated-logo'
+import { GENERATED_LOGO_PATHS, GENERATED_LOGO_STROKE } from '~/utils/generated-logo'
 
 defineProps<{
   class?: string

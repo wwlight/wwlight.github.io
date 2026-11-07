@@ -127,10 +127,9 @@ export const RUBIK_STAGES: RubikStage[] = [
   },
 ]
 
-const STAGE_MAP = new Map(RUBIK_STAGES.map(stage => [stage.id, stage]))
+const STAGE_MAP = new Map(RUBIK_STAGES.map((stage) => [stage.id, stage]))
 
 export function getRubikStage(id: string | undefined): RubikStage | undefined {
-  if (!id)
-    return undefined
+  if (!id) return undefined
   return STAGE_MAP.get(id)
 }

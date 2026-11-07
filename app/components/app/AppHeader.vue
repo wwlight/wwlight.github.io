@@ -4,7 +4,10 @@ const { isEnabled: isAssistantEnabled } = useAssistant()
 const { isEnabled, locales } = useDocusI18n()
 const { subNavigationMode } = useSubNavigation()
 
-const githubUrl = computed(() => appConfig.github?.url)
+const githubUrl = computed(() => {
+  const github = appConfig.github
+  return github ? github.url : undefined
+})
 </script>
 
 <template>

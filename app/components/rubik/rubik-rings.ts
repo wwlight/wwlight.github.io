@@ -69,7 +69,18 @@ function pick(pts: [Pt, Pt], third: Pt, side: Side): Pt {
 function meet(a: Axis, ia: number, b: Axis, ib: number, side: Side): Pt {
   const ra = RADII[ia]
   const rb = RADII[ib]
-  const third: Axis = a === 'x' ? (b === 'y' ? 'z' : 'y') : a === 'y' ? (b === 'x' ? 'z' : 'x') : (b === 'x' ? 'y' : 'x')
+  const third: Axis =
+    a === 'x'
+      ? b === 'y'
+        ? 'z'
+        : 'y'
+      : a === 'y'
+        ? b === 'x'
+          ? 'z'
+          : 'x'
+        : b === 'x'
+          ? 'y'
+          : 'x'
   return pick(intersections(C[a], ra ?? S, C[b], rb ?? S), C[third], side)
 }
 
@@ -81,12 +92,12 @@ const FACE_SLOTS: Array<{
   ia: (row: number, col: number) => number
   ib: (row: number, col: number) => number
 }> = [
-  { face: 'U', a: 'x', b: 'z', side: 'inner', ia: (_r, c) => 2 - c, ib: r => 2 - r },
-  { face: 'D', a: 'x', b: 'z', side: 'outer', ia: (_r, c) => 2 - c, ib: r => r },
-  { face: 'F', a: 'y', b: 'x', side: 'inner', ia: r => r, ib: (_r, c) => 2 - c },
-  { face: 'B', a: 'y', b: 'x', side: 'outer', ia: r => r, ib: (_r, c) => c },
-  { face: 'R', a: 'y', b: 'z', side: 'inner', ia: r => r, ib: (_r, c) => c },
-  { face: 'L', a: 'y', b: 'z', side: 'outer', ia: r => r, ib: (_r, c) => 2 - c },
+  { face: 'U', a: 'x', b: 'z', side: 'inner', ia: (_r, c) => 2 - c, ib: (r) => 2 - r },
+  { face: 'D', a: 'x', b: 'z', side: 'outer', ia: (_r, c) => 2 - c, ib: (r) => r },
+  { face: 'F', a: 'y', b: 'x', side: 'inner', ia: (r) => r, ib: (_r, c) => 2 - c },
+  { face: 'B', a: 'y', b: 'x', side: 'outer', ia: (r) => r, ib: (_r, c) => c },
+  { face: 'R', a: 'y', b: 'z', side: 'inner', ia: (r) => r, ib: (_r, c) => c },
+  { face: 'L', a: 'y', b: 'z', side: 'outer', ia: (r) => r, ib: (_r, c) => 2 - c },
 ]
 
 const SLOTS = FACE_SLOTS.flatMap((spec) => {
@@ -107,7 +118,7 @@ const SLOTS = FACE_SLOTS.flatMap((spec) => {
   return cells
 })
 
-export const RING_CIRCLES: RingCircle[] = (['y', 'x', 'z'] as const).flatMap(axis =>
+export const RING_CIRCLES: RingCircle[] = (['y', 'x', 'z'] as const).flatMap((axis) =>
   RADII.map((r, layer) => ({
     id: `${axis}${layer}`,
     cx: C[axis][0],
@@ -190,10 +201,8 @@ function atan(center: Pt, p: Pt) {
 /** Shortest signed delta in (-π, π]. */
 function shortDelta(a0: number, a1: number) {
   let delta = a1 - a0
-  while (delta > Math.PI)
-    delta -= Math.PI * 2
-  while (delta <= -Math.PI)
-    delta += Math.PI * 2
+  while (delta > Math.PI) delta -= Math.PI * 2
+  while (delta <= -Math.PI) delta += Math.PI * 2
   return delta
 }
 
@@ -204,28 +213,22 @@ function shortDelta(a0: number, a1: number) {
 function directedDelta(a0: number, a1: number, sign: number) {
   let delta = a1 - a0
   if (sign >= 0) {
-    while (delta < 0)
-      delta += Math.PI * 2
-    while (delta >= Math.PI * 2)
-      delta -= Math.PI * 2
-  }
-  else {
-    while (delta > 0)
-      delta -= Math.PI * 2
-    while (delta <= -Math.PI * 2)
-      delta += Math.PI * 2
+    while (delta < 0) delta += Math.PI * 2
+    while (delta >= Math.PI * 2) delta -= Math.PI * 2
+  } else {
+    while (delta > 0) delta -= Math.PI * 2
+    while (delta <= -Math.PI * 2) delta += Math.PI * 2
   }
   return delta
 }
 
-function hopSign(center: Pt, hops: Array<{ from: Pt, to: Pt }>) {
+function hopSign(center: Pt, hops: Array<{ from: Pt; to: Pt }>) {
   let best = 0
   let bestAbs = Infinity
   for (const hop of hops) {
     const delta = shortDelta(atan(center, hop.from), atan(center, hop.to))
     const abs = Math.abs(delta)
-    if (abs < 1e-6 || abs >= bestAbs)
-      continue
+    if (abs < 1e-6 || abs >= bestAbs) continue
     bestAbs = abs
     best = Math.sign(delta)
   }
@@ -247,12 +250,12 @@ function colorOf(cube: Cube, face: Face, index: number): Face {
   return cube[face]?.[index] ?? face
 }
 
-export function ringDots(cube: Cube, turn?: { move: string, t: number } | null): RingDot[] {
+export function ringDots(cube: Cube, turn?: { move: string; t: number } | null): RingDot[] {
   const move = turn?.move
   const parsed = move ? parseMove(move) : null
   const t = turn?.t ?? 0
   if (!parsed || t <= 0) {
-    return SLOTS.map(slot => ({
+    return SLOTS.map((slot) => ({
       ...slot,
       color: colorOf(cube, slot.face, slot.index),
     }))
@@ -265,9 +268,17 @@ export function ringDots(cube: Cube, turn?: { move: string, t: number } | null):
   const layerCenter = LAYER_CENTER[parsed.face] ?? C.x
   const faceCenter = FACE_CENTER[parsed.face] ?? layerCenter
 
-  type Motion
-    = { slot: typeof SLOTS[number], color: Face, moving: false, x: number, y: number }
-      | { slot: typeof SLOTS[number], color: Face, moving: true, from: Pt, to: Pt, onFace: boolean, center: Pt }
+  type Motion =
+    | { slot: (typeof SLOTS)[number]; color: Face; moving: false; x: number; y: number }
+    | {
+        slot: (typeof SLOTS)[number]
+        color: Face
+        moving: true
+        from: Pt
+        to: Pt
+        onFace: boolean
+        center: Pt
+      }
 
   const motions: Motion[] = SLOTS.map((slot): Motion => {
     let face = slot.face
@@ -296,16 +307,13 @@ export function ringDots(cube: Cube, turn?: { move: string, t: number } | null):
     }
   })
 
-  const beltHops: Array<{ from: Pt, to: Pt }> = []
-  const faceHops: Array<{ from: Pt, to: Pt }> = []
+  const beltHops: Array<{ from: Pt; to: Pt }> = []
+  const faceHops: Array<{ from: Pt; to: Pt }> = []
   for (const m of motions) {
-    if (!m.moving)
-      continue
+    if (!m.moving) continue
     const pair = { from: m.from, to: m.to }
-    if (m.onFace)
-      faceHops.push(pair)
-    else
-      beltHops.push(pair)
+    if (m.onFace) faceHops.push(pair)
+    else beltHops.push(pair)
   }
   const beltSign = hopSign(layerCenter, beltHops)
   const faceSign = hopSign(faceCenter, faceHops)
