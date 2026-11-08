@@ -49,9 +49,12 @@ export default defineNuxtConfig({
         'lucide:rocket',
         'lucide:book-open',
         'lucide:library',
+        'lucide:triangle',
+        'lucide:copy',
         'simple-icons:apple',
         'simple-icons:github',
         'simple-icons:nuxt',
+        'vscode-icons:file-type-css',
         'vscode-icons:file-type-json',
         'vscode-icons:file-type-text',
         'vscode-icons:file-type-ini',
@@ -80,7 +83,8 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          langs: ['sh', 'js', 'json', 'jsonc', 'md', 'ini'],
+          langs: ['sh', 'js', 'json', 'jsonc', 'md', 'ini', 'css'],
+          noApiRoute: true,
         },
         rehypePlugins: {
           'rehype-external-links': {
@@ -100,6 +104,7 @@ export default defineNuxtConfig({
     domain: 'https://wwlight.github.io',
   },
   studio: {
+    dev: false,
     route: '/admin',
     repository: {
       provider: 'github',

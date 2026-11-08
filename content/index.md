@@ -1,7 +1,7 @@
 ---
 seo:
   title: wwlight
-  description: AI / Guides / Read
+  description: AI / Guides / Read / Tools
 ---
 
 ::u-page-hero
@@ -13,7 +13,7 @@ ui:
 wwlight
 
 #description
-AI / Guides / Read
+AI / Guides / Read / Tools
 
 #links
   :::u-button
@@ -74,6 +74,18 @@ AI / Guides / Read
 
   #description
   按年份整理的读书笔记。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide:toolbox
+  to: /tools/triangle
+  ---
+  #title
+  Tools
+
+  #description
+  CSS 三角形：看清 border-width 四个值各自画在哪。
   :::
 
   :::u-page-feature
