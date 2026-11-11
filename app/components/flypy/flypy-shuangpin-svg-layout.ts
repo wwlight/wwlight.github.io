@@ -6,6 +6,7 @@ import type {
 } from './flypy-data'
 import { FLYPY_MNEMONIC_ROWS, FLYPY_ROWS } from './flypy-data'
 import {
+  FLYPY_ROW_INDENT,
   FLYPY_SVG_GAP,
   FLYPY_SVG_PAD,
   FLYPY_SVG_UNIT,
@@ -13,8 +14,6 @@ import {
 } from './flypy-radical-svg-layout'
 
 export { FLYPY_SVG_RADIUS } from './flypy-radical-svg-layout'
-
-const ROW_INDENT = [0, 0.5, 1.5] as const
 
 export type ShuangpinSvgTone = 'default' | 'initial' | 'final' | 'final-green' | 'orange' | 'green'
 
@@ -216,7 +215,7 @@ function buildBoardKeys<T>(
 
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     const row = rows[rowIndex]!
-    const indent = ROW_INDENT[rowIndex]! * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
+    const indent = FLYPY_ROW_INDENT[rowIndex]! * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
     const y = rowIndex * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
 
     row.forEach((item, i) => {

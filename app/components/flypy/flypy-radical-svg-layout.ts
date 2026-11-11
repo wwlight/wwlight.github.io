@@ -13,7 +13,7 @@ export const FLYPY_SVG_UNIT = (FLYPY_SVG_WIDTH - 9 * FLYPY_SVG_GAP) / 10
 export const FLYPY_SVG_PAD = FLYPY_SVG_UNIT * 0.09
 export const FLYPY_SVG_RADIUS = 6
 
-const ROW_INDENT = [0, 0.5, 1.5] as const
+export const FLYPY_ROW_INDENT = [0, 0.5, 1] as const
 
 export type RadicalSvgGlyph =
   | { type: 'text'; char: string; kind: RadicalKind }
@@ -225,7 +225,7 @@ export function buildRadicalSvgLayout(): RadicalSvgLayout {
 
   for (let rowIndex = 0; rowIndex < FLYPY_RADICAL_ROWS.length; rowIndex++) {
     const row = FLYPY_RADICAL_ROWS[rowIndex]!
-    const indent = ROW_INDENT[rowIndex]! * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
+    const indent = FLYPY_ROW_INDENT[rowIndex]! * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
     const y = rowIndex * (FLYPY_SVG_UNIT + FLYPY_SVG_GAP)
 
     row.forEach((item, i) => {

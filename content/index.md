@@ -102,18 +102,6 @@ AI / Guides / Read / Tools
 
   :::u-page-feature
   ---
-  icon: i-lucide:puzzle
-  to: /guides/other/flypy-pinyin
-  ---
-  #title
-  小鹤双拼
-
-  #description
-  拼音、双拼布局与音形字根键位图。
-  :::
-
-  :::u-page-feature
-  ---
   icon: i-lucide:route
   to: /guides/notes/bash-cheatsheet
   ---
@@ -122,5 +110,29 @@ AI / Guides / Read / Tools
 
   #description
   Bash、Linux 与常用工具的速查手册。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide:languages
+  to: /guides/other/pinyin
+  ---
+  #title
+  汉语拼音
+
+  #description
+  声母、韵母与整体认读音节。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide:keyboard
+  to: /guides/other/flypy
+  ---
+  #title
+  小鹤双拼
+
+  #description
+  双拼布局与音形字根键位图。
   :::
 ::

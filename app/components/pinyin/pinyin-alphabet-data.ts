@@ -1,9 +1,3 @@
-import {
-  FLYPY_SHENGMU_GROUPS,
-  FLYPY_YUNMU_GROUPS,
-  FLYPY_ZHENGTIRENDU_SYLLABLES,
-} from './flypy-pinyin-meta'
-
 export type PinyinAlphabetTone = 'initial' | 'final' | 'syllable'
 
 export type PinyinAlphabetItem = {
@@ -20,7 +14,45 @@ export type PinyinAlphabetSection = {
   items: PinyinAlphabetItem[]
 }
 
-const FLYPY_PINYIN_HANZI: Record<string, string> = {
+const PINYIN_SHENGMU_GROUPS = [
+  { place: '双唇音', initials: ['b', 'p', 'm'] },
+  { place: '唇齿音', initials: ['f'] },
+  { place: '舌尖前音', initials: ['z', 'c', 's'] },
+  { place: '舌尖中音', initials: ['d', 't', 'n', 'l'] },
+  { place: '舌尖后音', initials: ['zh', 'ch', 'sh', 'r'] },
+  { place: '舌面音', initials: ['j', 'q', 'x'] },
+  { place: '舌根音', initials: ['g', 'k', 'h'] },
+  { place: '半元音', initials: ['y', 'w'] },
+] as const
+
+const PINYIN_YUNMU_GROUPS = [
+  { category: '单韵母', finals: ['a', 'o', 'e', 'i', 'u', 'ü'] },
+  { category: '复韵母', finals: ['ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe'] },
+  { category: '特殊韵母', finals: ['er'] },
+  { category: '前鼻韵母', finals: ['an', 'en', 'in', 'un', 'ün'] },
+  { category: '后鼻韵母', finals: ['ang', 'eng', 'ing', 'ong'] },
+] as const
+
+const PINYIN_ZHENGTIRENDU_SYLLABLES = [
+  'zhi',
+  'chi',
+  'shi',
+  'ri',
+  'zi',
+  'ci',
+  'si',
+  'yi',
+  'wu',
+  'yu',
+  'ye',
+  'yue',
+  'yuan',
+  'yin',
+  'yun',
+  'ying',
+] as const
+
+const PINYIN_HANZI: Record<string, string> = {
   b: '播',
   p: '泼',
   m: '摸',
@@ -86,21 +118,27 @@ const FLYPY_PINYIN_HANZI: Record<string, string> = {
   ying: '鹰',
 }
 
-const FLYPY_INITIAL_GROUP_COLORS = [
-  'initial-0',
-  'initial-1',
-  'initial-2',
-  'initial-3',
-  'initial-4',
-  'initial-5',
-  'initial-6',
-  'initial-7',
+const PINYIN_INITIAL_GROUP_COLORS = [
+  'text-red-600 dark:text-red-400',
+  'text-orange-600 dark:text-orange-400',
+  'text-yellow-600 dark:text-yellow-400',
+  'text-lime-600 dark:text-lime-400',
+  'text-success',
+  'text-teal-600 dark:text-teal-400',
+  'text-blue-600 dark:text-blue-400',
+  'text-violet-600 dark:text-violet-400',
 ] as const
 
-const FLYPY_FINAL_GROUP_COLORS = ['final-0', 'final-1', 'final-2', 'final-3', 'final-4'] as const
+const PINYIN_FINAL_GROUP_COLORS = [
+  'text-sky-600 dark:text-sky-400',
+  'text-indigo-600 dark:text-indigo-400',
+  'text-purple-600 dark:text-purple-400',
+  'text-blue-700 dark:text-blue-400',
+  'text-cyan-600 dark:text-cyan-400',
+] as const
 
 function hanziOf(pinyin: string): string {
-  return FLYPY_PINYIN_HANZI[pinyin] ?? pinyin
+  return PINYIN_HANZI[pinyin] ?? pinyin
 }
 
 function buildItems(pinyins: readonly string[]): PinyinAlphabetItem[] {
@@ -137,20 +175,20 @@ function buildGroupedItems(
 }
 
 /** 对照悟空拼音字母表；声母/韵母按发音部位与韵母分类，以字色区分 */
-export const FLYPY_PINYIN_ALPHABET: PinyinAlphabetSection[] = [
+export const PINYIN_ALPHABET: PinyinAlphabetSection[] = [
   {
     title: '声母',
     tone: 'initial',
-    items: buildGroupedItems('initial', FLYPY_SHENGMU_GROUPS, FLYPY_INITIAL_GROUP_COLORS),
+    items: buildGroupedItems('initial', PINYIN_SHENGMU_GROUPS, PINYIN_INITIAL_GROUP_COLORS),
   },
   {
     title: '韵母',
     tone: 'final',
-    items: buildGroupedItems('final', FLYPY_YUNMU_GROUPS, FLYPY_FINAL_GROUP_COLORS),
+    items: buildGroupedItems('final', PINYIN_YUNMU_GROUPS, PINYIN_FINAL_GROUP_COLORS),
   },
   {
     title: '整体认读音节',
     tone: 'syllable',
-    items: buildItems(FLYPY_ZHENGTIRENDU_SYLLABLES),
+    items: buildItems(PINYIN_ZHENGTIRENDU_SYLLABLES),
   },
 ]

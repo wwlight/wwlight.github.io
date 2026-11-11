@@ -1,0 +1,151 @@
+.pinyin-alphabet-grid {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pinyin-gap);
+  --pinyin-gap: clamp(0.18rem, 0.85cqi, 0.34rem);
+  --pinyin-unit: calc((100cqi - 9 * var(--pinyin-gap)) / 10);
+  --pinyin-key-pad: clamp(0.24rem, 0.95cqi, 0.38rem);
+}
+
+.pinyin-key-size {
+  width: var(--pinyin-unit);
+  min-width: 0;
+  height: var(--pinyin-unit);
+  min-height: var(--pinyin-unit);
+  max-height: var(--pinyin-unit);
+}
+
+.pinyin-alphabet-card {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  min-width: 0;
+  overflow: visible;
+  cursor: default;
+  border-radius: calc(var(--radius, 0.25rem) + 0.1rem);
+  border: 1px solid color-mix(in oklab, light-dark(#d4d4d8, #52525b) 36%, transparent);
+  background: color-mix(
+    in oklab,
+    var(--ui-bg, var(--background, light-dark(#ffffff, #18181b))) 72%,
+    light-dark(#c9c9d0, #43434e)
+  );
+  padding: var(--pinyin-key-pad);
+  font-family:
+    'LXGW WenKai', 'LXGW WenKai Light', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    sans-serif;
+  line-height: 1;
+  transition:
+    border-color 0.2s ease-out,
+    opacity 0.2s ease-out;
+}
+
+.pinyin-alphabet-card.dimmed {
+  opacity: 0.35;
+}
+
+.pinyin-alphabet-card.active {
+  z-index: 1;
+  border-color: color-mix(in oklab, light-dark(#a1a1aa, #3f3f46) 65%, transparent);
+}
+
+.pinyin-alphabet-card-head {
+  margin: 0;
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-inline-end: 0.14rem;
+  padding-top: 0.12rem;
+  line-height: 1;
+}
+
+.pinyin-alphabet-card-category {
+  text-align: right;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.pinyin-alphabet-card-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pinyin-alphabet-card-pinyin-wrap {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.pinyin-alphabet-card-pinyin {
+  text-align: center;
+  font-weight: 600;
+}
+
+.pinyin-alphabet-card-pinyin.initial {
+  font-size: clamp(0.88rem, 4.4cqi, 1.14rem);
+}
+
+.pinyin-alphabet-card-pinyin.final {
+  font-size: clamp(0.8rem, 4cqi, 1.04rem);
+}
+
+.pinyin-alphabet-card-pinyin.syllable {
+  font-size: clamp(0.72rem, 3.6cqi, 0.94rem);
+}
+
+.pinyin-alphabet-card-footer {
+  position: relative;
+  display: flex;
+  min-height: clamp(0.62rem, 2.4cqi, 0.78rem);
+  flex-shrink: 0;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.pinyin-alphabet-card-hanzi {
+  text-align: center;
+  font-size: clamp(0.54rem, 2.35cqi, 0.68rem);
+  line-height: 1;
+  color: var(--ui-text-muted, var(--muted-foreground, light-dark(#71717a, #a1a1aa)));
+}
+
+.pinyin-chart {
+  display: flex;
+  flex-direction: column;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border: 1px solid var(--ui-border);
+  border-radius: calc(var(--ui-radius) * 3);
+  background-color: var(--ui-bg);
+}
+
+.pinyin-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.pinyin-block + .pinyin-block {
+  border-top: 1px solid var(--ui-border);
+}
+
+.pinyin-block-title {
+  margin: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--ui-border);
+  font-size: 1rem;
+  font-weight: 600;
+}

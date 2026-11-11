@@ -68,9 +68,10 @@ const MINI_TURN: Partial<Record<TriangleDirection, number>> = {
 function miniStyle(item: TriangleDirection) {
   const color = direction.value === item ? themeColor : 'currentColor'
   const turn = MINI_TURN[item]
-  const mini = turn === undefined
-    ? borderParts(item, MINI_SIDE, MINI_SIDE, color)
-    : borderParts('top', MINI_SIDE, (MINI_SIDE * Math.sqrt(3)) / 2, color)
+  const mini =
+    turn === undefined
+      ? borderParts(item, MINI_SIDE, MINI_SIDE, color)
+      : borderParts('top', MINI_SIDE, (MINI_SIDE * Math.sqrt(3)) / 2, color)
   const border = borderDeclaration(mini)
   return {
     width: '0',
@@ -81,7 +82,6 @@ function miniStyle(item: TriangleDirection) {
     transform: turn === undefined ? undefined : `rotate(${turn}deg)`,
   }
 }
-
 </script>
 
 <template>

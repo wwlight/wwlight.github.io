@@ -322,7 +322,7 @@ export function useTheme() {
     }
   }
 
-  function applyPreset(presetOrId: string | ThemePreset) {
+  function applyPreset(presetOrId: string | ThemePreset, options?: { icons?: boolean }) {
     const preset = typeof presetOrId === 'string' ? getPreset(presetOrId) : presetOrId
     if (!preset) return
 
@@ -346,7 +346,7 @@ export function useTheme() {
     _radius.value = preset.radius
     _blackAsPrimary.value = !!preset.blackAsPrimary
     _iconSet.value = preset.icons
-    appConfig.ui.icons = themeIcons[preset.icons] as any
+    if (options?.icons !== false) appConfig.ui.icons = themeIcons[preset.icons] as any
     _palettes.value = preset.palettes || {}
     _presetId.value = preset.id
   }

@@ -25,7 +25,10 @@ export default defineNuxtPlugin({
       const presetId = readStorage('nuxt-ui-preset')
       const preset = presetId ? getPreset(presetId) : null
       if (preset && preset.id !== 'default') {
-        applyPreset(preset)
+        applyPreset(preset, { icons: false })
+        onNuxtReady(() => {
+          appConfig.ui.icons = themeIcons[preset.icons] as any
+        })
       } else {
         const primary = localStorage.getItem('nuxt-ui-primary')
         if (primary) appConfig.ui.colors.primary = primary
