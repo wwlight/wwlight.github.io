@@ -29,11 +29,5 @@
     "@nuxt/kit": "catalog:nuxt",
     "cn-font-split": "catalog:build"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.22.0",
-      "onFail": "download"
-    }
-  }
+  "devEngines": {}
 }
